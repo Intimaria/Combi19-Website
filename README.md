@@ -10,11 +10,11 @@ Luego estando posicionado en la carpeta "my-frontend" ejecutar:
 
 `npm install`
 
-Para Iniciar el servidor de frontend una vez posicionados en la carpeta "my-frontend" ejecutamos el comando:
+Para Iniciar el servidor de frontend en el puerto 3000, una vez posicionados en la carpeta "my-frontend" ejecutamos el comando:
 
 'npm run start'
 
-Para Iniciar el servidor de backend con Nodemon (para empezar automaticamente la aplicacion de node cuando se producen cambios en el directorio) una vez posicionados en la carpeta "my-backend" ejecutamos el comando:
+Para Iniciar el servidor de backend con Nodemon (para empezar automaticamente la aplicacion de node cuando se producen cambios en el directorio) en el puerto 3001, una vez posicionados en la carpeta "my-backend" ejecutamos el comando:
 
 'npm run devStart'
 
