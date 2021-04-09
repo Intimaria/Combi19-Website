@@ -20,7 +20,7 @@ Para Iniciar el servidor de backend con Nodemon (para empezar automaticamente la
 
 El servidor de backend se conecta a una base de datos con las siguientes caracteristicas:
 
-host: 'localhost'.
-user: 'root'.
-password: ''.
+host: 'localhost',
+user: 'root',
+password: '',
 database: 'mydb'.
