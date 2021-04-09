@@ -14,7 +14,7 @@ Para Iniciar el servidor de frontend una vez posicionados en la carpeta "my-fron
 
 'npm run start'
 
-Para Iniciar el servidor de backend una vez posicionados en la carpeta "my-backend" ejecutamos el comando:
+Para Iniciar el servidor de backend con Nodemon (para empezar automaticamente la aplicacion de node cuando se producen cambios en el directorio) una vez posicionados en la carpeta "my-backend" ejecutamos el comando:
 
 'npm run devStart'
 
