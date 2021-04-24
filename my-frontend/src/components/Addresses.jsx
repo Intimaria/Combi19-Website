@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import Home from './Home.jsx';
+import Logout from './Logout.jsx';
 
 const Addresses = () => {
     return (
@@ -23,6 +24,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/home" exact>
                     <Home  />
+                </Route>
+                <Route path="/logout" exact>
+                    <Logout  />
                 </Route>
                 <Route>
                     <h2 className="text-light" >Page Don't Found - Error 404</h2>

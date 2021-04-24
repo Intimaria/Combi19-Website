@@ -4,3 +4,8 @@
     position: fixed;
     background-color: rgb(10, 10, 10);
 }
+
+.logo-navbar {
+    height: 40px;
+    width: 40px;
+}

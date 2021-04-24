@@ -82,13 +82,13 @@ const validatePassword = (password1) => {
     } else if (!reg1.test(password1)) {
         passwordError1 = ("La contraseña no posee numeros");
         return false;
-    } else if (!reg2.test(password1)) {
+    } /* else if (!reg2.test(password1)) {
         passwordError1 = ("La contraseña no posee letras mayusculas");
         return false;
     } else if (!reg3.test(password1)) {
         passwordError1 = ("La contraseña no posee letras minusculas");
         return false;
-    }
+    } */
 
     passwordError1 = (null);
     return true;
@@ -108,6 +108,16 @@ const comparePasswords = (password1, password2) => {
 }
 
 const validateDate = (birthday) => {
+    function calculateAge() {
+        let birthdayDate = new Date(birthday);
+        let todayDate = new Date();
+        var age = todayDate.getFullYear() - birthdayDate.getFullYear();
+        var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
+        if (differenceOfMonths < 0 || (differenceOfMonths == 0 && (todayDate.getDate() < (birthdayDate.getDate()+ 1))))
+            age--;
+        return age;
+    }
+    
     const today = new Date().toISOString().slice(0, 10);
 
     if (birthday === today) {
@@ -126,7 +136,7 @@ const validateDate = (birthday) => {
     const month = parseInt(parts[1], 10);
     const year = parseInt(parts[0], 10);
 
-    if (year < 1900 || year > (new Date().getFullYear()) || month === 0 || month > 12) {
+    if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
         birthdayError = ("La fecha ingresada en invalida");
         return false;
     }
@@ -138,6 +148,11 @@ const validateDate = (birthday) => {
 
     if (!(day > 0 && day <= monthLength[month - 1])) {
         setBirthdayError("La fecha ingresada en invalida");
+        return false;
+    }
+
+    if (calculateAge() < 18) {
+        setBirthdayError("El usuario debe ser mayor a 18 años");
         return false;
     }
     birthdayError = (null);

@@ -67,11 +67,11 @@ function Register() {
     };
 
     const validate = () => {
-        return ValidateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateDate();
+        return validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateDate();
     };
 
 
-    const ValidateEmail = () => {
+    const validateEmail = () => {
         const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         if (!email) {
             setEmailError("Ingrese un correo");
@@ -117,8 +117,8 @@ function Register() {
 
     const validatePassword = () => {
         const reg1 = /[1-9]/;
-        const reg2 = /[A-Z]/;
-        const reg3 = /[a-z]/;
+        /*const reg2 = /[A-Z]/;
+        const reg3 = /[a-z]/;*/
 
         if (!password1) {
             setPasswordError1("Ingrese una contraseña");
@@ -129,13 +129,13 @@ function Register() {
         } else if (!reg1.test(password1)) {
             setPasswordError1("La contraseña no posee numeros");
             return false;
-        } else if (!reg2.test(password1)) {
+        }/* else if (!reg2.test(password1)) {
             setPasswordError1("La contraseña no posee letras mayusculas");
             return false;
         } else if (!reg3.test(password1)) {
             setPasswordError1("La contraseña no posee letras minusculas");
             return false;
-        }
+        } */
 
         setPasswordError1(null);
         return true;
@@ -155,6 +155,16 @@ function Register() {
     }
 
     const validateDate = () => {
+        function calculateAge() {
+            let birthdayDate = new Date(birthday);
+            let todayDate = new Date();
+            var age = todayDate.getFullYear() - birthdayDate.getFullYear();
+            var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
+            if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate()+ 1))))
+                age--;
+            return age;
+        }
+
         if (birthday === today) {
             setBirthdayError("Ingrese una fecha");
             return false;
@@ -171,7 +181,7 @@ function Register() {
         const month = parseInt(parts[1], 10);
         const year = parseInt(parts[0], 10);
 
-        if (year < 1900 || year >= (new Date().getFullYear()) || month === 0 || month > 12) {
+        if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
             setBirthdayError("La fecha ingresada es invalida");
             return false;
         }
@@ -183,6 +193,11 @@ function Register() {
 
         if (!(day > 0 && day <= monthLength[month - 1])) {
             setBirthdayError("La fecha ingresada es invalida");
+            return false;
+        }
+
+        if (calculateAge() < 18) {
+            setBirthdayError("El usuario debe ser mayor a 18 años");
             return false;
         }
         setBirthdayError(null);
@@ -241,7 +256,7 @@ function Register() {
                     </div>
                     <div className="w-100"></div>
                     <div className="text-center">
-                        <input type="submit" value="Registrarse" className="btn btn-secondary w-50 " />
+                        <input type="submit" value="Registrarse" className="btn btn-primary w-50 " />
                     </div>
                 </div>
             </form>

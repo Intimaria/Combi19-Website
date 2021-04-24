@@ -23,8 +23,8 @@ const Login = ({path}) => {
             .then((response) => {
                 console.log("The session was successful");
                 setLoginError(null);
-                console.log(response.data.token);
                 localStorage.setItem('token',response.data.token);
+                localStorage.setItem('userData', JSON.stringify(response.data.userData));
                 history.push("/home");
             })
             .catch((error) => {
@@ -48,7 +48,7 @@ const Login = ({path}) => {
                     </div>
                     <div className="w-100"></div>
                     <div className="text-center">
-                        <input type="submit" value="Iniciar Sesion" className="btn btn-secondary w-50" />
+                        <input type="submit" value="Iniciar Sesion" className="btn btn-primary confirm-button w-50" />
                     </div>
                 </div>
             </form>
