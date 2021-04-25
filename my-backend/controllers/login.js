@@ -43,7 +43,7 @@ const Login = async (req, res, verifiableRoles) => {
     else {
         res.status(400).send("El correo y/o contraseña son incorrectos");
     }
-    da
+
     res.end();
 }
 

@@ -9,6 +9,16 @@ const Login = ({path}) => {
     const [password, setPassword] = React.useState('');
     const [loginError, setLoginError] = React.useState(null);
 
+    const handleEmail = (newValue) => {
+        setEmail(newValue.target.value);
+        setLoginError(null);
+    }
+
+    const handlePassword = (newValue) => {
+        setPassword(newValue.target.value);
+        setLoginError(null);
+    }
+
     const mySubmitHandler = (event) => {
         event.preventDefault();
 
@@ -37,21 +47,24 @@ const Login = ({path}) => {
             <h2 className="text-light">Iniciar sesión</h2>
             <form onSubmit={mySubmitHandler}>
                 <div className="row">
+                    <div className="col-md">
+                        <input id="inpEmail" type="email" className="form-control mt-3" placeholder="Correo electrónico"
+                               maxLength="70"
+                               onChange={newValue => handleEmail(newValue)}/>
+                    </div>
+                    <div className="col-md">
+                        <input id="inpPassword" type="password" className="form-control mt-3" placeholder="Contraseña"
+                               maxLength="30"
+                               onChange={newValue => handlePassword(newValue)}/>
+                    </div>
                     {
-                        loginError ? <span className="text-danger">{loginError}</span> : null
+                        loginError ? <span className="text-danger small">{loginError}</span> :
+                            <span className="text-danger small">&nbsp;</span>
                     }
-                    <div className="col-md">
-                        <input id="inpEmail" type="email" className="form-control mb-3" placeholder="Correo electrónico"
-                               onChange={e => setEmail(e.target.value)}/>
-                    </div>
-                    <div className="col-md">
-                        <input id="inpPassword" type="password" className="form-control mb-3" placeholder="Contraseña"
-                               onChange={e => setPassword(e.target.value)}/>
-                    </div>
                     <div className="w-100"></div>
                     <div className="text-center">
                         <input id="btnLogin" type="submit" value="Iniciar sesión"
-                               className="btn btn-primary confirm-button w-50"/>
+                               className="btn btn-primary confirm-button w-50 mt-3"/>
                     </div>
                 </div>
             </form>

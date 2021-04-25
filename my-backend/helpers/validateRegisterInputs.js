@@ -8,17 +8,17 @@ let passwordError2;
 let birthdayError;
 
 const validate = async (email, names, surname, password1, password2, birthday) => {
-    return ((ValidateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : { birthdayError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
+    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : { birthdayError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
 };
 
-const ValidateEmail = (email) => {
+const validateEmail = (email) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!email) {
         emailError = ("Ingrese un correo");
         return false;
     }
     if (!reg.test(email)) {
-        emailError = ("Ingrese un correo con un formato valido");
+        emailError = ("Ingrese un correo con un formato válido");
         return false;
     }
 
@@ -28,7 +28,7 @@ const ValidateEmail = (email) => {
 
 const verifyUniqueEmail = async (email) => {
     const connection = await prepareConnection();
-    const selectSql = 'SELECT USER_ID FROM user WHERE BINARY EMAIL = (?)';
+    const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?)';
     const [rows] = await connection.execute(selectSql, [email]);
     connection.end();
     if (rows.length >= 1) {
@@ -40,13 +40,13 @@ const verifyUniqueEmail = async (email) => {
 }
 
 const validateName = (names) => {
-    const reg = /[^a-zA-Z\s]/;
+    const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
 
     if (!names) {
         namesError = ("Ingrese un nombre");
         return false;
     } else if (reg.test(names)) {
-        namesError = ("El nombre debe poseer solo caracteres alfabeticos");
+        namesError = ("El nombre debe poseer solo caracteres alfabéticos");
         return false;
     }
 
@@ -54,13 +54,13 @@ const validateName = (names) => {
     return true;
 }
 const validateSurname = (surname) => {
-    const reg = /[^a-zA-Z\s]/;
+    const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
 
     if (!surname) {
         surnameError = ("Ingrese un apellido");
         return false;
     } else if (reg.test(surname)) {
-        surnameError = ("El apellido debe poseer solo caracteres alfabeticos");
+        surnameError = ("El apellido debe poseer solo caracteres alfabéticos");
         return false;
     }
 

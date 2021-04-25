@@ -3,11 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 import logo from "../images/logo_combi19.png"
 import "../css/generalStyle.css";
-import React from 'react'
-import { Link, NavLink } from "react-router-dom";
 
-import logo from "../images/logo_combi19.png"
-import "../css/generalStyle.css";
 
 const roleId = JSON.parse(localStorage.getItem('userData'))?.userRoleId;
 
