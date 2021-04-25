@@ -80,13 +80,13 @@ const validatePassword = (password1) => {
         passwordError1 = ("La contraseña debe tener mas de 6 caracteres");
         return false;
     } else if (!reg1.test(password1)) {
-        passwordError1 = ("La contraseña no posee numeros");
+        passwordError1 = ("La contraseña no posee números");
         return false;
     } /* else if (!reg2.test(password1)) {
-        passwordError1 = ("La contraseña no posee letras mayusculas");
+        passwordError1 = ("La contraseña no posee letras mayúsculas");
         return false;
     } else if (!reg3.test(password1)) {
-        passwordError1 = ("La contraseña no posee letras minusculas");
+        passwordError1 = ("La contraseña no posee letras minúsculas");
         return false;
     } */
 
@@ -127,7 +127,7 @@ const validateDate = (birthday) => {
 
     const reg = /^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/;
     if (!reg.test(birthday)) {
-        birthdayError = ("Ingrese un formato valido");
+        birthdayError = ("Ingrese un formato válido");
         return false;
     }
 
@@ -137,7 +137,7 @@ const validateDate = (birthday) => {
     const year = parseInt(parts[0], 10);
 
     if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
-        birthdayError = ("La fecha ingresada en invalida");
+        birthdayError = ("La fecha ingresada en inválida");
         return false;
     }
 
@@ -147,7 +147,7 @@ const validateDate = (birthday) => {
         monthLength[1] = 29;
 
     if (!(day > 0 && day <= monthLength[month - 1])) {
-        setBirthdayError("La fecha ingresada en invalida");
+        setBirthdayError("La fecha ingresada en inválida");
         return false;
     }
 

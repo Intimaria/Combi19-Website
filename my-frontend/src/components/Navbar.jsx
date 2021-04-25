@@ -32,7 +32,7 @@ const Navbar = () => {
         else if (roleId === 3) {
 
         }
-        menuItems.push({ name: 'Cerrar Sesion', url: '/loguot' });
+        menuItems.push({ name: 'Cerrar sesión', url: '/loguot' });
     }
     */
     console.log(JSON.parse(localStorage.getItem('userData')));

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 const axios = require("axios");
 
@@ -23,7 +23,7 @@ const Login = ({path}) => {
             .then((response) => {
                 console.log("The session was successful");
                 setLoginError(null);
-                localStorage.setItem('token',response.data.token);
+                localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userData', JSON.stringify(response.data.userData));
                 history.push("/home");
             })
@@ -41,14 +41,17 @@ const Login = ({path}) => {
                         loginError ? <span className="text-danger">{loginError}</span> : null
                     }
                     <div className="col-md">
-                        <input type="email" className="form-control mb-3" placeholder="Ingrese Correo" onChange={e => setEmail(e.target.value)} />
+                        <input id="inpEmail" type="email" className="form-control mb-3" placeholder="Correo electrónico"
+                               onChange={e => setEmail(e.target.value)}/>
                     </div>
                     <div className="col-md">
-                        <input type="password" className="form-control mb-3" placeholder="Ingrese Contraseña" onChange={e => setPassword(e.target.value)} />
+                        <input id="inpPassword" type="password" className="form-control mb-3" placeholder="Contraseña"
+                               onChange={e => setPassword(e.target.value)}/>
                     </div>
                     <div className="w-100"></div>
                     <div className="text-center">
-                        <input type="submit" value="Iniciar Sesion" className="btn btn-primary confirm-button w-50" />
+                        <input id="btnLogin" type="submit" value="Iniciar sesión"
+                               className="btn btn-primary confirm-button w-50"/>
                     </div>
                 </div>
             </form>

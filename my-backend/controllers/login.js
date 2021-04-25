@@ -8,7 +8,7 @@ let userData = { userName: '', userSurname: '', userEmail: '', userRoleId: [] };
 const verifyAccount = async (req) => {
     const { email, password } = req.body;
     const connection = await prepareConnection();
-    const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM `user` WHERE BINARY `EMAIL` = (?) AND BINARY `PASSWORD` = (?)';
+    const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM `USER` WHERE BINARY `EMAIL` = (?) AND BINARY `PASSWORD` = (?)';
     const [rows, fields] = await connection.execute(sqlSelect, [email, password]);
     connection.end();
     if (rows.length === 1) {
@@ -22,7 +22,7 @@ const verifyAccount = async (req) => {
 
 const verifyRole = async (verifiableRoles, userId) => {
     const connection = await prepareConnection();
-    const sqlSelect = 'SELECT `ID_ROLE` FROM `role_user` WHERE `ID_USER` = (?)';
+    const sqlSelect = 'SELECT `ID_ROLE` FROM `ROLE_USER` WHERE `ID_USER` = (?)';
     const [rows, fields] = await connection.execute(sqlSelect, [userId]);
     connection.end();
     for (let index = 0; index < rows.length; index++) {
