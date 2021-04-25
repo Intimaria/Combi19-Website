@@ -72,7 +72,7 @@ const DeleteLugar = async (req, res) => {
 
 module.exports = {
 	AddLugar,
-	VerLugar
+	VerLugar,
 	ListLugares,
     ModifyLugar,
     DeleteLugar
