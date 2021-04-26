@@ -1,7 +1,34 @@
 import React from 'react';
 import {Message} from '../components/Message';
 
+import {
+    ERROR_MSG_EMPTY_DATE,
+    ERROR_MSG_EMPTY_EMAIL,
+    ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_EMPTY_PASSWORD,
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD,
+    ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_INVALID_AGE
+    ERROR_MSG_INVALID_DATE,
+    ERROR_MSG_INVALID_EMAIL,
+    ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
+    ERROR_MSG_PASSWORD_NO_MATCH,
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
+    ERROR_MSG_INVALID_SURNAME
+} from '../const/index';
+
+import {
+    REGEX_DATE_YYYY_MM_DD,
+    REGEX_EMAIL,
+    REGEX_ONLY_ALPHABETICAL
+} from '../helpers/regex';
+
+
 const axios = require("axios");
+
 
 function Register() {
     const handleCloseMessage = () => {
@@ -119,13 +146,12 @@ function Register() {
 
 
     const validateEmail = () => {
-        const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         if (!email) {
-            setEmailError("Ingrese un correo");
+            setEmailError(ERROR_MSG_EMPTY_EMAIL);
             return false;
         }
-        if (!reg.test(email)) {
-            setEmailError("Ingrese un correo con un formato válido");
+        if (!REGEX_EMAIL.test(email)) {
+            setEmailError(ERROR_MSG_INVALID_EMAIL);
             return false;
         }
 
@@ -134,13 +160,11 @@ function Register() {
     }
 
     const validateName = () => {
-        const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
-
         if (!names) {
-            setNamesError("Ingrese un nombre");
+            setNamesError(ERROR_MSG_EMPTY_NAME);
             return false;
-        } else if (reg.test(names)) {
-            setNamesError("El nombre debe poseer solo caracteres alfabéticos");
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(names)) {
+            setNamesError(ERROR_MSG_INVALID_NAME);
             return false;
         }
 
@@ -148,13 +172,11 @@ function Register() {
         return true;
     }
     const validateSurname = () => {
-        const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
-
         if (!surname) {
-            setSurnameError("Ingrese un apellido");
+            setSurnameError(ERROR_MSG_EMPTY_SURNAME);
             return false;
-        } else if (reg.test(surname)) {
-            setSurnameError("El apellido debe poseer solo caracteres alfabéticos");
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(surname)) {
+            setSurnameError(ERROR_MSG_INVALID_SURNAME);
             return false;
         }
 
@@ -168,19 +190,19 @@ function Register() {
         const reg3 = /[a-z]/;*/
 
         if (!password1) {
-            setPassword1Error("Ingrese una contraseña");
+            setPassword1Error(ERROR_MSG_EMPTY_PASSWORD);
             return false;
         } else if (password1.length < 6) {
-            setPassword1Error("La contraseña debe tener mas de 6 caracteres");
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
             return false;
         } else if (!reg1.test(password1)) {
-            setPassword1Error("La contraseña no posee números");
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
             return false;
         }/* else if (!reg2.test(password1)) {
-            setPassword1Error("La contraseña no posee letras mayúsculas");
+            setPassword1Error(ERROR_MSG_INVALID_NO_CAPITAL_LETTERS);
             return false;
         } else if (!reg3.test(password1)) {
-            setPassword1Error("La contraseña no posee letras minúsculas");
+            setPassword1Error(ERROR_MSG_INVALID_NO_LOWER_CASE);
             return false;
         } */
 
@@ -190,10 +212,10 @@ function Register() {
 
     const comparePasswords = () => {
         if (!password2) {
-            setPassword2Error("Ingrese la contraseña nuevamente");
+            setPassword2Error(ERROR_MSG_EMPTY_REPEAT_PASSWORD);
             return false;
         } else if (password1 !== password2) {
-            setPassword2Error("Las contraseñas no coinciden");
+            setPassword2Error(ERROR_MSG_PASSWORD_NO_MATCH);
             return false;
         }
 
@@ -213,13 +235,12 @@ function Register() {
         }
 
         if (birthday === today) {
-            setBirthdayError("Ingrese una fecha");
+            setBirthdayError(ERROR_MSG_EMPTY_DATE);
             return false;
         }
 
-        const reg = /^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/;
-        if (!reg.test(birthday)) {
-            setBirthdayError("Ingrese una fecha válida");
+        if (!REGEX_DATE_YYYY_MM_DD.test(birthday)) {
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
@@ -229,7 +250,7 @@ function Register() {
         const year = parseInt(parts[0], 10);
 
         if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
-            setBirthdayError("La fecha ingresada es inválida");
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
@@ -239,12 +260,12 @@ function Register() {
             monthLength[1] = 29;
 
         if (!(day > 0 && day <= monthLength[month - 1])) {
-            setBirthdayError("La fecha ingresada es ináalida");
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
         if (calculateAge() < 18) {
-            setBirthdayError("Debe ser mayor a 18 años");
+            setBirthdayError(ERROR_MSG_INVALID_AGE);
             return false;
         }
         setBirthdayError(null);

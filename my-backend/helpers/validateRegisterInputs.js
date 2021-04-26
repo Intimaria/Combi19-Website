@@ -1,4 +1,27 @@
-const { prepareConnection } = require("./connectionDB.js");
+import {
+    ERROR_MSG_EMPTY_EMAIL,
+    ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_EMPTY_PASSWORD,
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD,
+    ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_EXISTING_EMAIL,
+    ERROR_MSG_INVALID_EMAIL,
+    ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
+    ERROR_MSG_PASSWORD_NO_MATCH,
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
+    ERROR_MSG_INVALID_SURNAME, ERROR_MSG_EMPTY_DATE, ERROR_MSG_INVALID_DATE, ERROR_MSG_INVALID_AGE,
+} from '../const/index';
+
+import {
+    REGEX_DATE_YYYY_MM_DD,
+    REGEX_EMAIL,
+    REGEX_ONLY_ALPHABETICAL
+} from '../helpers/regex';
+
+const {prepareConnection} = require("./connectionDB.js");
 
 let emailError;
 let namesError;
@@ -8,17 +31,23 @@ let passwordError2;
 let birthdayError;
 
 const validate = async (email, names, surname, password1, password2, birthday) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : { birthdayError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
+    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : {
+        birthdayError,
+        emailError,
+        namesError,
+        surnameError,
+        passwordError1,
+        passwordError2
+    };
 };
 
 const validateEmail = (email) => {
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!email) {
-        emailError = ("Ingrese un correo");
+        emailError = (ERROR_MSG_EMPTY_EMAIL);
         return false;
     }
-    if (!reg.test(email)) {
-        emailError = ("Ingrese un correo con un formato válido");
+    if (!REGEX_EMAIL.test(email)) {
+        emailError = (ERROR_MSG_INVALID_EMAIL);
         return false;
     }
 
@@ -27,26 +56,32 @@ const validateEmail = (email) => {
 }
 
 const verifyUniqueEmail = async (email) => {
-    const connection = await prepareConnection();
-    const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?)';
-    const [rows] = await connection.execute(selectSql, [email]);
-    connection.end();
-    if (rows.length >= 1) {
-        emailError = "El email ingresado ya se encuentra en el sistema";
-        return false;
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?)';
+        const [rows] = await connection.execute(selectSql, [email]);
+
+        connection.end();
+
+        if (rows.length >= 1) {
+            emailError = ERROR_MSG_EXISTING_EMAIL;
+            return false;
+        }
+        return true;
+    } catch (e) {
+        console.log('Ocurrió un error al verificar si el email es único:', e)
     }
-    return true;
+
 
 }
 
 const validateName = (names) => {
-    const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
-
     if (!names) {
-        namesError = ("Ingrese un nombre");
+        namesError = (ERROR_MSG_EMPTY_NAME);
         return false;
-    } else if (reg.test(names)) {
-        namesError = ("El nombre debe poseer solo caracteres alfabéticos");
+    } else if (!REGEX_ONLY_ALPHABETICAL.test(names)) {
+        namesError = (ERROR_MSG_INVALID_NAME);
         return false;
     }
 
@@ -54,13 +89,11 @@ const validateName = (names) => {
     return true;
 }
 const validateSurname = (surname) => {
-    const reg = /[^a-zA-Z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\s]/;
-
     if (!surname) {
-        surnameError = ("Ingrese un apellido");
+        surnameError = (ERROR_MSG_EMPTY_SURNAME);
         return false;
-    } else if (reg.test(surname)) {
-        surnameError = ("El apellido debe poseer solo caracteres alfabéticos");
+    } else if (!REGEX_ONLY_ALPHABETICAL.test(surname)) {
+        surnameError = (ERROR_MSG_INVALID_SURNAME);
         return false;
     }
 
@@ -74,19 +107,19 @@ const validatePassword = (password1) => {
     const reg3 = /[a-z]/;
 
     if (!password1) {
-        passwordError1 = ("Ingrese una contraseña");
+        passwordError1 = (ERROR_MSG_EMPTY_PASSWORD);
         return false;
     } else if (password1.length < 6) {
-        passwordError1 = ("La contraseña debe tener mas de 6 caracteres");
+        passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
         return false;
     } else if (!reg1.test(password1)) {
-        passwordError1 = ("La contraseña no posee números");
+        passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
         return false;
     } /* else if (!reg2.test(password1)) {
-        passwordError1 = ("La contraseña no posee letras mayúsculas");
+        passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS);
         return false;
     } else if (!reg3.test(password1)) {
-        passwordError1 = ("La contraseña no posee letras minúsculas");
+        passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE);
         return false;
     } */
 
@@ -96,10 +129,10 @@ const validatePassword = (password1) => {
 
 const comparePasswords = (password1, password2) => {
     if (!password2) {
-        passwordError2 = ("Ingrese la contraseña nuevamente");
+        passwordError2 = (ERROR_MSG_EMPTY_REPEAT_PASSWORD);
         return false;
     } else if (password1 !== password2) {
-        passwordError2 = ("Las contraseñas no coinciden");
+        passwordError2 = (ERROR_MSG_PASSWORD_NO_MATCH);
         return false;
     }
 
@@ -113,21 +146,20 @@ const validateDate = (birthday) => {
         let todayDate = new Date();
         var age = todayDate.getFullYear() - birthdayDate.getFullYear();
         var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
-        if (differenceOfMonths < 0 || (differenceOfMonths == 0 && (todayDate.getDate() < (birthdayDate.getDate()+ 1))))
+        if (differenceOfMonths < 0 || (differenceOfMonths == 0 && (todayDate.getDate() < (birthdayDate.getDate() + 1))))
             age--;
         return age;
     }
-    
+
     const today = new Date().toISOString().slice(0, 10);
 
     if (birthday === today) {
-        birthdayError = ("Ingrese una fecha");
+        birthdayError = (ERROR_MSG_EMPTY_DATE);
         return false;
     }
 
-    const reg = /^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/;
-    if (!reg.test(birthday)) {
-        birthdayError = ("Ingrese un formato válido");
+    if (!REGEX_DATE_YYYY_MM_DD.test(birthday)) {
+        birthdayError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
 
@@ -136,8 +168,8 @@ const validateDate = (birthday) => {
     const month = parseInt(parts[1], 10);
     const year = parseInt(parts[0], 10);
 
-    if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
-        birthdayError = ("La fecha ingresada en inválida");
+    if (year < (new Date().getFullYear() - 125) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
+        birthdayError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
 
@@ -147,12 +179,12 @@ const validateDate = (birthday) => {
         monthLength[1] = 29;
 
     if (!(day > 0 && day <= monthLength[month - 1])) {
-        setBirthdayError("La fecha ingresada en inválida");
+        setBirthdayError(ERROR_MSG_INVALID_DATE);
         return false;
     }
 
     if (calculateAge() < 18) {
-        setBirthdayError("El usuario debe ser mayor a 18 años");
+        setBirthdayError(ERROR_MSG_INVALID_AGE);
         return false;
     }
     birthdayError = (null);
