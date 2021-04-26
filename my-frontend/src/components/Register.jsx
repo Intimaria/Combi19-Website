@@ -1,7 +1,6 @@
 import React from 'react';
 
 const axios = require("axios");
-
 function Register() {
     const today = new Date().toISOString().slice(0, 10);
     const [email, setEmail] = React.useState('');

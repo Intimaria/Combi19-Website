@@ -3,49 +3,57 @@ import { Link, NavLink } from "react-router-dom";
 
 import logo from "../images/logo_combi19.png"
 import "../css/generalStyle.css";
-import React from 'react'
-import { Link, NavLink } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
-import logo from "../images/logo_combi19.png"
-import "../css/generalStyle.css";
+const Navbar = ({ userData }) => {
+    const history = useHistory();
 
-const roleId = JSON.parse(localStorage.getItem('userData'))?.userRoleId;
-
-const Navbar = () => {
-    /*let menuItems = [];
-    if () {
-        menuItems.push({ name: 'Iniciar Sesion', url: '/login' });
-        menuItems.push({ name: 'Registrarse', url: '/register' });
+    const logout = () => {
+        localStorage.clear();
+        history.push('/')
     }
-    else {
-        
-        if (roleId === 1) {
-            menuItems.push({ name: 'Choferes', url: '/home/drivers' });
-            menuItems.push({ name: 'Combis', url: '/buses' });
-            menuItems.push({ name: 'Lugares', url: '/places' });
-            menuItems.push({ name: 'Rutas', url: '/routes' });
-        }
-        else if (roleId === 2) {
-            menuItems.push({ name: 'Viajes Realizados', url: '/tripsMade' });
-            menuItems.push({ name: 'Viajes Pendientes', url: '/pendingTrips' });
-        }
-        else if (roleId === 3) {
+    
+    const loginRegistrationMenu = (
+        <div>
+            <NavLink to="/login" className="btn btn-dark mr-2"> Iniciar Sesion </NavLink>
+            <NavLink to="/register" className="btn btn-dark mr-2"> Registrar </NavLink>
+        </div>
+    )
 
-        }
-        menuItems.push({ name: 'Cerrar Sesion', url: '/loguot' });
-    }
-    */
-    console.log(JSON.parse(localStorage.getItem('userData')));
-    console.log('a', roleId);
+    const logoutOption = (
+        <button className="btn btn-dark mr-2" onClick={() => logout()}> Cerrar Sesión </button>
+    )
+
+    const passengerMenu = (
+        <div>
+        </div>
+    )
+    const driverMenu = (
+        <div >
+            <NavLink to="/pendingTrips" className="btn btn-dark mr-2"> Viajes Pendientes </NavLink>
+            <NavLink to="/tripsMade" className="btn btn-dark mr-2"> Viajes Realizados </NavLink>
+        </div>
+    )
+    const adminMenu = (
+        <div>
+            <NavLink to="/drivers" className="btn btn-dark mr-2"> Choferes </NavLink>
+            <NavLink to="/buses" className="btn btn-dark mr-2"> Combis </NavLink>
+            <NavLink to="/places" className="btn btn-dark mr-2"> Lugares </NavLink>
+            <NavLink to="/products" className="btn btn-dark mr-2"> Productos </NavLink>
+            <NavLink to="/reports" className="btn btn-dark mr-2"> Reportes </NavLink>
+            <NavLink to="/reports" className="btn btn-dark mr-2"> Usuarios </NavLink>
+        </div>
+    )
+    console.log(userData)
     return (
         <div className="navbar navbar-dark bg-dark px-5 mb-4">
             <Link to="/" className="navbar-brand"> <img src={logo} alt="Logo" className="logo-navbar" /> </Link>
-            <div>
-                <div className="d-flex">
-                    {!roleId ? console.log("Actualizo") : null}
-                    {!roleId ? <NavLink to="/register" className="btn btn-dark mr-2">Registrar</NavLink> : null}
-                    {roleId ? console.log("Tambien Actualizo") : null}
-                </div>
+            <div className="d-flex">
+                {!userData ? loginRegistrationMenu : null}
+                {userData && userData.userRoleId.includes(3) ? passengerMenu : null}
+                {userData && userData.userRoleId.includes(2) ? driverMenu : null}
+                {userData && userData.userRoleId.includes(1) ? adminMenu : null}
+                {userData ? logoutOption : null}
             </div>
         </div>
     )

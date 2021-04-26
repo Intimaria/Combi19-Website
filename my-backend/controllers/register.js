@@ -1,10 +1,10 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
-const { validate } = require("../helpers/validateRegisterInputs.js");
+const { validate } = require("../helpers/validateInputs.js");
 
 const Register = async (req, res) => {
     const { names, surname, email, birthday, password1, password2 } = req.body;
 
-    const inputsErrors = await validate(email, names, surname, password1, password2, birthday);
+    const inputsErrors = await validatePassengers(email, names, surname, password1, password2, birthday);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
