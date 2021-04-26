@@ -29,6 +29,8 @@ class Server {
         this.app.use('/register', require('../routes/register.js'));
         this.app.use('/authorization', require('../routes/authorization.js'));
         this.app.use('/drivers', require('../routes/drivers.js'));
+		this.app.use('/transport', require('../routes/transport.js'));
+        this.app.use('/lugares', require('../routes/lugares.js'));
     }
 
     listen() {

@@ -19,7 +19,6 @@ const Navbar = ({ userData }) => {
             <NavLink to="/register" className="btn btn-dark mr-2"> Registrar </NavLink>
         </div>
     )
-
     const logoutOption = (
         <button className="btn btn-dark mr-2" onClick={() => logout()}> Cerrar Sesión </button>
     )
@@ -44,7 +43,6 @@ const Navbar = ({ userData }) => {
             <NavLink to="/reports" className="btn btn-dark mr-2"> Usuarios </NavLink>
         </div>
     )
-    console.log(userData)
     return (
         <div className="navbar navbar-dark bg-dark px-5 mb-4">
             <Link to="/" className="navbar-brand"> <img src={logo} alt="Logo" className="logo-navbar" /> </Link>

@@ -1,21 +1,54 @@
 import React from 'react';
+import { Message } from '../components/Message';
+
+import {
+    ERROR_MSG_EMPTY_DATE,
+    ERROR_MSG_EMPTY_EMAIL,
+    ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_EMPTY_PASSWORD,
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD,
+    ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_INVALID_AGE,
+    ERROR_MSG_INVALID_DATE,
+    ERROR_MSG_INVALID_EMAIL,
+    ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
+    ERROR_MSG_PASSWORD_NO_MATCH,
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
+    ERROR_MSG_INVALID_SURNAME
+} from '../const/message.js';
+
+import {
+    REGEX_DATE_YYYY_MM_DD,
+    REGEX_EMAIL,
+    REGEX_ONLY_ALPHABETICAL
+} from '../const/regex.js';
+
 
 const axios = require("axios");
 function Register() {
+    const handleCloseMessage = () => {
+        setOptions({ ...options, open: false });
+    };
+
+
     const today = new Date().toISOString().slice(0, 10);
     const [email, setEmail] = React.useState('');
     const [names, setNames] = React.useState('');
     const [surname, setSurname] = React.useState('');
     const [password1, setPassword1] = React.useState('');
     const [password2, setPassword2] = React.useState('');
-    const [birthday, setBirthday] = React.useState(today);
+    const [birthday, setBirthday] = React.useState('');
     const [emailError, setEmailError] = React.useState(null);
     const [namesError, setNamesError] = React.useState(null);
     const [surnameError, setSurnameError] = React.useState(null);
-    const [passwordError1, setPasswordError1] = React.useState(null);
-    const [passwordError2, setPasswordError2] = React.useState(null);
+    const [password1Error, setPassword1Error] = React.useState(null);
+    const [password2Error, setPassword2Error] = React.useState(null);
     const [birthdayError, setBirthdayError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     const mySubmitHandler = (event) => {
         event.preventDefault();
@@ -43,6 +76,10 @@ function Register() {
                 console.log("The inputs were submitted successfully");
                 setDefaultValues();
                 setSuccessMessage(response.data);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: response.data
+                });
             })
             .catch((error) => {
                 console.log("There was an error in the submitted entries");
@@ -50,20 +87,56 @@ function Register() {
                 setNamesError(error.response.data.namesError);
                 setSurnameError(error.response.data.surnameError);
                 setBirthdayError(error.response.data.birthdayError);
-                setPasswordError1(error.response.data.passwordError1);
-                setPasswordError2(error.response.data.passwordError2);
+                setPassword1Error(error.response.data.passwordError1);
+                setPassword2Error(error.response.data.passwordError2);
             });
     }
 
     const setDefaultValues = () => {
+        setEmail('');
         setNames('');
         setSurname('');
-        setEmail('');
-        setBirthday(today);
+        setBirthday('');
         setPassword1('');
         setPassword1('');
         setPassword2('');
     };
+
+    const handleEmail = (newValue) => {
+        setEmail(newValue.target.value);
+        setSuccessMessage(null);
+        setEmailError(null);
+    }
+
+    const handleNames = (newValue) => {
+        setNames(newValue.target.value);
+        setSuccessMessage(null);
+        setNamesError(null);
+    }
+
+    const handleSurname = (newValue) => {
+        setSurname(newValue.target.value);
+        setSuccessMessage(null);
+        setSurnameError(null);
+    }
+
+    const handleBirthday = (newValue) => {
+        setBirthday(newValue.target.value);
+        setSuccessMessage(null);
+        setBirthdayError(null);
+    }
+
+    const handlePassword1 = (newValue) => {
+        setPassword1(newValue.target.value);
+        setSuccessMessage(null);
+        setPassword1Error(null);
+    }
+
+    const handlePassword2 = (newValue) => {
+        setPassword2(newValue.target.value);
+        setSuccessMessage(null);
+        setPassword2Error(null);
+    }
 
     const validate = () => {
         return validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateDate();
@@ -71,13 +144,12 @@ function Register() {
 
 
     const validateEmail = () => {
-        const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
         if (!email) {
-            setEmailError("Ingrese un correo");
+            setEmailError(ERROR_MSG_EMPTY_EMAIL);
             return false;
         }
-        if (!reg.test(email)) {
-            setEmailError("Ingrese un correo con un formato valido");
+        if (!REGEX_EMAIL.test(email)) {
+            setEmailError(ERROR_MSG_INVALID_EMAIL);
             return false;
         }
 
@@ -86,13 +158,11 @@ function Register() {
     }
 
     const validateName = () => {
-        const reg = /[^a-zA-Z\s]/;
-
         if (!names) {
-            setNamesError("Ingrese un nombre");
+            setNamesError(ERROR_MSG_EMPTY_NAME);
             return false;
-        } else if (reg.test(names)) {
-            setNamesError("El nombre debe poseer solo caracteres alfabeticos");
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(names)) {
+            setNamesError(ERROR_MSG_INVALID_NAME);
             return false;
         }
 
@@ -100,13 +170,11 @@ function Register() {
         return true;
     }
     const validateSurname = () => {
-        const reg = /[^a-zA-Z\s]/;
-
         if (!surname) {
-            setSurnameError("Ingrese un apellido");
+            setSurnameError(ERROR_MSG_EMPTY_SURNAME);
             return false;
-        } else if (reg.test(surname)) {
-            setSurnameError("El apellido debe poseer solo caracteres alfabeticos");
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(surname)) {
+            setSurnameError(ERROR_MSG_INVALID_SURNAME);
             return false;
         }
 
@@ -120,36 +188,36 @@ function Register() {
         const reg3 = /[a-z]/;*/
 
         if (!password1) {
-            setPasswordError1("Ingrese una contraseña");
+            setPassword1Error(ERROR_MSG_EMPTY_PASSWORD);
             return false;
         } else if (password1.length < 6) {
-            setPasswordError1("La contraseña debe tener mas de 6 caracteres");
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
             return false;
         } else if (!reg1.test(password1)) {
-            setPasswordError1("La contraseña no posee numeros");
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
             return false;
         }/* else if (!reg2.test(password1)) {
-            setPasswordError1("La contraseña no posee letras mayusculas");
+            setPassword1Error(ERROR_MSG_INVALID_NO_CAPITAL_LETTERS);
             return false;
         } else if (!reg3.test(password1)) {
-            setPasswordError1("La contraseña no posee letras minusculas");
+            setPassword1Error(ERROR_MSG_INVALID_NO_LOWER_CASE);
             return false;
         } */
 
-        setPasswordError1(null);
+        setPassword1Error(null);
         return true;
     }
 
     const comparePasswords = () => {
         if (!password2) {
-            setPasswordError2("Ingrese la contraseña nuevamente");
+            setPassword2Error(ERROR_MSG_EMPTY_REPEAT_PASSWORD);
             return false;
         } else if (password1 !== password2) {
-            setPasswordError2("Las contraseñas no coinciden");
+            setPassword2Error(ERROR_MSG_PASSWORD_NO_MATCH);
             return false;
         }
 
-        setPasswordError2(null);
+        setPassword2Error(null);
         return true;
     }
 
@@ -159,19 +227,18 @@ function Register() {
             let todayDate = new Date();
             var age = todayDate.getFullYear() - birthdayDate.getFullYear();
             var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
-            if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate()+ 1))))
+            if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate() + 1))))
                 age--;
             return age;
         }
 
         if (birthday === today) {
-            setBirthdayError("Ingrese una fecha");
+            setBirthdayError(ERROR_MSG_EMPTY_DATE);
             return false;
         }
 
-        const reg = /^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/;
-        if (!reg.test(birthday)) {
-            setBirthdayError("Ingrese un formato valido");
+        if (!REGEX_DATE_YYYY_MM_DD.test(birthday)) {
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
@@ -181,7 +248,7 @@ function Register() {
         const year = parseInt(parts[0], 10);
 
         if (year < (new Date().getFullYear() - 100) || year > (new Date().getFullYear()) || month === 0 || month > 12) {
-            setBirthdayError("La fecha ingresada es invalida");
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
@@ -191,12 +258,12 @@ function Register() {
             monthLength[1] = 29;
 
         if (!(day > 0 && day <= monthLength[month - 1])) {
-            setBirthdayError("La fecha ingresada es invalida");
+            setBirthdayError(ERROR_MSG_INVALID_DATE);
             return false;
         }
 
         if (calculateAge() < 18) {
-            setBirthdayError("El usuario debe ser mayor a 18 años");
+            setBirthdayError(ERROR_MSG_INVALID_AGE);
             return false;
         }
         setBirthdayError(null);
@@ -205,61 +272,83 @@ function Register() {
 
     return (
         <div className="container w-50 bg-dark pb-3 rounded">
-            <form onSubmit={mySubmitHandler} encType="multipart/form-data" className="">
+            <form onSubmit={mySubmitHandler} encType="multipart/form-data">
                 <h2 className="text-light">Registrarse</h2>
                 <div className="row ">
                     {
-                        successMessage ? <span className="text-success">{successMessage}</span> : null
+                        successMessage ?
+                            <Message open={options.open} type={options.type} message={options.message}
+                                handleClose={options.handleClose} />
+                            : null
                     }
                     <div className="col-md">
+                        <input id="inpEmail" type="email" className="form-control mt-3" name="email"
+                            placeholder="Email" maxLength="70"
+                            value={email} onChange={newValue => handleEmail(newValue)} />
                         {
-                            emailError ? <span className="text-danger">{emailError}</span> : null
+                            emailError ? <span className="text-danger small">{emailError}</span> :
+                                <span className="text-danger small">&nbsp;</span>
                         }
-                        <input type="text" className="form-control mb-3" name="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md">
+                        <input id="inpName" type="text" className="form-control mt-3" name="names"
+                            placeholder="Nombre" maxLength="45"
+                            value={names} onChange={newValue => handleNames(newValue)} />
                         {
-                            namesError ? <span className="text-danger">{namesError}</span> : null
+                            namesError ? <span className="text-danger small">{namesError}</span> :
+                                <span className="text-danger small">&nbsp;</span>
                         }
-                        <input type="text" className="form-control mb-3" name="names" placeholder="Nombre" value={names} onChange={e => setNames(e.target.value)} />
                     </div>
                     <div className="col-md">
+                        <input id="inpApellido" type="text" className="form-control mt-3" name="surname"
+                            placeholder="Apellido" maxLength="45" value={surname}
+                            onChange={newValue => handleSurname(newValue)} />
                         {
-                            surnameError ? <span className="text-danger">{surnameError}</span> : null
+                            surnameError ? <span className="text-danger small">{surnameError}</span> :
+                                <span className="text-danger small">&nbsp;</span>
                         }
-                        <input type="text" className="form-control mb-3" name="surname" placeholder="Apellido" value={surname} onChange={e => setSurname(e.target.value)} />
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md">
                         <div className="d-flex justify-content-between">
-                            <label htmlFor="birthday" className="text-light">Fecha de nacimiento</label>
-                            {
-                                birthdayError ? <span className="text-danger ">{birthdayError}</span> : null
-                            }
+                            <label htmlFor="birthday" className="text-light mt-3">Fecha de nacimiento</label>
                         </div>
-                        <input type="date" className="form-control mb-3" name="birthday" value={birthday} onChange={e => setBirthday(e.target.value)}></input>
+                        <input id="inpBirthday" type="date" className="form-control" name="birthday"
+                            onChange={newValue => handleBirthday(newValue)}></input>
+                        {
+                            birthdayError ? <span className="text-danger small">{birthdayError}</span> :
+                                <span className="text-danger small">&nbsp;</span>
+                        }
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md">
+                        <input id="inpPassword" type="password" className="form-control mt-3" name="password1"
+                            placeholder="Contraseña" maxLength="30" value={password1}
+                            onChange={newValue => handlePassword1(newValue)} />
                         {
-                            passwordError1 ? <span className="text-danger">{passwordError1}</span> : null
+                            password1Error ? <span className="text-danger small">{password1Error}</span> :
+                                <span className="text-danger small">&nbsp;</span>
                         }
-                        <input type="password" className="form-control mb-3" name="password1" placeholder="Ingrese Contraseña" value={password1} onChange={e => setPassword1(e.target.value)} />
                     </div>
                     <div className="col-md">
+                        <input id="inpRepeatPassword" type="password" className="form-control mt-3" name="password2"
+                            placeholder="Repita la contraseña" maxLength="30" value={password2}
+                            onChange={newValue => handlePassword2(newValue)} />
                         {
-                            passwordError2 ? <span className="text-danger">{passwordError2}</span> : null
+                            password2Error ? <span className="text-danger small">{password2Error}</span> :
+                                <span className="text-danger small">&nbsp;</span>
                         }
-                        <input type="password" className="form-control mb-3" name="password2" placeholder="Repita contraseña" value={password2} onChange={e => setPassword2(e.target.value)} />
                     </div>
                     <div className="w-100"></div>
                     <div className="text-center">
-                        <input type="submit" value="Registrarse" className="btn btn-primary w-50 " />
+                        <input id="btnRegister" type="submit" value="Registrarse"
+                            className="btn btn-primary w-50 mt-3" />
                     </div>
                 </div>
             </form>
         </div>
     );
 }
+
 export default Register
