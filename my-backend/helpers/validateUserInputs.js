@@ -36,8 +36,8 @@ const validatePassengers = async (email, names, surname, password1, password2, b
     return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : { birthdayError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
 };
 
-const validateDrivers = async (email, names, surname, password1, password2, birthday) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validatePhoneNumber(validatePhoneNumber)) ? null : { phoneNumberError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
+const validateDrivers = async (email, names, surname, password1, password2, phoneNumber) => {
+    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validatePhoneNumber(phoneNumber)) ? null : { phoneNumberError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
 };
 
 const validateEmail = (email) => {
@@ -202,7 +202,7 @@ const validatePhoneNumber = (phoneNumber) => {
         return false;
     }
 
-    namesError = (null);
+    phoneNumberError = (null);
     return true;
 }
 module.exports = {

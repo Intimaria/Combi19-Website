@@ -314,7 +314,7 @@ function Register() {
                         <div className="d-flex justify-content-between">
                             <label htmlFor="birthday" className="text-light mt-3">Fecha de nacimiento</label>
                         </div>
-                        <input id="inpBirthday" type="date" className="form-control" name="birthday"
+                        <input id="inpBirthday" type="date" className="form-control" name="birthday" value={birthday}
                             onChange={newValue => handleBirthday(newValue)}></input>
                         {
                             birthdayError ? <span className="text-danger small">{birthdayError}</span> :

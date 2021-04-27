@@ -1,5 +1,5 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
-const { validatePassengers } = require("../helpers/validateInputs.js");
+const { validatePassengers } = require("../helpers/validateUserInputs.js");
 
 const Register = async (req, res) => {
     const {names, surname, email, birthday, password1, password2} = req.body;
