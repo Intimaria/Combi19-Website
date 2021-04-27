@@ -6,8 +6,6 @@ const {DRIVER_ROLE} = require('../const/config.js');
 
 const getDrivers = async (req, res) => {
     const { start = 1, limit = 5 } = req.query;
-    console.log(start);
-    console.log(limit);
     try {
         const connection = await prepareConnection();
         const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM user a INNER JOIN role_user r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? ORDER BY SURNAME ASC, NAME ASC LIMIT ?, ?';
@@ -21,7 +19,6 @@ const getDrivers = async (req, res) => {
 }
 
 const postDriver = async (req, res) => {
-    console.log(req.body);
     const { names, surname, email, phoneNumber, password1, password2 } = req.body;
 
     const inputsErrors = await validateDrivers(email, names, surname, password1, password2, phoneNumber);

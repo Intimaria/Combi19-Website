@@ -211,9 +211,6 @@ const validateDate = (birthday) => {
 }
 
 const validatePhoneNumber = (phoneNumber) => {
-    console.log(!REGEX_PHONE.test(phoneNumber));
-    console.log(phoneNumber);
-    console.log(REGEX_PHONE);
     if (!phoneNumber) {
         phoneNumberError = (ERROR_MSG_EMPTY_PHONE_NUMBER);
         return false;
