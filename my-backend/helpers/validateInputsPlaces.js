@@ -63,11 +63,7 @@ const validatePlace = (cityName, provinceName) => {
 }
 
 const getPlaceFromList  = (cityName, provinceName) => {	
-	const place = data["localidades-censales"].filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName);
-	if (!place)
-		return (null)
-	else 
-		return place;
+	return data["localidades-censales"].filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName);
 }
 
 
