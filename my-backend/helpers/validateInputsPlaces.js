@@ -19,7 +19,7 @@ const data = require('../const/localidades-censales.json');
 
 let namesError;
 
-const validatePlaces = async (cityName, provinceName) => {
+const validatePlace = async (cityName, provinceName) => {
     return ((validateCityName(cityName) & validateSurname(cityName)/* &  validatePlace = (cityName, provinceName) */) ? null : {
         namesError,
     };
@@ -52,7 +52,7 @@ const validateProvince = (provinceName) => {
     return true;
 }
 
-const validatePlace = (cityName, provinceName) => {
+const validatePlaceExists = (cityName, provinceName) => {
  const place = getPlace(cityName, provinceName);
  if (!place)) {
         namesError = (ERROR_MSG_INEXISTENT_PLACE);
@@ -72,5 +72,6 @@ module.exports = {
     validateCity,
     validateProvince,
     validatePlace,
+    validatePlaceExists,
     getPlaceFromList
 }
