@@ -1,0 +1,22 @@
+module.exports = {
+    ERROR_MSG_EMPTY_DATE: '* Ingrese una fecha',
+    ERROR_MSG_EMPTY_EMAIL: '* Ingrese un correo electrónico',
+    ERROR_MSG_EMPTY_NAME: '* Ingrese un nombre',
+    ERROR_MSG_EMPTY_PASSWORD: '* Ingrese una contraseña',
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD: '* Ingrese la contraseña nuevamente',
+    ERROR_MSG_EMPTY_SURNAME: '* Ingrese un apellido',
+    ERROR_MSG_EXISTING_EMAIL: '* El email ingresado ya se encuentra en el sistema',
+    ERROR_MSG_INVALID_AGE: '* Debe ser mayor de 18 años',
+    ERROR_MSG_INVALID_DATE: '* La fecha ingresada en inválida',
+    ERROR_MSG_INVALID_EMAIL: '* El correo electrónico posee un formato inválido',
+    ERROR_MSG_INVALID_LOGIN: '* El correo y/o contraseña son incorrectos',
+    ERROR_MSG_INVALID_NAME: '* El nombre debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS: '* La contraseña no posee letras mayúsculas',
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE: '* La contraseña no posee letras minúsculas',
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener mas de 6 caracteres',
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS: '* La contraseña no posee números',
+    ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
+    OK_MSG_TRANSPORT_CREATED: 'Se ha creado la combi con éxito',
+    OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito'
+}

@@ -1,16 +1,21 @@
-const { Router } = require('express');
-const { transportGet,
+const {Router} = require('express');
+const {
+    getTransports,
+    getTransportById,
     transportPut,
-    transportPost,
+    postTransport,
     transportPatch,
-    transportDelete } = require('../controllers/transport');
+    transportDelete
+} = require('../controllers/transport');
 
 const router = Router();
 
 
-router.get('/', transportGet);
+router.get('/', getTransports);
 
-router.post('/', transportPost);
+router.get('/:id', getTransportById);
+
+router.post('/', postTransport);
 
 
 module.exports = router;

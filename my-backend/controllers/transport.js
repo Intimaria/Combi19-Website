@@ -1,39 +1,69 @@
 const {prepareConnection} = require("../helpers/connectionDB.js");
 
-const transportGet = async (req, res = response) => {
-    const connection = await prepareConnection();
+const {OK_MSG_TRANSPORT_CREATED} = require("../const/messages");
 
+const getTransports = async (req, res) => {
     const {start = 1, limit = 5} = req.query;
 
-    let sqlSelect = `SELECT * FROM TRANSPORT ORDER BY TRANSPORT_ID ASC LIMIT ${start}, ${limit}`;
+    try {
+        const connection = await prepareConnection();
 
-    const [rows] = await connection.execute(sqlSelect);
+        let sqlSelect = `SELECT * FROM TRANSPORT ORDER BY TRANSPORT_ID ASC LIMIT ${start - 1}, ${limit}`;
+        const [rows] = await connection.execute(sqlSelect);
 
-    console.log("rows: ", rows);
+        connection.end();
 
-    connection.end();
-
-    res.json(rows);
+        res.json(rows);
+    } catch (e) {
+        console.log('Ocurrió un error al obtener las combis:', e)
+    }
 }
 
-const transportPost = async (req, res) => {
-    const {INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER} = req.body;
+const getTransportById = async (req, res) => {
+    const {id} = req.params;
 
-    console.log(INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER)
+    try {
+        const connection = await prepareConnection();
 
-    const connection = await prepareConnection();
-    let sqlInsert = "INSERT INTO `TRANSPORT`(`INTERNAL_IDENTIFICATION`, `MODEL`, `REGISTRATION_NUMBER`, `SEATING`, `ID_TYPE_COMFORT`, `ID_DRIVER`) VALUES (?,?,?,?,?,?)"
-    const [rows] = await connection.execute(sqlInsert, [INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER]);
-    connection.end();
-    res.status(201).send("Se ha creado la combi con éxito");
+        let sqlSelect = `SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ${id}`;
+        const [rows] = await connection.execute(sqlSelect);
 
+        connection.end();
 
+        res.json(rows);
+    } catch (e) {
+        console.log('Ocurrió un error al obtener la combi:', e)
+    }
+}
+
+const postTransport = async (req, res) => {
+    const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlInsert =
+                `
+                INSERT INTO TRANSPORT
+                (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER)
+                VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver});
+                `
+
+        await connection.execute(sqlInsert);
+
+        connection.end();
+
+        res.status(201).send(OK_MSG_TRANSPORT_CREATED);
+    } catch (e) {
+        console.log("Ocurrió un error al crear la combi:", e);
+    }
 };
 
 module.exports = {
-    transportGet,
+    getTransports,
+    getTransportById,
     //transportPut,
-    transportPost//,
+    postTransport//,
     //transportPatch,
     //transportDelete
 }
