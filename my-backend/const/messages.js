@@ -5,6 +5,8 @@ module.exports = {
     ERROR_MSG_EMPTY_PASSWORD: '* Ingrese una contraseña',
     ERROR_MSG_EMPTY_REPEAT_PASSWORD: '* Ingrese la contraseña nuevamente',
     ERROR_MSG_EMPTY_SURNAME: '* Ingrese un apellido',
+    ERROR_MSG_EMPTY_PROVINCE:'* Ingrese un nombre de provincia',
+    ERROR_MSG_EMPTY_CITY:'* Ingrese un nombre de localidad',
     ERROR_MSG_EXISTING_EMAIL: '* El email ingresado ya se encuentra en el sistema',
     ERROR_MSG_INVALID_AGE: '* Debe ser mayor de 18 años',
     ERROR_MSG_INVALID_DATE: '* La fecha ingresada en inválida',
@@ -16,7 +18,10 @@ module.exports = {
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener mas de 6 caracteres',
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS: '* La contraseña no posee números',
     ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_CITY:'* El nombre de localidad debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_PROVINCE:'* El nombre de provincia debe poseer solo caracteres alfabéticos',
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
     OK_MSG_TRANSPORT_CREATED: 'Se ha creado la combi con éxito',
-    OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito'
+    OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito',
+    OK_MSG_LOCATION_CREATED:'Se ha creado el lugar con éxito',
 }
