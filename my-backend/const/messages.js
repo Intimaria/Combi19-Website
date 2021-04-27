@@ -20,6 +20,7 @@ module.exports = {
     ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
     ERROR_MSG_INVALID_CITY:'* El nombre de localidad debe poseer solo caracteres alfabéticos',
     ERROR_MSG_INVALID_PROVINCE:'* El nombre de provincia debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INEXISTENT_PLACE:'* El lugar no se encontró en la región',
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
     OK_MSG_TRANSPORT_CREATED: 'Se ha creado la combi con éxito',
     OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito',
