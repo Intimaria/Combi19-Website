@@ -11,16 +11,13 @@ const {
     REGEX_ONLY_ALPHABETICAL
 } = require('../const/regex.js');
 
-const {
-    placeExists
-} = require('../const/listaLugares.js');
 
 const data = require('../const/localidades-censales.json');
 
 let namesError;
 
 const validatePlace = async (cityName, provinceName) => {
-    return ((validateCityName(cityName) & validateSurname(cityName)/* &  validatePlace = (cityName, provinceName) */) ? null : {
+    return ((validateCityName(cityName) & validateSurname(cityName)/* &  validatePlaceExists(cityName, provinceName) */) ? null : {
         namesError,
     };
 };
@@ -53,7 +50,7 @@ const validateProvince = (provinceName) => {
 }
 
 const validatePlaceExists = (cityName, provinceName) => {
- const place = getPlace(cityName, provinceName);
+ const place = getPlaceFromList(cityName, provinceName);
  if (!place)) {
         namesError = (ERROR_MSG_INEXISTENT_PLACE);
         return false;
