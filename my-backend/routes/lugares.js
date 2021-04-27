@@ -1,22 +1,22 @@
 const { Router } = require('express');
 
-const { ListLugares, AddLugar, ModifyLugar, VerLugar, DeleteLugar } = require("../controllers/lugares");
+const { getLugares, postLugar, getLugarById, putLugar, deleteLugar } = require("../controllers/lugares");
 
 const router = Router();
 
 // Retrieve all lugares
-router.get('/', ListLugares);
+router.get('/', getLugares);
 
 // Create a new lugares
-router.post('/', AddLugar);
+router.post('/', postLugar);
 
 // Retrieve a single lugares with id
-router.get('/:id', VerLugar);
+router.get('/:id', getLugarById);
 
 // Update a lugares with id
-router.put('/:id', ModifyLugar);
+router.put('/:id', putLugar);
 
 // Delete a lugares with id
-router.delete('/:id', DeleteLugar);
+router.delete('/:id', deleteLugar);
 
 module.exports = router;

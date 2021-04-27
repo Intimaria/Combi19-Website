@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
 
-const AddLugar = async (req, res) => {
+const postLugar = async (req, res) => {
 	
   const connection = await prepareConnection();
  
@@ -25,7 +25,7 @@ const AddLugar = async (req, res) => {
 }
 
 
-const ListLugares = async (req, res) => {
+const getLugares = async (req, res) => {
 	
       const connection = await prepareConnection();
    
@@ -38,7 +38,7 @@ const ListLugares = async (req, res) => {
 	  });
 }
 
-const VerLugar = async (req, res) => {
+const getLugarById = async (req, res) => {
       const connection = await prepareConnection();
    
 	  connection.query('SELECT * FROM place WHERE place_id = ?', [req.params.id], (err, rows, fields) => {
@@ -50,11 +50,11 @@ const VerLugar = async (req, res) => {
     });
 }
 
-const ModifyLugar = async (req, res) => {
+const putLugar = async (req, res) => {
 	// HTTP request add body
 }
 
-const DeleteLugar = async (req, res) => {
+const deleteLugar = async (req, res) => {
 	
     const connection = await prepareConnection();
     
@@ -71,9 +71,9 @@ const DeleteLugar = async (req, res) => {
 
 
 module.exports = {
-	AddLugar,
-	VerLugar
-	ListLugares,
-    ModifyLugar,
-    DeleteLugar
+	getLugares, 
+	postLugar, 
+	getLugarById, 
+	putLugar, 
+	deleteLugar
 }
