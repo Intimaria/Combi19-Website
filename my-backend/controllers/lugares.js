@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
 
-const postLugar = async (req, res) => {
+
+const postPlace = async (req, res) => {
 	
   const connection = await prepareConnection();
  
@@ -12,24 +13,25 @@ const postLugar = async (req, res) => {
   const province = req.body.province;
   
   connection.query(
-    "INSERT INTO place (city, province) VALUES (?,?)",
+    "INSERT INTO PLACE (CITY, PROVINCE) VALUES (?,?)",
     [city, province],
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("New place added");
+        res.send("New location added");
       }
     }
   );
+  connection.end();
 }
 
 
-const getLugares = async (req, res) => {
+const getPlaces = async (req, res) => {
 	
       const connection = await prepareConnection();
    
-	  connection.query("SELECT * FROM place", (err, rows, fields) => {
+	  connection.query("SELECT * FROM PLACE", (err, rows, fields) => {
 		if (err) {
 		  console.log(err);
 		} else {
@@ -38,42 +40,58 @@ const getLugares = async (req, res) => {
 	  });
 }
 
-const getLugarById = async (req, res) => {
-      const connection = await prepareConnection();
-   
-	  connection.query('SELECT * FROM place WHERE place_id = ?', [req.params.id], (err, rows, fields) => {
+const getPlaceById = async (req, res) => {
+	  const connection = await prepareConnection();
+
+	  connection.query('SELECT * FROM PLACE WHERE PLACE_ID = ?', [req.params.id], (err, rows, fields) => {
 		if (err) {
 		  console.log(err);
 		} else {
 		  res.send(rows);
 		}
-    });
+	  });
+	  connection.end();
 }
 
-const putLugar = async (req, res) => {
+const putPlace = async (req, res) => {
 	// HTTP request add body
+	    const connection = await prepareConnection();
+	    connection.query(
+		"INSERT INTO PLACE (CITY, PROVINCE) VALUES (?,?) WHERE PLACE_ID = ?",
+		[city, province],
+		(err, result) => {
+		  if (err) {
+			console.log(err);
+		  } else {
+			res.send("New location added");
+		  }
+		}
+	  );
+	  
+	  connection.end();
 }
 
-const deleteLugar = async (req, res) => {
+const deletePlace = async (req, res) => {
 	
-    const connection = await prepareConnection();
-    
-    const id = req.params.id;
-	
-    connection.query("DELETE FROM place WHERE place_id = ?", id, (err, lugar) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(lugar);
-    }
-  });
+	const connection = await prepareConnection();
+
+	const id = req.params.id;
+
+	connection.query("DELETE FROM PLACE WHERE PLACE_ID = ?", id, (err, place) => {
+	if (err) {
+	  console.log(err);
+	} else {
+	  res.send(place);
+	}
+	});
+	  connection.end();
 }
 
 
 module.exports = {
-	getLugares, 
-	postLugar, 
-	getLugarById, 
-	putLugar, 
-	deleteLugar
+	getPlaces, 
+	postPlace, 
+	getPlaceById, 
+	putPlace, 
+	deletePlace
 }

@@ -1,22 +1,25 @@
 const { Router } = require('express');
 
-const { getLugares, postLugar, getLugarById, putLugar, deleteLugar } = require("../controllers/lugares");
+const { getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/lugares");
+
+const { authenticateAdminRol } = require("../middlewares/authorization.js");
+
 
 const router = Router();
 
 // Retrieve all lugares
-router.get('/', getLugares);
+router.get('/', authenticateAdminRol, getPlaces);
 
 // Create a new lugares
-router.post('/', postLugar);
+router.post('/', authenticateAdminRol, postPlace);
 
 // Retrieve a single lugares with id
-router.get('/:id', getLugarById);
+router.get('/:id', authenticateAdminRol, getPlaceById);
 
 // Update a lugares with id
-router.put('/:id', putLugar);
+router.put('/:id', authenticateAdminRol, putPlace);
 
 // Delete a lugares with id
-router.delete('/:id', deleteLugar);
+router.delete('/:id', authenticateAdminRol, deletePlace);
 
 module.exports = router;
