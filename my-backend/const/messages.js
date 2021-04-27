@@ -1,37 +1,30 @@
-const ERROR_MSG_EMPTY_DATE = '* Ingrese una fecha';
-const ERROR_MSG_EMPTY_EMAIL = '* Ingrese un correo electrónico';
-const ERROR_MSG_EMPTY_NAME = '* Ingrese un nombre';
-const ERROR_MSG_EMPTY_PASSWORD = '* Ingrese una contraseña';
-const ERROR_MSG_EMPTY_REPEAT_PASSWORD = '* Ingrese la contraseña nuevamente';
-const ERROR_MSG_EMPTY_SURNAME = '* Ingrese un apellido';
-const ERROR_MSG_EXISTING_EMAIL = '* El email ingresado ya se encuentra en el sistema';
-const ERROR_MSG_INVALID_AGE = '* Debe ser mayor de 18 años';
-const ERROR_MSG_INVALID_DATE = '* La fecha ingresada en inválida';
-const ERROR_MSG_INVALID_EMAIL = '* El correo electrónico posee un formato inválido';
-const ERROR_MSG_INVALID_NAME = '* El nombre debe poseer solo caracteres alfabéticos';
-const ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS = '* La contraseña no posee letras mayúsculas';
-const ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE = '* La contraseña no posee letras minúsculas';
-const ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS = '* La contraseña debe tener mas de 6 caracteres';
-const ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS = '* La contraseña no posee números'
-const ERROR_MSG_INVALID_SURNAME = '* El apellido debe poseer solo caracteres alfabéticos';
-const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
-
 module.exports = {
-    ERROR_MSG_EMPTY_DATE,
-    ERROR_MSG_EMPTY_EMAIL,
-    ERROR_MSG_EMPTY_NAME,
-    ERROR_MSG_EMPTY_PASSWORD,
-    ERROR_MSG_EMPTY_REPEAT_PASSWORD,
-    ERROR_MSG_EMPTY_SURNAME,
-    ERROR_MSG_EXISTING_EMAIL,
-    ERROR_MSG_INVALID_AGE,
-    ERROR_MSG_INVALID_DATE,
-    ERROR_MSG_INVALID_EMAIL,
-    ERROR_MSG_INVALID_NAME,
-    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
-    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
-    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
-    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
-    ERROR_MSG_INVALID_SURNAME,
-    ERROR_MSG_PASSWORD_NO_MATCH
+    ERROR_MSG_EMPTY_DATE: '* Ingrese una fecha',
+    ERROR_MSG_EMPTY_EMAIL: '* Ingrese un correo electrónico',
+    ERROR_MSG_EMPTY_NAME: '* Ingrese un nombre',
+    ERROR_MSG_EMPTY_PASSWORD: '* Ingrese una contraseña',
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD: '* Ingrese la contraseña nuevamente',
+    ERROR_MSG_EMPTY_SURNAME: '* Ingrese un apellido',
+    ERROR_MSG_EMPTY_PHONE_NUMBER: "* Ingrese un numero de telefono",
+    ERROR_MSG_EMPTY_PROVINCE:'* Ingrese un nombre de provincia',
+    ERROR_MSG_EMPTY_CITY:'* Ingrese un nombre de localidad',
+    ERROR_MSG_EXISTING_EMAIL: '* El email ingresado ya se encuentra en el sistema',
+    ERROR_MSG_INVALID_AGE: '* Debe ser mayor de 18 años',
+    ERROR_MSG_INVALID_DATE: '* La fecha ingresada en inválida',
+    ERROR_MSG_INVALID_EMAIL: '* El correo electrónico posee un formato inválido',
+    ERROR_MSG_INVALID_LOGIN: '* El correo y/o contraseña son incorrectos',
+    ERROR_MSG_INVALID_NAME: '* El nombre debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_PHONE_NUMBER: "* El ingrese un numero de telefono valido",
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS: '* La contraseña no posee letras mayúsculas',
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE: '* La contraseña no posee letras minúsculas',
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener mas de 6 caracteres',
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS: '* La contraseña no posee números',
+    ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_CITY:'* El nombre de localidad debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INVALID_PROVINCE:'* El nombre de provincia debe poseer solo caracteres alfabéticos',
+    ERROR_MSG_INEXISTENT_PLACE:'* El lugar no se encontró en la región',
+    ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
+    OK_MSG_TRANSPORT_CREATED: 'Se ha creado la combi con éxito',
+    OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito',
+    OK_MSG_LOCATION_CREATED:'Se ha creado el lugar con éxito'
 }

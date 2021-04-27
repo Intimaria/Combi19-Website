@@ -1,8 +1,20 @@
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
+
 const {prepareConnection} = require("../helpers/connectionDB.js");
-const expiryTime = '2h'
+
+const {
+    EXPIRY_TIME,
+    ADMIN_ROLE,
+    DRIVER_ROLE,
+    PASSENGER_ROLE
+} = require('../const/config');
+
+const {
+    ERROR_MSG_INVALID_LOGIN
+} = require('../const/messages');
+
 let userData = {userName: '', userSurname: '', userEmail: '', userRoleId: []};
 
 const verifyAccount = async (req) => {
@@ -11,7 +23,7 @@ const verifyAccount = async (req) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM `USER` WHERE BINARY `EMAIL` = (?) AND BINARY `PASSWORD` = (?)';
+        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM USER WHERE BINARY EMAIL = (?) AND BINARY PASSWORD = (?)';
         const [rows, fields] = await connection.execute(sqlSelect, [email, password]);
 
         connection.end();
@@ -22,8 +34,9 @@ const verifyAccount = async (req) => {
             userData.userEmail = rows[0].EMAIL;
             return rows[0].USER_ID;
         }
-    } catch (e) {
-        console.log("Ocurrió un error al verificar la cuenta:", e);
+    } catch (error) {
+        console.log("Ocurrió un error al verificar la cuenta:", error);
+        return false;
     }
 }
 
@@ -31,7 +44,7 @@ const verifyRole = async (verifiableRoles, userId) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = 'SELECT `ID_ROLE` FROM `ROLE_USER` WHERE `ID_USER` = (?)';
+        const sqlSelect = 'SELECT ID_ROLE FROM ROLE_USER WHERE ID_USER = (?)';
         const [rows, fields] = await connection.execute(sqlSelect, [userId]);
 
         connection.end();
@@ -42,8 +55,9 @@ const verifyRole = async (verifiableRoles, userId) => {
             }
         }
         return userData.userRoleId.length !== 0;
-    } catch (e) {
-        console.log("Ocurrió un error al verificar el rol:", e);
+    } catch (error) {
+        console.log("Ocurrió un error al verificar el rol:", error);
+        return false;
     }
 }
 
@@ -53,20 +67,20 @@ const Login = async (req, res, verifiableRoles) => {
     const userId = await verifyAccount(req);
 
     if (userId && await verifyRole(verifiableRoles, userId)) {
-        const token = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: expiryTime});
+        const token = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: EXPIRY_TIME});
         return res.status(200).send({token, userData});
     } else {
-        res.status(400).send("El correo y/o contraseña son incorrectos");
+        res.status(400).send(ERROR_MSG_INVALID_LOGIN);
     }
     res.end();
 }
 
 const LoginPassengers = async (req, res) => {
-    Login(req, res, [3]);
+    Login(req, res, [PASSENGER_ROLE]);
 }
 
 const LoginEmployees = async (req, res) => {
-    Login(req, res, [1, 2]);
+    Login(req, res, [ADMIN_ROLE, DRIVER_ROLE]);
 }
 
 module.exports = {

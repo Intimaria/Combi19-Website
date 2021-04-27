@@ -15,12 +15,12 @@ const Navbar = ({ userData }) => {
     
     const loginRegistrationMenu = (
         <div>
-            <NavLink to="/login" className="btn btn-dark mr-2"> Iniciar Sesion </NavLink>
+            <NavLink to="/login" className="btn btn-dark mr-2"> Iniciar sesión </NavLink>
             <NavLink to="/register" className="btn btn-dark mr-2"> Registrar </NavLink>
         </div>
     )
     const logoutOption = (
-        <button className="btn btn-dark mr-2" onClick={() => logout()}> Cerrar Sesión </button>
+        <button className="btn btn-dark mr-2" onClick={() => logout()}> Cerrar sesión </button>
     )
 
     const passengerMenu = (
@@ -29,8 +29,8 @@ const Navbar = ({ userData }) => {
     )
     const driverMenu = (
         <div >
-            <NavLink to="/pendingTrips" className="btn btn-dark mr-2"> Viajes Pendientes </NavLink>
-            <NavLink to="/tripsMade" className="btn btn-dark mr-2"> Viajes Realizados </NavLink>
+            <NavLink to="/pendingTrips" className="btn btn-dark mr-2"> Viajes pendientes </NavLink>
+            <NavLink to="/tripsMade" className="btn btn-dark mr-2"> Viajes realizados </NavLink>
         </div>
     )
     const adminMenu = (
@@ -40,7 +40,7 @@ const Navbar = ({ userData }) => {
             <NavLink to="/places" className="btn btn-dark mr-2"> Lugares </NavLink>
             <NavLink to="/products" className="btn btn-dark mr-2"> Productos </NavLink>
             <NavLink to="/reports" className="btn btn-dark mr-2"> Reportes </NavLink>
-            <NavLink to="/reports" className="btn btn-dark mr-2"> Usuarios </NavLink>
+            <NavLink to="/uers" className="btn btn-dark mr-2"> Usuarios </NavLink>
         </div>
     )
     return (

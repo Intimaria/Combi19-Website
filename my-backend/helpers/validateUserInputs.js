@@ -4,9 +4,11 @@ const {
     ERROR_MSG_EMPTY_PASSWORD,
     ERROR_MSG_EMPTY_REPEAT_PASSWORD,
     ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_EMPTY_PHONE_NUMBER,
     ERROR_MSG_EXISTING_EMAIL,
     ERROR_MSG_INVALID_EMAIL,
     ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_INVALID_PHONE_NUMBER,
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
     ERROR_MSG_PASSWORD_NO_MATCH,
     ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
@@ -18,7 +20,8 @@ const {
 const {
     REGEX_DATE_YYYY_MM_DD,
     REGEX_EMAIL,
-    REGEX_ONLY_ALPHABETICAL
+    REGEX_ONLY_ALPHABETICAL,
+    REGEX_PHONE
 } = require('../const/regex.js');
 
 const {prepareConnection} = require("./connectionDB.js");
@@ -33,12 +36,28 @@ let phoneNumberError;
 
 
 const validatePassengers = async (email, names, surname, password1, password2, birthday) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : { birthdayError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
+    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : {
+        birthdayError,
+        emailError,
+        namesError,
+        surnameError,
+        passwordError1,
+        passwordError2,
+        passwordError2
+    };
 };
 
 const validateDrivers = async (email, names, surname, password1, password2, phoneNumber) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validatePhoneNumber(phoneNumber)) ? null : { phoneNumberError, emailError, namesError, surnameError, passwordError1, passwordError2, passwordError2 };
-};
+    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validatePhoneNumber(phoneNumber)) ? null : {
+        phoneNumberError,
+        emailError,
+        namesError,
+        surnameError,
+        passwordError1,
+        passwordError2,
+        passwordError2
+    };
+}
 
 const validateEmail = (email) => {
     if (!email) {
@@ -68,18 +87,18 @@ const verifyUniqueEmail = async (email) => {
             return false;
         }
         return true;
-    } catch (e) {
-        console.log('Ocurrió un error al verificar si el email es único:', e)
+    } catch (error) {
+        console.log('Ocurrió un error al verificar si el email es único:', error);
+        return false;
     }
-
-
 }
+// It would be necessary to create a method that verifies that the mail is unique but that ignores the user to modify
 
 const validateName = (names) => {
     if (!names) {
         namesError = (ERROR_MSG_EMPTY_NAME);
         return false;
-    } else if (!REGEX_ONLY_ALPHABETICAL.test(names)) {
+    } else if (REGEX_ONLY_ALPHABETICAL.test(names)) {
         namesError = (ERROR_MSG_INVALID_NAME);
         return false;
     }
@@ -92,7 +111,7 @@ const validateSurname = (surname) => {
     if (!surname) {
         surnameError = (ERROR_MSG_EMPTY_SURNAME);
         return false;
-    } else if (!REGEX_ONLY_ALPHABETICAL.test(surname)) {
+    } else if (REGEX_ONLY_ALPHABETICAL.test(surname)) {
         surnameError = (ERROR_MSG_INVALID_SURNAME);
         return false;
     }
@@ -192,16 +211,16 @@ const validateDate = (birthday) => {
 }
 
 const validatePhoneNumber = (phoneNumber) => {
-    const reg = /[^0-9()-]/;
-
+    console.log(!REGEX_PHONE.test(phoneNumber));
+    console.log(phoneNumber);
+    console.log(REGEX_PHONE);
     if (!phoneNumber) {
-        phoneNumberError = ("Ingrese un numero de telefono");
+        phoneNumberError = (ERROR_MSG_EMPTY_PHONE_NUMBER);
         return false;
-    } else if (reg.test(phoneNumber)) {
-        phoneNumberError = ("El ingrese un numero de telefono valido");
+    } else if (REGEX_PHONE.test(phoneNumber)) {
+        phoneNumberError = (ERROR_MSG_INVALID_PHONE_NUMBER);
         return false;
     }
-
     phoneNumberError = (null);
     return true;
 }
