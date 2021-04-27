@@ -1,5 +1,6 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
 const { validatePassengers } = require("../helpers/validateInputs.js");
+const { OK_MSG_USER_CREATED } = require("../const/messages");
 
 const Register = async (req, res) => {
     const {names, surname, email, birthday, password1, password2} = req.body;
@@ -20,7 +21,7 @@ const Register = async (req, res) => {
             connection.execute(sqlInsert, [3, id]);
 
             connection.end();
-            res.status(201).send("Se ha creado el usuario con éxito");
+            res.status(201).send(OK_MSG_USER_CREATED);
         } catch (e) {
             console.log("Ocurrió un error al insertar el usuario:", e);
         }

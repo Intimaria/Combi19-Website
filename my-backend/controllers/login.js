@@ -1,8 +1,17 @@
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
+
 const {prepareConnection} = require("../helpers/connectionDB.js");
-const expiryTime = '2h'
+
+const {
+    EXPIRY_TIME
+} = require('../const/config');
+
+const {
+    ERROR_MSG_INVALID_LOGIN
+} = require('../const/messages');
+
 let userData = {userName: '', userSurname: '', userEmail: '', userRoleId: []};
 
 const verifyAccount = async (req) => {
@@ -53,10 +62,10 @@ const Login = async (req, res, verifiableRoles) => {
     const userId = await verifyAccount(req);
 
     if (userId && await verifyRole(verifiableRoles, userId)) {
-        const token = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: expiryTime});
+        const token = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: EXPIRY_TIME});
         return res.status(200).send({token, userData});
     } else {
-        res.status(400).send("El correo y/o contraseña son incorrectos");
+        res.status(400).send(ERROR_MSG_INVALID_LOGIN);
     }
     res.end();
 }

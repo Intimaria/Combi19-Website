@@ -22,7 +22,7 @@ const Addresses = () => {
             <Navbar userData={userData} />
             <Switch>
                 <Route path="/" exact>
-                    <h1 className="text-light"> Pagina de Inicio </h1>
+                    <h1 className="text-light"> Página de inicio </h1>
                 </Route>
                 <Route path="/login" exact>
                     <Login path="" />
@@ -37,7 +37,9 @@ const Addresses = () => {
                     <Home />
                 </Route>
                 <Route>
-                    <h2 className="text-light" >Page Don't Found - Error 404</h2>
+                    <h1 className="text-light text-center" >¡Ups! La página a la que intentás acceder se perdió en la Atlántida &#127965;&#128561;</h1>
+                    <h2 className="text-light text-center" >Podés volver a flote haciendo clic <a href="/">acá</a> &#127946;</h2>
+
                 </Route>
             </Switch>
         </div>
