@@ -49,9 +49,11 @@ const getPlaces = async (req, res) => {
 }
 
 const getPlaceById = async (req, res) => {
-	  const connection = await prepareConnection();
+	
 
-	  connection.query('SELECT * FROM PLACE WHERE PLACE_ID = ?', [req.params.id], (err, rows, fields) => {
+	  const { id } = req.params;
+	  const connection = await prepareConnection();
+	  connection.query('SELECT * FROM PLACE WHERE PLACE_ID = ?', id, (err, rows, fields) => {
 		if (err) {
 		  console.log(err);
 		} else {
@@ -63,6 +65,7 @@ const getPlaceById = async (req, res) => {
 
 const putPlace = async (req, res) => {
     const { city, province } = req.body;
+    const { id } = req.params;
 
     const inputsErrors = await validatePlace(city, province);
 
@@ -73,13 +76,13 @@ const putPlace = async (req, res) => {
 	    const connection = await prepareConnection();
 	    connection.query(
 		"INSERT INTO PLACE (CITY, PROVINCE) VALUES (?,?) WHERE PLACE_ID = ?",
-		[city, province],
+		[city, province, id],
 		(err, result) => {
 		  if (err) {
 			console.log(err);
 		  } else {
 			connection.end();
-			res.status(201).send("New location added");
+			res.status(201).send("Location modified");
 		  }
 		}
 	  );
@@ -91,7 +94,7 @@ const deletePlace = async (req, res) => {
 	
 	const connection = await prepareConnection();
 
-	const id = req.params.id;
+    const { id } = req.params;
 
 	connection.query("DELETE FROM PLACE WHERE PLACE_ID = ?", id, (err, place) => {
 	if (err) {

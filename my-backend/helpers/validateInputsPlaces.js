@@ -13,6 +13,7 @@ const {
 
 
 const data = require('../const/localidades-censales.json');
+/* const data = require('../const/localidades.json'); */
 
 let namesError;
 
@@ -28,7 +29,7 @@ const validateCity = (cityName) => {
         namesError = (ERROR_MSG_EMPTY_CITY);
         return false;
     } else if (!REGEX_ONLY_ALPHABETICAL.test(cityName)) {
-        namesError = (ERROR_MSG_EMPTY_CITY);
+        namesError = (ERROR_MSG_INVALID_CITY);
         return false;
     }
 
@@ -61,14 +62,12 @@ const validatePlaceExists = (cityName, provinceName) => {
 
 const getPlaceFromList  = (cityName, provinceName) => {	
 	return data["localidades-censales"].filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName);
+	/* return data.filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName); */
 }
 
 
 
 module.exports = {
-    validateCity,
-    validateProvince,
     validatePlace,
-    validatePlaceExists,
     getPlaceFromList
 }
