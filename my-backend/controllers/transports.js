@@ -43,7 +43,7 @@ const postTransport = async (req, res) => {
         const connection = await prepareConnection();
 
         let sqlInsert =
-                `
+            `
                 INSERT INTO TRANSPORT
                 (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER)
                 VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver});
@@ -59,11 +59,18 @@ const postTransport = async (req, res) => {
     }
 };
 
+const putTransport = async (req, rest) => {
+
+}
+
+const deleteTransport = async (req, rest) => {
+
+}
+
 module.exports = {
     getTransports,
     getTransportById,
-    //transportPut,
-    postTransport//,
-    //transportPatch,
-    //transportDelete
+    postTransport,
+    putTransport,
+    deleteTransport
 }

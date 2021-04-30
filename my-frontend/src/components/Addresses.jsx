@@ -25,10 +25,10 @@ const Addresses = () => {
                     <h1 className="text-light"> Página de inicio </h1>
                 </Route>
                 <Route path="/login" exact>
-                    <Login path="" />
+                    <Login path="login" />
                 </Route>
-                <Route path="/login/employees" exact>
-                    <Login path="employees" />
+                <Route path="/employee/login" exact>
+                    <Login path="employee/login" />
                 </Route>
                 <Route path="/register" exact>
                     <Register />
