@@ -13,13 +13,13 @@ router.get('/', authenticateAdminRol, getPlaces);
 // Create a new lugares
 router.post('/', authenticateAdminRol, postPlace);
 
-// Retrieve a single lugares with id
+// Retrieve a single lugares by id
 router.get('/:id', authenticateAdminRol, getPlaceById);
 
-// Update a lugares with id
+// Update a lugares by id
 router.put('/:id', authenticateAdminRol, putPlace);
 
-// Delete a lugares with id
+// Delete a lugares by id
 router.delete('/:id', authenticateAdminRol, deletePlace);
 
 module.exports = router;

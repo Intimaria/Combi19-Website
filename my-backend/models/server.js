@@ -25,12 +25,16 @@ class Server {
     }
 
     routes() {
-        this.app.use('/login', require('../routes/login.js'));
-        this.app.use('/register', require('../routes/register.js'));
         this.app.use('/authorization', require('../routes/authorization.js'));
-        this.app.use('/drivers', require('../routes/drivers.js'));
-		this.app.use('/transport', require('../routes/transport.js'));
+        this.app.use('/drivers', require('../routes/employees-drivers.js'));
+        this.app.use('/employee', require('../routes/employees-login.js'));
+        this.app.use('/employee', require('../routes/employees-products.js'));
+        this.app.use('/employee', require('../routes/employees-routes.js'));
+        this.app.use('/transport', require('../routes/employees-transports.js'));
+        this.app.use('/employee', require('../routes/employees-trips.js'));
+        this.app.use('/login', require('../routes/login.js'));
         this.app.use('/lugares', require('../routes/lugares.js'));
+        this.app.use('/register', require('../routes/register.js'));
     }
 
     listen() {

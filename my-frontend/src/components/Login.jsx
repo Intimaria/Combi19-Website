@@ -26,7 +26,7 @@ const Login = ({path}) => {
         return true;
     }
     const getRequest = () => {
-        axios.post(`http://localhost:3001/login/${path}`, {
+        axios.post(`http://localhost:3001/${path}`, {
             email,
             password
         })
