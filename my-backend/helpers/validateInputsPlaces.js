@@ -1,26 +1,16 @@
-const {
-    ERROR_MSG_EMPTY_CITY,
-    ERROR_MSG_INVALID_CITY,
-    ERROR_MSG_EMPTY_PROVINCE,
-    ERROR_MSG_INVALID_PROVINCE,
-    ERROR_MSG_INEXISTENT_PLACE,
-    OK_MSG_LOCATION_CREATED,
-} = require('../const/messages.js');
+import { ERROR_MSG_EMPTY_CITY, ERROR_MSG_INVALID_CITY, ERROR_MSG_EMPTY_PROVINCE, ERROR_MSG_INVALID_PROVINCE, ERROR_MSG_INEXISTENT_PLACE, OK_MSG_LOCATION_CREATED } from '../const/messages.js';
 
-const {
-    REGEX_ONLY_ALPHABETICAL
-} = require('../const/regex.js');
+import { REGEX_ONLY_ALPHABETICAL } from '../const/regex.js';
 
-
-const data = require('../const/localidades-censales.json');
-/* const data = require('../const/localidades.json'); */
+//const data = require('../const/localidades-censales.json');
+const data = require( '../const/localidades.json');
 
 let namesError;
 
 const validatePlace = async (cityName, provinceName) => {
-    return ((validateCityName(cityName) & validateSurname(cityName)/* &  validatePlaceExists(cityName, provinceName) */) ? null : {
+    return ((validateCity(cityName) & validateProvince(provinceName) &  validatePlaceExists(cityName, provinceName)) ? null : {
         namesError,
-    };
+    });
 };
 
 
@@ -52,7 +42,7 @@ const validateProvince = (provinceName) => {
 
 const validatePlaceExists = (cityName, provinceName) => {
  const place = getPlaceFromList(cityName, provinceName);
- if (!place)) {
+ if (!place) {
         namesError = (ERROR_MSG_INEXISTENT_PLACE);
         return false;
     }
@@ -61,13 +51,13 @@ const validatePlaceExists = (cityName, provinceName) => {
 }
 
 const getPlaceFromList  = (cityName, provinceName) => {	
-	return data["localidades-censales"].filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName);
-	/* return data.filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName); */
+	//return data["localidades-censales"].filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName);
+	return data.filter(lugar => lugar.nombre === cityName && lugar.provincia.nombre === provinceName); 
 }
 
 
 
-module.exports = {
+export default {
     validatePlace,
     getPlaceFromList
 }
