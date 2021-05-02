@@ -1,39 +1,52 @@
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
-//This is a example, this controller should not be here
 const verifyToken = (req, res) => {
   res.sendStatus(200);
 }
+const {
+  ADMIN_ROLE,
+  DRIVER_ROLE,
+  PASSENGER_ROLE
+} = require('../const/config.js');
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.sendStatus(401)
+const authenticateToken = (token, res) => {
+  if (token == null) return res.sendStatus(401);
+  else {
+    const errorResult = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err) => err)
+    if (errorResult) res.sendStatus(403);
+    else return true;
+  }
+  return false;
+}
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err) => {
-    if (err) return res.sendStatus(403)
-    next()
-  })
+const authenticateRol = (req, res, next, rol) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (authenticateToken(token, res)) {
+    const payload = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
+    if (!payload.userRoles.includes(rol)) res.sendStatus(403);
+    next();
+  }
 }
 
 const authenticateAdminRol = (req, res, next) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.sendStatus(401)
+  authenticateRol(req,res,next,ADMIN_ROLE);
+}
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err) => {
-    if (err) return res.sendStatus(403)
-    else {
-      const payload = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
-      if (payload.userId !== 1) res.sendStatus(403)
-    }
-    next()
-  })
+const authenticateDriverRol = (req, res, next) => {
+  authenticateRol(req,res,next,DRIVER_ROLE);
+}
+
+const authenticatePassengerRol = (req, res, next) => {
+  authenticateRol(req,res,next,PASSENGER_ROLE);
 }
 
 module.exports = {
   verifyToken,
   authenticateToken,
-  authenticateAdminRol
+  authenticateAdminRol,
+  authenticateDriverRol,
+  authenticatePassengerRol
 }

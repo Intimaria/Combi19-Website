@@ -4,6 +4,6 @@ const {LoginEmployees} = require("../controllers/login.js");
 
 const router = Router();
 
-router.post("/login", LoginEmployees);
+router.post("/", LoginEmployees);
 
 module.exports = router;

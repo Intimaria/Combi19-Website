@@ -1,12 +1,12 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
-const { validatePassengers } = require("../helpers/validateUserInputs.js");
+const { validateDriversToCreate } = require("../helpers/validateUserInputs.js");
 const { OK_MSG_USER_CREATED } = require("../const/messages.js");
 const { PASSENGER_ROLE, ACTIVE } = require('../const/config.js');
 
 const Register = async (req, res) => {
     const {names, surname, email, birthday, password1, password2} = req.body;
 
-    const inputsErrors = await validatePassengers(email, names, surname, password1, password2, birthday);
+    const inputsErrors = await validateDriversToCreate(email, names, surname, password1, password2, birthday);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);

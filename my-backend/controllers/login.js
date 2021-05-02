@@ -44,13 +44,13 @@ const verifyRole = async (verifiableRoles, userId) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = 'SELECT ID_ROLE FROM ROLE_USER WHERE ID_USER = (?)';
-        const [rows, fields] = await connection.execute(sqlSelect, [userId]);
+        const sqlSelect = 'SELECT ID_ROLE, ACTIVE FROM ROLE_USER WHERE ID_USER = (?)';
+        const [rows] = await connection.execute(sqlSelect, [userId]);
 
         connection.end();
 
         for (let index = 0; index < rows.length; index++) {
-            if (verifiableRoles.includes(rows[index].ID_ROLE)) {
+            if (verifiableRoles.includes(rows[index].ID_ROLE) && rows[index].ACTIVE === 1) {
                 userData.userRoleId.push(rows[index].ID_ROLE);
             }
         }
@@ -67,7 +67,8 @@ const Login = async (req, res, verifiableRoles) => {
     const userId = await verifyAccount(req);
 
     if (userId && await verifyRole(verifiableRoles, userId)) {
-        const token = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: EXPIRY_TIME});
+        const userRoles = userData.userRoleId
+        const token = jwt.sign({ userId, userRoles }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: EXPIRY_TIME});
         return res.status(200).send({token, userData});
     } else {
         res.status(400).send(ERROR_MSG_INVALID_LOGIN);

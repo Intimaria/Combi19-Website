@@ -24,7 +24,7 @@ const {
     REGEX_PHONE
 } = require('../const/regex.js');
 
-const {prepareConnection} = require("./connectionDB.js");
+const { prepareConnection } = require("./connectionDB.js");
 
 let emailError;
 let namesError;
@@ -34,29 +34,54 @@ let passwordError2;
 let birthdayError;
 let phoneNumberError;
 
+const validatePassengersToCreate = async (email, names, surname, password1, password2, birthday) => {
+    return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToCreate(email)) ? null : preparePassengerResponse();
+}
 
-const validatePassengers = async (email, names, surname, password1, password2, birthday) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validateDate(birthday)) ? null : {
+const validatePassengersToModify = async (email, names, surname, password1, password2, birthday, id) => {
+    return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToModify(email, id)) ? null : preparePassengerResponse();
+}
+
+const validateDriversToCreate = async (email, names, surname, password1, password2, phoneNumber) => {
+    return (validateDrivers(email, names, surname, password1, password2, phoneNumber) && await verifyUniqueEmailToCreate(email)) ? null : prepareDriverResponse()
+}
+
+const validateDriversToModify = async (email, names, surname, password1, password2, phoneNumber, id) => {
+    return (validateDrivers(email, names, surname, password1, password2, phoneNumber) && await verifyUniqueEmailToModify(email, id)) ? null : prepareDriverResponse()
+}
+
+const validatePassenger = (email, names, surname, password1, password2, birthday) => {
+    return (validateUser(email, names, surname, password1, password2) & validateDate(birthday))
+}
+
+const validateDrivers = (email, names, surname, password1, password2, phoneNumber) => {
+    return (validateUser(email, names, surname, password1, password2) & validatePhoneNumber(phoneNumber));
+}
+
+const validateUser = (email, names, surname, password1, password2) => {
+    return (validateEmail(email) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2));
+}
+
+const preparePassengerResponse = () => {
+    return {
         birthdayError,
         emailError,
         namesError,
         surnameError,
         passwordError1,
-        passwordError2,
         passwordError2
-    };
-};
+    }
+}
 
-const validateDrivers = async (email, names, surname, password1, password2, phoneNumber) => {
-    return ((validateEmail(email) && await verifyUniqueEmail(email)) & validateName(names) & validateSurname(surname) & validatePassword(password1) & comparePasswords(password1, password2) & validatePhoneNumber(phoneNumber)) ? null : {
+const prepareDriverResponse = () => {
+    return {
         phoneNumberError,
         emailError,
         namesError,
         surnameError,
         passwordError1,
-        passwordError2,
         passwordError2
-    };
+    }
 }
 
 const validateEmail = (email) => {
@@ -73,7 +98,7 @@ const validateEmail = (email) => {
     return true;
 }
 
-const verifyUniqueEmail = async (email) => {
+const verifyUniqueEmailToCreate = async (email) => {
     try {
         const connection = await prepareConnection();
 
@@ -92,7 +117,26 @@ const verifyUniqueEmail = async (email) => {
         return false;
     }
 }
-// It would be necessary to create a method that verifies that the mail is unique but that ignores the user to modify
+
+const verifyUniqueEmailToModify = async (email, id) => {
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?) AND USER_ID <> ?';
+        const [rows] = await connection.execute(selectSql, [email, id]);
+
+        connection.end();
+
+        if (rows.length >= 1) {
+            emailError = ERROR_MSG_EXISTING_EMAIL;
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.log('Ocurrió un error al verificar si el email es único:', error);
+        return false;
+    }
+}
 
 const validateName = (names) => {
     if (!names) {
@@ -222,6 +266,8 @@ const validatePhoneNumber = (phoneNumber) => {
     return true;
 }
 module.exports = {
-    validatePassengers,
-    validateDrivers
+    validatePassengersToCreate,
+    validatePassengersToModify,
+    validateDriversToCreate,
+    validateDriversToModify
 }
