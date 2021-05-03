@@ -15,7 +15,7 @@ const getDrivers = async (req, res) => {
     const { start = 1, limit = 5 } = req.query;
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, ACTIVE FROM user a INNER JOIN role_user r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? ORDER BY SURNAME ASC, NAME ASC LIMIT ?, ?';
+        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, ACTIVE FROM USER a INNER JOIN ROLE_USER r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? ORDER BY SURNAME ASC, NAME ASC LIMIT ?, ?';
         const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE, start - 1, limit]);
         connection.end();
         return res.status(200).send(rows);
@@ -30,7 +30,7 @@ const getDriverById = async (req, res) => {
     try {
         const { id } = req.params;
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, PASSWORD, PHONE_NUMBER, ACTIVE FROM user a INNER JOIN role_user r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? AND a.USER_ID = ?';
+        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, PASSWORD, PHONE_NUMBER, ACTIVE FROM USER a INNER JOIN ROLE_USER r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? AND a.USER_ID = ?';
         const [rows, fields] = await connection.execute(sqlSelect, [DRIVER_ROLE, id]);
         connection.end();
         return res.status(200).send(rows[0]);
@@ -51,11 +51,11 @@ const postDriver = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlInsert = "INSERT INTO user(NAME, SURNAME, EMAIL, PASSWORD,PHONE_NUMBER) VALUES (?,?,?,?,?)"
+            let sqlInsert = "INSERT INTO USER(NAME, SURNAME, EMAIL, PASSWORD,PHONE_NUMBER) VALUES (?,?,?,?,?)"
             const [rows] = await connection.execute(sqlInsert, [names, surname, email, password1, phoneNumber]);
 
             const id = rows.insertId;
-            sqlInsert = 'INSERT INTO role_user (ID_ROLE, ID_USER, ACTIVE) VALUES (?,?,?)'
+            sqlInsert = 'INSERT INTO ROLE_USER (ID_ROLE, ID_USER, ACTIVE) VALUES (?,?,?)'
             connection.execute(sqlInsert, [DRIVER_ROLE, id, ACTIVE]);
             connection.end();
             res.status(201).send("Se ha registrado el chofer con éxito");
@@ -79,7 +79,7 @@ const putDriver = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlUptate = "UPDATE user SET NAME= ?, SURNAME= ?, EMAIL= ?, PASSWORD= ?, PHONE_NUMBER= ? WHERE USER_ID = ?";
+            let sqlUptate = "UPDATE USER SET NAME= ?, SURNAME= ?, EMAIL= ?, PASSWORD= ?, PHONE_NUMBER= ? WHERE USER_ID = ?";
             const [rows] = await connection.execute(sqlUptate, [names, surname, email, password1, phoneNumber, id]);
 
             connection.end();
@@ -104,7 +104,7 @@ const deleteDriver = async (req, res) => {
     else {
         try {
             const connection = await prepareConnection();
-            const sqlUptate = 'UPDATE role_user SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
+            const sqlUptate = 'UPDATE ROLE_USER SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
             const [rows] = await connection.execute(sqlUptate, [NO_ACTIVE, id, DRIVER_ROLE]);
             connection.end();
             return res.status(200).send('Se ha eliminado el chofer con éxito');
