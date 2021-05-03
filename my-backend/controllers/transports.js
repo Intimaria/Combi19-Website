@@ -2,18 +2,31 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 
 const {OK_MSG_TRANSPORT_CREATED} = require("../const/messages");
 
+const {normalizeTransport} = require("../helpers/normalizeResult")
+
 const getTransports = async (req, res) => {
     const {start = 1, limit = 5} = req.query;
 
     try {
         const connection = await prepareConnection();
 
-        let sqlSelect = `SELECT * FROM TRANSPORT ORDER BY TRANSPORT_ID ASC LIMIT ${start - 1}, ${limit}`;
+        let sqlSelect =
+            `
+            SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
+            tc.TYPE_COMFORT_ID, tc.NAME TYPE_COMFORT_NAME, u.*            
+            FROM TRANSPORT t
+            INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
+            INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
+            ORDER BY TRANSPORT_ID ASC LIMIT ${start - 1}, ${limit};
+            `;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
 
-        res.json(rows);
+        const normalizedResults = await normalizeTransport(rows);
+
+        res.json(normalizedResults);
+
     } catch (e) {
         console.log('Ocurrió un error al obtener las combis:', e)
     }
@@ -25,12 +38,20 @@ const getTransportById = async (req, res) => {
     try {
         const connection = await prepareConnection();
 
-        let sqlSelect = `SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ${id}`;
+        let sqlSelect = `
+            SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
+            tc.TYPE_COMFORT_ID, tc.NAME TYPE_COMFORT_NAME, u.*            
+            FROM TRANSPORT t
+            INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
+            INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
+            WHERE TRANSPORT_ID = ${id}`;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
 
-        res.json(rows);
+        const normalizedResults = await normalizeTransport(rows);
+
+        res.json(normalizedResults);
     } catch (e) {
         console.log('Ocurrió un error al obtener la combi:', e)
     }
@@ -38,8 +59,6 @@ const getTransportById = async (req, res) => {
 
 const postTransport = async (req, res) => {
     const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
-
-    console.log('entró')
 
     try {
         const connection = await prepareConnection();
