@@ -1,11 +1,23 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
 .app {
     height: 100%;
     width: 100%;
-    position: fixed;
     background-color: rgb(17, 85, 113);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo-navbar {
     height: 40px;
     width: 40px;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(17, 85, 113);
 }
