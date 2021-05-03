@@ -1,8 +1,7 @@
-import { ERROR_MSG_EMPTY_CITY, ERROR_MSG_INVALID_CITY, ERROR_MSG_EMPTY_PROVINCE, ERROR_MSG_INVALID_PROVINCE, ERROR_MSG_INEXISTENT_PLACE, OK_MSG_LOCATION_CREATED } from '../const/messages.js';
+const { ERROR_MSG_EMPTY_CITY, ERROR_MSG_INVALID_CITY, ERROR_MSG_EMPTY_PROVINCE, ERROR_MSG_INVALID_PROVINCE, ERROR_MSG_INEXISTENT_PLACE } = require('../const/messages.js');
 
-import { REGEX_ONLY_ALPHABETICAL } from '../const/regex.js';
+const { REGEX_ONLY_ALPHABETICAL } = require('../const/regex.js');
 
-//const data = require('../const/localidades-censales.json');
 const data = require( '../const/localidades.json');
 
 let namesError;
@@ -57,7 +56,7 @@ const getPlaceFromList  = (cityName, provinceName) => {
 
 
 
-export default {
+module.exports = {
     validatePlace,
     getPlaceFromList
 }
