@@ -1,11 +1,14 @@
 const { Router } = require('express');
 
-const { getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
+const { getProvinces, getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
 
 const { authenticateAdminRol } = require("../middlewares/authorization.js");
 
 
 const router = Router();
+
+// Retrieve all provincias
+//router.get('/', authenticateAdminRol, getProvinces);
 
 // Retrieve all lugares
 router.get('/', authenticateAdminRol, getPlaces);
