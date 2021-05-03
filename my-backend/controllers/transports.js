@@ -39,14 +39,16 @@ const getTransportById = async (req, res) => {
 const postTransport = async (req, res) => {
     const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
 
+    console.log('entró')
+
     try {
         const connection = await prepareConnection();
 
         let sqlInsert =
             `
                 INSERT INTO TRANSPORT
-                (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER)
-                VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver});
+                (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER, ACTIVE)
+                VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver}, 1);
                 `
 
         await connection.execute(sqlInsert);

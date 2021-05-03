@@ -19,7 +19,7 @@ router.get('/', authenticateAdminRol, getTransports);
 router.get('/:id', authenticateAdminRol, getTransportById);
 
 // Create a new transport
-router.post('/:id', authenticateAdminRol, postTransport);
+router.post('/', authenticateAdminRol, postTransport);
 
 // Update a transport by id
 router.put('/:id', authenticateAdminRol, putTransport);

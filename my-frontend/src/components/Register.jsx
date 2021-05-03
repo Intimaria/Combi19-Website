@@ -1,6 +1,8 @@
 import React from 'react';
 import { Message } from '../components/Message';
 
+import {BACKEND_URL} from '../const/config.js';
+
 import {
     ERROR_MSG_EMPTY_DATE,
     ERROR_MSG_EMPTY_EMAIL,
@@ -64,7 +66,7 @@ function Register() {
 
     }
     const postRequest = () => {
-        axios.post('http://localhost:3001/register', {
+        axios.post(`${BACKEND_URL}/register`, {
             names,
             surname,
             email,
