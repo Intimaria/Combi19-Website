@@ -1,9 +1,10 @@
-import {Button, Modal, TextField} from '@material-ui/core';
+import {Button, Modal, NativeSelect, TextField} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
 import {BACKEND_URL} from '../const/config.js';
 import MaterialTable from "material-table";
 import PinDropIcon from '@material-ui/icons/PinDrop';
+import Select from '@material-ui/core/Select';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
@@ -41,63 +42,71 @@ function Places() {
         {
             id: 1,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province:16
         },
         {
             id: 2,
             city_name: 'Azul',
-            province: 'Buenos Aires'
+            province: 'Buenos Aires',
+            id_province: 1
         },
         {
             id: 3,
             city_name: 'Bahia Blanca',
-            province: 'Buenos Aires'
+            province: 'Buenos Aires',
+            id_province: 1
         },
         {
             id: 4,
             city_name: 'Bariloche',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 5,
             city_name: 'Chivilcoy',
-            province: 'Buenos Aires'
+            province: 'Buenos Aires',
+            id_province: 1
         },
         {
             id: 6,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 7,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 8,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 9,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 10,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
         {
             id: 1,
             city_name: 'Aguas Blancas',
-            province: 'Rio Negro'
+            province: 'Rio Negro',
+            id_province: 16
         },
     ]);
-    const selectData = [
-        { province: 'Rio Negro' },
-        { province: 'Buenos Aires' }
-      ];
+    
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
@@ -105,7 +114,8 @@ function Places() {
     const [selectedPlace, setSelectedPlace] = useState({
         id: "",
         city_name: "",
-        province: ""
+        province: "",
+        id_province: ""
     })
     /*
     const handleChange = e => {
@@ -221,8 +231,13 @@ function Places() {
             <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
                        onChange={handleChange}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Provincia" name="province" onChange={handleChange}/>
-            <br/><br/>
+            <NativeSelect className={styles.inputMaterial} label="Provincia" name="province" onClick={handleChange}
+                value={selectedPlace.id_province}>
+                <option value={1}>Buenos Aire</option>
+                <option value={2}>CABA</option>
+                <option value={16}>Rio Negro</option>
+          </NativeSelect>
+            <br/>
             <div align="right">
                 <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
                 <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
@@ -252,8 +267,12 @@ function Places() {
                        onChange={handleChange}
                        value={selectedPlace && selectedPlace.city_name}/>
             <br/>
-            <Select className={styles.inputMaterial} label="Provincia" name="province" onClick={handleChange}
-                  options={selectData} value={selectedPlace && selectedPlace.province}/>
+            <NativeSelect className={styles.inputMaterial} label="Provincia" name="province" onClick={handleChange}
+                value={selectedPlace.id_province}>
+                <option value={1}>Buenos Aire</option>
+                <option value={2}>CABA</option>
+                <option value={16}>Rio Negro</option>
+          </NativeSelect>
             <br/>
             <div align="right">
                 <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
