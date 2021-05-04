@@ -9,9 +9,9 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { BACKEND_URL } from '../const/config.js';
 
 const columns = [
-    { title: 'Nombre', field: 'driver_name' },
-    { title: 'Apellido', field: 'driver_surname' },
-    { title: 'Email', field: 'driver_email' }
+    { title: 'Nombre', field: 'NAME' },
+    { title: 'Apellido', field: 'SURNAME' },
+    { title: 'Email', field: 'EMAIL' },
 ];
 const baseUrl = `${BACKEND_URL}/drivers`;
 
@@ -45,13 +45,13 @@ function Drivers() {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedDriver, setSelectedDriver] = useState({
-        id: "",
-        driver_name: "",
-        driver_surname: "",
-        driver_email: "",
-        driver_phone_number: "",
-        driver_password_1: "",
-        driver_password_2: "",
+        USER_ID: "",
+        NAME: "",
+        SURNAME: "",
+        EMAIL: "",
+        PHONE_NUMBER: "",
+        PASSWORD: "",
+        PASSWORD_REPEAT: "",
     })
 
     const handleChange = (textFieldAtributes) => {
@@ -78,15 +78,19 @@ function Drivers() {
             })
     }
     const peticionPost = async () => {
-        /*
-        await axios.post(baseUrl, selectedTransport)
+        const token = localStorage.getItem('token');
+        await axios.post(baseUrl, selectedDriver,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then(response => {
                 setData(data.concat(response.data));
                 openCloseModalCreate();
             }).catch(error => {
                 console.log(error);
-            })
-            */
+            });
     }
 
     const peticionPut = async () => {
@@ -156,27 +160,27 @@ function Drivers() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.names} />
+                value={selectedDriver && selectedDriver.NAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.surname} />
+                value={selectedDriver && selectedDriver.SURNAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="driver_email" onChange={handleChange}
-                value={selectedDriver && selectedDriver.email} />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
+                value={selectedDriver && selectedDriver.EMAIL} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="driver_phone_number"
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.phoneNumber} />
+                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="driver_password_1"
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.password1} />
+                value={selectedDriver && selectedDriver.PASSWORD} />
             <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="driver_password_2" onChange={handleChange}
-                value={selectedDriver && selectedDriver.password2} />
+            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="PASSWORD_REPEAT" onChange={handleChange}
+                value={selectedDriver && selectedDriver.PASSWORD_REPEAT} />
             <br /><br />
             <div align="right">
                 <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
@@ -188,24 +192,24 @@ function Drivers() {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE EL CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.names} />
+                value={selectedDriver && selectedDriver.NAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.surname} />
+                value={selectedDriver && selectedDriver.SURNAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="driver_email" onChange={handleChange}
-                value={selectedDriver && selectedDriver.email} />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
+                value={selectedDriver && selectedDriver.EMAIL} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="driver_phone_number"
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.phoneNumber} />
+                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="driver_password_1"
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.password1} />
+                value={selectedDriver && selectedDriver.PASSWORD} />
             <br /><br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
@@ -216,27 +220,26 @@ function Drivers() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.names} />
+                value={selectedDriver && selectedDriver.NAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="driver_name"
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.surname} />
+                value={selectedDriver && selectedDriver.SURNAME} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="driver_email" onChange={handleChange}
-                value={selectedDriver && selectedDriver.email} />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
+                value={selectedDriver && selectedDriver.EMAIL} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="driver_phone_number"
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.phoneNumber} />
+                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="driver_password_1"
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
                 onChange={handleChange}
-                value={selectedDriver && selectedDriver.password1} />
+                value={selectedDriver && selectedDriver.PASSWORD} />
             <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="driver_password_2" onChange={handleChange}
-                value={selectedDriver && selectedDriver.password2} />
+            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="PASSWORD_REPEAT" onChange={handleChange}/>
             <br /><br />
             <div align="right">
                 <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
@@ -248,7 +251,7 @@ function Drivers() {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar el chofer con email
-                <b>{selectedDriver && selectedDriver.email}</b> ?
+                <b>{selectedDriver && selectedDriver.EMAIL}</b> ?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>

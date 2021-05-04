@@ -6,7 +6,7 @@ import MaterialTable from "material-table";
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {BACKEND_URL} from '../const/config.js';
-a
+
 const columns = [
     {title: 'Identificación', field: 'internal_identification'},
     {title: 'Patente', field: 'registration_number'},
