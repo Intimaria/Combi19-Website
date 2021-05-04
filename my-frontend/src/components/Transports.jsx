@@ -11,11 +11,9 @@ const columns = [
     {title: 'Identificación', field: 'internal_identification'},
     {title: 'Patente', field: 'registration_number'},
     {title: 'Modelo', field: 'model'},
-    {title: 'Tipo de confort', field: 'type_comfort'},
-    {title: 'Chofer', field: 'driver'}
+    {title: 'Tipo de confort', field: 'comfort.type_comfort_name'},
+    {title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`}
 ];
-const baseUrl = `${BACKEND_URL}/artistas`;
-
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -39,107 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Transports() {
     const styles = useStyles();
-    const [data, setData] = useState([
-        {
-            id: 1,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 10,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 2,
-            internal_identification: 'C002',
-            registration_number: 'ZX987CV',
-            model: 'Renault Trafic',
-            seating: 20,
-            type_comfort: 'Cómoda',
-            driver: 'Gonzalez Belisle Betina Mabel'
-        },
-        {
-            id: 3,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 30,
-            driver: 'Mansilla Carlos Eduardo Fabian',
-            type_comfort: 'Súper-cómoda'
-        },
-        {
-            id: 4,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 40,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 5,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 50,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 6,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 60,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 7,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 70,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 8,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 80,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 9,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 90,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 10,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 100,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-        {
-            id: 1,
-            internal_identification: 'C001',
-            registration_number: 'AB123CD',
-            model: 'Mercedes Benz Bmo 390',
-            seating: 110,
-            type_comfort: 'Súper-cómoda',
-            driver: 'Mansilla Carlos Eduardo Fabian'
-        },
-    ]);
+    const [data, setData] = useState([]);
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
@@ -151,7 +49,17 @@ function Transports() {
         model: "",
         seating: "",
         type_comfort: "",
-        driver: ""
+        comfort: {
+            type_comfort_id: "",
+            type_comfort_name: ""
+        },
+        driver: {
+            user_id: "",
+            name: "",
+            surname: "",
+            email: "",
+            phone_number: ""
+        }
     })
 
     const handleChange = e => {
@@ -162,19 +70,27 @@ function Transports() {
         }));
     }
 
-    const peticionGet = async () => {
-
-        await axios.get(baseUrl)
-            .then(response => {
-                setData(response.data);
-            }).catch(error => {
-                console.log(error);
+    const getTransports = async () => {
+        console.log('entró a getTransports')
+        try {
+            const instance = axios.create({
+                baseURL: `${BACKEND_URL}/transport`,
+                headers: {
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzLCJ1c2VyUm9sZXMiOlsxXSwiaWF0IjoxNjIwMTI2NDM0LCJleHAiOjE2MjAxMzM2MzR9.Rx9Fg7cS2RnqV3cKwfTUmUydy5dtq7R4fr8P74Xao4s'
+                }
             })
-
+            const response = await instance.get();
+            setData(response.data);
+            console.log("RESPUESTA GET TRANSPORTS:");
+            console.log(response);
+        } catch (e) {
+            console.log(e);
+        }
         return
     }
 
-    const peticionPost = async () => {
+
+    const postTransport = async () => {
         /*
         await axios.post(baseUrl, selectedTransport)
             .then(response => {
@@ -186,7 +102,7 @@ function Transports() {
             */
     }
 
-    const peticionPut = async () => {
+    const putTransport = async () => {
         /*
         await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
             .then(response => {
@@ -207,7 +123,7 @@ function Transports() {
             */
     }
 
-    const peticionDelete = async () => {
+    const deleteTransport = async () => {
         /*
         await axios.delete(baseUrl + "/" + selectedTransport.id)
             .then(response => {
@@ -247,7 +163,7 @@ function Transports() {
     }
 
     useEffect(() => {
-        //peticionGet();
+        getTransports();
     }, [])
 
     const bodyCreate = (
@@ -263,13 +179,13 @@ function Transports() {
             <br/>
             <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
                        onChange={handleChange}/>
-            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort"
+            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
                        onChange={handleChange}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Chofer" name="driver" onChange={handleChange}/>
             <br/><br/>
             <div align="right">
-                <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
+                <Button color="primary" onClick={() => postTransport()}>Insertar</Button>
                 <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
             </div>
         </div>
@@ -290,12 +206,14 @@ function Transports() {
             <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
                        value={selectedTransport && selectedTransport.seating}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort"
-                       value={selectedTransport && selectedTransport.type_comfort}/>
+            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
+                       value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
             <br/>
+
             <TextField className={styles.inputMaterial} label="Chofer" name="driver"
-                       value={selectedTransport && selectedTransport.driver}/>
+                       value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
             <br/><br/>
+
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
             </div>
@@ -320,15 +238,15 @@ function Transports() {
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.seating}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort"
+            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
                        onChange={handleChange}
-                       value={selectedTransport && selectedTransport.type_comfort}/>
+                       value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Chofer" name="driver" onChange={handleChange}
-                       value={selectedTransport && selectedTransport.driver}/>
+                       value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
             <br/><br/>
             <div align="right">
-                <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
+                <Button color="primary" onClick={() => putTransport()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
@@ -341,7 +259,7 @@ function Transports() {
                 patente <b>{selectedTransport && selectedTransport.registration_number}</b>?
             </p>
             <div align="right">
-                <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>
+                <Button color="secondary" onClick={() => deleteTransport()}>SÍ, ELIMINAR</Button>
                 <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
 
             </div>

@@ -14,6 +14,7 @@ const getProducts = async (req, res) => {
         console.log('Ha ocurrido un error al obtener los datos de todos los productos: ', error);
         res.status(500);
     }
+    res.end();
 }
 
 const getProductById = async (req, res) => {
@@ -29,7 +30,7 @@ const getProductById = async (req, res) => {
         console.log('Ha ocurrido un error al obtener al producto indicado: ', error);
         res.status(500);
     }
-
+    res.end();
 }
 
 const postProduct = async (req, res) => {
@@ -53,7 +54,7 @@ const postProduct = async (req, res) => {
         }
 
     }
-    ;
+    res.end();
 }
 
 const putProduct = async (req, res) => {
@@ -63,8 +64,7 @@ const putProduct = async (req, res) => {
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
-    }
-    else {
+    } else {
         try {
             const connection = await prepareConnection();
             /*
@@ -77,8 +77,8 @@ const putProduct = async (req, res) => {
             console.log('Ha ocurrido un error al actualizar los datos del producto: ', error);
             res.status(500);
         }
-    };
-
+    }
+    res.end();
 }
 
 const deleteProduct = async (req, res) => {
@@ -86,6 +86,7 @@ const deleteProduct = async (req, res) => {
     /*
     Continue with the code
      */
+    res.end();
 }
 
 module.exports = {
