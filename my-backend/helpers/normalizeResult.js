@@ -12,7 +12,7 @@ const normalizeTransport = async (rows) => {
             active: rows[index].ACTIVE,
             comfort: {
                 type_comfort_id: rows[index].TYPE_COMFORT_ID,
-                name: rows[index].TYPE_COMFORT_NAME
+                type_comfort_name: rows[index].TYPE_COMFORT_NAME
             },
             driver: {
                 user_id: rows[index].USER_ID,

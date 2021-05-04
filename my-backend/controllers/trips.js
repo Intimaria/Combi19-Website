@@ -14,6 +14,7 @@ const getTrips = async (req, res) => {
         console.log('Ha ocurrido un error al obtener los datos de todos los viajes: ', error);
         res.status(500);
     }
+    res.end();
 }
 
 const getTripById = async (req, res) => {
@@ -29,7 +30,7 @@ const getTripById = async (req, res) => {
         console.log('Ha ocurrido un error al obtener al viaje indicado: ', error);
         res.status(500);
     }
-
+    res.end();
 }
 
 const postTrip = async (req, res) => {
@@ -53,7 +54,7 @@ const postTrip = async (req, res) => {
         }
 
     }
-    ;
+    res.end();
 }
 
 const putTrip = async (req, res) => {
@@ -63,8 +64,7 @@ const putTrip = async (req, res) => {
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
-    }
-    else {
+    } else {
         try {
             const connection = await prepareConnection();
             /*
@@ -77,8 +77,8 @@ const putTrip = async (req, res) => {
             console.log('Ha ocurrido un error al actualizar los datos del viaje: ', error);
             res.status(500);
         }
-    };
-
+    }
+    res.end();
 }
 
 const deleteTrip = async (req, res) => {
@@ -86,6 +86,7 @@ const deleteTrip = async (req, res) => {
     /*
     Continue with the code
      */
+    res.end();
 }
 
 module.exports = {

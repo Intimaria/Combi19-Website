@@ -5,7 +5,7 @@ const {OK_MSG_TRANSPORT_CREATED} = require("../const/messages");
 const {normalizeTransport} = require("../helpers/normalizeResult")
 
 const getTransports = async (req, res) => {
-    const {start = 1, limit = 5} = req.query;
+    //const {start = 1, limit = 5} = req.query;
 
     try {
         const connection = await prepareConnection();
@@ -13,11 +13,11 @@ const getTransports = async (req, res) => {
         let sqlSelect =
             `
             SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
-            tc.TYPE_COMFORT_ID, tc.NAME TYPE_COMFORT_NAME, u.*            
+            tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME TYPE_COMFORT_NAME, u.*            
             FROM TRANSPORT t
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
-            ORDER BY TRANSPORT_ID ASC LIMIT ${start - 1}, ${limit};
+            ORDER BY TRANSPORT_ID ASC;
             `;
         const [rows] = await connection.execute(sqlSelect);
 
@@ -30,6 +30,7 @@ const getTransports = async (req, res) => {
     } catch (e) {
         console.log('Ocurrió un error al obtener las combis:', e)
     }
+    res.end();
 }
 
 const getTransportById = async (req, res) => {
@@ -55,6 +56,7 @@ const getTransportById = async (req, res) => {
     } catch (e) {
         console.log('Ocurrió un error al obtener la combi:', e)
     }
+    res.end();
 }
 
 const postTransport = async (req, res) => {
@@ -78,6 +80,7 @@ const postTransport = async (req, res) => {
     } catch (e) {
         console.log("Ocurrió un error al crear la combi:", e);
     }
+    res.end();
 };
 
 const putTransport = async (req, rest) => {

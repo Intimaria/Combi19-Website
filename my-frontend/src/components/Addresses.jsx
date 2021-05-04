@@ -1,14 +1,14 @@
-import React from 'react'
-import {Switch, Route} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 
-import Login from './Login.jsx';
-import Register from './Register.jsx';
 import Home from './Home.jsx';
+import Login from './Login.jsx';
 import Navbar from './Navbar.jsx';
+import Places from './Places';
+import React from 'react'
+import Register from './Register.jsx';
 import Transports from './Transports.jsx';
 import Drivers from './Drivers.jsx';
 import {useHistory} from "react-router-dom";
-
 
 const Addresses = () => {
     const history = useHistory();
@@ -40,6 +40,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/home" exact>
                     <Home/>
+                </Route>
+                <Route path="/places" exact>
+                    <Places/>
                 </Route>
                 <Route path="/transports" exact>
                     <Transports/>
