@@ -250,8 +250,7 @@ function Drivers() {
 
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar el chofer con email
-                <b>{selectedDriver && selectedDriver.EMAIL}</b> ?
+            <p>¿Estás seguro que deseas eliminar el chofer con email <b>{selectedDriver && selectedDriver.EMAIL}</b> ?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>

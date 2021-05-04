@@ -2,7 +2,6 @@ const normalizeTransport = async (rows) => {
     let results = [];
 
     for (let index = 0; index < rows.length; index++) {
-        console.log(rows[index].TRANSPORT_ID);
         let transport = {
             transport_id: rows[index].TRANSPORT_ID,
             internal_identification: rows[index].INTERNAL_IDENTIFICATION,

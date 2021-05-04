@@ -12,7 +12,10 @@ const columns = [
     {title: 'Patente', field: 'registration_number'},
     {title: 'Modelo', field: 'model'},
     {title: 'Tipo de confort', field: 'comfort.type_comfort_name'},
-    {title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`}
+    {
+        title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`,
+        customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) != -1
+    }
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -71,20 +74,18 @@ function Transports() {
     }
 
     const getTransports = async () => {
-        console.log('entró a getTransports')
+        const token = localStorage.getItem('token');
         try {
             const instance = axios.create({
                 baseURL: `${BACKEND_URL}/transport`,
                 headers: {
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMzLCJ1c2VyUm9sZXMiOlsxXSwiaWF0IjoxNjIwMTI2NDM0LCJleHAiOjE2MjAxMzM2MzR9.Rx9Fg7cS2RnqV3cKwfTUmUydy5dtq7R4fr8P74Xao4s'
+                    Authorization: `Bearer ${token}`
                 }
             })
             const response = await instance.get();
             setData(response.data);
-            console.log("RESPUESTA GET TRANSPORTS:");
-            console.log(response);
         } catch (e) {
-            console.log(e);
+            console.log('Ocurrió un error al obtener las combis:', e)
         }
         return
     }
@@ -164,6 +165,7 @@ function Transports() {
 
     useEffect(() => {
         getTransports();
+        console.log('entró al useEffect')
     }, [])
 
     const bodyCreate = (
@@ -266,8 +268,6 @@ function Transports() {
 
         </div>
     )
-
-    console.log("LA DATA ES:", data);
 
     return (
         <div className="App">
