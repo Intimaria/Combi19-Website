@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Modal, TextField, Button} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
 import MaterialTable from "material-table";
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
+import Search from '@material-ui/icons/Search';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {BACKEND_URL} from '../const/config.js';
+import {getTransports} from '../api/Transport';
+import {useStyles} from '../const/modalStyle';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
 
 const columns = [
     {title: 'Identificación', field: 'internal_identification'},
@@ -15,28 +17,10 @@ const columns = [
     {
         title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`,
         customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) != -1
-    }
+    },
+    {title: 'Estado', field: 'active'}
 ];
 
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
-    },
-    iconos: {
-        cursor: 'pointer'
-    },
-    inputMaterial: {
-        width: '100%'
-    }
-}));
 
 function Transports() {
     const styles = useStyles();
@@ -65,31 +49,13 @@ function Transports() {
         }
     })
 
-    const handleChange = e => {
+    const handleChange = async e => {
         const {name, value} = e.target;
         setSelectedTransport(prevState => ({
             ...prevState,
             [name]: value
         }));
     }
-
-    const getTransports = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const instance = axios.create({
-                baseURL: `${BACKEND_URL}/transport`,
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            const response = await instance.get();
-            setData(response.data);
-        } catch (e) {
-            console.log('Ocurrió un error al obtener las combis:', e)
-        }
-        return
-    }
-
 
     const postTransport = async () => {
         /*
@@ -163,9 +129,18 @@ function Transports() {
         setDeleteModal(!deleteModal);
     }
 
-    useEffect(() => {
-        getTransports();
-        console.log('entró al useEffect')
+    useEffect(async () => {
+        let data = await getTransports();
+        for (let index = 0; index < data.length; index++) {
+            if (data[index].active === 0) {
+                data[index].active = 'Inactivo';
+            } else if (data[index].active === 1) {
+                data[index].active = 'Activo'
+            } else {
+                data[index].active = 'Estado inválido'
+            }
+        }
+        setData(data);
     }, [])
 
     const bodyCreate = (
@@ -283,6 +258,7 @@ function Transports() {
             <MaterialTable
                 columns={columns}
                 data={data}
+                icons={{Filter: () => <Search/>}}
                 title="Lista de combis"
                 actions={[
                     {
@@ -301,14 +277,8 @@ function Transports() {
                         onClick: (event, rowData) => selectTransport(rowData, "Eliminar")
                     }
                 ]}
-                options={{
-                    actionsColumnIndex: -1,
-                }}
-                localization={{
-                    header: {
-                        actions: "Acciones"
-                    }
-                }}
+                options={materialTableConfiguration.options}
+                localization={materialTableConfiguration.localization}
             />
 
 
