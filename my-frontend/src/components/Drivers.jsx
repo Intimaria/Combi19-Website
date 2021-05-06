@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Modal, TextField, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {Modal, TextField, Button} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import MaterialTable from "material-table";
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { BACKEND_URL } from '../const/config.js';
+import {getDrivers} from '../api/Driver';
+import {BACKEND_URL} from '../const/config.js';
+import {ERROR_MSG_API_GET_DRIVERS} from "../const/messages";
 
 const columns = [
-    { title: 'Nombre', field: 'NAME' },
-    { title: 'Apellido', field: 'SURNAME' },
-    { title: 'Email', field: 'EMAIL' },
+    {title: 'Nombre', field: 'NAME'},
+    {title: 'Apellido', field: 'SURNAME'},
+    {title: 'Email', field: 'EMAIL'},
 ];
 const baseUrl = `${BACKEND_URL}/drivers`;
 
@@ -45,6 +47,7 @@ function Drivers() {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedDriver, setSelectedDriver] = useState({
+        a: "ad",
         USER_ID: "",
         NAME: "",
         SURNAME: "",
@@ -55,28 +58,13 @@ function Drivers() {
     })
 
     const handleChange = (textFieldAtributes) => {
-        const { name, value } = textFieldAtributes.target;
+        const {name, value} = textFieldAtributes.target;
         setSelectedDriver(prevState => ({
             ...prevState,
             [name]: value
         }));
     }
 
-    const peticionGet = async () => {
-        const token = localStorage.getItem('token');
-        await axios.get(baseUrl,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                setData(response.data);
-                console.log(response.data)
-            }).catch(error => {
-                console.log(error);
-            })
-    }
     const peticionPost = async () => {
         const token = localStorage.getItem('token');
         await axios.post(baseUrl, selectedDriver,
@@ -154,34 +142,44 @@ function Drivers() {
     }
 
     useEffect(() => {
-        peticionGet();
-    }, [])
+        const fetchData = async () => {
+            try {
+                let data = await getDrivers();
+
+                setData(data);
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+            }
+        };
+        fetchData();
+    }, []);
 
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO CHOFER</h3>
             <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.NAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.NAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.SURNAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.SURNAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                value={selectedDriver && selectedDriver.EMAIL} />
-            <br />
+                       value={selectedDriver && selectedDriver.EMAIL}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PASSWORD} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="PASSWORD_REPEAT" onChange={handleChange}
-                value={selectedDriver && selectedDriver.PASSWORD_REPEAT} />
-            <br /><br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PASSWORD}/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
+                       name="PASSWORD_REPEAT" onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PASSWORD_REPEAT}/>
+            <br/><br/>
             <div align="right">
                 <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
                 <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
@@ -193,24 +191,24 @@ function Drivers() {
         <div className={styles.modal}>
             <h3>DETALLE DE EL CHOFER</h3>
             <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.NAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.NAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.SURNAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.SURNAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                value={selectedDriver && selectedDriver.EMAIL} />
-            <br />
+                       value={selectedDriver && selectedDriver.EMAIL}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PASSWORD} />
-            <br /><br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PASSWORD}/>
+            <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
             </div>
@@ -221,26 +219,27 @@ function Drivers() {
         <div className={styles.modal}>
             <h3>EDITAR CHOFER</h3>
             <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.NAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.NAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.SURNAME} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.SURNAME}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                value={selectedDriver && selectedDriver.EMAIL} />
-            <br />
+                       value={selectedDriver && selectedDriver.EMAIL}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PHONE_NUMBER} />
-            <br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                onChange={handleChange}
-                value={selectedDriver && selectedDriver.PASSWORD} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer" name="PASSWORD_REPEAT" onChange={handleChange}/>
-            <br /><br />
+                       onChange={handleChange}
+                       value={selectedDriver && selectedDriver.PASSWORD}/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
+                       name="PASSWORD_REPEAT" onChange={handleChange}/>
+            <br/><br/>
             <div align="right">
                 <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
@@ -258,25 +257,25 @@ function Drivers() {
             </div>
         </div>
     )
-    
+
     return (
         <div className="App">
-            <br />
-            <Button style={{ marginLeft: '8px' }}
-                variant="contained"
-                size="large"
-                color="primary"
-                id="btnNewDriver"
-                startIcon={<AccessibilityIcon />}
-                onClick={() => openCloseModalCreate()}>NUEVO CHOFER</Button>
-            <br /><br />
+            <br/>
+            <Button style={{marginLeft: '8px'}}
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                    id="btnNewDriver"
+                    startIcon={<AccessibilityIcon/>}
+                    onClick={() => openCloseModalCreate()}>NUEVO CHOFER</Button>
+            <br/><br/>
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de choferes"
                 actions={[
                     {
-                        icon: () => <VisibilityIcon />,
+                        icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de chofer',
                         onClick: (event, rowData) => selectDriver(rowData, "Ver")
                     },
