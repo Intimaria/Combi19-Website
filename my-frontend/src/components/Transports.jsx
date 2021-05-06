@@ -34,17 +34,7 @@ const columns = [
 
 
 function Transports() {
-    const styles = useStyles();
-    const [data, setData] = useState([]);
-    const [drivers, setDrivers] = useState([]);
-    const [driverSelected, setDriverSelected] = useState('');
-    const [typeComfortSelected, setTypeComfortSelected] = useState('');
-    const [createModal, setCreateModal] = useState(false);
-    const [viewModal, setViewModal] = useState(false);
-    const [updateModal, setUpdateModal] = useState(false);
-    const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedTransport, setSelectedTransport] = useState({
-        id: "",
+    const formatSelectedTransport = {
         internal_identification: "",
         registration_number: "",
         model: "",
@@ -61,7 +51,18 @@ function Transports() {
             phone_number: ""
         },
         active: "",
-    })
+    };
+
+    const styles = useStyles();
+    const [data, setData] = useState([]);
+    const [drivers, setDrivers] = useState([]);
+    const [driverSelected, setDriverSelected] = useState('');
+    const [typeComfortSelected, setTypeComfortSelected] = useState('');
+    const [createModal, setCreateModal] = useState(false);
+    const [viewModal, setViewModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [selectedTransport, setSelectedTransport] = useState(formatSelectedTransport)
 
     const handleChange = async e => {
         const {name, value} = e.target;
@@ -71,19 +72,22 @@ function Transports() {
         if (name === 'driverSelected') {
             setDriverSelected(value);
             let {driver} = selectedTransport;
-            driver.user_id = value;
+            //driver.user_id = value;
         } else if (name === 'typeComfortSelected') {
             setTypeComfortSelected(value);
             let {comfort} = selectedTransport;
-            comfort.type_comfort_id = value;
+            //comfort.type_comfort_id = value;
         } else {
             setSelectedTransport(prevState => ({
                 ...prevState,
                 [name]: value
             }));
         }
-
-        console.log('setSelectedTransport:', selectedTransport)
+        /*
+        console.log('typeComfortSelected:', typeComfortSelected);
+        console.log('driverSelected:', driverSelected);
+        console.log('setSelectedTransport:', selectedTransport);
+        */
     }
 
     const postTransport = async () => {
@@ -153,12 +157,24 @@ function Transports() {
     }
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
-        setDriverSelected("");
-        setTypeComfortSelected("");
+
+        // Data are cleaned when the modal is closed
+        if (updateModal) {
+            setSelectedTransport(formatSelectedTransport);
+            setDriverSelected("");
+            setTypeComfortSelected("");
+        }
     }
 
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
+
+        // Data are cleaned when the modal is closed
+        if (updateModal) {
+            setSelectedTransport(formatSelectedTransport);
+            setDriverSelected("");
+            setTypeComfortSelected("");
+        }
     }
 
     useEffect(() => {
@@ -179,20 +195,19 @@ function Transports() {
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
-/*
-            try {
-                const drivers = await getDrivers();
-                setDrivers(drivers);
-                console.log('getDrivers:', drivers)
-                console.log('selectedTransport:', selectedTransport)
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
-            }
-*/
+            /*
+                        try {
+                            const drivers = await getDrivers();
+                            setDrivers(drivers);
+                            console.log('getDrivers:', drivers)
+                            console.log('selectedTransport:', selectedTransport)
+                        } catch (error) {
+                            console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+                        }
+            */
             try {
                 const availableDrivers = await getAvailableDrivers();
                 setDrivers(availableDrivers);
-                console.log('getAvailableDrivers:', availableDrivers)
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
             }
@@ -221,7 +236,7 @@ function Transports() {
                     labelId="typeComfortSelected"
                     id="typeComfortSelected"
                     name="typeComfortSelected"
-                    value={typeComfortSelected}
+                    value={(typeComfortSelected) ? typeComfortSelected : 0}
                     required
                     onChange={handleChange}
                     displayEmpty
@@ -241,7 +256,7 @@ function Transports() {
                     labelId="driverSelected"
                     id="driverSelected"
                     name="driverSelected"
-                    value={driverSelected}
+                    value={(driverSelected) ? driverSelected : 0}
                     onChange={handleChange}
                     displayEmpty
                     className={styles.inputMaterial}
@@ -259,7 +274,11 @@ function Transports() {
                         </MenuItem>
                     ))}
                 </Select>
-                <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                <Tooltip
+                    title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
+                    <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                </Tooltip>
+
             </FormControl>
             <br/><br/>
             <div align="right">
@@ -324,7 +343,7 @@ function Transports() {
                 labelId="typeComfortSelected"
                 id="typeComfortSelected"
                 name="typeComfortSelected"
-                value={selectedTransport && selectedTransport.comfort.type_comfort_id}
+                value={(typeComfortSelected) ? typeComfortSelected : selectedTransport.comfort.type_comfort_id}
                 onChange={handleChange}
                 displayEmpty
                 className={styles.inputMaterial}
@@ -347,13 +366,16 @@ function Transports() {
                     labelId="driverSelected"
                     id="driverSelected"
                     name="driverSelected"
-                    value={0}
+                    value={(driverSelected) ? driverSelected : selectedTransport.driver.user_id}
                     onChange={handleChange}
                     displayEmpty
                     className={styles.inputMaterial}
                 >
-                    <MenuItem value={0} disabled>
+                    <MenuItem value="" disabled>
                         Seleccione un chofer
+                    </MenuItem>
+                    <MenuItem value={selectedTransport.driver.user_id}>
+                        {selectedTransport.driver.surname}, {selectedTransport.driver.name}
                     </MenuItem>
                     {drivers.map((drivers) => (
                         <MenuItem
@@ -361,11 +383,13 @@ function Transports() {
                             value={drivers.user_id}
                         >
                             {drivers.surname}, {drivers.name}
-
                         </MenuItem>
                     ))}
                 </Select>
-                <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                <Tooltip
+                    title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
+                    <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                </Tooltip>
             </FormControl>
 
             <br/><br/>
