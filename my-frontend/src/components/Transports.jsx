@@ -17,9 +17,9 @@ import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {getTransports} from '../api/Transports';
 import {getDrivers, getAvailableDrivers} from "../api/Drivers";
 import {
-    ERROR_MSG_API_GET_DRIVERS,
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
-    ERROR_MSG_API_GET_TRANSPORTS
+    ERROR_MSG_API_GET_TRANSPORTS,
+    ERROR_MSG_API_POST_TRANSPORT
 } from "../const/messages";
 
 const columns = [
@@ -92,18 +92,79 @@ function Transports() {
         */
     }
 
-    const postTransport = async () => {
-        /*
-        await axios.post(baseUrl, selectedTransport)
-            .then(response => {
-                setData(data.concat(response.data));
-                openCloseModalCreate();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
+    /*
+    export const getTransports = async () => {
+    const token = localStorage.getItem('token');
+    try {
+        const instance = axios.create({
+            baseURL: `${BACKEND_URL}/transports`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const response = await instance.get();
+        return response.data;
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
     }
+    return
+}
+     */
 
+    const postTransport = async () => {
+
+        const token = localStorage.getItem('token');
+
+        const newTransport = {
+            internal_identification: selectedTransport.internal_identification,
+            model: selectedTransport.model,
+            registration_number: selectedTransport.registration_number,
+            seating: selectedTransport.seating,
+            id_type_comfort: typeComfortSelected,
+            id_driver: driverSelected
+        }
+
+        try {
+            let res = await axios.post('http://localhost:3001/transports',
+                newTransport,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+            let data = res.data;
+            console.log('IMPRIMO LA RESPONSE DATA: ', data);
+            openCloseModalCreate();
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+        }
+
+    }
+    /*
+    const postTransportD = async () => {
+        console.log('postTransport - selectedTransport', selectedTransport);
+        const token = localStorage.getItem('token');
+        try {
+            const instance = axios.post(
+                'http://localhost:3001/transports',
+                {
+                    internal_identification: selectedTransport.internal_identification,
+                    model: selectedTransport.model,
+                    registration_number: selectedTransport.registration_number,
+                    seating: selectedTransport.seating,
+                    id_type_comfort: selectedTransport.comfort.type_comfort_id,
+                    id_driver: selectedTransport.driver.user_id
+                }
+            })
+
+            //openCloseModalCreate();
+        } catch (error) {
+            console.log(`Ocurrió un error al crear la combi ${error}`);
+        }
+
+    }
+*/
     const putTransport = async () => {
         /*
         await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
@@ -167,6 +228,7 @@ function Transports() {
             setDriverSelected("");
             setTypeComfortSelected("");
         }
+
     }
 
     const openCloseModalDelete = () => {
@@ -198,16 +260,6 @@ function Transports() {
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
-            /*
-                        try {
-                            const drivers = await getDrivers();
-                            setDrivers(drivers);
-                            console.log('getDrivers:', drivers)
-                            console.log('selectedTransport:', selectedTransport)
-                        } catch (error) {
-                            console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
-                        }
-            */
             try {
                 const availableDrivers = await getAvailableDrivers();
                 setDrivers(availableDrivers);
@@ -221,16 +273,20 @@ function Transports() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVA COMBI</h3>
-            <TextField className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
+            <TextField inputProps={{maxLength: 5}}
+                       className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
                        required onChange={handleChange}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Patente" name="registration_number"
+            <TextField inputProps={{maxLength: 7}}
+                       className={styles.inputMaterial} label="Patente" name="registration_number"
                        required onChange={handleChange}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Modelo" name="model"
+            <TextField inputProps={{maxLength: 45}}
+                       className={styles.inputMaterial} label="Modelo" name="model"
                        required onChange={handleChange}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
+            <TextField inputProps={{maxLength: 2}} InputProps={{min: 1, max: 99}}
+                       className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
                        required onChange={handleChange}/>
             <FormControl required className={styles.inputMaterial}>
                 <InputLabel>Tipo de confort</InputLabel>
@@ -328,18 +384,22 @@ function Transports() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR COMBI</h3>
-            <TextField className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
+            <TextField inputProps={{maxLength: 5}}
+                       className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.internal_identification}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Patente" name="registration_number"
+            <TextField inputProps={{maxLength: 7}}
+                       className={styles.inputMaterial} label="Patente" name="registration_number"
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.registration_number}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}
+            <TextField inputProps={{maxLength: 45}}
+                       className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}
                        value={selectedTransport && selectedTransport.model}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
+            <TextField inputProps={{maxLength: 2}} InputProps={{min: 1, max: 99}}
+                       className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.seating}/>
             <br/>
