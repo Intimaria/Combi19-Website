@@ -1,4 +1,21 @@
 module.exports = {
+    ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
+    ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
+    ERROR_MSG_API_GET_DRIVER_BY_ID: 'Ocurrió un error al obtener al chofer indicado:',
+    OK_MSG_API_POST_DRIVER: 'Se registró el chofer con éxito',
+    ERROR_MSG_API_POST_DRIVER: 'Ocurrió un error al crear el chofer:',
+    OK_MSG_API_PUT_DRIVER: 'Se actualizaron los datos del chofer con éxito',
+    ERROR_MSG_API_PUT_DRIVER: 'Ocurrió un error al actualizar los datos del chofer:',
+    OK_MSG_API_DELETE_DRIVER: 'Se eliminó el chofer con éxito',
+    ERROR_MSG_API_DELETE_DRIVER: 'Ocurrió un error al eliminar el chofer indicado',
+    ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE: 'No se puede eliminar, el chofer figura como conductor de combis',
+    OK_MSG_API_LOCATION_POST:'Se creó el lugar con éxito',
+    ERROR_MSG_API_GET_TRANSPORTS: 'Ocurrió un error al obtener las combis:',
+    ERROR_MSG_API_GET_TRANSPORT_BY_ID: 'Ocurrió un error al obtener la combi indicada:',
+    OK_MSG_API_TRANSPORT_POST: 'Se creó la combi con éxito',
+    ERROR_MSG_API_POST_TRANSPORT: 'Ocurrió un error al crear la combi:',
+    OK_MSG_API_USER_POST: 'Se creó el usuario con éxito',
+    ERROR_MSG_API_POST_USER: 'Ocurrió un error al insertar el usuario:',
     ERROR_MSG_EMPTY_DATE: '* Ingrese una fecha',
     ERROR_MSG_EMPTY_EMAIL: '* Ingrese un correo electrónico',
     ERROR_MSG_EMPTY_NAME: '* Ingrese un nombre',
@@ -35,8 +52,5 @@ module.exports = {
     ERROR_MSG_REPEAT_PLACES: '* Ingrese lugares de origen y destino distintos',
     ERROR_MSG_EXISTING_PLACES: '* Ingrese lugares de origen y destino distintos',
     ERROR_MSG_INEXISTENT_PLACE:'* El lugar no se encontró en la región',
-    ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
-    OK_MSG_TRANSPORT_CREATED: 'Se ha creado la combi con éxito',
-    OK_MSG_USER_CREATED: 'Se ha creado el usuario con éxito',
-    OK_MSG_LOCATION_CREATED:'Se ha creado el lugar con éxito'
+    ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden'
 }

@@ -1,13 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Modal, TextField, Button} from '@material-ui/core';
+import FormControl from "@material-ui/core/FormControl";
+import Select from '@material-ui/core/Select';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import MaterialTable from "material-table";
+import Tooltip from '@material-ui/core/Tooltip';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
-import Search from '@material-ui/icons/Search';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {getTransports} from '../api/Transport';
 import {useStyles} from '../const/modalStyle';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import {getTransports} from '../api/Transport';
+import {getDrivers} from "../api/Driver";
+import {
+    ERROR_MSG_API_GET_DRIVERS,
+    ERROR_MSG_API_GET_TRANSPORTS
+} from "../const/messages";
 
 const columns = [
     {title: 'Identificación', field: 'internal_identification'},
@@ -16,7 +26,7 @@ const columns = [
     {title: 'Tipo de confort', field: 'comfort.type_comfort_name'},
     {
         title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`,
-        customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) != -1
+        customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
     {title: 'Estado', field: 'active'}
 ];
@@ -25,6 +35,9 @@ const columns = [
 function Transports() {
     const styles = useStyles();
     const [data, setData] = useState([]);
+    const [drivers, setDrivers] = useState([]);
+    const [driverSelected, setDriverSelected] = useState('');
+    const [typeComfortSelected, setTypeComfortSelected] = useState('');
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
@@ -35,7 +48,6 @@ function Transports() {
         registration_number: "",
         model: "",
         seating: "",
-        type_comfort: "",
         comfort: {
             type_comfort_id: "",
             type_comfort_name: ""
@@ -46,15 +58,31 @@ function Transports() {
             surname: "",
             email: "",
             phone_number: ""
-        }
+        },
+        active: "",
     })
 
     const handleChange = async e => {
         const {name, value} = e.target;
-        setSelectedTransport(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        console.log('name:', name);
+        console.log('value:', value)
+
+        if (name === 'driverSelected') {
+            setDriverSelected(value);
+            let {driver} = selectedTransport;
+            driver.user_id = value;
+        } else if (name === 'typeComfortSelected') {
+            setTypeComfortSelected(value);
+            let {comfort} = selectedTransport;
+            comfort.type_comfort_id = value;
+        } else {
+            setSelectedTransport(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+
+        console.log('setSelectedTransport:', selectedTransport)
     }
 
     const postTransport = async () => {
@@ -111,11 +139,12 @@ function Transports() {
         } else {
             openCloseModalDelete()
         }
-
     }
 
     const openCloseModalCreate = () => {
         setCreateModal(!createModal);
+        setDriverSelected("");
+        setTypeComfortSelected("");
     }
 
     const openCloseModalViewDetails = () => {
@@ -123,47 +152,105 @@ function Transports() {
     }
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
+        setDriverSelected("");
+        setTypeComfortSelected("");
     }
 
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
     }
 
-    useEffect(async () => {
-        let data = await getTransports();
-        for (let index = 0; index < data.length; index++) {
-            if (data[index].active === 0) {
-                data[index].active = 'Inactivo';
-            } else if (data[index].active === 1) {
-                data[index].active = 'Activo'
-            } else {
-                data[index].active = 'Estado inválido'
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                let data = await getTransports();
+
+                for (let index = 0; index < data.length; index++) {
+                    if (data[index].active === 0) {
+                        data[index].active = 'Inactivo';
+                    } else if (data[index].active === 1) {
+                        data[index].active = 'Activo'
+                    } else {
+                        data[index].active = 'Estado inválido'
+                    }
+                }
+                setData(data);
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
-        }
-        setData(data);
-    }, [])
+
+            try {
+                const drivers = await getDrivers();
+                setDrivers(drivers);
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+            }
+        };
+        fetchData();
+    }, [selectedTransport]);
 
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVA COMBI</h3>
             <TextField className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
-                       onChange={handleChange}/>
+                       required onChange={handleChange}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Patente" name="registration_number"
-                       onChange={handleChange}/>
+                       required onChange={handleChange}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}/>
+            <TextField className={styles.inputMaterial} label="Modelo" name="model"
+                       required onChange={handleChange}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
-                       onChange={handleChange}/>
-            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
-                       onChange={handleChange}/>
+                       required onChange={handleChange}/>
+            <FormControl required className={styles.formControl}>
+                <InputLabel>Tipo de confort</InputLabel>
+                <Select
+                    label="Tipo de confort"
+                    labelId="typeComfortSelected"
+                    id="typeComfortSelected"
+                    name="typeComfortSelected"
+                    value={typeComfortSelected}
+                    required
+                    onChange={handleChange}
+                    displayEmpty
+                    className={styles.selectEmpty}
+                >
+                    <MenuItem value="" disabled> Seleccione un tipo de confort </MenuItem>
+                    <MenuItem key={1} value={1}> Cómoda </MenuItem>
+                    <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
+
+                </Select>
+            </FormControl>
             <br/>
-            <TextField className={styles.inputMaterial} label="Chofer" name="driver" onChange={handleChange}/>
+            <FormHelperText>Chofer</FormHelperText>
+            <Select
+                label="Chofer"
+                labelId="driverSelected"
+                id="driverSelected"
+                name="driverSelected"
+                value={driverSelected}
+                onChange={handleChange}
+                displayEmpty
+                className={styles.inputMaterial}
+            >
+                <MenuItem value="" disabled>
+                    Seleccione un chofer
+                </MenuItem>
+                {drivers.map((drivers) => (
+                    <MenuItem
+                        key={drivers.USER_ID}
+                        value={drivers.USER_ID}
+                    >
+                        {drivers.SURNAME}, {drivers.NAME}
+
+                    </MenuItem>
+                ))}
+            </Select>
             <br/><br/>
             <div align="right">
-                <Button color="primary" onClick={() => postTransport()}>Insertar</Button>
-                <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
+                <Button color="primary" onClick={() => postTransport()}>GUARDAR</Button>
+                <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
     )
@@ -186,7 +273,9 @@ function Transports() {
             <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
                        value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
             <br/>
-
+            <TextField className={styles.inputMaterial} label="Estado" name="active"
+                       value={selectedTransport && selectedTransport.active}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Chofer" name="driver"
                        value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
             <br/><br/>
@@ -215,12 +304,53 @@ function Transports() {
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.seating}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
-                       onChange={handleChange}
-                       value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
+            <FormHelperText>Tipo de confort</FormHelperText>
+            <Select
+                label="Tipo de comfort"
+                labelId="typeComfortSelected"
+                id="typeComfortSelected"
+                name="typeComfortSelected"
+                value={selectedTransport && selectedTransport.comfort.type_comfort_id}
+                onChange={handleChange}
+                displayEmpty
+                className={styles.inputMaterial}
+            >
+                <MenuItem value="" disabled> Seleccione un tipo de confort </MenuItem>
+                <MenuItem key={1} value={1}> Cómoda </MenuItem>
+                <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
+
+            </Select>
             <br/>
-            <TextField className={styles.inputMaterial} label="Chofer" name="driver" onChange={handleChange}
-                       value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
+            <Tooltip title="Debe eliminar la combi para cambiar el estado">
+                <TextField className={styles.inputMaterial} label="Estado" name="active"
+                           value={selectedTransport && selectedTransport.active} disabled/>
+            </Tooltip>
+            <br/>
+            <FormHelperText>Chofer</FormHelperText>
+            <Select
+                label="Chofer"
+                labelId="driverSelected"
+                id="driverSelected"
+                name="driverSelected"
+                value={selectedTransport && selectedTransport.driver.user_id}
+                onChange={handleChange}
+                displayEmpty
+                className={styles.inputMaterial}
+            >
+                <MenuItem value="" disabled>
+                    Seleccione un chofer
+                </MenuItem>
+                {drivers.map((drivers) => (
+                    <MenuItem
+                        key={drivers.USER_ID}
+                        value={drivers.USER_ID}
+                    >
+                        {drivers.SURNAME}, {drivers.NAME}
+
+                    </MenuItem>
+                ))}
+            </Select>
+
             <br/><br/>
             <div align="right">
                 <Button color="primary" onClick={() => putTransport()}>CONFIRMAR CAMBIOS</Button>
@@ -258,7 +388,6 @@ function Transports() {
             <MaterialTable
                 columns={columns}
                 data={data}
-                icons={{Filter: () => <Search/>}}
                 title="Lista de combis"
                 actions={[
                     {

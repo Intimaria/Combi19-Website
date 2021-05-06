@@ -20,7 +20,7 @@ import {
     ERROR_MSG_PASSWORD_NO_MATCH,
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
     ERROR_MSG_INVALID_SURNAME
-} from '../const/message.js';
+} from '../const/messages.js';
 
 import {
     REGEX_DATE_YYYY_MM_DD,

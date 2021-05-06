@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const {OK_MSG_LOCATION_CREATED} = require('../const/messages.js');
+const {OK_MSG_API_LOCATION_POST} = require('../const/messages.js');
 
 const {prepareConnection} = require("../helpers/connectionDB.js");
 
@@ -76,7 +76,7 @@ const postPlace = async (req, res) => {
         "INSERT INTO CITY (ID_PROVINCE, CITY_NAME, ACTIVE) VALUES (?,?,?)",
         [id_province, city_name, ACTIVE]).then((result) => {
         connection.end();
-        res.status(201).send(OK_MSG_LOCATION_CREATED);
+        res.status(201).send(OK_MSG_API_LOCATION_POST);
     }).catch(function (err) {
         console.log('Ha ocurrido un error al crear la ciudad: ', err);
         res.status(500);

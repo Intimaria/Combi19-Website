@@ -1,7 +1,10 @@
-const { prepareConnection } = require("../helpers/connectionDB.js");
-const { validateDriversToCreate } = require("../helpers/validateUserInputs.js");
-const { OK_MSG_USER_CREATED } = require("../const/messages.js");
-const { PASSENGER_ROLE, ACTIVE } = require('../const/config.js');
+const {prepareConnection} = require("../helpers/connectionDB.js");
+const {validateDriversToCreate} = require("../helpers/validateUserInputs.js");
+const {
+    ERROR_MSG_API_POST_USER,
+    OK_MSG_API_USER_POST
+} = require("../const/messages.js");
+const {PASSENGER_ROLE, ACTIVE} = require('../const/config.js');
 
 const Register = async (req, res) => {
     const {names, surname, email, birthday, password1, password2} = req.body;
@@ -22,9 +25,9 @@ const Register = async (req, res) => {
             connection.execute(sqlInsert, [PASSENGER_ROLE, id, ACTIVE]);
 
             connection.end();
-            res.status(201).send(OK_MSG_USER_CREATED);
+            res.status(201).send(OK_MSG_API_USER_POST);
         } catch (error) {
-            console.log("Ocurrió un error al insertar el usuario:", error);
+            console.log(`${ERROR_MSG_API_POST_USER} ${error}`);
             res.status(500);
         }
     }

@@ -1,6 +1,11 @@
 const {prepareConnection} = require("../helpers/connectionDB.js");
 
-const {OK_MSG_TRANSPORT_CREATED} = require("../const/messages");
+const {
+    ERROR_MSG_API_GET_TRANSPORTS,
+    ERROR_MSG_API_GET_TRANSPORT_BY_ID,
+    OK_MSG_API_TRANSPORT_POST,
+    ERROR_MSG_API_POST_TRANSPORT
+} = require("../const/messages");
 
 const {normalizeTransport} = require("../helpers/normalizeResult")
 
@@ -11,7 +16,7 @@ const getTransports = async (req, res) => {
         const connection = await prepareConnection();
 
         let sqlSelect =
-            `
+                `
             SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
             tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME TYPE_COMFORT_NAME, u.*            
             FROM TRANSPORT t
@@ -27,8 +32,8 @@ const getTransports = async (req, res) => {
 
         res.json(normalizedResults);
 
-    } catch (e) {
-        console.log('Ocurrió un error al obtener las combis:', e)
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`)
     }
     res.end();
 }
@@ -53,8 +58,8 @@ const getTransportById = async (req, res) => {
         const normalizedResults = await normalizeTransport(rows);
 
         res.json(normalizedResults);
-    } catch (e) {
-        console.log('Ocurrió un error al obtener la combi:', e)
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_TRANSPORT_BY_ID} ${error}`)
     }
     res.end();
 }
@@ -76,9 +81,9 @@ const postTransport = async (req, res) => {
 
         connection.end();
 
-        res.status(201).send(OK_MSG_TRANSPORT_CREATED);
-    } catch (e) {
-        console.log("Ocurrió un error al crear la combi:", e);
+        res.status(201).send(OK_MSG_API_TRANSPORT_POST);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
     }
     res.end();
 };
