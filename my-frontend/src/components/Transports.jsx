@@ -9,6 +9,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MaterialTable from "material-table";
 import Tooltip from '@material-ui/core/Tooltip';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
+import HelpIcon from '@material-ui/icons/Help';
+import {spacing} from '@material-ui/system';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/modalStyle';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
@@ -136,6 +138,7 @@ function Transports() {
     }
 
     const selectTransport = (transport, action) => {
+        console.log('transport/rowData:', transport);
         setSelectedTransport(transport);
         if (action === "Ver") {
             openCloseModalViewDetails()
@@ -276,7 +279,10 @@ function Transports() {
                 </Select>
                 <Tooltip
                     title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
-                    <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                    <FormHelperText>
+                        <HelpIcon color='primary' fontSize="small"/>
+                        Sólo se visualizan los choferes disponibles
+                    </FormHelperText>
                 </Tooltip>
 
             </FormControl>
@@ -388,7 +394,10 @@ function Transports() {
                 </Select>
                 <Tooltip
                     title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
-                    <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+                    <FormHelperText>
+                        <HelpIcon color='primary' fontSize="small"/>
+                        Sólo se visualizan los choferes disponibles
+                    </FormHelperText>
                 </Tooltip>
             </FormControl>
 
@@ -436,16 +445,18 @@ function Transports() {
                         tooltip: 'Visualización de combi',
                         onClick: (event, rowData) => selectTransport(rowData, "Ver")
                     },
-                    {
+                    rowData => ({
                         icon: 'edit',
-                        tooltip: 'Editar combi',
+                        tooltip: (rowData.active === 'Activo') ? 'Editar combi' : 'No se puede editar una combi dada de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectTransport(rowData, "Editar")
-                    },
-                    {
+                    }),
+                    rowData => ({
                         icon: 'delete',
-                        tooltip: 'Eliminar combi',
+                        tooltip: (rowData.active === 'Activo') ? 'Eliminar combi' : 'No se puede eliminar una combi dada de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectTransport(rowData, "Eliminar")
-                    }
+                    })
                 ]}
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}
