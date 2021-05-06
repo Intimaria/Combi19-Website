@@ -9,7 +9,7 @@ export const getTransports = async () => {
     const token = localStorage.getItem('token');
     try {
         const instance = axios.create({
-            baseURL: `${BACKEND_URL}/transport`,
+            baseURL: `${BACKEND_URL}/transports`,
             headers: {
                 Authorization: `Bearer ${token}`
             }

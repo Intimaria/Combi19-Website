@@ -30,7 +30,7 @@ class Server {
         this.app.use('/employee/login', require('../routes/employees-login.js'));
         this.app.use('/products', require('../routes/employees-products.js'));
         this.app.use('/routes', require('../routes/employees-routes.js'));
-        this.app.use('/transport', require('../routes/employees-transports.js'));
+        this.app.use('/transports', require('../routes/employees-transports.js'));
         this.app.use('/trips', require('../routes/employees-trips.js'));
         this.app.use('/login', require('../routes/login.js'));
         this.app.use('/places', require('../routes/employees-places.js'));

@@ -55,6 +55,30 @@ const getDriverById = async (req, res) => {
     res.end();
 }
 
+const getAvailableDrivers = async (req, res) => {
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect =
+                `
+                SELECT u.USER_ID user_id, u.NAME name, u.SURNAME surname
+                FROM USER u
+                INNER JOIN ROLE_USER ru ON u.USER_ID = ru.ID_USER
+                LEFT JOIN TRANSPORT t ON u.USER_ID = t.ID_DRIVER
+                WHERE ru.ACTIVE = 1
+                AND ru.ID_ROLE = 2
+                AND t.TRANSPORT_ID IS NULL
+                ORDER BY u.SURNAME ASC, u.NAME ASC;
+                `
+        const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);
+        connection.end();
+        return res.status(200).send(rows);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+        res.status(500);
+    }
+    res.end();
+}
+
 const postDriver = async (req, res) => {
     const {names, surname, email, phoneNumber, password1, password2} = req.body;
 
@@ -65,7 +89,7 @@ const postDriver = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlInsert = "INSERT INTO USER(NAME, SURNAME, EMAIL, PASSWORD,PHONE_NUMBER) VALUES (?,?,?,?,?)"
+            let sqlInsert = "INSERT INTO USER(NAME, SURNAME, EMAIL, PASSWORD, PHONE_NUMBER) VALUES (?,?,?,?,?)"
             const [rows] = await connection.execute(sqlInsert, [names, surname, email, password1, phoneNumber]);
 
             const id = rows.insertId;
@@ -133,6 +157,7 @@ const deleteDriver = async (req, res) => {
 module.exports = {
     getDrivers,
     getDriverById,
+    getAvailableDrivers,
     postDriver,
     putDriver,
     deleteDriver

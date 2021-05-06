@@ -18,7 +18,7 @@ const getTransports = async (req, res) => {
         let sqlSelect =
                 `
             SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
-            tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME TYPE_COMFORT_NAME, u.*            
+            tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME, u.*            
             FROM TRANSPORT t
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
@@ -46,7 +46,7 @@ const getTransportById = async (req, res) => {
 
         let sqlSelect = `
             SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
-            tc.TYPE_COMFORT_ID, tc.NAME TYPE_COMFORT_NAME, u.*            
+            tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME, u.*            
             FROM TRANSPORT t
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID

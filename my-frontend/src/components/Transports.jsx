@@ -12,10 +12,11 @@ import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/modalStyle';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import {getTransports} from '../api/Transport';
-import {getDrivers} from "../api/Driver";
+import {getTransports} from '../api/Transports';
+import {getDrivers, getAvailableDrivers} from "../api/Drivers";
 import {
     ERROR_MSG_API_GET_DRIVERS,
+    ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
     ERROR_MSG_API_GET_TRANSPORTS
 } from "../const/messages";
 
@@ -178,16 +179,26 @@ function Transports() {
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
-
+/*
             try {
                 const drivers = await getDrivers();
                 setDrivers(drivers);
+                console.log('getDrivers:', drivers)
+                console.log('selectedTransport:', selectedTransport)
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
             }
+*/
+            try {
+                const availableDrivers = await getAvailableDrivers();
+                setDrivers(availableDrivers);
+                console.log('getAvailableDrivers:', availableDrivers)
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+            }
         };
         fetchData();
-    }, [selectedTransport]);
+    }, []);
 
     const bodyCreate = (
         <div className={styles.modal}>
@@ -203,7 +214,7 @@ function Transports() {
             <br/>
             <TextField className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
                        required onChange={handleChange}/>
-            <FormControl required className={styles.formControl}>
+            <FormControl required className={styles.inputMaterial}>
                 <InputLabel>Tipo de confort</InputLabel>
                 <Select
                     label="Tipo de confort"
@@ -216,37 +227,40 @@ function Transports() {
                     displayEmpty
                     className={styles.selectEmpty}
                 >
-                    <MenuItem value="" disabled> Seleccione un tipo de confort </MenuItem>
+                    <MenuItem value={0} disabled> Seleccione un tipo de confort </MenuItem>
                     <MenuItem key={1} value={1}> Cómoda </MenuItem>
                     <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
 
                 </Select>
             </FormControl>
             <br/>
-            <FormHelperText>Chofer</FormHelperText>
-            <Select
-                label="Chofer"
-                labelId="driverSelected"
-                id="driverSelected"
-                name="driverSelected"
-                value={driverSelected}
-                onChange={handleChange}
-                displayEmpty
-                className={styles.inputMaterial}
-            >
-                <MenuItem value="" disabled>
-                    Seleccione un chofer
-                </MenuItem>
-                {drivers.map((drivers) => (
-                    <MenuItem
-                        key={drivers.USER_ID}
-                        value={drivers.USER_ID}
-                    >
-                        {drivers.SURNAME}, {drivers.NAME}
-
+            <FormControl required className={styles.inputMaterial}>
+                <InputLabel>Chofer</InputLabel>
+                <Select
+                    label="Chofer"
+                    labelId="driverSelected"
+                    id="driverSelected"
+                    name="driverSelected"
+                    value={driverSelected}
+                    onChange={handleChange}
+                    displayEmpty
+                    className={styles.inputMaterial}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione un chofer
                     </MenuItem>
-                ))}
-            </Select>
+                    {drivers.map((drivers) => (
+                        <MenuItem
+                            key={drivers.user_id}
+                            value={drivers.user_id}
+                        >
+                            {drivers.surname}, {drivers.name}
+
+                        </MenuItem>
+                    ))}
+                </Select>
+                <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+            </FormControl>
             <br/><br/>
             <div align="right">
                 <Button color="primary" onClick={() => postTransport()}>GUARDAR</Button>
@@ -326,30 +340,33 @@ function Transports() {
                            value={selectedTransport && selectedTransport.active} disabled/>
             </Tooltip>
             <br/>
-            <FormHelperText>Chofer</FormHelperText>
-            <Select
-                label="Chofer"
-                labelId="driverSelected"
-                id="driverSelected"
-                name="driverSelected"
-                value={selectedTransport && selectedTransport.driver.user_id}
-                onChange={handleChange}
-                displayEmpty
-                className={styles.inputMaterial}
-            >
-                <MenuItem value="" disabled>
-                    Seleccione un chofer
-                </MenuItem>
-                {drivers.map((drivers) => (
-                    <MenuItem
-                        key={drivers.USER_ID}
-                        value={drivers.USER_ID}
-                    >
-                        {drivers.SURNAME}, {drivers.NAME}
-
+            <FormControl required className={styles.inputMaterial}>
+                <InputLabel>Chofer</InputLabel>
+                <Select
+                    label="Chofer"
+                    labelId="driverSelected"
+                    id="driverSelected"
+                    name="driverSelected"
+                    value={0}
+                    onChange={handleChange}
+                    displayEmpty
+                    className={styles.inputMaterial}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione un chofer
                     </MenuItem>
-                ))}
-            </Select>
+                    {drivers.map((drivers) => (
+                        <MenuItem
+                            key={drivers.user_id}
+                            value={drivers.user_id}
+                        >
+                            {drivers.surname}, {drivers.name}
+
+                        </MenuItem>
+                    ))}
+                </Select>
+                <FormHelperText>Sólo se visualizan los choferes disponibles</FormHelperText>
+            </FormControl>
 
             <br/><br/>
             <div align="right">

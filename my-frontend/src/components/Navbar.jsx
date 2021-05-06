@@ -40,7 +40,7 @@ const Navbar = ({ userData }) => {
             <NavLink to="/places" className="btn btn-dark mr-2"> Lugares </NavLink>
             <NavLink to="/products" className="btn btn-dark mr-2"> Productos </NavLink>
             <NavLink to="/reports" className="btn btn-dark mr-2"> Reportes </NavLink>
-            <NavLink to="/uers" className="btn btn-dark mr-2"> Usuarios </NavLink>
+            <NavLink to="/users" className="btn btn-dark mr-2"> Usuarios </NavLink>
         </div>
     )
     return (
