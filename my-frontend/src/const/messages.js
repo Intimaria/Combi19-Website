@@ -15,6 +15,18 @@ export const OK_MSG_API_TRANSPORT_POST = 'Se creó la combi con éxito';
 export const ERROR_MSG_API_POST_TRANSPORT = 'Ocurrió un error al crear la combi:';
 export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
 export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';
+// Transport registration form
+export const ERROR_MSG_EMPTY_DRIVER = '* Seleccione un chofer';
+export const ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION = '* Ingrese una identificación interna';
+export const ERROR_MSG_EMPTY_MODEL = '* Ingrese un modelo';
+export const ERROR_MSG_EMPTY_REGISTRATION_NUMBER = '* Ingrese una patente';
+export const ERROR_MSG_INVALID_REGISTRATION_NUMBER = '* La patente ingresada es inválida';
+export const ERROR_MSG_EMPTY_SEATING = '* Ingrese la cantidad de asientos';
+export const ERROR_MSG_INVALID_MAX_SEATING = '* El máximo son 99 asientos';
+export const ERROR_MSG_INVALID_MIN_SEATING = '* El mínimo es un asiento';
+export const ERROR_MSG_INVALID_VALUE_SEATING = '* Sólo se permite valores numéricos';
+export const ERROR_MSG_EMPTY_TYPE_COMFORT = '* Seleccione un tipo confort';
+// Passenger registration form
 export const ERROR_MSG_EMPTY_DATE = '* Ingrese una fecha';
 export const ERROR_MSG_EMPTY_EMAIL = '* Ingrese un correo electrónico';
 export const ERROR_MSG_EMPTY_NAME = '* Ingrese un nombre';

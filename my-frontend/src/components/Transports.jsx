@@ -10,20 +10,35 @@ import MaterialTable from "material-table";
 import Tooltip from '@material-ui/core/Tooltip';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import HelpIcon from '@material-ui/icons/Help';
-import {spacing} from '@material-ui/system';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/modalStyle';
+import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {getTransports} from '../api/Transports';
-import {getDrivers, getAvailableDrivers} from "../api/Drivers";
+import {getAvailableDrivers} from "../api/Drivers";
 import {
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
     ERROR_MSG_API_GET_TRANSPORTS,
-    ERROR_MSG_API_POST_TRANSPORT
+    ERROR_MSG_API_POST_TRANSPORT,
+    ERROR_MSG_EMPTY_DRIVER,
+    ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION,
+    ERROR_MSG_EMPTY_MODEL,
+    ERROR_MSG_EMPTY_REGISTRATION_NUMBER,
+    ERROR_MSG_INVALID_REGISTRATION_NUMBER,
+    ERROR_MSG_EMPTY_SEATING,
+    ERROR_MSG_INVALID_MAX_SEATING,
+    ERROR_MSG_INVALID_MIN_SEATING,
+    ERROR_MSG_INVALID_VALUE_SEATING,
+    ERROR_MSG_EMPTY_TYPE_COMFORT
 } from "../const/messages";
+import {
+    REGEX_ONLY_NUMBER,
+    REGEX_NEW_REGISTRATION_NUMBER,
+    REGEX_OLD_REGISTRATION_NUMBER
+} from "../const/regex";
 
 const columns = [
-    {title: 'Identificación', field: 'internal_identification'},
+    {title: 'Identificación interna', field: 'internal_identification'},
     {title: 'Patente', field: 'registration_number'},
     {title: 'Modelo', field: 'model'},
     {title: 'Tipo de confort', field: 'comfort.type_comfort_name'},
@@ -36,6 +51,10 @@ const columns = [
 
 
 function Transports() {
+    const handleCloseMessage = () => {
+        setOptions({...options, open: false});
+    };
+
     const formatSelectedTransport = {
         internal_identification: "",
         registration_number: "",
@@ -58,13 +77,21 @@ function Transports() {
     const styles = useStyles();
     const [data, setData] = useState([]);
     const [drivers, setDrivers] = useState([]);
-    const [driverSelected, setDriverSelected] = useState('');
+    const [internalIdentificationError, setInternalIdentificationError] = useState(false);
+    const [registrationNumberError, setRegistrationNumberError] = useState(false);
+    const [modelError, setModelError] = useState(false);
+    const [seatingError, setSeatingError] = useState(false);
+    const [typeComfortSelectedError, setTypeComfortSelectedError] = useState('');
+    const [driverSelectedError, setDriverSelectedError] = useState('');
     const [typeComfortSelected, setTypeComfortSelected] = useState('');
+    const [driverSelected, setDriverSelected] = useState('');
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedTransport, setSelectedTransport] = useState(formatSelectedTransport)
+    const [selectedTransport, setSelectedTransport] = useState(formatSelectedTransport);
+    const [successMessage, setSuccessMessage] = React.useState(null);
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const handleChange = async e => {
         const {name, value} = e.target;
@@ -85,6 +112,8 @@ function Transports() {
                 [name]: value
             }));
         }
+
+        setSuccessMessage(null);
         /*
         console.log('typeComfortSelected:', typeComfortSelected);
         console.log('driverSelected:', driverSelected);
@@ -92,27 +121,87 @@ function Transports() {
         */
     }
 
-    /*
-    export const getTransports = async () => {
-    const token = localStorage.getItem('token');
-    try {
-        const instance = axios.create({
-            baseURL: `${BACKEND_URL}/transports`,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        const response = await instance.get();
-        return response.data;
-    } catch (error) {
-        console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
+
+    const validateForm = () => {
+        return validateInternalIdentification() & validateModel() & validateRegistrationNumber() & validateSeating() & validateTypeComfort() & validateDriver();
+    };
+
+    const validateInternalIdentification = () => {
+        if (!selectedTransport.internal_identification) {
+            setInternalIdentificationError(ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION);
+            return false;
+        }
+        setInternalIdentificationError(null);
+        return true;
     }
-    return
-}
-     */
+
+    const validateModel = () => {
+        if (!selectedTransport.model) {
+            setModelError(ERROR_MSG_EMPTY_MODEL);
+            return false;
+        }
+        setModelError(null);
+        return true;
+    }
+
+    const validateRegistrationNumber = () => {
+        if (!selectedTransport.registration_number) {
+            setRegistrationNumberError(ERROR_MSG_EMPTY_REGISTRATION_NUMBER);
+            return false;
+        } else if (!REGEX_OLD_REGISTRATION_NUMBER.test(selectedTransport.registration_number)
+            && !REGEX_NEW_REGISTRATION_NUMBER.test(selectedTransport.registration_number)) {
+            setRegistrationNumberError(ERROR_MSG_INVALID_REGISTRATION_NUMBER);
+            return false;
+        }
+        setRegistrationNumberError(null);
+        return true;
+    }
+
+    const validateSeating = () => {
+        if (!selectedTransport.seating) {
+            setSeatingError(ERROR_MSG_EMPTY_SEATING);
+            return false;
+        } else if (!REGEX_ONLY_NUMBER.test(selectedTransport.seating)) {
+            setSeatingError(ERROR_MSG_INVALID_VALUE_SEATING);
+            return false;
+        } else if (selectedTransport.seating < 1) {
+            setSeatingError(ERROR_MSG_INVALID_MIN_SEATING);
+            return false;
+        } else if (selectedTransport.seating > 99) {
+            seatingError(ERROR_MSG_INVALID_MAX_SEATING);
+            return false;
+        }
+        setSeatingError(null);
+        return true;
+    }
+
+    const validateTypeComfort = () => {
+        if (!typeComfortSelected) {
+            setTypeComfortSelectedError(ERROR_MSG_EMPTY_TYPE_COMFORT);
+            return false;
+        }
+        setTypeComfortSelectedError(null);
+        return true;
+    }
+
+    const validateDriver = () => {
+        if (!driverSelected) {
+            setDriverSelectedError(ERROR_MSG_EMPTY_DRIVER);
+            return false;
+        }
+        setDriverSelectedError(null);
+        return true;
+    }
+
+    const saveTransport = async () => {
+        if (!validateForm()) {
+            return false;
+        }
+        await postTransport();
+        return true
+    }
 
     const postTransport = async () => {
-
         const token = localStorage.getItem('token');
 
         const newTransport = {
@@ -125,7 +214,7 @@ function Transports() {
         }
 
         try {
-            let res = await axios.post('http://localhost:3001/transports',
+            let response = await axios.post('http://localhost:3001/transports',
                 newTransport,
                 {
                     headers: {
@@ -133,8 +222,16 @@ function Transports() {
                     }
                 });
 
-            let data = res.data;
-            console.log('IMPRIMO LA RESPONSE DATA: ', data);
+            let data = response.data;
+            console.log('LA RESPEUSTA ES:', response);
+            console.log('LA RESPUESTA DATA ES:', response.data)
+
+            setSuccessMessage(response.data);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: response.data
+            });
+
             openCloseModalCreate();
         } catch (error) {
             console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
@@ -214,6 +311,12 @@ function Transports() {
         setCreateModal(!createModal);
         setDriverSelected("");
         setTypeComfortSelected("");
+        setInternalIdentificationError(false);
+        setRegistrationNumberError(false);
+        setModelError(false);
+        setSeatingError(false);
+        setTypeComfortSelectedError(false);
+        setDriverSelectedError(false);
     }
 
     const openCloseModalViewDetails = () => {
@@ -273,52 +376,64 @@ function Transports() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVA COMBI</h3>
-            <TextField inputProps={{maxLength: 5}}
-                       className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
-                       required onChange={handleChange}/>
-            <br/>
-            <TextField inputProps={{maxLength: 7}}
-                       className={styles.inputMaterial} label="Patente" name="registration_number"
-                       required onChange={handleChange}/>
-            <br/>
-            <TextField inputProps={{maxLength: 45}}
-                       className={styles.inputMaterial} label="Modelo" name="model"
-                       required onChange={handleChange}/>
-            <br/>
-            <TextField inputProps={{maxLength: 2}} InputProps={{min: 1, max: 99}}
-                       className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
-                       required onChange={handleChange}/>
-            <FormControl required className={styles.inputMaterial}>
+            <TextField label="Identificación interna" id={"internal_identification"} name="internal_identification"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 5}}
+                       autoComplete='off'
+                       error={(internalIdentificationError) ? true : false}
+                       helperText={(internalIdentificationError) ? internalIdentificationError : false}
+                       onChange={handleChange}/>
+            <TextField label="Patente" id={"registration_number"} name="registration_number"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 7}}
+                       autoComplete='off'
+                       error={(registrationNumberError) ? true : false}
+                       helperText={(registrationNumberError) ? registrationNumberError : false}
+                       onChange={handleChange}/>
+            <TextField label="Modelo" name={"model"} name="model"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 45}}
+                       autoComplete='off'
+                       error={(modelError) ? true : false}
+                       helperText={(modelError) ? modelError : false}
+                       onChange={handleChange}/>
+            <TextField label="Cantidad de asientos" id={"seating"} name="seating"
+                       className={styles.inputMaterial}
+                       inputProps={{maxLength: 2}}
+                       autoComplete='off'
+                       required
+                       error={(seatingError) ? true : false}
+                       helperText={(seatingError) ? seatingError : false}
+                       onChange={handleChange}/>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(typeComfortSelectedError) ? true : false}>
                 <InputLabel>Tipo de confort</InputLabel>
-                <Select
-                    label="Tipo de confort"
-                    labelId="typeComfortSelected"
-                    id="typeComfortSelected"
-                    name="typeComfortSelected"
-                    value={(typeComfortSelected) ? typeComfortSelected : 0}
-                    required
-                    onChange={handleChange}
-                    displayEmpty
-                    className={styles.selectEmpty}
+                <Select label="Tipo de confort" id="typeComfortSelected" labelId={"typeComfortSelected"}
+                        name="typeComfortSelected"
+                        className={styles.selectEmpty}
+                        value={(typeComfortSelected) ? typeComfortSelected : 0}
+                        displayEmpty
+                        onChange={handleChange}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo de confort </MenuItem>
                     <MenuItem key={1} value={1}> Cómoda </MenuItem>
                     <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
-
                 </Select>
+                <FormHelperText>{(typeComfortSelectedError) ? typeComfortSelectedError : false}</FormHelperText>
             </FormControl>
-            <br/>
-            <FormControl required className={styles.inputMaterial}>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(driverSelectedError) ? true : false}>
                 <InputLabel>Chofer</InputLabel>
-                <Select
-                    label="Chofer"
-                    labelId="driverSelected"
-                    id="driverSelected"
-                    name="driverSelected"
-                    value={(driverSelected) ? driverSelected : 0}
-                    onChange={handleChange}
-                    displayEmpty
-                    className={styles.inputMaterial}
+                <Select label="Chofer" id="driverSelected" labelId={"driverSelected"} name="driverSelected"
+                        className={styles.inputMaterial}
+                        value={(driverSelected) ? driverSelected : 0}
+                        displayEmpty
+                        onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione un chofer
@@ -333,18 +448,18 @@ function Transports() {
                         </MenuItem>
                     ))}
                 </Select>
-                <Tooltip
-                    title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
-                    <FormHelperText>
-                        <HelpIcon color='primary' fontSize="small"/>
-                        Sólo se visualizan los choferes disponibles
-                    </FormHelperText>
-                </Tooltip>
-
+                <FormHelperText>{(driverSelectedError) ? driverSelectedError : false}</FormHelperText>
             </FormControl>
-            <br/><br/>
+            <Tooltip
+                title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
+                <FormHelperText>
+                    <HelpIcon color='primary' fontSize="small"/>
+                    Sólo se visualizan los choferes disponibles
+                </FormHelperText>
+            </Tooltip>
+            <br/>
             <div align="right">
-                <Button color="primary" onClick={() => postTransport()}>GUARDAR</Button>
+                <Button color="primary" onClick={() => saveTransport()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
@@ -353,7 +468,7 @@ function Transports() {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE LA COMBI</h3>
-            <TextField className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
+            <TextField className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
                        value={selectedTransport && selectedTransport.internal_identification}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Patente" name="registration_number"
@@ -385,7 +500,7 @@ function Transports() {
         <div className={styles.modal}>
             <h3>EDITAR COMBI</h3>
             <TextField inputProps={{maxLength: 5}}
-                       className={styles.inputMaterial} label="Identificador interno" name="internal_identification"
+                       className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.internal_identification}/>
             <br/>
@@ -486,6 +601,12 @@ function Transports() {
 
     return (
         <div className="App">
+            {
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                             handleClose={options.handleClose}/>
+                    : null
+            }
             <br/>
             <Button style={{marginLeft: '8px'}}
                     variant="contained"

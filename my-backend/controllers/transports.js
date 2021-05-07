@@ -65,13 +65,9 @@ const getTransportById = async (req, res) => {
 }
 
 const postTransport = async (req, res) => {
-    console.log('entró al post');
-
-    //console.log('req es:', req)
-
     const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
 
-    console.log('Valores del modal:', internal_identification, model, registration_number, seating, id_type_comfort, id_driver);
+    console.log('Valores recibidos:', internal_identification, model, registration_number, seating, id_type_comfort, id_driver);
 
     try {
         const connection = await prepareConnection();
