@@ -6,7 +6,7 @@ import MaterialTable from "material-table";
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {getDrivers} from '../api/Driver';
+import {getDrivers} from '../api/Drivers';
 import {BACKEND_URL} from '../const/config.js';
 import {ERROR_MSG_API_GET_DRIVERS} from "../const/messages";
 
