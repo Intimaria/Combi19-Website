@@ -20,8 +20,9 @@ import {
 } from '../api/Transports';
 import {getAvailableDrivers} from "../api/Drivers";
 import {
-    ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
     ERROR_MSG_API_GET_TRANSPORTS,
+    ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
+    ERROR_MSG_API_POST_DRIVER,
     ERROR_MSG_EMPTY_DRIVER,
     ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION,
     ERROR_MSG_EMPTY_MODEL,
@@ -236,13 +237,11 @@ function Transports() {
 
             let postResponse = await postTransport(selectedTransport, typeComfortSelected, driverSelected);
 
-            console.log('la respuesta es:', postResponse);
-
-            if (postResponse.status === 200) {
-                setSuccessMessage(postResponse);
+            if (postResponse.status === 201) {
+                setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: postResponse
+                    message: postResponse.data
                 });
 
                 await openCloseModalCreate();
@@ -250,11 +249,11 @@ function Transports() {
             } else if (postResponse.status === 400) {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
                 setRegistrationNumberError(postResponse.data.registrationNumberError);
-            } else {
-                setSuccessMessage(postResponse);
+            } else if (postResponse.status === 500) {
+                setSuccessMessage(`${ERROR_MSG_API_POST_DRIVER} ${postResponse.data}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: postResponse
+                    message: `${ERROR_MSG_API_POST_DRIVER} ${postResponse.data}`
                 });
 
                 return true

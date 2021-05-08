@@ -14,14 +14,14 @@ export const getTransports = async () => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
         const response = await instance.get();
         return response.data;
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
     }
     return
-}
+};
 
 export const postTransport = async (selectedTransport, typeComfortSelected, driverSelected) => {
     const token = localStorage.getItem('token');
@@ -33,7 +33,7 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
         seating: selectedTransport.seating,
         id_type_comfort: typeComfortSelected,
         id_driver: driverSelected
-    }
+    };
 
     try {
         let response = await axios.post(`${BACKEND_URL}/transports`,
@@ -43,7 +43,7 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
                     Authorization: `Bearer ${token}`
                 }
             });
-        console.log('response en try es:', response)
+
         return response;
     } catch (error) {
         if (error.response.status) {
@@ -52,4 +52,4 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
             console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
         }
     }
-}
+};
