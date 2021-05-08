@@ -1,13 +1,25 @@
 import React from 'react';
 
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import {
+    ERROR_MSG_API_LOGIN,
+    ERROR_MSG_INTERNET
+} from "../const/messages";
+import {Message} from "./Message";
+
 const axios = require("axios");
 
 const Login = ({path}) => {
+    const handleCloseMessage = () => {
+        setOptions({...options, open: false});
+    };
+
     const history = useHistory();
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [loginError, setLoginError] = React.useState(null);
+    const [successMessage, setSuccessMessage] = React.useState(null);
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const handleEmail = (newValue) => {
         setEmail(newValue.target.value);
@@ -23,6 +35,7 @@ const Login = ({path}) => {
         event.preventDefault();
 
         getRequest();
+
         return true;
     }
     const getRequest = () => {
@@ -36,14 +49,44 @@ const Login = ({path}) => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userData', JSON.stringify(response.data.userData));
                 history.push("/home");
+
+                setSuccessMessage(`Sesión iniciada correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Sesión iniciada correctamente`
+                });
             })
             .catch((error) => {
                 console.log("There was an error in the submitted entries");
-                setLoginError(error.response.data);
+                if (error.response?.status) {
+                    setLoginError(error.response.data);
+                } else {
+                    // In this situation, is NOT an axios handled error
+
+                    console.log(`${ERROR_MSG_API_LOGIN} ${error}`);
+
+                    if (error.message === 'Network Error') {
+                        error.message = ERROR_MSG_INTERNET;
+
+                    }
+                    setSuccessMessage(`${ERROR_MSG_API_LOGIN} ${error.message}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `${ERROR_MSG_API_LOGIN} ${error.message}`
+                    });
+                    return error.message;
+
+                }
             });
     }
     return (
         <div className="container w-50 bg-dark pb-3 rounded">
+            {
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                             handleClose={options.handleClose}/>
+                    : null
+            }
             <h2 className="text-light">Iniciar sesión</h2>
             <form onSubmit={mySubmitHandler}>
                 <div className="row">

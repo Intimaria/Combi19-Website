@@ -1,3 +1,4 @@
+export const ERROR_MSG_API_LOGIN = 'Ocurrió un error al iniciar sesión:';
 export const ERROR_MSG_API_GET_DRIVERS = 'Ocurrió un error al obtener los choferes:';
 export const ERROR_MSG_API_GET_DRIVER_BY_ID = 'Ocurrió un error al obtener al chofer indicado:';
 export const ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE = 'Ocurrió un error al obtener las combis disponibles:';
@@ -15,6 +16,7 @@ export const OK_MSG_API_TRANSPORT_POST = 'Se creó la combi con éxito';
 export const ERROR_MSG_API_POST_TRANSPORT = 'Ocurrió un error al crear la combi:';
 export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
 export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';
+export const ERROR_MSG_INTERNET = 'verifique su conexión a internet'
 // Transport registration form
 export const ERROR_MSG_EMPTY_DRIVER = '* Seleccione un chofer';
 export const ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION = '* Ingrese una identificación interna';

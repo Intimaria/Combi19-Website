@@ -35,10 +35,10 @@ const getDrivers = async (req, res) => {
         return res.status(200).send(rows);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
     }
     res.end();
-}
+};
 
 const getDriverById = async (req, res) => {
     try {
@@ -50,16 +50,16 @@ const getDriverById = async (req, res) => {
         return res.status(200).send(rows[0]);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVER_BY_ID} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_DRIVER_BY_ID} ${error}`);
     }
     res.end();
-}
+};
 
 const getAvailableDrivers = async (req, res) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect =
-                `
+            `
                 SELECT u.USER_ID user_id, u.NAME name, u.SURNAME surname
                 FROM USER u
                 INNER JOIN ROLE_USER ru ON u.USER_ID = ru.ID_USER
@@ -68,13 +68,13 @@ const getAvailableDrivers = async (req, res) => {
                 AND ru.ID_ROLE = 2
                 AND t.TRANSPORT_ID IS NULL
                 ORDER BY u.SURNAME ASC, u.NAME ASC;
-                `
+                `;
         const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);
         connection.end();
         return res.status(200).send(rows);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
     }
     res.end();
 }
@@ -99,12 +99,12 @@ const postDriver = async (req, res) => {
             res.status(201).send(OK_MSG_API_POST_DRIVER);
         } catch (error) {
             console.log(`${ERROR_MSG_API_POST_DRIVER} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_POST_DRIVER} ${error}`);
         }
 
     }
     res.end();
-}
+};
 
 const putDriver = async (req, res) => {
     const {id} = req.params
@@ -124,11 +124,11 @@ const putDriver = async (req, res) => {
             res.status(201).send(OK_MSG_API_PUT_DRIVER);
         } catch (error) {
             console.log(`${ERROR_MSG_API_PUT_DRIVER} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_PUT_DRIVER} ${error}`);
         }
     }
     res.end();
-}
+};
 
 const deleteDriver = async (req, res) => {
     const {id} = req.params;
@@ -148,11 +148,11 @@ const deleteDriver = async (req, res) => {
             return res.status(200).send(OK_MSG_API_DELETE_DRIVER);
         } catch (error) {
             console.log(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
         }
     }
     res.end();
-}
+};
 
 module.exports = {
     getDrivers,
