@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {BACKEND_URL} from "../const/config";
 import {
-    ERROR_MSG_API_GET_TRANSPORTS
+    ERROR_MSG_API_GET_TRANSPORTS,
+    ERROR_MSG_API_POST_TRANSPORT
 } from "../const/messages";
 
 
@@ -20,4 +21,30 @@ export const getTransports = async () => {
         console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
     }
     return
+}
+
+export const postTransport = async (selectedTransport, typeComfortSelected, driverSelected) => {
+    const token = localStorage.getItem('token');
+
+    const newTransport = {
+        internal_identification: selectedTransport.internal_identification,
+        model: selectedTransport.model,
+        registration_number: selectedTransport.registration_number,
+        seating: selectedTransport.seating,
+        id_type_comfort: typeComfortSelected,
+        id_driver: driverSelected
+    }
+
+    try {
+        let response = await axios.post(`${BACKEND_URL}/transports`,
+            newTransport,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        return response.data;
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+    }
 }

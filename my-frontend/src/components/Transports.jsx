@@ -14,12 +14,14 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/modalStyle';
 import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import {getTransports} from '../api/Transports';
+import {
+    getTransports,
+    postTransport
+} from '../api/Transports';
 import {getAvailableDrivers} from "../api/Drivers";
 import {
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
     ERROR_MSG_API_GET_TRANSPORTS,
-    ERROR_MSG_API_POST_TRANSPORT,
     ERROR_MSG_EMPTY_DRIVER,
     ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION,
     ERROR_MSG_EMPTY_MODEL,
@@ -96,16 +98,12 @@ function Transports() {
     const handleChange = async e => {
         const {name, value} = e.target;
         console.log('name:', name);
-        console.log('value:', value)
+        console.log('value:', value);
 
         if (name === 'driverSelected') {
             setDriverSelected(value);
-            let {driver} = selectedTransport;
-            //driver.user_id = value;
         } else if (name === 'typeComfortSelected') {
             setTypeComfortSelected(value);
-            let {comfort} = selectedTransport;
-            //comfort.type_comfort_id = value;
         } else {
             setSelectedTransport(prevState => ({
                 ...prevState,
@@ -119,7 +117,7 @@ function Transports() {
         console.log('driverSelected:', driverSelected);
         console.log('setSelectedTransport:', selectedTransport);
         */
-    }
+    };
 
 
     const validateForm = () => {
@@ -133,7 +131,7 @@ function Transports() {
         }
         setInternalIdentificationError(null);
         return true;
-    }
+    };
 
     const validateModel = () => {
         if (!selectedTransport.model) {
@@ -142,7 +140,7 @@ function Transports() {
         }
         setModelError(null);
         return true;
-    }
+    };
 
     const validateRegistrationNumber = () => {
         if (!selectedTransport.registration_number) {
@@ -155,7 +153,7 @@ function Transports() {
         }
         setRegistrationNumberError(null);
         return true;
-    }
+    };
 
     const validateSeating = () => {
         if (!selectedTransport.seating) {
@@ -173,95 +171,48 @@ function Transports() {
         }
         setSeatingError(null);
         return true;
-    }
+    };
 
     const validateTypeComfort = () => {
-        if (!typeComfortSelected) {
+        if (typeComfortSelected) {
+            setTypeComfortSelectedError(null);
+            return true;
+        } else {
             setTypeComfortSelectedError(ERROR_MSG_EMPTY_TYPE_COMFORT);
             return false;
         }
-        setTypeComfortSelectedError(null);
-        return true;
-    }
+    };
 
     const validateDriver = () => {
-        if (!driverSelected) {
+        if (driverSelected) {
+            setDriverSelectedError(null);
+            return true;
+        } else {
             setDriverSelectedError(ERROR_MSG_EMPTY_DRIVER);
             return false;
         }
-        setDriverSelectedError(null);
-        return true;
-    }
+    };
 
     const saveTransport = async () => {
-        if (!validateForm()) {
-            return false;
-        }
-        await postTransport();
-        return true
-    }
+        if (validateForm()) {
+            let postResponse = await postTransport(selectedTransport, typeComfortSelected, driverSelected);
 
-    const postTransport = async () => {
-        const token = localStorage.getItem('token');
+            console.log('la respuesta es:',postResponse);
 
-        const newTransport = {
-            internal_identification: selectedTransport.internal_identification,
-            model: selectedTransport.model,
-            registration_number: selectedTransport.registration_number,
-            seating: selectedTransport.seating,
-            id_type_comfort: typeComfortSelected,
-            id_driver: driverSelected
-        }
-
-        try {
-            let response = await axios.post('http://localhost:3001/transports',
-                newTransport,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+            if (postResponse) {
+                setSuccessMessage(postResponse);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: postResponse
                 });
 
-            let data = response.data;
-            console.log('LA RESPEUSTA ES:', response);
-            console.log('LA RESPUESTA DATA ES:', response.data)
-
-            setSuccessMessage(response.data);
-            setOptions({
-                ...options, open: true, type: 'success',
-                message: response.data
-            });
-
-            openCloseModalCreate();
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+                await openCloseModalCreate();
+                return true
+            }
         }
+    };
 
-    }
-    /*
-    const postTransportD = async () => {
-        console.log('postTransport - selectedTransport', selectedTransport);
-        const token = localStorage.getItem('token');
-        try {
-            const instance = axios.post(
-                'http://localhost:3001/transports',
-                {
-                    internal_identification: selectedTransport.internal_identification,
-                    model: selectedTransport.model,
-                    registration_number: selectedTransport.registration_number,
-                    seating: selectedTransport.seating,
-                    id_type_comfort: selectedTransport.comfort.type_comfort_id,
-                    id_driver: selectedTransport.driver.user_id
-                }
-            })
 
-            //openCloseModalCreate();
-        } catch (error) {
-            console.log(`Ocurrió un error al crear la combi ${error}`);
-        }
-
-    }
-*/
     const putTransport = async () => {
         /*
         await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
@@ -281,7 +232,7 @@ function Transports() {
                 console.log(error);
             })
             */
-    }
+    };
 
     const deleteTransport = async () => {
         /*
@@ -293,22 +244,32 @@ function Transports() {
                 console.log(error);
             })
             */
-    }
+    };
 
-    const selectTransport = (transport, action) => {
-        console.log('transport/rowData:', transport);
+    const selectTransport = async (transport, action) => {
         setSelectedTransport(transport);
         if (action === "Ver") {
             openCloseModalViewDetails()
         } else if (action === "Editar") {
-            openCloseModalUpdate()
+            await openCloseModalUpdate()
         } else {
-            openCloseModalDelete()
+            await openCloseModalDelete()
         }
-    }
+    };
 
-    const openCloseModalCreate = () => {
+    const openCloseModalCreate = async () => {
         setCreateModal(!createModal);
+
+        // Data are loaded when the modal is open
+        if (!createModal) {
+            try {
+                const availableDrivers = await getAvailableDrivers();
+                setDrivers(availableDrivers);
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+            }
+        }
+
         setDriverSelected("");
         setTypeComfortSelected("");
         setInternalIdentificationError(false);
@@ -317,13 +278,24 @@ function Transports() {
         setSeatingError(false);
         setTypeComfortSelectedError(false);
         setDriverSelectedError(false);
-    }
+    };
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
-    }
-    const openCloseModalUpdate = () => {
+    };
+
+    const openCloseModalUpdate = async () => {
         setUpdateModal(!updateModal);
+
+        // Data are loaded when the modal is open
+        if (!updateModal) {
+            try {
+                const availableDrivers = await getAvailableDrivers();
+                setDrivers(availableDrivers);
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+            }
+        }
 
         // Data are cleaned when the modal is closed
         if (updateModal) {
@@ -332,18 +304,18 @@ function Transports() {
             setTypeComfortSelected("");
         }
 
-    }
+    };
 
-    const openCloseModalDelete = () => {
+    const openCloseModalDelete = async () => {
         setDeleteModal(!deleteModal);
 
         // Data are cleaned when the modal is closed
-        if (updateModal) {
+        if (deleteModal) {
             setSelectedTransport(formatSelectedTransport);
             setDriverSelected("");
             setTypeComfortSelected("");
         }
-    }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -363,12 +335,6 @@ function Transports() {
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
-            try {
-                const availableDrivers = await getAvailableDrivers();
-                setDrivers(availableDrivers);
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
-            }
         };
         fetchData();
     }, []);
@@ -381,7 +347,7 @@ function Transports() {
                        required
                        inputProps={{maxLength: 5}}
                        autoComplete='off'
-                       error={(internalIdentificationError) ? true : false}
+                       error={(internalIdentificationError)}
                        helperText={(internalIdentificationError) ? internalIdentificationError : false}
                        onChange={handleChange}/>
             <TextField label="Patente" id={"registration_number"} name="registration_number"
@@ -389,15 +355,15 @@ function Transports() {
                        required
                        inputProps={{maxLength: 7}}
                        autoComplete='off'
-                       error={(registrationNumberError) ? true : false}
+                       error={(registrationNumberError)}
                        helperText={(registrationNumberError) ? registrationNumberError : false}
                        onChange={handleChange}/>
-            <TextField label="Modelo" name={"model"} name="model"
+            <TextField label="Modelo" id={"model"} name="model"
                        className={styles.inputMaterial}
                        required
                        inputProps={{maxLength: 45}}
                        autoComplete='off'
-                       error={(modelError) ? true : false}
+                       error={(modelError)}
                        helperText={(modelError) ? modelError : false}
                        onChange={handleChange}/>
             <TextField label="Cantidad de asientos" id={"seating"} name="seating"
@@ -405,12 +371,12 @@ function Transports() {
                        inputProps={{maxLength: 2}}
                        autoComplete='off'
                        required
-                       error={(seatingError) ? true : false}
+                       error={(seatingError)}
                        helperText={(seatingError) ? seatingError : false}
                        onChange={handleChange}/>
             <FormControl className={styles.inputMaterial}
                          required
-                         error={(typeComfortSelectedError) ? true : false}>
+                         error={(typeComfortSelectedError)}>
                 <InputLabel>Tipo de confort</InputLabel>
                 <Select label="Tipo de confort" id="typeComfortSelected" labelId={"typeComfortSelected"}
                         name="typeComfortSelected"
@@ -427,7 +393,7 @@ function Transports() {
             </FormControl>
             <FormControl className={styles.inputMaterial}
                          required
-                         error={(driverSelectedError) ? true : false}>
+                         error={(driverSelectedError)}>
                 <InputLabel>Chofer</InputLabel>
                 <Select label="Chofer" id="driverSelected" labelId={"driverSelected"} name="driverSelected"
                         className={styles.inputMaterial}
@@ -463,7 +429,7 @@ function Transports() {
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyViewDetails = (
         <div className={styles.modal}>
@@ -494,7 +460,7 @@ function Transports() {
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyEdit = (
         <div className={styles.modal}>
@@ -582,7 +548,7 @@ function Transports() {
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyDelete = (
         <div className={styles.modal}>
@@ -597,7 +563,7 @@ function Transports() {
             </div>
 
         </div>
-    )
+    );
 
     return (
         <div className="App">
