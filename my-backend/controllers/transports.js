@@ -9,7 +9,7 @@ const {
 
 const {validateTransportToCreate} = require("../helpers/validateTransportInputs");
 
-const {normalizeTransport} = require("../helpers/normalizeResult")
+const {normalizeTransport} = require("../helpers/normalizeResult");
 
 const getTransports = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
@@ -35,10 +35,11 @@ const getTransports = async (req, res) => {
         res.json(normalizedResults);
 
     } catch (error) {
-        console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`)
+        console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
     }
     res.end();
-}
+};
 
 const getTransportById = async (req, res) => {
     const {id} = req.params;
@@ -52,7 +53,7 @@ const getTransportById = async (req, res) => {
             FROM TRANSPORT t
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
-            WHERE TRANSPORT_ID = ${id}`;
+            WHERE TRANSPORT_ID = ${id};`;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
@@ -61,10 +62,11 @@ const getTransportById = async (req, res) => {
 
         res.json(normalizedResults);
     } catch (error) {
-        console.log(`${ERROR_MSG_API_GET_TRANSPORT_BY_ID} ${error}`)
+        console.log(`${ERROR_MSG_API_GET_TRANSPORT_BY_ID} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_TRANSPORT_BY_ID} ${error}`);
     }
     res.end();
-}
+};
 
 const postTransport = async (req, res) => {
     const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
@@ -84,7 +86,7 @@ const postTransport = async (req, res) => {
                 INSERT INTO TRANSPORT
                 (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER, ACTIVE)
                 VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver}, 1);
-                `
+                `;
 
             await connection.execute(sqlInsert);
 
@@ -101,11 +103,11 @@ const postTransport = async (req, res) => {
 
 const putTransport = async (req, rest) => {
 
-}
+};
 
 const deleteTransport = async (req, rest) => {
 
-}
+};
 
 module.exports = {
     getTransports,
@@ -113,4 +115,4 @@ module.exports = {
     postTransport,
     putTransport,
     deleteTransport
-}
+};

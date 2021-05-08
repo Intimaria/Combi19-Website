@@ -2,7 +2,8 @@ import axios from 'axios';
 import {BACKEND_URL} from "../const/config";
 import {
     ERROR_MSG_API_GET_DRIVERS,
-    ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE
+    ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
+    ERROR_MSG_INTERNET
 } from "../const/messages";
 
 export const getDrivers = async () => {
@@ -18,8 +19,8 @@ export const getDrivers = async () => {
         return response.data;
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+        return null;
     }
-    return
 }
 
 export const getAvailableDrivers = async () => {
@@ -32,11 +33,24 @@ export const getAvailableDrivers = async () => {
             }
         })
         const response = await instance.get();
-        return response.data;
+        return response;
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+
+        console.log('error.constructor.name', error.constructor.name);
+        console.log('error.message', error.message);
+        console.log('error.name', error.name);
+
+
+        if (error.message === 'Network Error') {
+            error.message = ERROR_MSG_INTERNET
+            return error.message;
+        } else {
+            return error.message;
+        }
+
+
     }
-    return
 }
 
 

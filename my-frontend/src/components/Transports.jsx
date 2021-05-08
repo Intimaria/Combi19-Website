@@ -32,7 +32,7 @@ import {
     ERROR_MSG_INVALID_MAX_SEATING,
     ERROR_MSG_INVALID_MIN_SEATING,
     ERROR_MSG_INVALID_VALUE_SEATING,
-    ERROR_MSG_EMPTY_TYPE_COMFORT
+    ERROR_MSG_EMPTY_TYPE_COMFORT, ERROR_MSG_API_POST_TRANSPORT
 } from "../const/messages";
 import {
     REGEX_ONLY_NUMBER,
@@ -160,7 +160,6 @@ function Transports() {
     };
 
     const validateInternalIdentification = () => {
-        console.log('valor de !selectedTransport.internal_identification',selectedTransport.internal_identification)
         if (!selectedTransport.internal_identification) {
             setInternalIdentificationError(ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION);
             return false;
@@ -170,7 +169,6 @@ function Transports() {
     };
 
     const validateModel = () => {
-        console.log('valor de !selectedTransport.internal_identification',selectedTransport.model)
         if (!selectedTransport.model) {
             setModelError(ERROR_MSG_EMPTY_MODEL);
             return false;
@@ -250,15 +248,20 @@ function Transports() {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
                 setRegistrationNumberError(postResponse.data.registrationNumberError);
             } else if (postResponse.status === 500) {
-                setSuccessMessage(`${ERROR_MSG_API_POST_DRIVER} ${postResponse.data}`);
+                setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_DRIVER} ${postResponse.data}`
+                    message: postResponse.data
                 });
 
                 return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`
+                });
             }
-
         }
     };
 
@@ -312,11 +315,25 @@ function Transports() {
 
         // Data are loaded when the modal is open
         if (!createModal) {
-            try {
+            let getAvailableDriversResponse = await getAvailableDrivers();
+
+            if (getAvailableDriversResponse.status === 200) {
                 const availableDrivers = await getAvailableDrivers();
-                setDrivers(availableDrivers);
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+                setDrivers(availableDrivers.data);
+            } else if (getAvailableDriversResponse.status === 500) {
+                getAvailableDriversResponse(getAvailableDriversResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: getAvailableDriversResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
+                });
             }
         }
 
@@ -340,11 +357,25 @@ function Transports() {
 
         // Data are loaded when the modal is open
         if (!updateModal) {
-            try {
+            let getAvailableDriversResponse = await getAvailableDrivers();
+
+            if (getAvailableDriversResponse.status === 200) {
                 const availableDrivers = await getAvailableDrivers();
-                setDrivers(availableDrivers);
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+                setDrivers(availableDrivers.data);
+            } else if (getAvailableDriversResponse.status === 500) {
+                getAvailableDriversResponse(getAvailableDriversResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: getAvailableDriversResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
+                });
             }
         }
 
@@ -371,18 +402,39 @@ function Transports() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let data = await getTransports();
+                let getTransportsResponse = await getTransports();
 
-                for (let index = 0; index < data.length; index++) {
-                    if (data[index].active === 0) {
-                        data[index].active = 'Inactivo';
-                    } else if (data[index].active === 1) {
-                        data[index].active = 'Activo'
-                    } else {
-                        data[index].active = 'Estado inválido'
+                if (getTransportsResponse.status === 200) {
+                    let data = getTransportsResponse.data;
+
+                    for (let index = 0; index < data.length; index++) {
+                        if (data[index].active === 0) {
+                            data[index].active = 'Inactivo';
+                        } else if (data[index].active === 1) {
+                            data[index].active = 'Activo'
+                        } else {
+                            data[index].active = 'Estado inválido'
+                        }
                     }
+
+                    setData(data);
+                } else if (getTransportsResponse.status === 500) {
+                    setSuccessMessage(getTransportsResponse.data);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: getTransportsResponse.data
+                    });
+
+                    return true
+                } else {
+                    setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`
+                    });
                 }
-                setData(data);
+
+
             } catch (error) {
                 console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
             }
@@ -455,15 +507,18 @@ function Transports() {
                     <MenuItem value={0} disabled>
                         Seleccione un chofer
                     </MenuItem>
-                    {drivers.map((drivers) => (
-                        <MenuItem
-                            key={drivers.user_id}
-                            value={drivers.user_id}
-                        >
-                            {drivers.surname}, {drivers.name}
+                    {(drivers) ?
+                        drivers.map((drivers) => (
+                            <MenuItem
+                                key={drivers.user_id}
+                                value={drivers.user_id}
+                            >
+                                {drivers.surname}, {drivers.name}
 
-                        </MenuItem>
-                    ))}
+                            </MenuItem>
+                        ))
+                        : null
+                    }
                 </Select>
                 <FormHelperText>{(driverSelectedError) ? driverSelectedError : false}</FormHelperText>
             </FormControl>
@@ -575,14 +630,16 @@ function Transports() {
                     <MenuItem value={selectedTransport.driver.user_id}>
                         {selectedTransport.driver.surname}, {selectedTransport.driver.name}
                     </MenuItem>
-                    {drivers.map((drivers) => (
-                        <MenuItem
-                            key={drivers.user_id}
-                            value={drivers.user_id}
-                        >
-                            {drivers.surname}, {drivers.name}
-                        </MenuItem>
-                    ))}
+                    {(drivers) ?
+                        drivers.map((drivers) => (
+                            <MenuItem
+                                key={drivers.user_id}
+                                value={drivers.user_id}
+                            >
+                                {drivers.surname}, {drivers.name}
+                            </MenuItem>
+                        )) : null
+                    }
                 </Select>
                 <Tooltip
                     title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
