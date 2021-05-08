@@ -43,8 +43,13 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
                     Authorization: `Bearer ${token}`
                 }
             });
-        return response.data;
+        console.log('response en try es:', response)
+        return response;
     } catch (error) {
-        console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+        if (error.response.status) {
+            return error.response;
+        } else {
+            console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+        }
     }
 }
