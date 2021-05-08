@@ -101,6 +101,39 @@ function Transports() {
         console.log('value:', value);
 
         if (name === 'driverSelected') {
+            setDriverSelectedError(false);
+            setDriverSelected(value);
+        } else if (name === 'typeComfortSelected') {
+            setTypeComfortSelectedError(false);
+            setTypeComfortSelected(value);
+        } else {
+            setSelectedTransport(prevState => ({
+                ...prevState,
+                [name]: value
+            }))
+
+            switch (name) {
+                case 'internal_identification':
+                    setInternalIdentificationError(false);
+                    break;
+                case 'registration_number':
+                    setRegistrationNumberError(false);
+                    break;
+                case 'model':
+                    setModelError(false);
+                    break;
+                case 'seating':
+                    setSeatingError(false);
+                    break;
+                default:
+                    console.log('Es necesario agregar un case más en el switch por el name:', name);
+                    break;
+            }
+        }
+
+
+        /*
+        if (name === 'driverSelected') {
             setDriverSelected(value);
         } else if (name === 'typeComfortSelected') {
             setTypeComfortSelected(value);
@@ -110,6 +143,7 @@ function Transports() {
                 [name]: value
             }));
         }
+        */
 
         setSuccessMessage(null);
         /*
@@ -125,6 +159,7 @@ function Transports() {
     };
 
     const validateInternalIdentification = () => {
+        console.log('valor de !selectedTransport.internal_identification',selectedTransport.internal_identification)
         if (!selectedTransport.internal_identification) {
             setInternalIdentificationError(ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION);
             return false;
@@ -134,6 +169,7 @@ function Transports() {
     };
 
     const validateModel = () => {
+        console.log('valor de !selectedTransport.internal_identification',selectedTransport.model)
         if (!selectedTransport.model) {
             setModelError(ERROR_MSG_EMPTY_MODEL);
             return false;
@@ -287,6 +323,7 @@ function Transports() {
 
         setDriverSelected("");
         setTypeComfortSelected("");
+        setSelectedTransport(formatSelectedTransport);
         setInternalIdentificationError(false);
         setRegistrationNumberError(false);
         setModelError(false);

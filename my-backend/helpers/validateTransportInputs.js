@@ -16,10 +16,6 @@ const validateTransportToCreate = async (internal_identification, registration_n
 
     if (isRegistrationNumberValid) registrationNumberError = null;
 
-    console.log('valor de internalIdentificationError:', internalIdentificationError);
-    console.log('valor de registrationNumberError:', registrationNumberError);
-
-
     if (isInternalIdentificationValid && isRegistrationNumberValid) {
         return null;
     } else {
