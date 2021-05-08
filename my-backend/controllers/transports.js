@@ -93,7 +93,7 @@ const postTransport = async (req, res) => {
             res.status(201).send(OK_MSG_API_TRANSPORT_POST);
         } catch (error) {
             console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
         }
     }
     res.end();
