@@ -94,7 +94,7 @@ const validateEmail = (email) => {
         return false;
     }
 
-    emailError = (null);
+    emailError = null;
     return true;
 }
 
@@ -147,7 +147,7 @@ const validateName = (names) => {
         return false;
     }
 
-    namesError = (null);
+    namesError = null;
     return true;
 }
 
@@ -160,7 +160,7 @@ const validateSurname = (surname) => {
         return false;
     }
 
-    surnameError = (null);
+    surnameError = null;
     return true;
 }
 
@@ -186,7 +186,7 @@ const validatePassword = (password1) => {
         return false;
     } */
 
-    passwordError1 = (null);
+    passwordError1 = null;
     return true;
 }
 
@@ -199,7 +199,7 @@ const comparePasswords = (password1, password2) => {
         return false;
     }
 
-    passwordError2 = (null);
+    passwordError2 = null;
     return true;
 }
 
@@ -250,7 +250,7 @@ const validateDate = (birthday) => {
         setBirthdayError(ERROR_MSG_INVALID_AGE);
         return false;
     }
-    birthdayError = (null);
+    birthdayError = null;
     return true;
 }
 
@@ -262,7 +262,7 @@ const validatePhoneNumber = (phoneNumber) => {
         phoneNumberError = (ERROR_MSG_INVALID_PHONE_NUMBER);
         return false;
     }
-    phoneNumberError = (null);
+    phoneNumberError = null;
     return true;
 }
 module.exports = {

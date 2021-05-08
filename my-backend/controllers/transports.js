@@ -7,6 +7,8 @@ const {
     ERROR_MSG_API_POST_TRANSPORT
 } = require("../const/messages");
 
+const {validateTransportToCreate} = require("../helpers/validateTransportInputs");
+
 const {normalizeTransport} = require("../helpers/normalizeResult")
 
 const getTransports = async (req, res) => {
@@ -69,23 +71,30 @@ const postTransport = async (req, res) => {
 
     console.log('Valores recibidos:', internal_identification, model, registration_number, seating, id_type_comfort, id_driver);
 
-    try {
-        const connection = await prepareConnection();
+    const inputsErrors = await validateTransportToCreate(internal_identification, registration_number);
 
-        let sqlInsert =
-            `
+    if (inputsErrors) {
+        res.status(400).json(inputsErrors);
+    } else {
+        try {
+            const connection = await prepareConnection();
+
+            let sqlInsert =
+                `
                 INSERT INTO TRANSPORT
                 (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER, ACTIVE)
                 VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver}, 1);
                 `
 
-        await connection.execute(sqlInsert);
+            await connection.execute(sqlInsert);
 
-        connection.end();
+            connection.end();
 
-        res.status(201).send(OK_MSG_API_TRANSPORT_POST);
-    } catch (error) {
-        console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+            res.status(201).send(OK_MSG_API_TRANSPORT_POST);
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+            res.status(500);
+        }
     }
     res.end();
 };

@@ -83,8 +83,8 @@ function Transports() {
     const [registrationNumberError, setRegistrationNumberError] = useState(false);
     const [modelError, setModelError] = useState(false);
     const [seatingError, setSeatingError] = useState(false);
-    const [typeComfortSelectedError, setTypeComfortSelectedError] = useState('');
-    const [driverSelectedError, setDriverSelectedError] = useState('');
+    const [typeComfortSelectedError, setTypeComfortSelectedError] = useState(false);
+    const [driverSelectedError, setDriverSelectedError] = useState(false);
     const [typeComfortSelected, setTypeComfortSelected] = useState('');
     const [driverSelected, setDriverSelected] = useState('');
     const [createModal, setCreateModal] = useState(false);
@@ -101,6 +101,39 @@ function Transports() {
         console.log('value:', value);
 
         if (name === 'driverSelected') {
+            setDriverSelectedError(false);
+            setDriverSelected(value);
+        } else if (name === 'typeComfortSelected') {
+            setTypeComfortSelectedError(false);
+            setTypeComfortSelected(value);
+        } else {
+            setSelectedTransport(prevState => ({
+                ...prevState,
+                [name]: value
+            }))
+
+            switch (name) {
+                case 'internal_identification':
+                    setInternalIdentificationError(false);
+                    break;
+                case 'registration_number':
+                    setRegistrationNumberError(false);
+                    break;
+                case 'model':
+                    setModelError(false);
+                    break;
+                case 'seating':
+                    setSeatingError(false);
+                    break;
+                default:
+                    console.log('Es necesario agregar un case más en el switch por el name:', name);
+                    break;
+            }
+        }
+
+
+        /*
+        if (name === 'driverSelected') {
             setDriverSelected(value);
         } else if (name === 'typeComfortSelected') {
             setTypeComfortSelected(value);
@@ -110,6 +143,7 @@ function Transports() {
                 [name]: value
             }));
         }
+        */
 
         setSuccessMessage(null);
         /*
@@ -125,6 +159,7 @@ function Transports() {
     };
 
     const validateInternalIdentification = () => {
+        console.log('valor de !selectedTransport.internal_identification',selectedTransport.internal_identification)
         if (!selectedTransport.internal_identification) {
             setInternalIdentificationError(ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION);
             return false;
@@ -134,6 +169,7 @@ function Transports() {
     };
 
     const validateModel = () => {
+        console.log('valor de !selectedTransport.internal_identification',selectedTransport.model)
         if (!selectedTransport.model) {
             setModelError(ERROR_MSG_EMPTY_MODEL);
             return false;
@@ -195,11 +231,14 @@ function Transports() {
 
     const saveTransport = async () => {
         if (validateForm()) {
+            setInternalIdentificationError(false);
+            setRegistrationNumberError(false);
+
             let postResponse = await postTransport(selectedTransport, typeComfortSelected, driverSelected);
 
-            console.log('la respuesta es:',postResponse);
+            console.log('la respuesta es:', postResponse);
 
-            if (postResponse) {
+            if (postResponse.status === 200) {
                 setSuccessMessage(postResponse);
                 setOptions({
                     ...options, open: true, type: 'success',
@@ -208,7 +247,19 @@ function Transports() {
 
                 await openCloseModalCreate();
                 return true
+            } else if (postResponse.status === 400) {
+                setInternalIdentificationError(postResponse.data.internalIdentificationError);
+                setRegistrationNumberError(postResponse.data.registrationNumberError);
+            } else {
+                setSuccessMessage(postResponse);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse
+                });
+
+                return true
             }
+
         }
     };
 
@@ -272,6 +323,7 @@ function Transports() {
 
         setDriverSelected("");
         setTypeComfortSelected("");
+        setSelectedTransport(formatSelectedTransport);
         setInternalIdentificationError(false);
         setRegistrationNumberError(false);
         setModelError(false);
@@ -345,25 +397,25 @@ function Transports() {
             <TextField label="Identificación interna" id={"internal_identification"} name="internal_identification"
                        className={styles.inputMaterial}
                        required
-                       inputProps={{maxLength: 5}}
+                       inputProps={{maxLength: 5, style: {textTransform: 'uppercase'}}}
                        autoComplete='off'
-                       error={(internalIdentificationError)}
+                       error={(internalIdentificationError) ? true : false}
                        helperText={(internalIdentificationError) ? internalIdentificationError : false}
                        onChange={handleChange}/>
             <TextField label="Patente" id={"registration_number"} name="registration_number"
                        className={styles.inputMaterial}
                        required
-                       inputProps={{maxLength: 7}}
+                       inputProps={{maxLength: 7, style: {textTransform: 'uppercase'}}}
                        autoComplete='off'
-                       error={(registrationNumberError)}
+                       error={(registrationNumberError) ? true : false}
                        helperText={(registrationNumberError) ? registrationNumberError : false}
                        onChange={handleChange}/>
             <TextField label="Modelo" id={"model"} name="model"
                        className={styles.inputMaterial}
                        required
-                       inputProps={{maxLength: 45}}
+                       inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
                        autoComplete='off'
-                       error={(modelError)}
+                       error={(modelError) ? true : false}
                        helperText={(modelError) ? modelError : false}
                        onChange={handleChange}/>
             <TextField label="Cantidad de asientos" id={"seating"} name="seating"
@@ -371,12 +423,12 @@ function Transports() {
                        inputProps={{maxLength: 2}}
                        autoComplete='off'
                        required
-                       error={(seatingError)}
+                       error={(seatingError) ? true : false}
                        helperText={(seatingError) ? seatingError : false}
                        onChange={handleChange}/>
             <FormControl className={styles.inputMaterial}
                          required
-                         error={(typeComfortSelectedError)}>
+                         error={(typeComfortSelectedError) ? true : false}>
                 <InputLabel>Tipo de confort</InputLabel>
                 <Select label="Tipo de confort" id="typeComfortSelected" labelId={"typeComfortSelected"}
                         name="typeComfortSelected"
@@ -393,7 +445,7 @@ function Transports() {
             </FormControl>
             <FormControl className={styles.inputMaterial}
                          required
-                         error={(driverSelectedError)}>
+                         error={(driverSelectedError) ? true : false}>
                 <InputLabel>Chofer</InputLabel>
                 <Select label="Chofer" id="driverSelected" labelId={"driverSelected"} name="driverSelected"
                         className={styles.inputMaterial}
