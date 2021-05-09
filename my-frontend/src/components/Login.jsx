@@ -1,25 +1,34 @@
 import React from 'react';
 
-import {useHistory} from "react-router-dom";
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
+import { useHistory } from "react-router-dom";
 import {
     ERROR_MSG_API_LOGIN,
     ERROR_MSG_INTERNET
 } from "../const/messages";
-import {Message} from "./Message";
+import { Message } from "./Message";
 
 const axios = require("axios");
 
-const Login = ({path}) => {
+const Login = ({ path }) => {
     const handleCloseMessage = () => {
-        setOptions({...options, open: false});
+        setOptions({ ...options, open: false });
     };
 
     const history = useHistory();
+    const [showPassword, setShowPassword] = React.useState(false);
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [loginError, setLoginError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword);
+        console.log(showPassword);
+    }
 
     const handleEmail = (newValue) => {
         setEmail(newValue.target.value);
@@ -84,7 +93,7 @@ const Login = ({path}) => {
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                             handleClose={options.handleClose}/>
+                        handleClose={options.handleClose} />
                     : null
             }
             <h2 className="text-light">Iniciar sesión</h2>
@@ -92,22 +101,26 @@ const Login = ({path}) => {
                 <div className="row">
                     <div className="col-md">
                         <input id="inpEmail" type="email" className="form-control mt-3" placeholder="Correo electrónico"
-                               maxLength="70"
-                               onChange={newValue => handleEmail(newValue)}/>
+                            maxLength="70"
+                            onChange={newValue => handleEmail(newValue)} />
                     </div>
                     <div className="col-md">
-                        <input id="inpPassword" type="password" className="form-control mt-3" placeholder="Contraseña"
-                               maxLength="30"
-                               onChange={newValue => handlePassword(newValue)}/>
+                        <input id="inpPassword" type={showPassword ? "text" : "password"} className="form-control mt-3" placeholder="Contraseña"
+                            maxLength="30"
+                            onChange={newValue => handlePassword(newValue)} />
                     </div>
+                    <div className="w-100"></div>
                     {
-                        loginError ? <span className="text-danger small">{loginError}</span> :
-                            <span className="text-danger small">&nbsp;</span>
+                        loginError ? <span className="text-danger small w-50">{loginError}</span> :
+                            <span className="text-danger small w-50">&nbsp;</span>
                     }
+                    <label className="text-light w-50">
+                        Mostrar Contraseña: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
+                    </label>
                     <div className="w-100"></div>
                     <div className="text-center">
                         <input id="btnLogin" type="submit" value="Iniciar sesión"
-                               className="btn btn-primary confirm-button w-50 mt-3"/>
+                            className="btn btn-primary confirm-button w-50 mt-3" />
                     </div>
                 </div>
             </form>

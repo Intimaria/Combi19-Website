@@ -30,7 +30,7 @@ const getTransports = async (req, res) => {
 
         connection.end();
 
-        const normalizedResults = await normalizeTransport(rows);
+        const normalizedResults = normalizeTransport(rows);
 
         res.json(normalizedResults);
 

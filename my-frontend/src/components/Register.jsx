@@ -1,7 +1,7 @@
 import React from 'react';
 import { Message } from '../components/Message';
 
-import {BACKEND_URL} from '../const/config.js';
+import { BACKEND_URL } from '../const/config.js';
 
 import {
     ERROR_MSG_EMPTY_DATE,
@@ -37,6 +37,7 @@ function Register() {
 
 
     const today = new Date().toISOString().slice(0, 10);
+    const [showPassword, setShowPassword] = React.useState(false);
     const [email, setEmail] = React.useState('');
     const [names, setNames] = React.useState('');
     const [surname, setSurname] = React.useState('');
@@ -52,6 +53,10 @@ function Register() {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword);
+        console.log(showPassword);
+    }
     const mySubmitHandler = (event) => {
         event.preventDefault();
 
@@ -325,24 +330,30 @@ function Register() {
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md">
-                        <input id="inpPassword" type="password" className="form-control mt-3" name="password1"
+                        <input id="inpPassword" type={showPassword ? "text" : "password"} className="form-control mt-3" name="password1"
                             placeholder="Contraseña" maxLength="30" value={password1}
                             onChange={newValue => handlePassword1(newValue)} />
-                        {
-                            password1Error ? <span className="text-danger small">{password1Error}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
+
                     </div>
                     <div className="col-md">
-                        <input id="inpRepeatPassword" type="password" className="form-control mt-3" name="password2"
+                        <input id="inpRepeatPassword" type={showPassword ? "text" : "password"} className="form-control mt-3" name="password2"
                             placeholder="Repita la contraseña" maxLength="30" value={password2}
                             onChange={newValue => handlePassword2(newValue)} />
-                        {
-                            password2Error ? <span className="text-danger small">{password2Error}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
+
                     </div>
                     <div className="w-100"></div>
+                    <label className="text-light w-50">
+                        Mostrar Contraseñas: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
+                    </label>
+                    <div className="w-100"></div>
+                    {
+                        password1Error ? <span className="text-danger small w-50">{password1Error}</span> :
+                            <span className="text-danger small w-50">&nbsp;</span>
+                    }
+                    {
+                        password2Error ? <span className="text-danger small w-50">{password2Error}</span> :
+                            <span className="text-danger small w-50">&nbsp;</span>
+                    }
                     <div className="text-center">
                         <input id="btnRegister" type="submit" value="Registrarse"
                             className="btn btn-primary w-50 mt-3" />

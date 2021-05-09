@@ -1,4 +1,4 @@
-const normalizeTransport = async (rows) => {
+const normalizeTransport = (rows) => {
     let results = [];
 
     for (let index = 0; index < rows.length; index++) {
@@ -27,7 +27,7 @@ const normalizeTransport = async (rows) => {
     return results;
 }
 
-const normalizeDrivers = async (rows) => {
+const normalizeDrivers = (rows) => {
     let results = [];
 
     for (let index = 0; index < rows.length; index++) {
@@ -38,13 +38,30 @@ const normalizeDrivers = async (rows) => {
             email: rows[index].EMAIL,
             password1: rows[index].PASSWORD,
             phoneNumber: rows[index].PHONE_NUMBER,
-            active: rows[index].ACTIVE
+            active: rows[index].ACTIVE === 1? "Activo" : "Inactivo"
         }
         results.push(driver);
     }
     return results;
 }
+
+const normalizePlaces = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let place = {
+            id: rows[index].CITY_ID,
+            cityName: rows[index].CITY_NAME,
+            provinceName: rows[index].PROVINCE_NAME,
+            ACTIVE: rows[index].ACTIVE === 1? "Activo" : "Inactivo",
+        }
+        results.push(place);
+    }
+    return results;
+}
+
 module.exports = {
     normalizeTransport,
-    normalizeDrivers
+    normalizeDrivers,
+    normalizePlaces
 }

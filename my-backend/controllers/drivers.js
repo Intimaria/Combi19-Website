@@ -33,7 +33,7 @@ const getDrivers = async (req, res) => {
         const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, PHONE_NUMBER, PASSWORD, ACTIVE FROM USER a INNER JOIN ROLE_USER r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? ORDER BY SURNAME ASC, NAME ASC';
         const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);
         connection.end();
-        const normalizedResults = await normalizeDrivers(rows);
+        const normalizedResults = normalizeDrivers(rows);
         return res.status(200).send(normalizedResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
