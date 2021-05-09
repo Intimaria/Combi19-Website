@@ -6,7 +6,7 @@ const { prepareConnection } = require("../helpers/connectionDB.js");
 
 //const { validatePlace } = require('../helpers/validateInputsPlaces.js');
 
-const { validatePlaceDependency, validatePlaceExists } = require('../helpers/validatePlaceDependency.js');
+const { validatePlaceDependency, validatePlaceExists, validatePlaceToUpdate } = require('../helpers/validatePlaceDependency.js');
 
 const { normalizePlaces } = require('../helpers/normalizeResult.js');
 
@@ -55,19 +55,27 @@ const getPlaceById = async (req, res) => {
 
 const putPlace = async (req, res) => {
     const { city_name, id_province } = req.body;
-    console.log(req.body);
+    
     const { id } = req.params;
+    console.log(req.body, id);
     //const inputsErrors = await validatePlace(city, province);
-    const connection = await prepareConnection();
-    await connection.query(
-        "UPDATE CITY SET CITY_NAME=?, ID_PROVINCE=?, ACTIVE=? WHERE CITY_ID = ?",
-        [city_name, id_province, ACTIVE, id]).then((result) => {
-            connection.end();
-            res.status(201).send(result[0]);
-        }).catch(function (err) {
-            console.log('Ha ocurrido un error al modificar al lugar indicado: ', err);
-            res.status(500);
-        });
+    if (await validatePlaceToUpdate(city_name, id_province, id)) {
+        res.status(400).send("No se puede agregar, otra ciudad existe en el sistema para esta provincia.");
+    }
+    else {
+        console.log('updating...')
+        const connection = await prepareConnection();
+        await connection.query(
+            "UPDATE CITY SET CITY_NAME=?, ID_PROVINCE=?, ACTIVE=? WHERE CITY_ID = ?",
+            [city_name, id_province, ACTIVE, id]).then((result) => {
+                connection.end();
+                console.log(result[0], city_name, ':)')
+                res.status(201).send(result[0]);
+            }).catch(function (err) {
+                console.log('Ha ocurrido un error al modificar al lugar indicado: ', err);
+                res.status(500);
+            });
+    }
     res.end();
 }
 
@@ -78,16 +86,16 @@ const postPlace = async (req, res) => {
         res.status(400).send("No se puede agregar, el lugar ya existe.");
     }
     else {
-    const connection = await prepareConnection();
-    await connection.query(
-        "INSERT INTO CITY (ID_PROVINCE, CITY_NAME, ACTIVE) VALUES (?,?,?)",
-        [id_province, city_name, ACTIVE]).then((result) => {
-            connection.end();
-            res.status(201).send(OK_MSG_API_LOCATION_POST);
-        }).catch(function (err) {
-            console.log('Ha ocurrido un error al crear la ciudad: ', err);
-            res.status(500);
-        })
+        const connection = await prepareConnection();
+        await connection.query(
+            "INSERT INTO CITY (ID_PROVINCE, CITY_NAME, ACTIVE) VALUES (?,?,?)",
+            [id_province, city_name, ACTIVE]).then((result) => {
+                connection.end();
+                res.status(201).send(OK_MSG_API_LOCATION_POST);
+            }).catch(function (err) {
+                console.log('Ha ocurrido un error al crear la ciudad: ', err);
+                res.status(500);
+            })
     }
     res.end();
 }
