@@ -6,7 +6,7 @@ const { prepareConnection } = require("../helpers/connectionDB.js");
 
 //const { validatePlace } = require('../helpers/validateInputsPlaces.js');
 
-const { validatePlaceDependency } = require('../helpers/validatePlaceDependency.js');
+const { validatePlaceDependency, validatePlaceExists } = require('../helpers/validatePlaceDependency.js');
 
 const { normalizePlaces } = require('../helpers/normalizeResult.js');
 
@@ -74,6 +74,10 @@ const putPlace = async (req, res) => {
 const postPlace = async (req, res) => {
     const { city_name, id_province } = req.body;
     //const inputsErrors = await validatePlace(city, province);
+    if (! await validatePlaceExists(city_name, id_province)) {
+        res.status(400).send("No se puede agregar, el lugar ya existe.");
+    }
+    else {
     const connection = await prepareConnection();
     await connection.query(
         "INSERT INTO CITY (ID_PROVINCE, CITY_NAME, ACTIVE) VALUES (?,?,?)",
@@ -84,6 +88,7 @@ const postPlace = async (req, res) => {
             console.log('Ha ocurrido un error al crear la ciudad: ', err);
             res.status(500);
         })
+    }
     res.end();
 }
 
