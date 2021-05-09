@@ -1,23 +1,54 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import {Modal, TextField, Button} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+// Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
+import React, { useState, useEffect } from 'react';
+import { Modal, TextField, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import MaterialTable from "material-table";
-import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {getDrivers} from '../api/Drivers';
-import {BACKEND_URL} from '../const/config.js';
-import {ERROR_MSG_API_GET_DRIVERS} from "../const/messages";
+import Tooltip from '@material-ui/core/Tooltip';
+import { getDrivers, postDrivers, putDrivers, deleteDrivers } from '../api/Drivers.js';
+import { Message } from "./Message";
+// Importo los mensajes de error
+import {
+    ERROR_MSG_EMPTY_PHONE_NUMBER,
+    ERROR_MSG_EMPTY_EMAIL,
+    ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_EMPTY_PASSWORD,
+    ERROR_MSG_EMPTY_REPEAT_PASSWORD,
+    ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_INVALID_PHONE_NUMBER,
+    ERROR_MSG_INVALID_EMAIL,
+    ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
+    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
+    ERROR_MSG_PASSWORD_NO_MATCH,
+    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
+    ERROR_MSG_INVALID_SURNAME,
+    ERROR_MSG_API_GET_DRIVERS,
+    ERROR_MSG_API_POST_DRIVER,
+    ERROR_MSG_API_PUT_DRIVER,
+    ERROR_MSG_API_DELETE_DRIVER
+} from '../const/messages.js';
 
+// Importo las expresiones regulares
+import {
+    REGEX_PHONE,
+    REGEX_EMAIL,
+    REGEX_ONLY_ALPHABETICAL
+} from '../const/regex.js';
+
+// La configuracion en castellano
+import { materialTableConfiguration } from '../const/materialTableConfiguration';
+
+//Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    {title: 'Nombre', field: 'NAME'},
-    {title: 'Apellido', field: 'SURNAME'},
-    {title: 'Email', field: 'EMAIL'},
+    { title: 'Nombre', field: 'names' },
+    { title: 'Apellido', field: 'surname' },
+    { title: 'Email', field: 'email' },
 ];
-const baseUrl = `${BACKEND_URL}/drivers`;
 
-
+//Los estilos de los modals
 const useStyles = makeStyles((theme) => ({
     modal: {
         position: 'absolute',
@@ -39,81 +70,276 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Drivers() {
+    //Configuracion del mensaje de exito o error
+    const handleCloseMessage = () => {
+        setOptions({ ...options, open: false });
+    };
+    //Fortmato que tiene los datos al selecccionarlos para mostrarlos en un modal
+    const formatSelectedDriver = {
+        id: "",
+        names: "",
+        surname: "",
+        email: "",
+        password1: "",
+        password2: "",
+        phoneNumber: "",
+        active: ""
+    }
     const styles = useStyles();
+    //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
-
+    //Mensaje de error de los inputs
+    const [emailError, setEmailError] = React.useState(null);
+    const [namesError, setNamesError] = React.useState(null);
+    const [surnameError, setSurnameError] = React.useState(null);
+    const [password1Error, setPassword1Error] = React.useState(null);
+    const [password2Error, setPassword2Error] = React.useState(null);
+    const [phoneNumberError, setPhoneNumberError] = React.useState(null);
+    //Para abrir y cerrar los modales
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedDriver, setSelectedDriver] = useState({
-        a: "ad",
-        USER_ID: "",
-        NAME: "",
-        SURNAME: "",
-        EMAIL: "",
-        PHONE_NUMBER: "",
-        PASSWORD: "",
-        PASSWORD_REPEAT: "",
-    })
+    //Aca se guarda los datos de la fila seleccionada
+    const [selectedDriver, setSelectedDriver] = useState(formatSelectedDriver);
+    //Elementos para configurar los mensajes
+    const [successMessage, setSuccessMessage] = React.useState(null);
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
+    //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
-        const {name, value} = textFieldAtributes.target;
+        const { name, value } = textFieldAtributes.target;
         setSelectedDriver(prevState => ({
             ...prevState,
             [name]: value
         }));
+
+        //Saca el mensaje de error segun el input que se modifico
+        switch (name) {
+            case 'email':
+                setEmailError(null);
+                break;
+            case 'names':
+                setNamesError(null);
+                break;
+            case 'surname':
+                setSurnameError(null);
+                break;
+            case 'password1':
+                setPassword1Error(null);
+                break;
+            case 'password2':
+                setPassword2Error(null);
+                break;
+            case 'phoneNumber':
+                setPhoneNumberError(null);
+                break;
+            default:
+                console.log('Es necesario agregar un case más en el switch por el name:', name);
+                break;
+        }
+    }
+    //Aca arrancan las validaciones de los datos del chofer
+    const validateForm = () => {
+        return validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validatePhoneNumber();
+    };
+
+    const setDefaultErrorMessages = () => {
+        setEmailError('');
+        setNamesError('');
+        setSurnameError('');
+        setPassword1Error('');
+        setPassword2Error('');
+        setPhoneNumberError('');
+    };
+
+    const validateEmail = () => {
+        if (!selectedDriver.email) {
+            setEmailError(ERROR_MSG_EMPTY_EMAIL);
+            return false;
+        }
+        if (!REGEX_EMAIL.test(selectedDriver.email)) {
+            setEmailError(ERROR_MSG_INVALID_EMAIL);
+            return false;
+        }
+
+        setEmailError(null);
+        return true;
     }
 
+    const validateName = () => {
+        if (!selectedDriver.names) {
+            setNamesError(ERROR_MSG_EMPTY_NAME);
+            return false;
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedDriver.names)) {
+            setNamesError(ERROR_MSG_INVALID_NAME);
+            return false;
+        }
+
+        setNamesError(null);
+        return true;
+    }
+    const validateSurname = () => {
+        if (!selectedDriver.surname) {
+            setSurnameError(ERROR_MSG_EMPTY_SURNAME);
+            return false;
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedDriver.surname)) {
+            setSurnameError(ERROR_MSG_INVALID_SURNAME);
+            return false;
+        }
+
+        setSurnameError(null);
+        return true;
+    }
+
+    const validatePassword = () => {
+        const reg1 = /[1-9]/;
+        /*const reg2 = /[A-Z]/;
+        const reg3 = /[a-z]/;*/
+
+        if (!selectedDriver.password1) {
+            setPassword1Error(ERROR_MSG_EMPTY_PASSWORD);
+            return false;
+        } else if (selectedDriver.password1.length < 6) {
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
+            return false;
+        } else if (!reg1.test(selectedDriver.password1)) {
+            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
+            return false;
+        }/* else if (!reg2.test(selectedDriver.password1)) {
+            setPassword1Error(ERROR_MSG_INVALID_NO_CAPITAL_LETTERS);
+            return false;
+        } else if (!reg3.test(selectedDriver.password1)) {
+            setPassword1Error(ERROR_MSG_INVALID_NO_LOWER_CASE);
+            return false;
+        } */
+
+        setPassword1Error(null);
+        return true;
+    }
+
+    const comparePasswords = () => {
+        if (!selectedDriver.password2) {
+            setPassword2Error(ERROR_MSG_EMPTY_REPEAT_PASSWORD);
+            return false;
+        } else if (selectedDriver.password1 !== selectedDriver.password2) {
+            setPassword2Error(ERROR_MSG_PASSWORD_NO_MATCH);
+            return false;
+        }
+
+        setPassword2Error(null);
+        return true;
+    }
+
+    const validatePhoneNumber = () => {
+        if (!selectedDriver.phoneNumber) {
+            setPhoneNumberError(ERROR_MSG_EMPTY_PHONE_NUMBER);
+            return false;
+        } else if (REGEX_PHONE.test(selectedDriver.phoneNumber)) {
+            setPhoneNumberError(ERROR_MSG_INVALID_PHONE_NUMBER);
+            return false;
+        }
+        setPhoneNumberError(null);
+        return true;
+    }
+    // Aca ingreso un chofer nuevo
     const peticionPost = async () => {
-        const token = localStorage.getItem('token');
-        await axios.post(baseUrl, selectedDriver,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                setData(data.concat(response.data));
-                openCloseModalCreate();
-            }).catch(error => {
-                console.log(error);
-            });
-    }
-
-    const peticionPut = async () => {
-        /*
-        await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
-            .then(response => {
-                var dataNueva = data;
-                dataNueva.map(internal_identification => {
-                    if (internal_identification.id === selectedTransport.id) {
-                        internal_identification.internal_identification = selectedTransport.internal_identification;
-                        internal_identification.registration_number = selectedTransport.registration_number;
-                        internal_identification.driver = selectedTransport.driver;
-                        internal_identification.model = selectedTransport.model;
-                    }
+        if (validateForm()) {
+            let postResponse = await postDrivers(selectedDriver);
+            if (postResponse.status === 201) {
+                setSuccessMessage(`Se ha creado el chofer correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha creado el chofer correctamente`
                 });
-                setData(dataNueva);
+                openCloseModalCreate();
+                fetchData();
+            } else if (postResponse?.status === 400) {
+                setEmailError(postResponse.data.emailError);
+                setNamesError(postResponse.data.namesError);
+                setSurnameError(postResponse.data.surnameError);
+                setPhoneNumberError(postResponse.data.phoneNumberError);
+                setPassword1Error(postResponse.data.passwordError1);
+                setPassword2Error(postResponse.data.passwordError2);
+            } else if (postResponse?.status === 500) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_POST_DRIVER} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_POST_DRIVER} ${postResponse}`
+                });
+            }
+        }
+    }
+    //Aca realizo la actualizacion de los datos del chofer
+    const peticionPut = async () => {
+        if (validateForm()) {
+            let postResponse = await putDrivers(selectedDriver,selectedDriver.id);
+
+            if (postResponse.status === 200) {
+                setSuccessMessage(`Se ha actualizado el chofer correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha actualizado el chofer correctamente`
+                });
                 openCloseModalUpdate();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
+                fetchData();
+            } else if (postResponse?.status === 400) {
+                setEmailError(postResponse.data.emailError);
+                setNamesError(postResponse.data.namesError);
+                setSurnameError(postResponse.data.surnameError);
+                setPhoneNumberError(postResponse.data.phoneNumberError);
+                setPassword1Error(postResponse.data.passwordError1);
+                setPassword2Error(postResponse.data.passwordError2);
+            } else if (postResponse?.status === 500) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_PUT_DRIVER} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_PUT_DRIVER} ${postResponse}`
+                });
+            }
+        }
     }
-
+    //Aca elimino a un chofer
     const peticionDelete = async () => {
-        /*
-        await axios.delete(baseUrl + "/" + selectedTransport.id)
-            .then(response => {
-                setData(data.filter(internal_identification => internal_identification.id !== selectedTransport.id));
-                openCloseModalDelete();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
-    }
+            let postResponse = await deleteDrivers(selectedDriver.id);
 
+            if (postResponse.status === 200) {
+                setSuccessMessage(`Se ha eliminado el chofer correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha eliminado el chofer correctamente`
+                });
+                openCloseModalDelete();
+                fetchData();
+            } else if (postResponse?.status === 500 || postResponse?.status === 400) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_DELETE_DRIVER} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_DELETE_DRIVER} ${postResponse}`
+                });
+            }
+    }
+    //Aca dependiendo del boton que se apreto abro el modal correspondiente
     const selectDriver = (driver, action) => {
         setSelectedDriver(driver);
         if (action === "Ver") {
@@ -123,133 +349,226 @@ function Drivers() {
         } else {
             openCloseModalDelete()
         }
-
     }
-
+    //Metodos para cerrar y abrir modales, pone los valores por defecto cuando los abro
     const openCloseModalCreate = () => {
         setCreateModal(!createModal);
+        if (createModal) {
+            setSelectedDriver(formatSelectedDriver);
+            setDefaultErrorMessages();
+        }
     }
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
+        if (viewModal) {
+            setSelectedDriver(formatSelectedDriver);
+        }
     }
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
+        if (updateModal) {
+            setSelectedDriver(formatSelectedDriver);
+            setDefaultErrorMessages();
+        }
     }
 
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
+        if (deleteModal) {
+            setSelectedDriver(formatSelectedDriver);
+        }
     }
+    //Aca busco los datos de los choferes del backend
+    const fetchData = async () => {
+        try {
+            let getDriversResponse = await getDrivers();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                let data = await getDrivers();
+            if (getDriversResponse.status === 200) {
+                let data = getDriversResponse.data;
+
+                for (let index = 0; index < data.length; index++) {
+                    if (data[index].active === 0) {
+                        data[index].active = 'Inactivo';
+                    } else if (data[index].active === 1) {
+                        data[index].active = 'Activo'
+                    } else {
+                        data[index].active = 'Estado inválido'
+                    }
+                }
 
                 setData(data);
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
             }
-        };
+
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, []);
-
+    //Modal de creacion
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.NAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.SURNAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                       value={selectedDriver && selectedDriver.EMAIL}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PASSWORD}/>
-            <br/>
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+                required
+                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                autoComplete='off'
+                error={(namesError) ? true : false}
+                helperText={(namesError) ? namesError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.names} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+                required
+                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                autoComplete='off'
+                error={(surnameError) ? true : false}
+                helperText={(surnameError) ? surnameError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.surname} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+                required
+                inputProps={{ maxLength: 90 }}
+                autoComplete='off'
+                error={(emailError) ? true : false}
+                helperText={(emailError) ? emailError : false}
+                value={selectedDriver && selectedDriver.email} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+                required
+                inputProps={{ maxLength: 30 }}
+                autoComplete='off'
+                error={(phoneNumberError) ? true : false}
+                helperText={(phoneNumberError) ? phoneNumberError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.phoneNumber} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+                required
+                inputProps={{ maxLength: 70 }}
+                autoComplete='off'
+                error={(password1Error) ? true : false}
+                helperText={(password1Error) ? password1Error : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.password1} />
+            <br />
             <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
-                       name="PASSWORD_REPEAT" onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PASSWORD_REPEAT}/>
-            <br/><br/>
+                required
+                inputProps={{ maxLength: 70 }}
+                autoComplete='off'
+                error={(password2Error) ? true : false}
+                helperText={(password2Error) ? password2Error : false}
+                name="password2" onChange={handleChange}
+                value={selectedDriver && selectedDriver.password2} />
+            <br /><br />
             <div align="right">
                 <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
                 <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
             </div>
         </div>
     )
-
+    // Modal de vizualizacion
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE EL CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.NAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.SURNAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                       value={selectedDriver && selectedDriver.EMAIL}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PASSWORD}/>
-            <br/><br/>
+            <TextField className={styles.inputMaterial} label="Estado" name="active"
+                value={selectedDriver && selectedDriver.active} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+                value={selectedDriver && selectedDriver.names} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+                value={selectedDriver && selectedDriver.surname} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+                value={selectedDriver && selectedDriver.email} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+                value={selectedDriver && selectedDriver.phoneNumber} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+                value={selectedDriver && selectedDriver.password1} />
+            <br /><br />
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>SALIR</Button>
             </div>
         </div>
     )
-
+    // Modal de actualizacion
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="NAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.NAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="SURNAME"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.SURNAME}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="EMAIL" onChange={handleChange}
-                       value={selectedDriver && selectedDriver.EMAIL}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="PHONE_NUMBER"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PHONE_NUMBER}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="PASSWORD"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.PASSWORD}/>
-            <br/>
+            <Tooltip title="Debe eliminar la combi para cambiar el estado">
+                <TextField className={styles.inputMaterial} label="Estado" name="active"
+                    value={selectedDriver && selectedDriver.active} disabled />
+            </Tooltip>
+            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+                required
+                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                autoComplete='off'
+                error={(namesError) ? true : false}
+                helperText={(namesError) ? namesError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.names} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+                required
+                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                autoComplete='off'
+                error={(surnameError) ? true : false}
+                helperText={(surnameError) ? surnameError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.surname} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+                required
+                inputProps={{ maxLength: 90 }}
+                autoComplete='off'
+                error={(emailError) ? true : false}
+                helperText={(emailError) ? emailError : false}
+                value={selectedDriver && selectedDriver.email} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+                required
+                inputProps={{ maxLength: 30 }}
+                autoComplete='off'
+                error={(phoneNumberError) ? true : false}
+                helperText={(phoneNumberError) ? phoneNumberError : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.phoneNumber} />
+            <br />
+            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+                required
+                inputProps={{ maxLength: 70 }}
+                autoComplete='off'
+                error={(password1Error) ? true : false}
+                helperText={(password1Error) ? password1Error : false}
+                onChange={handleChange}
+                value={selectedDriver && selectedDriver.password1} />
+            <br />
             <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
-                       name="PASSWORD_REPEAT" onChange={handleChange}/>
-            <br/><br/>
+                required
+                inputProps={{ maxLength: 70 }}
+                autoComplete='off'
+                error={(password2Error) ? true : false}
+                helperText={(password2Error) ? password2Error : false}
+                name="password2" onChange={handleChange}
+                value={selectedDriver && selectedDriver.password2} />
+            <br /><br />
             <div align="right">
                 <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
     )
-
+    //Modal de elimincacion
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar el chofer con email <b>{selectedDriver && selectedDriver.EMAIL}</b> ?
+            <p>¿Estás seguro que deseas eliminar el chofer con email <b>{selectedDriver && selectedDriver.email}</b> ?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>
@@ -260,46 +579,47 @@ function Drivers() {
 
     return (
         <div className="App">
-            <br/>
-            <Button style={{marginLeft: '8px'}}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnNewDriver"
-                    startIcon={<AccessibilityIcon/>}
-                    onClick={() => openCloseModalCreate()}>NUEVO CHOFER</Button>
-            <br/><br/>
+            {   // Esto es para que se muestre la ventanita del mensaje
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                        handleClose={options.handleClose} />
+                    : null
+            }
+            <br />
+            <Button style={{ marginLeft: '8px' }}
+                variant="contained"
+                size="large"
+                color="primary"
+                id="btnNewDriver"
+                startIcon={<AccessibilityIcon />}
+                onClick={() => openCloseModalCreate()}>NUEVO CHOFER</Button>
+            <br /><br />
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de choferes"
                 actions={[
                     {
-                        icon: () => <VisibilityIcon/>,
-                        tooltip: 'Visualización de chofer',
+                        icon: () => <VisibilityIcon />,
+                        tooltip: 'Visualización de combi',
                         onClick: (event, rowData) => selectDriver(rowData, "Ver")
                     },
-                    {
+                    rowData => ({
                         icon: 'edit',
-                        tooltip: 'Editar chofer',
+                        tooltip: (rowData.active === 'Activo') ? 'Editar chofer' : 'No se puede editar un chofer dado de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectDriver(rowData, "Editar")
-                    },
-                    {
+                    }),
+                    rowData => ({
                         icon: 'delete',
-                        tooltip: 'Eliminar chofer',
+                        tooltip: (rowData.active === 'Activo') ? 'Eliminar chofer' : 'No se puede eliminar un chofer dado de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectDriver(rowData, "Eliminar")
-                    }
+                    })
                 ]}
-                options={{
-                    actionsColumnIndex: -1,
-                }}
-                localization={{
-                    header: {
-                        actions: "Acciones"
-                    }
-                }}
+                options={materialTableConfiguration.options}
+                localization={materialTableConfiguration.localization}
             />
-
 
             <Modal
                 open={createModal}
@@ -324,8 +644,6 @@ function Drivers() {
                 onClose={openCloseModalDelete}>
                 {bodyDelete}
             </Modal>
-
-
         </div>
     );
 }

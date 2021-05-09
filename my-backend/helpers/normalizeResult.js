@@ -27,6 +27,24 @@ const normalizeTransport = async (rows) => {
     return results;
 }
 
+const normalizeDrivers = async (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let driver = {
+            id: rows[index].USER_ID,
+            names: rows[index].NAME,
+            surname: rows[index].SURNAME,
+            email: rows[index].EMAIL,
+            password1: rows[index].PASSWORD,
+            phoneNumber: rows[index].PHONE_NUMBER,
+            active: rows[index].ACTIVE
+        }
+        results.push(driver);
+    }
+    return results;
+}
 module.exports = {
-    normalizeTransport
+    normalizeTransport,
+    normalizeDrivers
 }

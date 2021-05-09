@@ -128,6 +128,8 @@ const verifyUniqueEmailToModify = async (email, id) => {
         connection.end();
 
         if (rows.length >= 1) {
+            console.log(rows);
+            console.log(id);
             emailError = ERROR_MSG_EXISTING_EMAIL;
             return false;
         }
