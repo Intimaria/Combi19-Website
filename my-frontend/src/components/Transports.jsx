@@ -17,9 +17,10 @@ import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {
     getTransports,
     postTransport,
+    putTransport,
     deleteTransport
 } from '../api/Transports';
-import {deleteDrivers, getAvailableDrivers} from "../api/Drivers";
+import {getAvailableDrivers} from "../api/Drivers";
 import {
     ERROR_MSG_API_GET_TRANSPORTS,
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
@@ -98,10 +99,30 @@ function Transports() {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
+    const setDefaultValues = () => {
+        setDefaultObjectsValues();
+        setDefaultErrorMessages();
+    };
+
+    const setDefaultObjectsValues = () => {
+        setDefaultErrorMessages();
+    };
+
+    const setDefaultErrorMessages = () => {
+        setDefaultApiErrorMessages();
+        setModelError(false);
+        setSeatingError(false);
+        setTypeComfortSelectedError(false);
+        setDriverSelectedError(false);
+    };
+
+    const setDefaultApiErrorMessages = () => {
+        setInternalIdentificationError(false);
+        setRegistrationNumberError(false);
+    };
+
     const handleChange = async e => {
         const {name, value} = e.target;
-        console.log('name:', name);
-        console.log('value:', value);
 
         if (name === 'driverSelected') {
             setDriverSelectedError(false);
@@ -134,26 +155,7 @@ function Transports() {
             }
         }
 
-
-        /*
-        if (name === 'driverSelected') {
-            setDriverSelected(value);
-        } else if (name === 'typeComfortSelected') {
-            setTypeComfortSelected(value);
-        } else {
-            setSelectedTransport(prevState => ({
-                ...prevState,
-                [name]: value
-            }));
-        }
-        */
-
         setSuccessMessage(null);
-        /*
-        console.log('typeComfortSelected:', typeComfortSelected);
-        console.log('driverSelected:', driverSelected);
-        console.log('setSelectedTransport:', selectedTransport);
-        */
     };
 
 
@@ -211,7 +213,7 @@ function Transports() {
     };
 
     const validateTypeComfort = () => {
-        if (typeComfortSelected) {
+        if (typeComfortSelected || selectedTransport.comfort.type_comfort_id) {
             setTypeComfortSelectedError(null);
             return true;
         } else {
@@ -221,51 +223,12 @@ function Transports() {
     };
 
     const validateDriver = () => {
-        if (driverSelected) {
+        if (driverSelected || selectedTransport.driver.user_id) {
             setDriverSelectedError(null);
             return true;
         } else {
             setDriverSelectedError(ERROR_MSG_EMPTY_DRIVER);
             return false;
-        }
-    };
-
-    const requestPostTransport = async () => {
-        if (validateForm()) {
-            setInternalIdentificationError(false);
-            setRegistrationNumberError(false);
-
-            let postResponse = await postTransport(selectedTransport, typeComfortSelected, driverSelected);
-
-            if (postResponse.status === 201) {
-                setSuccessMessage(postResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: postResponse.data
-                });
-
-                await openCloseModalCreate();
-
-                await fetchData();
-                return true
-            } else if (postResponse.status === 400) {
-                setInternalIdentificationError(postResponse.data.internalIdentificationError);
-                setRegistrationNumberError(postResponse.data.registrationNumberError);
-            } else if (postResponse.status === 500) {
-                setSuccessMessage(postResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: postResponse.data
-                });
-
-                return true
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`
-                });
-            }
         }
     };
 
@@ -309,50 +272,107 @@ function Transports() {
         }
     };
 
+    const requestPostTransport = async () => {
+        if (validateForm()) {
+            setDefaultApiErrorMessages();
+
+            let postResponse = await postTransport(selectedTransport, typeComfortSelected, driverSelected);
+
+            if (postResponse.status === 201) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: postResponse.data
+                });
+
+                await openCloseModalCreate();
+
+                await fetchData();
+                return true
+            } else if (postResponse.status === 400) {
+                setInternalIdentificationError(postResponse.data.internalIdentificationError);
+                setRegistrationNumberError(postResponse.data.registrationNumberError);
+            } else if (postResponse.status === 500) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`
+                });
+            }
+        }
+    };
 
     const requestPutTransport = async () => {
-        /*
-        await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
-            .then(response => {
-                var dataNueva = data;
-                dataNueva.map(internal_identification => {
-                    if (internal_identification.id === selectedTransport.id) {
-                        internal_identification.internal_identification = selectedTransport.internal_identification;
-                        internal_identification.registration_number = selectedTransport.registration_number;
-                        internal_identification.driver = selectedTransport.driver;
-                        internal_identification.model = selectedTransport.model;
-                    }
+        if (validateForm()) {
+            setDefaultApiErrorMessages();
+
+            let postResponse = await putTransport(selectedTransport,
+                typeComfortSelected ? typeComfortSelected : selectedTransport.comfort.type_comfort_id,
+                driverSelected ? driverSelected : selectedTransport.driver.user_id);
+
+            if (postResponse.status === 200) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: postResponse.data
                 });
-                setData(dataNueva);
-                openCloseModalUpdate();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
+
+                await openCloseModalUpdate();
+
+                await fetchData();
+                return true
+            } else if (postResponse.status === 400) {
+                setInternalIdentificationError(postResponse.data.internalIdentificationError);
+                setRegistrationNumberError(postResponse.data.registrationNumberError);
+            } else if (postResponse.status === 500) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`
+                });
+            }
+        }
     };
 
     const requestDeleteTransport = async () => {
-        let postResponse = await deleteTransport(selectedTransport.transport_id);
+        let deleteResponse = await deleteTransport(selectedTransport.transport_id);
 
-        if (postResponse.status === 200) {
-            setSuccessMessage(`Se eliminó la combi correctamente`);
+        if (deleteResponse.status === 200) {
+            setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'success',
-                message: `Se eliminó la combi correctamente`
+                message: deleteResponse.data
             });
             openCloseModalDelete();
             await fetchData();
-        } else if (postResponse?.status === 500 || postResponse?.status === 400) {
-            setSuccessMessage(postResponse.data);
+        } else if (deleteResponse?.status === 400 || deleteResponse?.status === 500) {
+            setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: postResponse.data
+                message: deleteResponse.data
             });
+            openCloseModalDelete();
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_DELETE_TRANSPORT} ${postResponse}`);
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_TRANSPORT} ${deleteResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_DELETE_TRANSPORT} ${postResponse}`
+                message: `${ERROR_MSG_API_DELETE_TRANSPORT} ${deleteResponse}`
             });
         }
     };
@@ -368,42 +388,38 @@ function Transports() {
         }
     };
 
+    const requestGetAvailableDrivers = async () => {
+        let getAvailableDriversResponse = await getAvailableDrivers();
+
+        if (getAvailableDriversResponse.status === 200) {
+            const availableDrivers = await getAvailableDrivers();
+            setDrivers(availableDrivers.data);
+        } else if (getAvailableDriversResponse.status === 500) {
+            getAvailableDriversResponse(getAvailableDriversResponse.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: getAvailableDriversResponse.data
+            });
+
+            return true
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
+            });
+        }
+    }
+
     const openCloseModalCreate = async () => {
         setCreateModal(!createModal);
 
         // Data are loaded when the modal is open
         if (!createModal) {
-            let getAvailableDriversResponse = await getAvailableDrivers();
-
-            if (getAvailableDriversResponse.status === 200) {
-                const availableDrivers = await getAvailableDrivers();
-                setDrivers(availableDrivers.data);
-            } else if (getAvailableDriversResponse.status === 500) {
-                getAvailableDriversResponse(getAvailableDriversResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: getAvailableDriversResponse.data
-                });
-
-                return true
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
-                });
-            }
+            await requestGetAvailableDrivers();
         }
 
-        setDriverSelected("");
-        setTypeComfortSelected("");
-        setSelectedTransport(formatSelectedTransport);
-        setInternalIdentificationError(false);
-        setRegistrationNumberError(false);
-        setModelError(false);
-        setSeatingError(false);
-        setTypeComfortSelectedError(false);
-        setDriverSelectedError(false);
+        setDefaultValues();
     };
 
     const openCloseModalViewDetails = () => {
@@ -415,39 +431,19 @@ function Transports() {
 
         // Data are loaded when the modal is open
         if (!updateModal) {
-            let getAvailableDriversResponse = await getAvailableDrivers();
+            setTypeComfortSelected(selectedTransport.comfort.type_comfort_id);
+            setDriverSelected(selectedTransport.driver.user_id);
 
-            if (getAvailableDriversResponse.status === 200) {
-                const availableDrivers = await getAvailableDrivers();
-                setDrivers(availableDrivers.data);
-            } else if (getAvailableDriversResponse.status === 500) {
-                getAvailableDriversResponse(getAvailableDriversResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: getAvailableDriversResponse.data
-                });
-
-                return true
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
-                });
-            }
+            await requestGetAvailableDrivers();
         }
 
         // Data are cleaned when the modal is closed
         if (updateModal) {
-            setSelectedTransport(formatSelectedTransport);
-            setDriverSelected("");
-            setTypeComfortSelected("");
+            setDefaultValues();
         }
-
     };
 
     const openCloseModalDelete = () => {
-        console.log('selectedTransport es:',selectedTransport);
         setDeleteModal(!deleteModal);
 
         // Data are cleaned when the modal is closed
@@ -593,11 +589,103 @@ function Transports() {
         <div className={styles.modal}>
             <h3>EDITAR COMBI</h3>
             <Tooltip title="Debe eliminar la combi para cambiar el estado">
-                <TextField className={styles.inputMaterial} label="Estado" name="active"
-                           value={selectedTransport && selectedTransport.active} disabled/>
+                <TextField label="Estado" id={"active"} name="active"
+                           className={styles.inputMaterial}
+                           disabled
+                           value={selectedTransport && selectedTransport.active}/>
             </Tooltip>
             <br/>
-            <TextField inputProps={{maxLength: 5}}
+            <TextField label="Identificación interna" id={"internal_identification"} name="internal_identification"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 5, style: {textTransform: 'uppercase'}}}
+                       autoComplete='off'
+                       error={(internalIdentificationError) ? true : false}
+                       helperText={(internalIdentificationError) ? internalIdentificationError : false}
+                       value={selectedTransport && selectedTransport.internal_identification}
+                       onChange={handleChange}/>
+            <TextField label="Patente" id={"registration_number"} name="registration_number"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 7, style: {textTransform: 'uppercase'}}}
+                       autoComplete='off'
+                       error={(registrationNumberError) ? true : false}
+                       helperText={(registrationNumberError) ? registrationNumberError : false}
+                       value={selectedTransport && selectedTransport.registration_number}
+                       onChange={handleChange}/>
+            <TextField label="Modelo" id={"model"} name="model"
+                       className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                       autoComplete='off'
+                       error={(modelError) ? true : false}
+                       helperText={(modelError) ? modelError : false}
+                       value={selectedTransport && selectedTransport.model}
+                       onChange={handleChange}/>
+            <TextField label="Cantidad de asientos" id={"seating"} name="seating"
+                       className={styles.inputMaterial}
+                       inputProps={{maxLength: 2}}
+                       autoComplete='off'
+                       required
+                       error={(seatingError) ? true : false}
+                       helperText={(seatingError) ? seatingError : false}
+                       value={selectedTransport && selectedTransport.seating}
+                       onChange={handleChange}/>
+            <FormControl className={styles.inputMaterial}
+                         required>
+                <InputLabel>Tipo de confort</InputLabel>
+                <Select label="Tipo de comfort" labelId="typeComfortSelected" id="typeComfortSelected"
+                        name="typeComfortSelected"
+                        className={styles.inputMaterial}
+                        value={(typeComfortSelected) ? typeComfortSelected : selectedTransport.comfort.type_comfort_id}
+                        onChange={handleChange}
+                        displayEmpty
+                >
+                    <MenuItem value={0} disabled> Seleccione un tipo de confort </MenuItem>
+                    <MenuItem key={1} value={1}> Cómoda </MenuItem>
+                    <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
+                </Select>
+                <FormHelperText>{(typeComfortSelectedError) ? typeComfortSelectedError : false}</FormHelperText>
+            </FormControl>
+            <FormControl className={styles.inputMaterial}
+                         required>
+                <InputLabel>Chofer</InputLabel>
+                <Select label="Chofer" labelId="driverSelected" id="driverSelected" name="driverSelected"
+                        className={styles.inputMaterial}
+                        value={(driverSelected) ? driverSelected : selectedTransport.driver.user_id}
+                        onChange={handleChange}
+                        displayEmpty
+                >
+                    <MenuItem value="" disabled>
+                        Seleccione un chofer
+                    </MenuItem>
+                    <MenuItem value={selectedTransport.driver.user_id}>
+                        {selectedTransport.driver.surname}, {selectedTransport.driver.name}
+                    </MenuItem>
+                    {(drivers) ?
+                        drivers.map((drivers) => (
+                            <MenuItem
+                                key={drivers.user_id}
+                                value={drivers.user_id}
+                            >
+                                {drivers.surname}, {drivers.name}
+                            </MenuItem>
+                        )) : null
+                    }
+                </Select>
+                <Tooltip
+                    title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
+                    <FormHelperText>
+                        <HelpIcon color='primary' fontSize="small"/>
+                        Sólo se visualizan los choferes disponibles
+                    </FormHelperText>
+                </Tooltip>
+            </FormControl>
+
+
+            {
+                /*
+                <TextField inputProps={{maxLength: 5}}
                        className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
                        onChange={handleChange}
                        value={selectedTransport && selectedTransport.internal_identification}/>
@@ -670,8 +758,11 @@ function Transports() {
                     </FormHelperText>
                 </Tooltip>
             </FormControl>
+                 */
+            }
 
-            <br/><br/>
+
+            <br/>
             <div align="right">
                 <Button color="primary" onClick={() => requestPutTransport()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
