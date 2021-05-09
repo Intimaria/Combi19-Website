@@ -8,6 +8,9 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';
 import { getDrivers, postDrivers, putDrivers, deleteDrivers } from '../api/Drivers.js';
 import { Message } from "./Message";
+//Los estilos de los modals
+import {useStyles} from '../const/modalStyle';
+
 // Importo los mensajes de error
 import {
     ERROR_MSG_EMPTY_PHONE_NUMBER,
@@ -48,33 +51,12 @@ const columns = [
     { title: 'Email', field: 'email' },
 ];
 
-//Los estilos de los modals
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
-    },
-    iconos: {
-        cursor: 'pointer'
-    },
-    inputMaterial: {
-        width: '100%'
-    }
-}));
-
 function Drivers() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
         setOptions({ ...options, open: false });
     };
-    //Fortmato que tiene los datos al selecccionarlos para mostrarlos en un modal
+    //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedDriver = {
         id: "",
         names: "",
@@ -412,33 +394,33 @@ function Drivers() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO CHOFER</h3>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+            <TextField className={styles.inputMaterial} label="Nombre" name="names"
                 required
-                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
                 autoComplete='off'
                 error={(namesError) ? true : false}
                 helperText={(namesError) ? namesError : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.names} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+            <TextField className={styles.inputMaterial} label="Apellido" name="surname"
                 required
-                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
                 autoComplete='off'
                 error={(surnameError) ? true : false}
                 helperText={(surnameError) ? surnameError : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.surname} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Correo electronico" name="email" onChange={handleChange}
                 required
-                inputProps={{ maxLength: 90 }}
+                inputProps={{ maxLength: 70 }}
                 autoComplete='off'
                 error={(emailError) ? true : false}
                 helperText={(emailError) ? emailError : false}
                 value={selectedDriver && selectedDriver.email} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+            <TextField className={styles.inputMaterial} label="Numero telefonico" name="phoneNumber"
                 required
                 inputProps={{ maxLength: 30 }}
                 autoComplete='off'
@@ -447,18 +429,18 @@ function Drivers() {
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.phoneNumber} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+            <TextField className={styles.inputMaterial} label="Contraseña" name="password1"
                 required
-                inputProps={{ maxLength: 70 }}
+                inputProps={{ maxLength: 20 }}
                 autoComplete='off'
                 error={(password1Error) ? true : false}
                 helperText={(password1Error) ? password1Error : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.password1} />
             <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
+            <TextField className={styles.inputMaterial} label="Repita la contraseña"
                 required
-                inputProps={{ maxLength: 70 }}
+                inputProps={{ maxLength: 100 }}
                 autoComplete='off'
                 error={(password2Error) ? true : false}
                 helperText={(password2Error) ? password2Error : false}
@@ -478,19 +460,19 @@ function Drivers() {
             <TextField className={styles.inputMaterial} label="Estado" name="active"
                 value={selectedDriver && selectedDriver.active} />
             <br />
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+            <TextField className={styles.inputMaterial} label="Nombre" name="names"
                 value={selectedDriver && selectedDriver.names} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+            <TextField className={styles.inputMaterial} label="Apellido" name="surname"
                 value={selectedDriver && selectedDriver.surname} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Correo electronico" name="email" onChange={handleChange}
                 value={selectedDriver && selectedDriver.email} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+            <TextField className={styles.inputMaterial} label="Numero telefonico" name="phoneNumber"
                 value={selectedDriver && selectedDriver.phoneNumber} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+            <TextField className={styles.inputMaterial} label="Contraseña" name="password1"
                 value={selectedDriver && selectedDriver.password1} />
             <br /><br />
             <div align="right">
@@ -502,37 +484,33 @@ function Drivers() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR CHOFER</h3>
-            <Tooltip title="Debe eliminar la combi para cambiar el estado">
-                <TextField className={styles.inputMaterial} label="Estado" name="active"
-                    value={selectedDriver && selectedDriver.active} disabled />
-            </Tooltip>
-            <TextField className={styles.inputMaterial} label="Nombre del chofer" name="names"
+            <TextField className={styles.inputMaterial} label="Nombre" name="names"
                 required
-                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
                 autoComplete='off'
                 error={(namesError) ? true : false}
                 helperText={(namesError) ? namesError : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.names} />
             <br />
-            <TextField className={styles.inputMaterial} label="Apellido del chofer" name="surname"
+            <TextField className={styles.inputMaterial} label="Apellido" name="surname"
                 required
-                inputProps={{ maxLength: 70, style: { textTransform: 'capitalize' } }}
+                inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
                 autoComplete='off'
                 error={(surnameError) ? true : false}
                 helperText={(surnameError) ? surnameError : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.surname} />
             <br />
-            <TextField className={styles.inputMaterial} label="Email del chofer" name="email" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Correo electronico" name="email" onChange={handleChange}
                 required
-                inputProps={{ maxLength: 90 }}
+                inputProps={{ maxLength: 70 }}
                 autoComplete='off'
                 error={(emailError) ? true : false}
                 helperText={(emailError) ? emailError : false}
                 value={selectedDriver && selectedDriver.email} />
             <br />
-            <TextField className={styles.inputMaterial} label="Numero de telefono del chofer" name="phoneNumber"
+            <TextField className={styles.inputMaterial} label="Numero telefonico" name="phoneNumber"
                 required
                 inputProps={{ maxLength: 30 }}
                 autoComplete='off'
@@ -541,18 +519,18 @@ function Drivers() {
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.phoneNumber} />
             <br />
-            <TextField className={styles.inputMaterial} label="Contraseña del chofer" name="password1"
+            <TextField className={styles.inputMaterial} label="Contraseña" name="password1"
                 required
-                inputProps={{ maxLength: 70 }}
+                inputProps={{ maxLength: 20 }}
                 autoComplete='off'
                 error={(password1Error) ? true : false}
                 helperText={(password1Error) ? password1Error : false}
                 onChange={handleChange}
                 value={selectedDriver && selectedDriver.password1} />
             <br />
-            <TextField className={styles.inputMaterial} label="Ingrese nuevamente la contraseña del chofer"
+            <TextField className={styles.inputMaterial} label="Repita la contraseña"
                 required
-                inputProps={{ maxLength: 70 }}
+                inputProps={{ maxLength: 100 }}
                 autoComplete='off'
                 error={(password2Error) ? true : false}
                 helperText={(password2Error) ? password2Error : false}
@@ -568,7 +546,7 @@ function Drivers() {
     //Modal de elimincacion
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar el chofer con email <b>{selectedDriver && selectedDriver.email}</b> ?
+            <p>¿Estás seguro que deseas eliminar el chofer con correo electronico <b>{selectedDriver && selectedDriver.email}</b> ?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>
@@ -601,7 +579,7 @@ function Drivers() {
                 actions={[
                     {
                         icon: () => <VisibilityIcon />,
-                        tooltip: 'Visualización de combi',
+                        tooltip: 'Visualización de chofer',
                         onClick: (event, rowData) => selectDriver(rowData, "Ver")
                     },
                     rowData => ({
