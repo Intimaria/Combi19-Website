@@ -37,8 +37,9 @@ import { materialTableConfiguration } from '../const/materialTableConfiguration'
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    {title: 'Ciudad', field: 'CITY_NAME'},
-    {title: 'Provincia', field: 'PROVINCE_NAME'}
+    {title: 'Ciudad', field: 'cityName'},
+    {title: 'Provincia', field: 'provinceName'},
+    {title: 'Estado', field: 'ACTIVE' }
 ];
 
 const Provinces = [
@@ -189,24 +190,6 @@ function Places() {
     
 
     const peticionPut = async () => {
-        /*
-        await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
-            .then(response => {
-                var dataNueva = data;
-                dataNueva.map(internal_identification => {
-                    if (internal_identification.id === selectedTransport.id) {
-                        internal_identification.internal_identification = selectedTransport.internal_identification;
-                        internal_identification.registration_number = selectedTransport.registration_number;
-                        internal_identification.driver = selectedTransport.driver;
-                        internal_identification.model = selectedTransport.model;
-                    }
-                });
-                setData(dataNueva);
-                openCloseModalUpdate();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
     }
 
     const peticionDelete = async () => {
@@ -285,20 +268,6 @@ function Places() {
                 value={selectedPlace && selectedPlace.city_name} />
             <br />
             <br />
-{/* 
-            <InputLabel>Provincia</InputLabel>
-            <Select label="Provincia" id="Provincia" labelId={selectedPlace.id_province}
-                        name="province"
-                        className={styles.inputMaterial}
-                        value={(selectedPlace.id_province) ? selectedPlace.id_province : 0}
-                        displayEmpty
-                        onClick={handleChange}
-                >
-                    <MenuItem value={0} disabled> Seleccione una provincia </MenuItem>
-                    <MenuItem key={1} value={1}> Buenos Aires </MenuItem>
-                    <MenuItem key={2} value={2}> CABA </MenuItem>
-                </Select>
-                 */}
                 <FormControl className={styles.inputMaterial}
                          required
                          error={(provinceSelectedError) ? true : false}>
@@ -392,7 +361,6 @@ function Places() {
     )
 
     console.log("LA DATA ES:", data);
-    console.log(selectedPlace[0]);
 
     return (
         <div className="App">
