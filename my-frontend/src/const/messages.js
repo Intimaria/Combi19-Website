@@ -45,3 +45,6 @@ export const ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS = '* La contraseña de
 export const ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS = '* La contraseña no posee números'
 export const ERROR_MSG_INVALID_SURNAME = '* El apellido debe poseer solo caracteres alfabéticos';
 export const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
+// Driver registration form
+export const ERROR_MSG_EMPTY_PHONE_NUMBER = "* Ingrese un numero de telefono";
+export const ERROR_MSG_INVALID_PHONE_NUMBER = "* El ingrese un numero de telefono valido";

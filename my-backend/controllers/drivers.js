@@ -4,6 +4,10 @@ const {validateDriversToCreate, validateDriversToModify} = require("../helpers/v
 
 const {validateDriverTransportDependence} = require('../helpers/validateDriverDependences.js');
 
+const {normalizeDrivers} = require('../helpers/normalizeResult.js');
+
+// const { validateDriverTripDependence } = require('../helpers/validateDriverDependences.js');
+
 const {
     DRIVER_ROLE,
     NO_ACTIVE,
@@ -22,9 +26,6 @@ const {
     ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE
 } = require('../const/messages.js');
 
-
-// const { validateDriverTripDependence } = require('../helpers/validateDriverDependences.js');
-
 const getDrivers = async (req, res) => {
     // const { start = 1, limit = 5 } = req.query;
     try {
@@ -32,7 +33,8 @@ const getDrivers = async (req, res) => {
         const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, PHONE_NUMBER, PASSWORD, ACTIVE FROM USER a INNER JOIN ROLE_USER r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? ORDER BY SURNAME ASC, NAME ASC';
         const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);
         connection.end();
-        return res.status(200).send(rows);
+        const normalizedResults = await normalizeDrivers(rows);
+        return res.status(200).send(normalizedResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
         res.status(500).send(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
@@ -121,7 +123,7 @@ const putDriver = async (req, res) => {
             const [rows] = await connection.execute(sqlUptate, [names, surname, email, password1, phoneNumber, id]);
 
             connection.end();
-            res.status(201).send(OK_MSG_API_PUT_DRIVER);
+            res.status(200).send(OK_MSG_API_PUT_DRIVER);
         } catch (error) {
             console.log(`${ERROR_MSG_API_PUT_DRIVER} ${error}`);
             res.status(500).send(`${ERROR_MSG_API_PUT_DRIVER} ${error}`);
