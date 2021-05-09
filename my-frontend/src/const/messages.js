@@ -60,3 +60,4 @@ export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugare
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
+
