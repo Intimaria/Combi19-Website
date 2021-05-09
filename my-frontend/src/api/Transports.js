@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {BACKEND_URL} from "../const/config";
+import {capitalizeString} from "../helpers/strings";
 import {
     ERROR_MSG_API_DELETE_DRIVER,
     ERROR_MSG_API_GET_TRANSPORTS,
@@ -7,6 +8,7 @@ import {
     ERROR_MSG_API_PUT_TRANSPORT,
     ERROR_MSG_INTERNET
 } from "../const/messages";
+
 
 
 export const getTransports = async () => {
@@ -44,7 +46,7 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
     const newTransport = {
         internal_identification: selectedTransport.internal_identification.toUpperCase(),
         registration_number: selectedTransport.registration_number.toUpperCase(),
-        model: selectedTransport.model,
+        model: capitalizeString(selectedTransport.model),
         seating: selectedTransport.seating,
         id_type_comfort: typeComfortSelected,
         id_driver: driverSelected
