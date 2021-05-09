@@ -16,13 +16,13 @@ import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {
     getTransports,
-    postTransport
+    postTransport,
+    deleteTransport
 } from '../api/Transports';
-import {getAvailableDrivers} from "../api/Drivers";
+import {deleteDrivers, getAvailableDrivers} from "../api/Drivers";
 import {
     ERROR_MSG_API_GET_TRANSPORTS,
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
-    ERROR_MSG_API_POST_DRIVER,
     ERROR_MSG_EMPTY_DRIVER,
     ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION,
     ERROR_MSG_EMPTY_MODEL,
@@ -32,7 +32,9 @@ import {
     ERROR_MSG_INVALID_MAX_SEATING,
     ERROR_MSG_INVALID_MIN_SEATING,
     ERROR_MSG_INVALID_VALUE_SEATING,
-    ERROR_MSG_EMPTY_TYPE_COMFORT, ERROR_MSG_API_POST_TRANSPORT
+    ERROR_MSG_EMPTY_TYPE_COMFORT,
+    ERROR_MSG_API_POST_TRANSPORT,
+    ERROR_MSG_API_DELETE_TRANSPORT
 } from "../const/messages";
 import {
     REGEX_ONLY_NUMBER,
@@ -228,7 +230,7 @@ function Transports() {
         }
     };
 
-    const saveTransport = async () => {
+    const requestPostTransport = async () => {
         if (validateForm()) {
             setInternalIdentificationError(false);
             setRegistrationNumberError(false);
@@ -243,6 +245,8 @@ function Transports() {
                 });
 
                 await openCloseModalCreate();
+
+                await fetchData();
                 return true
             } else if (postResponse.status === 400) {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
@@ -265,8 +269,48 @@ function Transports() {
         }
     };
 
+    const fetchData = async () => {
+        try {
+            let getTransportsResponse = await getTransports();
 
-    const putTransport = async () => {
+            if (getTransportsResponse.status === 200) {
+                let data = getTransportsResponse.data;
+
+                for (let index = 0; index < data.length; index++) {
+                    if (data[index].active === 0) {
+                        data[index].active = 'Inactivo';
+                    } else if (data[index].active === 1) {
+                        data[index].active = 'Activo'
+                    } else {
+                        data[index].active = 'Estado inválido'
+                    }
+                }
+
+                setData(data);
+            } else if (getTransportsResponse.status === 500) {
+                setSuccessMessage(getTransportsResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: getTransportsResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`
+                });
+            }
+
+
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
+        }
+    };
+
+
+    const requestPutTransport = async () => {
         /*
         await axios.put(baseUrl + "/" + selectedTransport.id, selectedTransport)
             .then(response => {
@@ -287,16 +331,30 @@ function Transports() {
             */
     };
 
-    const deleteTransport = async () => {
-        /*
-        await axios.delete(baseUrl + "/" + selectedTransport.id)
-            .then(response => {
-                setData(data.filter(internal_identification => internal_identification.id !== selectedTransport.id));
-                openCloseModalDelete();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
+    const requestDeleteTransport = async () => {
+        let postResponse = await deleteTransport(selectedTransport.transport_id);
+
+        if (postResponse.status === 200) {
+            setSuccessMessage(`Se eliminó la combi correctamente`);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: `Se eliminó la combi correctamente`
+            });
+            openCloseModalDelete();
+            await fetchData();
+        } else if (postResponse?.status === 500 || postResponse?.status === 400) {
+            setSuccessMessage(postResponse.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: postResponse.data
+            });
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_TRANSPORT} ${postResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_DELETE_TRANSPORT} ${postResponse}`
+            });
+        }
     };
 
     const selectTransport = async (transport, action) => {
@@ -306,7 +364,7 @@ function Transports() {
         } else if (action === "Editar") {
             await openCloseModalUpdate()
         } else {
-            await openCloseModalDelete()
+            openCloseModalDelete()
         }
     };
 
@@ -388,7 +446,8 @@ function Transports() {
 
     };
 
-    const openCloseModalDelete = async () => {
+    const openCloseModalDelete = () => {
+        console.log('selectedTransport es:',selectedTransport);
         setDeleteModal(!deleteModal);
 
         // Data are cleaned when the modal is closed
@@ -400,45 +459,7 @@ function Transports() {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                let getTransportsResponse = await getTransports();
 
-                if (getTransportsResponse.status === 200) {
-                    let data = getTransportsResponse.data;
-
-                    for (let index = 0; index < data.length; index++) {
-                        if (data[index].active === 0) {
-                            data[index].active = 'Inactivo';
-                        } else if (data[index].active === 1) {
-                            data[index].active = 'Activo'
-                        } else {
-                            data[index].active = 'Estado inválido'
-                        }
-                    }
-
-                    setData(data);
-                } else if (getTransportsResponse.status === 500) {
-                    setSuccessMessage(getTransportsResponse.data);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: getTransportsResponse.data
-                    });
-
-                    return true
-                } else {
-                    setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`
-                    });
-                }
-
-
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
-            }
-        };
         fetchData();
     }, []);
 
@@ -531,7 +552,7 @@ function Transports() {
             </Tooltip>
             <br/>
             <div align="right">
-                <Button color="primary" onClick={() => saveTransport()}>GUARDAR</Button>
+                <Button color="primary" onClick={() => requestPostTransport()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
@@ -540,6 +561,9 @@ function Transports() {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE LA COMBI</h3>
+            <TextField className={styles.inputMaterial} label="Estado" name="active"
+                       value={selectedTransport && selectedTransport.active}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
                        value={selectedTransport && selectedTransport.internal_identification}/>
             <br/>
@@ -555,9 +579,6 @@ function Transports() {
             <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
                        value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Estado" name="active"
-                       value={selectedTransport && selectedTransport.active}/>
-            <br/>
             <TextField className={styles.inputMaterial} label="Chofer" name="driver"
                        value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
             <br/><br/>
@@ -571,6 +592,11 @@ function Transports() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR COMBI</h3>
+            <Tooltip title="Debe eliminar la combi para cambiar el estado">
+                <TextField className={styles.inputMaterial} label="Estado" name="active"
+                           value={selectedTransport && selectedTransport.active} disabled/>
+            </Tooltip>
+            <br/>
             <TextField inputProps={{maxLength: 5}}
                        className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
                        onChange={handleChange}
@@ -606,11 +632,6 @@ function Transports() {
                 <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
 
             </Select>
-            <br/>
-            <Tooltip title="Debe eliminar la combi para cambiar el estado">
-                <TextField className={styles.inputMaterial} label="Estado" name="active"
-                           value={selectedTransport && selectedTransport.active} disabled/>
-            </Tooltip>
             <br/>
             <FormControl required className={styles.inputMaterial}>
                 <InputLabel>Chofer</InputLabel>
@@ -652,7 +673,7 @@ function Transports() {
 
             <br/><br/>
             <div align="right">
-                <Button color="primary" onClick={() => putTransport()}>CONFIRMAR CAMBIOS</Button>
+                <Button color="primary" onClick={() => requestPutTransport()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
@@ -665,7 +686,7 @@ function Transports() {
                 patente <b>{selectedTransport && selectedTransport.registration_number}</b>?
             </p>
             <div align="right">
-                <Button color="secondary" onClick={() => deleteTransport()}>SÍ, ELIMINAR</Button>
+                <Button color="secondary" onClick={() => requestDeleteTransport()}>SÍ, ELIMINAR</Button>
                 <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
 
             </div>
