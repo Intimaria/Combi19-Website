@@ -239,16 +239,6 @@ function Transports() {
             if (getTransportsResponse.status === 200) {
                 let data = getTransportsResponse.data;
 
-                for (let index = 0; index < data.length; index++) {
-                    if (data[index].active === 0) {
-                        data[index].active = 'Inactivo';
-                    } else if (data[index].active === 1) {
-                        data[index].active = 'Activo'
-                    } else {
-                        data[index].active = 'Estado inválido'
-                    }
-                }
-
                 setData(data);
             } else if (getTransportsResponse.status === 500) {
                 setSuccessMessage(getTransportsResponse.data);

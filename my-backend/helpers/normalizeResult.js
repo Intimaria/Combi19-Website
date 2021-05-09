@@ -8,7 +8,7 @@ const normalizeTransport = (rows) => {
             model: rows[index].MODEL,
             registration_number: rows[index].REGISTRATION_NUMBER,
             seating: rows[index].SEATING,
-            active: rows[index].ACTIVE,
+            active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             comfort: {
                 type_comfort_id: rows[index].TYPE_COMFORT_ID,
                 type_comfort_name: rows[index].TYPE_COMFORT_NAME
@@ -25,7 +25,7 @@ const normalizeTransport = (rows) => {
     }
 
     return results;
-}
+};
 
 const normalizeDrivers = (rows) => {
     let results = [];
