@@ -4,10 +4,21 @@ const {
     ERROR_MSG_API_GET_TRANSPORTS,
     ERROR_MSG_API_GET_TRANSPORT_BY_ID,
     OK_MSG_API_TRANSPORT_POST,
-    ERROR_MSG_API_POST_TRANSPORT
+    ERROR_MSG_API_POST_TRANSPORT,
+    OK_MSG_API_PUT_TRANSPORT,
+    ERROR_MSG_API_PUT_TRANSPORT,
+    OK_MSG_API_DELETE_TRANSPORT,
+    ERROR_MSG_API_DELETE_TRANSPORT,
+    ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
 } = require("../const/messages");
 
-const {validateTransportToCreate} = require("../helpers/validateTransportInputs");
+const {
+    validateTransportToCreate,
+    validateTransportToUpdate
+} = require("../helpers/validateTransportInputs");
+
+const {validateTransportRouteDependence} = require("../helpers/validateTransportDependences");
+
 
 const {normalizeTransport} = require("../helpers/normalizeResult");
 
@@ -71,8 +82,6 @@ const getTransportById = async (req, res) => {
 const postTransport = async (req, res) => {
     const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
 
-    console.log('Valores recibidos:', internal_identification, model, registration_number, seating, id_type_comfort, id_driver);
-
     const inputsErrors = await validateTransportToCreate(internal_identification, registration_number);
 
     if (inputsErrors) {
@@ -101,12 +110,68 @@ const postTransport = async (req, res) => {
     res.end();
 };
 
-const putTransport = async (req, rest) => {
+const putTransport = async (req, res) => {
 
+    const {id} = req.params;
+
+    const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
+
+    const inputsErrors = await validateTransportToUpdate(internal_identification, registration_number, id);
+
+    if (inputsErrors) {
+        res.status(400).json(inputsErrors);
+    } else {
+        try {
+            const connection = await prepareConnection();
+
+            let sqlUpdate =
+                `
+                UPDATE TRANSPORT 
+                SET INTERNAL_IDENTIFICATION = '${internal_identification}', 
+                MODEL = '${model}', 
+                REGISTRATION_NUMBER = '${registration_number}', 
+                SEATING = ${seating}, 
+                ID_TYPE_COMFORT = ${id_type_comfort}, 
+                ID_DRIVER = ${id_driver}
+                WHERE TRANSPORT_ID = ${id};
+              `;
+
+            const [rows] = await connection.execute(sqlUpdate);
+
+            connection.end();
+            res.status(200).send(OK_MSG_API_PUT_TRANSPORT);
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_PUT_TRANSPORT} ${error}`);
+            res.status(500).send(`${ERROR_MSG_API_PUT_TRANSPORT} ${error}`);
+        }
+    }
+    res.end();
 };
 
-const deleteTransport = async (req, rest) => {
+const deleteTransport = async (req, res) => {
+    const {id} = req.params;
 
+    if (await validateTransportRouteDependence(id)) {
+        res.status(400).send(`${ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE}`);
+    } else {
+        try {
+            const connection = await prepareConnection();
+            const sqlUptate =
+                `
+            UPDATE TRANSPORT SET ACTIVE = 0 
+            WHERE TRANSPORT_ID = ${id};
+            `;
+
+            const [rows] = await connection.execute(sqlUptate);
+            connection.end();
+
+            return res.status(200).send(OK_MSG_API_DELETE_TRANSPORT);
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
+            res.status(500).send(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
+        }
+    }
+    res.end();
 };
 
 module.exports = {

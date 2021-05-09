@@ -119,8 +119,8 @@ const putDriver = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlUptate = "UPDATE USER SET NAME= ?, SURNAME= ?, EMAIL= ?, PASSWORD= ?, PHONE_NUMBER= ? WHERE USER_ID = ?";
-            const [rows] = await connection.execute(sqlUptate, [names, surname, email, password1, phoneNumber, id]);
+            let sqlUpdate = "UPDATE USER SET NAME= ?, SURNAME= ?, EMAIL= ?, PASSWORD= ?, PHONE_NUMBER= ? WHERE USER_ID = ?";
+            const [rows] = await connection.execute(sqlUpdate, [names, surname, email, password1, phoneNumber, id]);
 
             connection.end();
             res.status(200).send(OK_MSG_API_PUT_DRIVER);
@@ -144,8 +144,8 @@ const deleteDriver = async (req, res) => {
     else {
         try {
             const connection = await prepareConnection();
-            const sqlUptate = 'UPDATE ROLE_USER SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
-            const [rows] = await connection.execute(sqlUptate, [NO_ACTIVE, id, DRIVER_ROLE]);
+            const sqlUpdate = 'UPDATE ROLE_USER SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
+            const [rows] = await connection.execute(sqlUpdate, [NO_ACTIVE, id, DRIVER_ROLE]);
             connection.end();
             return res.status(200).send(OK_MSG_API_DELETE_DRIVER);
         } catch (error) {
