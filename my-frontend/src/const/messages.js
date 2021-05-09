@@ -48,3 +48,9 @@ export const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
 // Driver registration form
 export const ERROR_MSG_EMPTY_PHONE_NUMBER = "* Ingrese un numero de telefono";
 export const ERROR_MSG_INVALID_PHONE_NUMBER = "* El ingrese un numero de telefono valido";
+// Places TODO
+export const ERROR_MSG_API_DELETE_PLACES = " ";
+export const ERROR_MSG_API_GET_PLACES =  " ";
+export const ERROR_MSG_API_GET_PROVINCES = " ";
+export const ERROR_MSG_API_POST_PLACES = " ";
+export const ERROR_MSG_API_PUT_PLACES = " ";
