@@ -74,7 +74,7 @@ const putPlace = async (req, res) => {
 const postPlace = async (req, res) => {
     const { city_name, id_province } = req.body;
     //const inputsErrors = await validatePlace(city, province);
-    if (! await validatePlaceExists(city_name, id_province)) {
+    if (await validatePlaceExists(city_name, id_province)) {
         res.status(400).send("No se puede agregar, el lugar ya existe.");
     }
     else {
