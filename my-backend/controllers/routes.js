@@ -6,38 +6,47 @@ const {
     ACTIVE,
     NO_ACTIVE } = require("../const/config.js");
 
-const getRoutes = async (req, res) => {
-    const { start = 1, limit = 5 } = req.query;
-
-    try {
+    const getRoutes = async (req, res) => {
         const connection = await prepareConnection();
-        /*
-        Continue with the code
-         */
-        connection.end();
-        return res.status(200).send(rows);
-    } catch (error) {
-        console.log('Ha ocurrido un error al obtener los datos de todos los rutas: ', error);
-        res.status(500);
+        connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) ORDER BY c.CITY_NAME ASC, p.PROVINCE_NAME ASC", []).then((result) => {
+            connection.end();
+            res.status(200).send(result[0]);
+        }).catch(function (err) {
+            console.log('Ha ocurrido un error al obtener los lugares: ', err);
+            res.status(500);
+        });
+        res.end();
     }
-    res.end();
-}
 
-const getRouteById = async (req, res) => {
-    try {
-        const { id } = req.params;
+    const getRouteById = async (req, res) => {
+        const {id} = req.params;
         const connection = await prepareConnection();
-        /*
-        Continue with the code
-         */
-        connection.end();
-        return res.status(200).send(rows[0]);
-    } catch (error) {
-        console.log('Ha ocurrido un error al obtener al ruta indicado: ', error);
-        res.status(500);
+        connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) WHERE c.CITY_ID=?", [id]).then((result) => {
+            connection.end();
+            res.status(200).send(result[0]);
+        }).catch(function (err) {
+            console.log('Ha ocurrido un error al obtener al lugar indicado: ', err);
+            res.status(500);
+        });
+        res.end();
     }
-    res.end();
-}
+    const deleteRoute = async (req, res) => {
+        const {id} = req.params;
+        const {id_province} = req.body;
+        // validate place exists? validate place exists else return error code.
+        if (await validatePlaceDependency(id)) {
+            res.status(400).send("No se puede eliminar, el lugar figura entre rutas o viajes existentes.");
+        }
+        const connection = await prepareConnection();
+        connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ? AND ID_PROVINCE = ?', [NO_ACTIVE, id, id_province]).then((place) => {
+            connection.end();
+            res.status(200).send('Se ha eliminado el lugar con éxito');
+        }).catch(function (err) {
+            console.log('Ha ocurrido un error al eliminar el lugar indicado: ', err);
+            res.status(500);
+        });
+        res.end();
+    }
 
 const postRoute = async (req, res) => {
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
@@ -86,13 +95,8 @@ const putRoute = async (req, res) => {
     res.end();
 }
 
-const deleteRoute = async (req, res) => {
-    const { id } = req.params;
-    /*
-    Continue with the code
-     */
-    res.end();
-}
+
+
 
 module.exports = {
     getRoutes,
