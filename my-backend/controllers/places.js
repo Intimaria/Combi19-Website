@@ -13,7 +13,7 @@ const {NO_ACTIVE, ACTIVE} = require('../const/config.js');
 
 const getProvinces = async (req, res) => {
     const connection = await prepareConnection();
-    connection.query("SELECT PROVINCE_NAME FROM PROVINCE", []).then((result) => {
+    await connection.query("SELECT PROVINCE_NAME FROM PROVINCE", []).then((result) => {
         connection.end();
         res.status(200).send(result[0]);
     }).catch(function (err) {
@@ -26,7 +26,7 @@ const getProvinces = async (req, res) => {
 
 const getPlaces = async (req, res) => {
     const connection = await prepareConnection();
-    connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) ORDER BY c.CITY_NAME ASC, p.PROVINCE_NAME ASC", []).then((result) => {
+    await connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) ORDER BY c.CITY_NAME ASC, p.PROVINCE_NAME ASC", []).then((result) => {
         connection.end();
         res.status(200).send(result[0]);
     }).catch(function (err) {
@@ -40,7 +40,7 @@ const getPlaces = async (req, res) => {
 const getPlaceById = async (req, res) => {
     const {id} = req.params;
     const connection = await prepareConnection();
-    connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) WHERE c.CITY_ID=?", [id]).then((result) => {
+    await connection.query("SELECT c.CITY_NAME, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) WHERE c.CITY_ID=?", [id]).then((result) => {
         connection.end();
         res.status(200).send(result[0]);
     }).catch(function (err) {
@@ -56,7 +56,7 @@ const putPlace = async (req, res) => {
     const {id} = req.params;
     //const inputsErrors = await validatePlace(city, province);
     const connection = await prepareConnection();
-    connection.query(
+    await connection.query(
         "UPDATE CITY SET CITY_NAME=?, ID_PROVINCE=?, ACTIVE=? WHERE CITY_ID = ?",
         [city_name, id_province, ACTIVE, id]).then((result) => {
         connection.end();
@@ -72,7 +72,7 @@ const postPlace = async (req, res) => {
     const {city_name, id_province} = req.body;
     //const inputsErrors = await validatePlace(city, province);
     const connection = await prepareConnection();
-    connection.query(
+    await connection.query(
         "INSERT INTO CITY (ID_PROVINCE, CITY_NAME, ACTIVE) VALUES (?,?,?)",
         [id_province, city_name, ACTIVE]).then((result) => {
         connection.end();
@@ -93,7 +93,7 @@ const deletePlace = async (req, res) => {
         res.status(400).send("No se puede eliminar, el lugar figura entre rutas o viajes existentes.");
     }
     const connection = await prepareConnection();
-    connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ? AND ID_PROVINCE = ?', [NO_ACTIVE, id, id_province]).then((place) => {
+    await connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ? AND ID_PROVINCE = ?', [NO_ACTIVE, id, id_province]).then((place) => {
         connection.end();
         res.status(200).send('Se ha eliminado el lugar con éxito');
     }).catch(function (err) {
