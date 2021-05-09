@@ -123,7 +123,7 @@ function Places() {
     const [provinceSelectedError, setProvinceSelectedError] = useState(false);
     const [provinceSelected, setProvinceSelected] = useState('');
     //Mensaje de error de los inputs
-    const [namesError, setNamesError] = React.useState(null);
+    const [namesError, setNamesError] = useState(null);
     //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
         const { name, value } = textFieldAtributes.target;
@@ -170,7 +170,7 @@ function Places() {
                 openCloseModalCreate();
                 fetchData();
             } else if (postResponse?.status === 400) {
-                setNamesError(postResponse.data.namesError);
+                setNamesError(postResponse.data);
             } else if (postResponse?.status === 500) {
                 setSuccessMessage(postResponse.data);
                 setOptions({

@@ -88,7 +88,7 @@ export const postPlace = async (selectedPlaces, provinceSelected) => {
     const token = localStorage.getItem('token');
 
     const newPlace = {
-        city_name: selectedPlaces.city_name,
+        city_name: selectedPlaces.capitalizeString(city_name.trim()),
         id_province: provinceSelected
     };
 
@@ -120,16 +120,16 @@ export const postPlace = async (selectedPlaces, provinceSelected) => {
     }
 };
 
-export const putPlace = async (selectedPlaces, provinceSelected) => {
+export const putPlace = async (selectedPlaces, provinceSelected, id) => {
   const token = localStorage.getItem('token');
 
   const modifiedPlace = {
-      cityName: selectedPlaces.name,
-      id_provincer: provinceSelected
+    city_name: selectedPlaces.city_name.trim(),
+    id_province: provinceSelected
   };
 
   try {
-      let response = await axios.post(`${BACKEND_URL}/places`,
+      let response = await axios.post(`${BACKEND_URL}/places/${id}`,
           modifiedPlace,
           {
               headers: {
@@ -156,39 +156,31 @@ export const putPlace = async (selectedPlaces, provinceSelected) => {
   }
 };
 
-export const deletePlace = async (selectedPlaces, provinceSelected) => {
-  const token = localStorage.getItem('token');
+export const deletePlace = async (id) => {
+    console.log(id);
+    const token = localStorage.getItem('token');
+    try {
+        let response = await axios.delete(`${BACKEND_URL}/places/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
 
-  const deletedPlace = {
-      cityName: selectedPlaces.name,
-      id_provincer: provinceSelected,
-      active: 0
-  };
+            console.log(`${ERROR_MSG_API_DELETE_PLACES} ${error}`);
 
-  try {
-      let response = await axios.post(`${BACKEND_URL}/places`,
-      deletedPlace,
-          {
-              headers: {
-                  Authorization: `Bearer ${token}`
-              }
-          });
-
-      return response;
-  } catch (error) {
-      if (error.response?.status) {
-          return error.response;
-      } else {
-          // In this situation, is NOT an axios handled error
-
-          console.log(`${ERROR_MSG_API_DELETE_PLACES} ${error}`);
-
-          if (error.message === 'Network Error') {
-              error.message = ERROR_MSG_INTERNET;
-              return error.message;
-          } else {
-              return error.message;
-          }
-      }
-  }
-};
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+}
