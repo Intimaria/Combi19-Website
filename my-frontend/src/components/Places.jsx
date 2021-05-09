@@ -217,22 +217,33 @@ function Places() {
     }
 
     const openCloseModalCreate = () => {
-        setCreateModal(!createModal);
-        if (createModal) {
+            setCreateModal(!createModal);
+            if (createModal) {
+                setSelectedPlace(formatSelectedPlace);
+                setDefaultErrorMessages();
+            }
+        }
+
+
+    const openCloseModalViewDetails = () => {
+        setViewModal(!viewModal);
+        if (viewModal) {
+            setSelectedPlace(formatSelectedPlace);
+        }
+    }
+    const openCloseModalUpdate = () => {
+        setUpdateModal(!updateModal);
+        if (updateModal) {
             setSelectedPlace(formatSelectedPlace);
             setDefaultErrorMessages();
         }
     }
 
-    const openCloseModalViewDetails = () => {
-        setViewModal(!viewModal);
-    }
-    const openCloseModalUpdate = () => {
-        setUpdateModal(!updateModal);
-    }
-
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
+        if (deleteModal) {
+            setSelectedPlace(formatSelectedPlace);
+        }
     }
 
     //Aca busco los datos de los choferes del backend
@@ -308,8 +319,8 @@ function Places() {
             <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
                        value={selectedPlace && selectedPlace.city_name}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Provincia" name="province"
-                       value={selectedPlace && selectedPlace.id_province}/>
+            <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
+                       value={selectedPlace && provinceSelected}/>
             <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
@@ -375,7 +386,7 @@ function Places() {
                     variant="contained"
                     size="large"
                     color="primary"
-                    id="btnNewCombi"
+                    id="btnNewPlace"
                     startIcon={<PinDropIcon/>}
                     onClick={() => openCloseModalCreate()}>NUEVO LUGAR</Button>
             <br/><br/>
@@ -391,12 +402,14 @@ function Places() {
                     },
                     {
                         icon: 'edit',
-                        tooltip: 'Editar lugar',
+                        tooltip: (rowData.active === 'Activo') ? 'Editar lugar' : 'No se puede editar un lugar dado de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectPlace(rowData, "Editar")
                     },
                     {
                         icon: 'delete',
-                        tooltip: 'Eliminar lugar',
+                        tooltip: (rowData.active === 'Activo') ? 'Eliminar lugar' : 'No se puede eliminar un lugar dado de baja',
+                        disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectPlace(rowData, "Eliminar")
                     }
                 ]}

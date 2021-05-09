@@ -9,6 +9,7 @@ import {
 
 import {BACKEND_URL} from "../const/config";
 import axios from 'axios';
+import {capitalizeString} from "../helpers/strings";
 
 export const getPlaces = async () => {
   const token = localStorage.getItem('token');
@@ -79,8 +80,6 @@ export const getProvinces = async () => {
       } else {
           return error.message;
       }
-
-
   }
 }
 
