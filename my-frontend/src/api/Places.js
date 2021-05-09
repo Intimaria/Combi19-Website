@@ -84,12 +84,12 @@ export const getProvinces = async () => {
   }
 }
 
-export const postPlace = async (selectedPlaces) => {
+export const postPlace = async (selectedPlaces, provinceSelected) => {
     const token = localStorage.getItem('token');
 
     const newPlace = {
         city_name: selectedPlaces.city_name,
-        id_province: selectedPlaces.id_province
+        id_province: provinceSelected
     };
 
     try {
