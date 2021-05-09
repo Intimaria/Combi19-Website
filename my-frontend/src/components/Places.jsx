@@ -42,30 +42,30 @@ const columns = [
 ];
 
 const Provinces = [
-    { label: "Buenos Aires", value: 1 },
-    { label: "Capital Federal (CABA)", value: 2 },
-    { label: "Catamarca", value: 3 },
-    { label: "Chaco", value: 4 },
-    { label: "Chubut", value: 5 },
-    { label: "Córdoba", value: 6 },
-    { label: "Corrientes", value: 7 },
-    { label: "Entre Rios", value: 8 },
-    { label: "Formosa", value: 9 },
-    { label: "Jujuy", value: 10 },
-    { label: "La Pampa", value: 11 },
-    { label: "La Rioja", value: 12 },
-    { label: "Mendoza", value: 13 },
-    { label: "Misiones", value: 14 },
-    { label: "Neuquén", value: 15 },
-    { label: "Río Negro", value: 16 },
-    { label: "Salta", value: 17 },
-    { label: "San Juan", value: 18 },
-    { label: "San Luis", value: 19 },
-    { label: "Santa Cruz", value: 20 },
-    { label: "Santa Fe", value: 21 },
-    { label: "Santiago del Estero", value: 22 },
-    { label: "Tierra del Fuego", value: 23 },
-    { label: "Tucumán", value: 12 }
+    { province_name: "Buenos Aires", province_id: 1 },
+    { province_name: "Capital Federal (CABA)", province_id: 2 },
+    { province_name: "Catamarca", province_id: 3 },
+    { province_name: "Chaco", province_id: 4 },
+    { province_name: "Chubut", province_id: 5 },
+    { province_name: "Córdoba", province_id: 6 },
+    { province_name: "Corrientes", province_id: 7 },
+    { province_name: "Entre Rios", province_id: 8 },
+    { province_name: "Formosa", province_id: 9 },
+    { province_name: "Jujuy", province_id: 10 },
+    { province_name: "La Pampa", province_id: 11 },
+    { province_name: "La Rioja", province_id: 12 },
+    { province_name: "Mendoza", province_id: 13 },
+    { province_name: "Misiones", province_id: 14 },
+    { province_name: "Neuquén", province_id: 15 },
+    { province_name: "Río Negro", province_id: 16 },
+    { province_name: "Salta", province_id: 17 },
+    { province_name: "San Juan", province_id: 18 },
+    { province_name: "San Luis", province_id: 19 },
+    { province_name: "Santa Cruz", province_id: 20 },
+    { province_name: "Santa Fe", province_id: 21 },
+    { province_name: "Santiago del Estero", province_id: 22 },
+    { province_name: "Tierra del Fuego", province_id: 23 },
+    { province_name: "Tucumán", province_id: 12 }
   ];
 const baseUrl = `${BACKEND_URL}/lugares`;
 const useStyles = makeStyles((theme) => ({
@@ -130,6 +130,10 @@ function Places() {
             ...prevState,
             [name]: value
         }));
+        if (name === 'provinceSelected') {
+            setProvinceSelectedError(false);
+            setProvinceSelected(value);
+        }
     }
     const setDefaultErrorMessages = () => {
         setNamesError('');
@@ -155,7 +159,7 @@ function Places() {
     
     const peticionPost = async () => {
         if (validateForm()) {
-            let postResponse = await postPlace(selectedPlace);
+            let postResponse = await postPlace(selectedPlace, provinceSelected);
             if (postResponse.status === 201) {
                 setSuccessMessage(`Se ha creado el lugar correctamente`);
                 setOptions({
@@ -299,9 +303,9 @@ function Places() {
                          required
                          error={(provinceSelectedError) ? true : false}>
                 <InputLabel>Provincia</InputLabel>
-                <Select label="Provincia" id="id_province" name="province"
+                <Select label="Provincia" id="provinceSelected" name="provinceSelected"
                         className={styles.inputMaterial}
-                        value={selectedPlace.id_province}
+                        value={(provinceSelected) ? provinceSelected : 0}
                         displayEmpty
                         onChange={handleChange}
                 >
@@ -311,10 +315,10 @@ function Places() {
                     {(Provinces) ?
                         Provinces.map((province) => (
                             <MenuItem
-                                key={province.label}
-                                value={province.value}
+                                key={province.province_id}
+                                value={province.province_id}
                             >
-                                {province.label}
+                                {province.province_name}
                             </MenuItem>
                         ))
                         : null
