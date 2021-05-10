@@ -61,4 +61,9 @@ export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugare
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
-
+// Routes API messages
+export const OK_MSG_API_ROUTE_POST = 'Se creó la ruta con éxito';
+export const ERROR_MSG_API_DELETE_ROUTE = 'Ocurrió un error al eliminar la ruta indicada';
+export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
+export const ERROR_MSG_API_POST_ROUTE = 'Ocurrió un error al crear la ruta:';
+export const ERROR_MSG_API_PUT_ROUTE = 'Ocurrió un error al modificar la ruta indicada:';
