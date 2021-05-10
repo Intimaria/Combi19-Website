@@ -1,12 +1,15 @@
 
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
-const { validateRoutesToCreate, validateRoutesToModify } = require("../helpers/validateRoutes.js");
+const { validateRoutesToCreate, validateRoutesToModify, validateRouteTripsDependence } = require("../helpers/validateRoutes.js");
 
 const {normalizeRoutes} = require('../helpers/normalizeResult.js');
 
 const {
-    ERROR_MSG_API_ROUTES
+    ERROR_MSG_API_ROUTES,
+    ERROR_MSG_API_DELETE_ROUTE,
+    OK_MSG_API_DELETE_ROUTE
+    
 } = require('../const/messages.js');
 
 const {
@@ -18,15 +21,15 @@ const getRoutes = async (req, res) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT r.ROUTE_ID, r.DURATION, r.KM, t.INTERNAL_IDENTIFICATION, r.ACTIVE,
-        c.CITY_NAME as Origen, p.PROVINCE_NAME as Provincia_Origen, 
-        c1.CITY_NAME as Destino, p1.PROVINCE_NAME as Provincia_Destino 
+        SELECT r.ROUTE_ID, r.DURATION, r.KM, t.INTERNAL_IDENTIFICATION, t.TRANSPORT_ID, r.ACTIVE,
+        c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
+        c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
         FROM TRANSPORT t
         INNER JOIN ROUTE r ON (r.ID_TRANSPORT=t.TRANSPORT_ID) 
         INNER JOIN CITY c on (r.id_departure=c.city_id) 
         INNER JOIN CITY c1 on (r.id_destination=c1.city_id) 
         INNER JOIN PROVINCE p on (c.ID_PROVINCE=p.PROVINCE_ID) 
-        INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID)`;
+        INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID) ORDER BY r.KM ASC`;
         const [rows] = await connection.execute(sqlSelect, []);
         connection.end();
         const normalizedResults = normalizeRoutes(rows);
@@ -43,11 +46,31 @@ const getRoutes = async (req, res) => {
     }
 
     const deleteRoute = async (req, res) => {
+            const {id} = req.params;
+     
+            if (await validateRouteTripsDependence(id)) {
+                res.status(400).send(`${ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE}`);
+            } else {
+
+                try {
+                    const connection = await prepareConnection();
+                    const sqlUpdate =
+                    'UPDATE ROUTE SET ACTIVE = 0 WHERE ROUTE_ID = ?';
+                    const [rows] = await connection.execute(sqlUpdate, [id]);
+                    connection.end();
+                    return res.status(200).send(OK_MSG_API_DELETE_ROUTE);
+                } catch (error) {
+                    console.log(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
+                    res.status(500).send(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
+                }
+            }
+            res.end();
+        
     }
 
 const postRoute = async (req, res) => {
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
-
+    console.log(idTransport);
     const inputsErrors = await validateRoutesToCreate(idPlaceDeparture, idPlaceDestination, idTransport, duration, km);
 
     if (inputsErrors) {

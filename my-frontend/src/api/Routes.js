@@ -1,17 +1,12 @@
-import {
-  ERROR_MSG_API_DELETE_ROUTE,
-  ERROR_MSG_API_GET_ROUTES,
-  ERROR_MSG_API_POST_ROUTE,
-  ERROR_MSG_API_PUT_ROUTE,
-  ERROR_MSG_INTERNET,
-  OK_MSG_API_ROUTE_POST
-} from "../const/messages";
-
-import { BACKEND_URL } from "../const/config";
 import axios from 'axios';
-
-export const getRouteById= async (id) => {
-}
+import { BACKEND_URL } from "../const/config";
+import {
+    ERROR_MSG_API_GET_ROUTES,
+    ERROR_MSG_API_POST_ROUTES,
+    ERROR_MSG_API_PUT_ROUTES,
+    ERROR_MSG_API_DELETE_ROUTES,
+    ERROR_MSG_INTERNET
+} from "../const/messages";
 
 export const getRoutes = async () => {
     const token = localStorage.getItem('token');
@@ -41,11 +36,18 @@ export const getRoutes = async () => {
     }
 }
 
-export const postRoutes = async (routeData) => {
+export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport) => {
     const token = localStorage.getItem('token');
+    const newRoute = {
+        idPlaceDeparture,
+        idPlaceDestination,
+        idTransport,
+        duration : routesData.duration,
+        km: routesData.km
+    }
     try {
         let response = await axios.post(`${BACKEND_URL}/routes`,
-        routeData,
+        newRoute,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -58,7 +60,7 @@ export const postRoutes = async (routeData) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_POST_ROUTE} ${error}`);
+            console.log(`${ERROR_MSG_API_POST_ROUTES} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -70,11 +72,21 @@ export const postRoutes = async (routeData) => {
     }
 }
 
-export const putRoutes = async (routeData, id) => {
+export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport,id) => {
     const token = localStorage.getItem('token');
+    console.log(idPlaceDeparture);
+    console.log(idPlaceDestination);
+    console.log(idTransport);
+    const modifyRoute = {
+        idPlaceDeparture,
+        idPlaceDestination,
+        idTransport,
+        duration : routesData.duration,
+        km: routesData.km
+    }
     try {
         let response = await axios.put(`${BACKEND_URL}/routes/${id}`,
-        routeData,
+        modifyRoute,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -87,7 +99,7 @@ export const putRoutes = async (routeData, id) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_PUT_ROUTE} ${error}`);
+            console.log(`${ERROR_MSG_API_PUT_ROUTES} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -98,7 +110,7 @@ export const putRoutes = async (routeData, id) => {
         }
     }
 }
-
+// Falta implementar en el backend
 export const deleteRoutes = async (id) => {
     console.log(id);
     const token = localStorage.getItem('token');
@@ -116,7 +128,7 @@ export const deleteRoutes = async (id) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
+            console.log(`${ERROR_MSG_API_DELETE_ROUTES} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -127,4 +139,3 @@ export const deleteRoutes = async (id) => {
         }
     }
 }
-
