@@ -74,7 +74,10 @@ export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestinatio
 
 export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport,id) => {
     const token = localStorage.getItem('token');
-    const newRoute = {
+    console.log(idPlaceDeparture);
+    console.log(idPlaceDestination);
+    console.log(idTransport);
+    const modifyRoute = {
         idPlaceDeparture,
         idPlaceDestination,
         idTransport,
@@ -83,7 +86,7 @@ export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination
     }
     try {
         let response = await axios.put(`${BACKEND_URL}/routes/${id}`,
-        newRoute,
+        modifyRoute,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

@@ -18,7 +18,7 @@ const getRoutes = async (req, res) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT r.ROUTE_ID, r.DURATION, r.KM, t.INTERNAL_IDENTIFICATION, r.ACTIVE,
+        SELECT r.ROUTE_ID, r.DURATION, r.KM, t.INTERNAL_IDENTIFICATION, t.TRANSPORT_ID, r.ACTIVE,
         c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
         c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
         FROM TRANSPORT t

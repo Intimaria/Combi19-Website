@@ -176,28 +176,27 @@ function Routes() {
     };
 
     const validatePlaceDeperture = () => {
-        if (!departureSelected) {
+        if (departureSelected || selectedRoute.departure.cityId) {
+            setDepartureError(null);
+            return true;
+        } else {
             setDepartureError(ERROR_MSG_EMPTY_PLACE_DEPARTURE);
             return false;
         }
-
-        setDepartureError(false);
-        return true;
     }
 
     const validatePlaceDestination = () => {
-        if (!destinationSelected) {
+        if (destinationSelected || selectedRoute.destination.cityId) {
+            setDestinationError(null);
+            return true;
+        } else {
             setDestinationError(ERROR_MSG_EMPTY_PLACE_DESTINATION);
             return false;
         }
-
-        setDestinationError(false);
-        return true;
     }
 
     const comparePlaces = () => {
-        if (departureSelected === destinationSelected) {
-
+        if ((departureSelected && destinationSelected && (departureSelected === destinationSelected)) || (selectedRoute.departure.cityId && selectedRoute.destination.cityId && (selectedRoute.departure.cityId === selectedRoute.destination.cityId))) {
             setDepartureError(ERROR_MSG_REPEAT_PLACES);
             return false;
         }
@@ -206,13 +205,13 @@ function Routes() {
     }
 
     const validateTransport = () => {
-        if (!transportSelected) {
+        if (transportSelected || selectedRoute.transport.transportId) {
+            setTransportError(null);
+            return true;
+        } else {
             setTransportError(ERROR_MSG_EMPTY_TRANSPORT);
             return false;
         }
-
-        setTransportError(false);
-        return true;
     }
 
     const validateDuration = () => {
@@ -286,7 +285,7 @@ function Routes() {
 
     const requestPutRoute = async () => {
         if (validateForm()) {
-
+            
             let putResponse = await putRoutes(
                 selectedRoute,
                 departureSelected ? departureSelected : selectedRoute.departure.cityId,
@@ -384,7 +383,6 @@ function Routes() {
 
     const requestGetPlaces = async () => {
         let getResponse = await getPlaces();
-        console.log("a", getResponse);
         if (getResponse?.status === 200) {
             setPlaces(getResponse.data);
         } else if (getResponse?.status === 500) {
@@ -415,7 +413,6 @@ function Routes() {
     };
 
     const selectRoute = async (route, action) => {
-        console.log(route);
         setSelectedRoute(route);
         if (action === "Ver") {
             openCloseModalViewDetails()
@@ -435,12 +432,12 @@ function Routes() {
 
         // Data are loaded when the modal is open
         if (!updateModal) {
-            await requestGetPlaces();
-            await requestGetTransports();
-            console.log(selectedRoute);
             setTransportSelected(selectedRoute.transport.transportId);
             setDepartureSelected(selectedRoute.departure.cityId);
             setDestinationSelected(selectedRoute.destination.cityId);
+
+            await requestGetPlaces();
+            await requestGetTransports();
         }
 
         // Data are cleaned when the modal is closed
@@ -511,6 +508,12 @@ function Routes() {
                 helperText={(kmError) ? kmError : false}
                 value={selectedRoute && selectedRoute.km}
                 onChange={handleChange} />
+        </div>
+    )
+    const bodyCreate = (
+        <div className={styles.modal}>
+            <h3>AGREGAR NUEVA RUTA</h3>
+            {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
                 required
                 error={(departureError) ? true : false}>
@@ -594,12 +597,6 @@ function Routes() {
                 </Select>
                 <FormHelperText>{(transportError) ? transportError : false}</FormHelperText>
             </FormControl>
-        </div>
-    )
-    const bodyCreate = (
-        <div className={styles.modal}>
-            <h3>AGREGAR NUEVA RUTA</h3>
-            {inputsToCreateOrModify}
             <br />
             <div align="right">
                 <Button color="primary" onClick={() => requestPostRoute()}>GUARDAR</Button>
@@ -614,26 +611,26 @@ function Routes() {
             <TextField className={styles.inputMaterial} label="Estado"
                 value={selectedRoute && selectedRoute.active} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Ciudad de origen" 
+            <TextField className={styles.inputMaterial} label="Ciudad de origen"
                 value={selectedRoute && selectedRoute.departure.cityName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Provincia de origen" 
-                       value={selectedRoute && selectedRoute.departure.provinceName} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Provincia de origen"
+                value={selectedRoute && selectedRoute.departure.provinceName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Ciudad de destino" 
+            <TextField className={styles.inputMaterial} label="Ciudad de destino"
                 value={selectedRoute && selectedRoute.destination.cityName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Provincia de destino" 
+            <TextField className={styles.inputMaterial} label="Provincia de destino"
                 value={selectedRoute && selectedRoute.destination.provinceName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Duración" 
-                       value={selectedRoute && selectedRoute.duration} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Duración"
+                value={selectedRoute && selectedRoute.duration} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Combi" 
-                       value={selectedRoute && selectedRoute.transport.internalIdentification} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Combi"
+                value={selectedRoute && selectedRoute.transport.internalIdentification} autoComplete="off" />
             <br />
             <TextField className={styles.inputMaterial} label="Distancia"
-                       value={selectedRoute && selectedRoute.km} autoComplete="off" />
+                value={selectedRoute && selectedRoute.km} autoComplete="off" />
             <br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Salir</Button>
@@ -650,6 +647,98 @@ function Routes() {
             </Tooltip>
             <br />
             {inputsToCreateOrModify}
+            <FormControl className={styles.inputMaterial}
+                required
+                error={(departureError) ? true : false}>
+                <InputLabel>Origen</InputLabel>
+                <Select label="Origen" id="departureSelected" labelId={"departureSelected"} name="departureSelected"
+                    className={styles.inputMaterial}
+                    value={(departureSelected) ? departureSelected : selectedRoute.departure.cityId}
+                    displayEmpty
+                    onChange={handleChange}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione un lugar
+                    </MenuItem>
+                    <MenuItem value={selectedRoute.departure.cityId}>
+                        {selectedRoute.departure.provinceName}, {selectedRoute.departure.cityName}
+                    </MenuItem>
+                    {(places) ?
+                        places.filter(place => place.id !== selectedRoute.departure.cityId).map((places) => (
+                            <MenuItem
+                                key={places.id}
+                                value={places.id}
+                            >
+                                {places.provinceName}, {places.cityName}
+
+                            </MenuItem>
+                        ))
+                        : null
+                    }
+                </Select>
+                <FormHelperText>{(departureError) ? departureError : false}</FormHelperText>
+            </FormControl>
+            <FormControl className={styles.inputMaterial}
+                required
+                error={(destinationError) ? true : false}>
+                <InputLabel>Destino</InputLabel>
+                <Select label="Destino" id="destinationSelected" labelId={"destinationSelected"} name="destinationSelected"
+                    className={styles.inputMaterial}
+                    value={(destinationSelected) ? destinationSelected : selectedRoute.destination.cityId}
+                    displayEmpty
+                    onChange={handleChange}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione un lugar
+                    </MenuItem>
+                    <MenuItem value={selectedRoute.destination.cityId}>
+                        {selectedRoute.destination.provinceName}, {selectedRoute.destination.cityName}
+                    </MenuItem>
+                    {(places) ?
+                        places.filter(place => place.id !== selectedRoute.destination.cityId).map((places) => (
+                            <MenuItem
+                                key={places.id}
+                                value={places.id}
+                            >
+                                {places.provinceName}, {places.cityName}
+
+                            </MenuItem>
+                        ))
+                        : null
+                    }
+                </Select>
+                <FormHelperText>{(destinationError) ? destinationError : false}</FormHelperText>
+            </FormControl>
+            <FormControl className={styles.inputMaterial}
+                required
+                error={(transportError) ? true : false}>
+                <InputLabel>Combi</InputLabel>
+                <Select label="Combi" id="transportSelected" labelId={"transportSelected"} name="transportSelected"
+                    className={styles.inputMaterial}
+                    value={(transportSelected) ? transportSelected : selectedRoute.transport.transportId}
+                    displayEmpty
+                    onChange={handleChange}
+                >
+                    <MenuItem value="" disabled>
+                        Seleccione una combi
+                    </MenuItem>
+                    <MenuItem value={selectedRoute.transport.transportId}>
+                        {selectedRoute.transport.internalIdentification}
+                    </MenuItem>
+                    {(transports) ?
+                        transports.filter(transport => transport.internal_identification !== selectedRoute.transport.internalIdentification).map((transports) => (
+                            <MenuItem
+                                key={transports.transport_id}
+                                value={transports.transport_id}
+                            >
+                                {transports.internal_identification}
+                            </MenuItem>
+                        ))
+                        : null
+                    }
+                </Select>
+                <FormHelperText>{(transportError) ? transportError : false}</FormHelperText>
+            </FormControl>
             <br />
             <div align="right">
                 <Button color="primary" onClick={() => requestPutRoute()}>CONFIRMAR CAMBIOS</Button>
