@@ -334,7 +334,7 @@ function Routes() {
     }
     //Aca elimino a un ruta
     const requestDeleteRoute = async () => {
-        let deleteResponse = await deleteRoutes(selectedRoute.id);
+        let deleteResponse = await deleteRoutes(selectedRoute.idRoute);
 
         if (deleteResponse.status === 200) {
             setSuccessMessage(`Se ha eliminado la ruta correctamente`);
@@ -750,8 +750,8 @@ function Routes() {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar la ruta con
-                origen <b>{selectedRoute && selectedRoute.departure.cityName}</b> y
-                destino <b>{selectedRoute && selectedRoute.destination.cityName}</b>?
+                origen <b>{selectedRoute && selectedRoute.departure.cityName}, {selectedRoute && selectedRoute.departure.provinceName}</b> y
+                destino <b>{selectedRoute && selectedRoute.destination.cityName}, {selectedRoute && selectedRoute.destination.provinceName}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDeleteRoute()}>SÍ, ELIMINAR</Button>
