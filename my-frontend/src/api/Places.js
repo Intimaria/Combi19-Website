@@ -123,7 +123,7 @@ export const putPlace = async (selectedPlaces, provinceSelected, id) => {
   const token = localStorage.getItem('token');
 
   const modifiedPlace = {
-    city_name: selectedPlaces.city_name.trim(),
+    city_name: capitalizeString(selectedPlaces.city_name.trim()),
     id_province: provinceSelected
   };
 

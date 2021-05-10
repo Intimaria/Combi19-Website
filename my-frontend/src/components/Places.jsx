@@ -16,6 +16,7 @@ import {
     ERROR_MSG_API_POST_PLACES,
     ERROR_MSG_API_PUT_PLACES,
     ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_EMPTY_PROVINCE,
     ERROR_MSG_INTERNET,
     ERROR_MSG_INVALID_NAME
 } from "../const/messages";
@@ -43,6 +44,7 @@ import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 // La configuracion en castellano
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import {useStyles} from '../const/modalStyle';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
@@ -77,26 +79,6 @@ const Provinces = [
     {province_name: "Tierra del Fuego", province_id: 23},
     {province_name: "Tucumán", province_id: 12}
 ];
-const baseUrl = `${BACKEND_URL}/lugares`;
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
-    },
-    iconos: {
-        cursor: 'pointer'
-    },
-    inputMaterial: {
-        width: '100%'
-    }
-}));
 
 function Places() {
     //Configuracion del mensaje de exito o error
@@ -149,11 +131,10 @@ function Places() {
         setNamesError('');
     };
 
-    //Aca arrancan las validaciones de los datos del chofer
+    //Aca arrancan las validaciones de los datos
     const validateForm = () => {
         return validateName();
     };
-
     const validateName = () => {
         if (!selectedPlace.city_name) {
             setNamesError(ERROR_MSG_EMPTY_NAME);
@@ -199,6 +180,34 @@ function Places() {
 
 
     const peticionPut = async () => {
+        if (validateForm()) {
+            let postResponse = await putPlace(selectedPlace, provinceSelected, selectPlace.city_id);
+
+            if (postResponse.status === 200) {
+                setSuccessMessage(`Se ha actualizado el lugar correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha actualizado el lugar correctamente`
+                });
+                openCloseModalUpdate();
+                fetchData();
+            } else if (postResponse?.status === 400) {
+                setNamesError(postResponse.data);
+            } else if (postResponse?.status === 500) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_PUT_PLACES} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_PUT_PLACES} ${postResponse}`
+                });
+            }
+        }
     }
 
     const peticionDelete = async () => {
@@ -294,7 +303,7 @@ function Places() {
                 <InputLabel>Provincia</InputLabel>
                 <Select label="Provincia" id="provinceSelected" name="provinceSelected"
                         className={styles.inputMaterial}
-                        value={(provinceSelected) ? provinceSelected : 0}
+                        value={(provinceSelected) ? provinceSelected : selectedPlace.id_province}
                         displayEmpty
                         onChange={handleChange}
                 >
@@ -325,7 +334,7 @@ function Places() {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DEL LUGAR</h3>
-            <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
+            <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
                        value={selectedPlace && selectedPlace.cityName}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
@@ -340,22 +349,36 @@ function Places() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR LUGAR</h3>
-            <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
+            <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
                        onChange={handleChange}
-                       value={selectedPlace && selectedPlace.city_name}/>
+                       value={selectedPlace && selectedPlace.cityName}/>
             <br/><br/>
-            <InputLabel>Provincia</InputLabel>
-            <Select label="Provincia" id="Provincia" labelId={selectedPlace.id_province}
-                    name="province"
-                    className={styles.inputMaterial}
-                    value={(selectedPlace.id_province) ? selectedPlace.id_province : 0}
-                    displayEmpty
-                    onChange={handleChange}
-            >
-                <MenuItem value={0} disabled> Seleccione una provincia </MenuItem>
-                <MenuItem key={1} value={1}> Buenos Aires </MenuItem>
-                <MenuItem key={2} value={2}> CABA </MenuItem>
-            </Select>
+            <FormControl className={styles.inputMaterial}
+                         required>
+                <InputLabel>Provincia</InputLabel>
+                <Select label="Provincia" id="provinceSelected" name="provinceName"
+                        className={styles.inputMaterial}
+                        value={(provinceSelected) ? provinceSelected : selectedPlace.provinceName}
+                        displayEmpty
+                        onChange={handleChange}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione una provincia
+                    </MenuItem>
+                    {(Provinces) ?
+                        Provinces.map((province) => (
+                            <MenuItem
+                                key={province.province_id}
+                                value={province.province_id}
+                            >
+                                {province.province_name}
+                            </MenuItem>
+                        ))
+                        : null
+                    }
+                </Select>
+                <FormHelperText>{(provinceSelectedError) ? provinceSelectedError : false}</FormHelperText>
+            </FormControl>
             <br/>
             <br/>
             <div align="right">
@@ -368,8 +391,8 @@ function Places() {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar este lugar con
-                nombre <b>{selectedPlace && selectedPlace.city_name}</b> y
-                provincia <b>{selectedPlace && selectedPlace.id_province}</b>?
+                nombre <b>{selectedPlace && selectedPlace.cityName}</b> y
+                provincia <b>{selectedPlace && selectedPlace.provinceName}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>
