@@ -74,9 +74,6 @@ export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestinatio
 
 export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport,id) => {
     const token = localStorage.getItem('token');
-    console.log(idPlaceDeparture);
-    console.log(idPlaceDestination);
-    console.log(idTransport);
     const modifyRoute = {
         idPlaceDeparture,
         idPlaceDestination,

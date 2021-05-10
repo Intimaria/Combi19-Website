@@ -232,7 +232,7 @@ function Routes() {
             setKmError(ERROR_MSG_EMPTY_KM);
             return false;
         }
-        else if (REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
+        else if (!REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
             setKmError(ERROR_MSG_INVALID_KM);
             return false;
         }
@@ -291,7 +291,7 @@ function Routes() {
                 departureSelected ? departureSelected : selectedRoute.departure.cityId,
                 destinationSelected ? destinationSelected : selectedRoute.destination.cityId,
                 transportSelected ? transportSelected : selectedRoute.transport.transportId,
-                selectedRoute.route_id
+                selectedRoute.idRoute
             );
 
             if (putResponse?.status === 200) {
@@ -334,7 +334,7 @@ function Routes() {
     }
     //Aca elimino a un ruta
     const requestDeleteRoute = async () => {
-        let deleteResponse = await deleteRoutes(selectedRoute.id);
+        let deleteResponse = await deleteRoutes(selectedRoute.idRoute);
 
         if (deleteResponse.status === 200) {
             setSuccessMessage(`Se ha eliminado la ruta correctamente`);
