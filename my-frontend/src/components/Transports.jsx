@@ -570,7 +570,7 @@ function Transports() {
             <br/><br/>
 
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
     );

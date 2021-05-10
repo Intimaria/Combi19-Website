@@ -23,8 +23,8 @@ export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario
 // Login API messages
 export const ERROR_MSG_API_LOGIN = 'Ocurrió un error al iniciar sesión:';
 // Driver registration form
-export const ERROR_MSG_EMPTY_PHONE_NUMBER = "* Ingrese un numero de telefono";
-export const ERROR_MSG_INVALID_PHONE_NUMBER = "* El ingrese un numero de telefono valido";
+export const ERROR_MSG_EMPTY_PHONE_NUMBER = "* Ingrese un número de telefono";
+export const ERROR_MSG_INVALID_PHONE_NUMBER = "* El ingrese un número de teléfono válido";
 // Drivers API messages
 export const ERROR_MSG_API_GET_DRIVERS = 'Ocurrió un error al obtener los choferes:';
 export const ERROR_MSG_API_GET_DRIVER_BY_ID = 'Ocurrió un error al obtener al chofer indicado:';
@@ -36,8 +36,6 @@ export const ERROR_MSG_API_PUT_DRIVER = 'Ocurrió un error al actualizar los dat
 export const OK_MSG_API_DELETE_DRIVER = 'Se eliminó el chofer con éxito';
 export const ERROR_MSG_API_DELETE_DRIVER = 'Ocurrió un error al eliminar el chofer indicado';
 export const ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE = 'No se puede eliminar, el chofer figura como conductor de combis';
-// Places API messages
-export const OK_MSG_API_LOCATION_POST = 'Se creó el lugar con éxito';
 // Transport registration form
 export const ERROR_MSG_EMPTY_DRIVER = '* Seleccione un chofer';
 export const ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION = '* Ingrese una identificación interna';
@@ -54,13 +52,17 @@ export const ERROR_MSG_API_GET_TRANSPORTS = 'Ocurrió un error al obtener las co
 export const ERROR_MSG_API_POST_TRANSPORT = 'Ocurrió un error al crear la combi:';
 export const ERROR_MSG_API_PUT_TRANSPORT = 'Ocurrió un error al actualizar los datos de la combi:';
 export const ERROR_MSG_API_DELETE_TRANSPORT = 'Ocurrió un error al eliminar la combi indicada';
+// Places form
+export const ERROR_MSG_EMPTY_PROVINCE = "* Seleccione una provincia";
 // Places API messages
+export const OK_MSG_API_LOCATION_POST = 'Se creó el lugar con éxito';
 export const ERROR_MSG_API_DELETE_PLACES = 'Ocurrió un error al eliminar el lugar indicado';
 export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugares:';
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
 // Routes API messages
+<<<<<<< HEAD
 export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
 export const ERROR_MSG_API_POST_ROUTES = 'Ocurrió un error al crear la ruta:';
 export const ERROR_MSG_API_PUT_ROUTES = 'Ocurrió un error al actualizar los datos de la ruta:';
@@ -76,3 +78,10 @@ export const ERROR_MSG_INVALID_TRANSPORT = '* Ingrese una combi valida';
 export const ERROR_MSG_INVALID_PLACE_DESTINATION = '* Ingrese un lugar de destino valido';
 export const ERROR_MSG_INVALID_PLACE_DEPARTURE = '* Ingrese un lugar de origen valido';
 export const ERROR_MSG_REPEAT_PLACES = '* Ingrese lugares de origen y destino distintos';
+=======
+export const OK_MSG_API_ROUTE_POST = 'Se creó la ruta con éxito';
+export const ERROR_MSG_API_DELETE_ROUTE = 'Ocurrió un error al eliminar la ruta indicada';
+export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
+export const ERROR_MSG_API_POST_ROUTE = 'Ocurrió un error al crear la ruta:';
+export const ERROR_MSG_API_PUT_ROUTE = 'Ocurrió un error al modificar la ruta indicada:';
+>>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25

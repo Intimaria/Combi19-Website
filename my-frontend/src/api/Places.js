@@ -9,6 +9,7 @@ import {
 
 import {BACKEND_URL} from "../const/config";
 import axios from 'axios';
+import {capitalizeString} from "../helpers/strings";
 
 export const getPlaces = async () => {
   const token = localStorage.getItem('token');
@@ -36,7 +37,8 @@ export const getPlaces = async () => {
             }
         }
     }
-}
+};
+
 export const getPlace = async () => {
   const token = localStorage.getItem('token');
   try {
@@ -45,14 +47,14 @@ export const getPlace = async () => {
           headers: {
               Authorization: `Bearer ${token}`
           }
-      })
+      });
       const response = await instance.get();
       return response.data;
   } catch (error) {
       console.log(`${ERROR_MSG_API_GET_PLACES} ${error}`);
       return null;
   }
-}
+};
 
 export const getProvinces = async () => {
   const token = localStorage.getItem('token');
@@ -62,7 +64,7 @@ export const getProvinces = async () => {
           headers: {
               Authorization: `Bearer ${token}`
           }
-      })
+      });
       const response = await instance.get();
       return response;
   } catch (error) {
@@ -74,22 +76,20 @@ export const getProvinces = async () => {
 
 
       if (error.message === 'Network Error') {
-          error.message = ERROR_MSG_INTERNET
+          error.message = ERROR_MSG_INTERNET;
           return error.message;
       } else {
           return error.message;
       }
-
-
   }
-}
+};
 
 export const postPlace = async (selectedPlaces, provinceSelected) => {
     const token = localStorage.getItem('token');
 
     const newPlace = {
-        city_name: selectedPlaces.city_name,
-        id_province: provinceSelected
+        cityName: capitalizeString(selectedPlaces.cityName.trim()),
+        idProvince: provinceSelected
     };
 
     try {
@@ -124,12 +124,12 @@ export const putPlace = async (selectedPlaces, provinceSelected) => {
   const token = localStorage.getItem('token');
 
   const modifiedPlace = {
-      cityName: selectedPlaces.name,
-      id_provincer: provinceSelected
+    cityName: capitalizeString(selectedPlaces.cityName.trim()),
+    idProvince: provinceSelected ? provinceSelected : selectedPlaces.idProvince
   };
 
   try {
-      let response = await axios.post(`${BACKEND_URL}/places`,
+      let response = await axios.put(`${BACKEND_URL}/places/${selectedPlaces.id}`,
           modifiedPlace,
           {
               headers: {
@@ -156,39 +156,37 @@ export const putPlace = async (selectedPlaces, provinceSelected) => {
   }
 };
 
-export const deletePlace = async (selectedPlaces, provinceSelected) => {
-  const token = localStorage.getItem('token');
+export const deletePlace = async (id) => {
+    console.log("id sent from front", id);
+    const token = localStorage.getItem('token');
+    /*
+    const deletePlace = {
+        id: selectedPlaces.id,
+        idProvince: provinceSelected ? provinceSelected : selectedPlaces.idProvince
+      };*/
+    try {
+        let response = await axios.delete(`${BACKEND_URL}/places/${id}`,
+        //deletePlace,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
 
-  const deletedPlace = {
-      cityName: selectedPlaces.name,
-      id_provincer: provinceSelected,
-      active: 0
-  };
+            console.log(`${ERROR_MSG_API_DELETE_PLACES} ${error}`);
 
-  try {
-      let response = await axios.post(`${BACKEND_URL}/places`,
-      deletedPlace,
-          {
-              headers: {
-                  Authorization: `Bearer ${token}`
-              }
-          });
-
-      return response;
-  } catch (error) {
-      if (error.response?.status) {
-          return error.response;
-      } else {
-          // In this situation, is NOT an axios handled error
-
-          console.log(`${ERROR_MSG_API_DELETE_PLACES} ${error}`);
-
-          if (error.message === 'Network Error') {
-              error.message = ERROR_MSG_INTERNET;
-              return error.message;
-          } else {
-              return error.message;
-          }
-      }
-  }
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
 };

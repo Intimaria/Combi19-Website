@@ -35,10 +35,10 @@ const Navbar = ({userData}) => {
     )
     const adminMenu = (
         <div>
-            <NavLink to="/routes" className="btn btn-dark mr-2"> Rutas </NavLink>
             <NavLink to="/drivers" className="btn btn-dark mr-2"> Choferes </NavLink>
             <NavLink to="/transports" className="btn btn-dark mr-2"> Combis </NavLink>
             <NavLink to="/places" className="btn btn-dark mr-2"> Lugares </NavLink>
+            <NavLink to="/routes" className="btn btn-dark mr-2"> Rutas </NavLink>
             {
                 /*
                 <NavLink to="/products" className="btn btn-dark mr-2"> Productos </NavLink>

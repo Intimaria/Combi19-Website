@@ -537,7 +537,7 @@ function Drivers() {
             </FormControl>
             <br /><br />
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>SALIR</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
     )
