@@ -142,7 +142,8 @@ function Places() {
                 console.log('Es necesario agregar un case más en el switch por el name:', name);
                 break;
         }
-    }
+    };
+
     const setDefaultErrorMessages = () => {
         setNamesError('');
     };
@@ -292,6 +293,7 @@ function Places() {
         setCreateModal(!createModal);
         if (createModal) {
             setSelectedPlace(formatSelectedPlace);
+            setProvinceSelected('');
             setDefaultErrorMessages();
         }
     }
