@@ -1,7 +1,7 @@
 
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
-const { validateRoutesToCreate, validateRoutesToModify } = require("../helpers/validateRoutes.js");
+const { validateRoutesToCreate, validateRoutesToModify, validateRouteTripsDependence } = require("../helpers/validateRoutes.js");
 
 const {normalizeRoutes} = require('../helpers/normalizeResult.js');
 
@@ -48,11 +48,10 @@ const getRoutes = async (req, res) => {
     const deleteRoute = async (req, res) => {
             const {id} = req.params;
      
-        /*TODO (ask seba first)
-          else  if (await validateRouteTripsDependence(id)) {
+            if (await validateRouteTripsDependence(id)) {
                 res.status(400).send(`${ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE}`);
             } else {
-        */
+
                 try {
                     const connection = await prepareConnection();
                     const sqlUpdate =
@@ -64,7 +63,7 @@ const getRoutes = async (req, res) => {
                     console.log(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
                     res.status(500).send(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
                 }
-         //   }
+            }
             res.end();
         
     }
