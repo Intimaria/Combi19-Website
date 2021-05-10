@@ -120,7 +120,7 @@ export const postPlace = async (selectedPlaces, provinceSelected) => {
     }
 };
 
-export const putPlace = async (selectedPlaces, provinceSelected, id) => {
+export const putPlace = async (selectedPlaces, provinceSelected) => {
   const token = localStorage.getItem('token');
 
   const modifiedPlace = {
@@ -157,10 +157,16 @@ export const putPlace = async (selectedPlaces, provinceSelected, id) => {
 };
 
 export const deletePlace = async (id) => {
-    console.log(id);
+    console.log("id sent from front", id);
     const token = localStorage.getItem('token');
+    /*
+    const deletePlace = {
+        id: selectedPlaces.id,
+        idProvince: provinceSelected ? provinceSelected : selectedPlaces.idProvince
+      };*/
     try {
         let response = await axios.delete(`${BACKEND_URL}/places/${id}`,
+        //deletePlace,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

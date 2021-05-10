@@ -90,17 +90,19 @@ function Places() {
     const [data, setData] = useState([]);
     //Aca se guarda los datos de la fila seleccionada
     const [selectedPlace, setSelectedPlace] = useState({
-        city_id: "",
-        cityName: "",
-        id_province: "",
-        active: ""
+        id: '',
+        cityName: '',
+        active: '',
+        idProvince: '',
+        provinceName: ''
     })
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedPlace = {
-        city_id: "",
-        cityName: "",
-        id_province: "",
-        active: ""
+        id: '',
+        cityName: '',
+        active: '',
+        idProvince: '',
+        provinceName: ''
     }
     //Para abrir y cerrar los modales
     const [createModal, setCreateModal] = useState(false);
@@ -124,6 +126,21 @@ function Places() {
         if (name === 'provinceSelected') {
             setProvinceSelectedError(false);
             setProvinceSelected(value);
+        }
+        //Saca el mensaje de error segun el input que se modifico
+        switch (name) {
+            case 'IdProvince':
+                setProvinceSelectedError(null);
+                break;
+            case 'cityName':
+                setNamesError(null);
+                break;
+            case 'provinceName':
+                setNamesError(null);
+                break;
+            default:
+                console.log('Es necesario agregar un case más en el switch por el name:', name);
+                break;
         }
     }
     const setDefaultErrorMessages = () => {
@@ -166,7 +183,10 @@ function Places() {
                     ...options, open: true, type: 'success',
                     message: `Se ha creado el lugar correctamente`
                 });
+                setSelectedPlace(false);
                 setProvinceSelected(false);
+                setNamesError('')
+                setDefaultErrorMessages(null);
                 openCloseModalCreate();
                 fetchData();
             } else if (postResponse?.status === 400) {
@@ -193,7 +213,7 @@ function Places() {
         console.log('antes del form')
         if (validateForm()) {
             console.log('después del form')
-            let postResponse = await putPlace(selectedPlace, provinceSelected, selectPlace.city_id);
+            let postResponse = await putPlace(selectedPlace, provinceSelected);
 
             if (postResponse.status === 200) {
                 setSuccessMessage(`Se ha actualizado el lugar correctamente`);
@@ -201,6 +221,10 @@ function Places() {
                     ...options, open: true, type: 'success',
                     message: `Se ha actualizado el lugar correctamente`
                 });
+                setSelectedPlace(false);
+                setProvinceSelected(false);
+                setNamesError('')
+                setDefaultErrorMessages(null);
                 openCloseModalUpdate();
                 fetchData();
             } else if (postResponse?.status === 400) {
@@ -223,15 +247,33 @@ function Places() {
     }
 
     const peticionDelete = async () => {
-        /*
-        await axios.delete(baseUrl + "/" + selectedTransport.id)
-            .then(response => {
-                setData(data.filter(internal_identification => internal_identification.id !== selectedTransport.id));
+            let postResponse = await deletePlace(selectedPlace.id);
+            if (postResponse.status === 200) {
+                setSuccessMessage(`Se ha eliminado el lugar correctamente`);
+                setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha eliminado el lugar correctamente`
+                });
+                setSelectedPlace(false);
+                setProvinceSelected(false);
+                setNamesError('')
+                setDefaultErrorMessages(null);
                 openCloseModalDelete();
-            }).catch(error => {
-                console.log(error);
-            })
-            */
+                fetchData();
+            } else if ((postResponse?.status === 500)||(postResponse?.status === 400)||(postResponse?.status === 404)) {
+                setSuccessMessage(postResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data
+                });
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`
+                });
+            }
     }
 
     const selectPlace = (place, action) => {
@@ -273,6 +315,7 @@ function Places() {
         setDeleteModal(!deleteModal);
         if (deleteModal) {
             setSelectedPlace(formatSelectedPlace);
+            setDefaultErrorMessages();
         }
     }
 

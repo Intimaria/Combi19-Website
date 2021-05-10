@@ -9,7 +9,7 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 
 //const { validatePlace } = require('../helpers/validateInputsPlaces.js');
 
-const {validatePlaceDependency, validatePlaceExists, validatePlaceToUpdate} = require('../helpers/validatePlaceDependency.js');
+const {validatePlaceDependency, validatePlaceExists, validatePlaceExistsForDelete, validatePlaceToUpdate} = require('../helpers/validatePlaceDependency.js');
 
 const {normalizePlaces} = require('../helpers/normalizeResult.js');
 
@@ -98,26 +98,32 @@ const postPlace = async (req, res) => {
             console.log('Ha ocurrido un error al crear la ciudad: ', err);
             res.status(500);
         })
-    }
+    }   
     res.end();
 }
 
 
 const deletePlace = async (req, res) => {
     const {id} = req.params;
-    const {idProvince} = req.body;
+    //const {idProvince} = req.body;
+    //console.log(req.body, id, idProvince);
     // validate place exists? validate place exists else return error code.
     if (await validatePlaceDependency(id)) {
-        res.status(400).send("No se puede eliminar, el lugar figura entre rutas o viajes existentes.");
+        res.status(400).send("No se puede eliminar, el lugar figura entre rutas existentes.");
+    }/*
+    else if (! await validatePlaceExistsForDelete (id, idProvince)) {
+        res.status(404).send("No se puede eliminar, el lugar no existe.");
+    }*/
+    else {
+        const connection = await prepareConnection();
+        await connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ?' /* AND ID_PROVINCE = ?'*/, [NO_ACTIVE, id, /*idProvince*/]).then((place) => {
+            connection.end();
+            res.status(200).send('Se ha eliminado el lugar con éxito');
+        }).catch(function (error) {
+            console.log('Ha ocurrido un error al eliminar el lugar indicado: ', error);
+            res.status(500);
+        });
     }
-    const connection = await prepareConnection();
-    await connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ? AND ID_PROVINCE = ?', [NO_ACTIVE, id, idProvince]).then((place) => {
-        connection.end();
-        res.status(200).send('Se ha eliminado el lugar con éxito');
-    }).catch(function (err) {
-        console.log('Ha ocurrido un error al eliminar el lugar indicado: ', err);
-        res.status(500);
-    });
     res.end();
 }
 

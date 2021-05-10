@@ -1,4 +1,5 @@
 const { prepareConnection } = require("./connectionDB.js");
+const {NO_ACTIVE, ACTIVE} = require('../const/config.js');
 
 const validatePlaceDependency = async (id) => {
     try {
@@ -13,12 +14,28 @@ const validatePlaceDependency = async (id) => {
     }
 }
 
+
+const validatePlaceExistsForDelete = async (id, idProvince) => {
+    console.log(id, idProvince);
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = 'SELECT * FROM CITY c INNER JOIN PROVINCE p ON (p.PROVINCE_ID=c.ID_PROVINCE) WHERE c.CITY_ID = ? AND c.ID_PROVINCE = ? AND c.ACTIVE = ?';
+        const [rows] = await connection.execute(sqlSelect, [id, idProvince, ACTIVE]);
+        connection.end();
+        console.log(rows, 'length:', rows.length)
+        if (rows.length >= 1) {console.log("ya existe:",rows); return true}
+        else return false;
+    } catch (error) {
+        console.log("Ha ocurrido un error al comprobar que el lugar existe", error);
+        return true;
+    }
+}
 const validatePlaceExists = async (cityName, province_id) => {
     console.log(cityName, province_id);
     try {
         const connection = await prepareConnection();
         const sqlSelect = 'SELECT * FROM CITY c INNER JOIN PROVINCE p ON (p.PROVINCE_ID=c.ID_PROVINCE) WHERE c.CITY_NAME = ? AND c.ID_PROVINCE = ? AND c.ACTIVE = ?';
-        const [rows] = await connection.execute(sqlSelect, [cityName, province_id, 1]);
+        const [rows] = await connection.execute(sqlSelect, [cityName, province_id, ACTIVE]);
         connection.end();
         console.log(rows, 'length:', rows.length)
         if (rows.length >= 1) {console.log("ya existe:",rows); return true}
@@ -34,7 +51,7 @@ const validatePlaceToUpdate = async (cityName, province_id, id) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = 'SELECT * FROM CITY c INNER JOIN PROVINCE p ON (p.PROVINCE_ID=c.ID_PROVINCE) WHERE c.CITY_NAME = ? AND c.ID_PROVINCE = ? AND c.ACTIVE = ? AND c.CITY_ID <> ?';
-        const [rows] = await connection.execute(sqlSelect, [cityName, province_id, 1, id]);
+        const [rows] = await connection.execute(sqlSelect, [cityName, province_id, ACTIVE, id]);
         connection.end();
         console.log(rows, 'length:', rows.length)
         if (rows.length >= 1) {console.log("ya existe:",rows); return true}
@@ -48,5 +65,6 @@ const validatePlaceToUpdate = async (cityName, province_id, id) => {
 module.exports = {
     validatePlaceDependency,
     validatePlaceExists,
-    validatePlaceToUpdate 
+    validatePlaceToUpdate,
+    validatePlaceExistsForDelete
 }
