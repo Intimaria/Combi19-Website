@@ -87,7 +87,7 @@ export const postPlace = async (selectedPlaces, provinceSelected) => {
     const token = localStorage.getItem('token');
 
     const newPlace = {
-        city_name: selectedPlaces.capitalizeString(city_name.trim()),
+        city_name: capitalizeString(selectedPlaces.city_name.trim()),
         id_province: provinceSelected
     };
 

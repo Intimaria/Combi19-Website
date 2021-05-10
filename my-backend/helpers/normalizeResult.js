@@ -53,7 +53,7 @@ const normalizePlaces = (rows) => {
             id: rows[index].CITY_ID,
             cityName: rows[index].CITY_NAME,
             provinceName: rows[index].PROVINCE_NAME,
-            ACTIVE: rows[index].ACTIVE === 1? "Activo" : "Inactivo",
+            active: rows[index].ACTIVE === 1? "Activo" : "Inactivo",
         }
         results.push(place);
     }

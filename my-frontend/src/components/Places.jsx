@@ -1,4 +1,13 @@
-import {Button, FormControl, FormHelperText, InputLabel, MenuItem, Modal, NativeSelect, TextField} from '@material-ui/core';
+import {
+    Button,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    Modal,
+    NativeSelect,
+    TextField
+} from '@material-ui/core';
 // Importo los mensajes de error
 import {
     ERROR_MSG_API_DELETE_PLACES,
@@ -22,7 +31,7 @@ import {
 
 import {BACKEND_URL} from '../const/config.js';
 import MaterialTable from "material-table";
-import { Message } from "./Message";
+import {Message} from "./Message";
 import PinDropIcon from '@material-ui/icons/PinDrop';
 // Importo las expresiones regulares
 import {
@@ -33,41 +42,41 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 // La configuracion en castellano
-import { materialTableConfiguration } from '../const/materialTableConfiguration';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
     {title: 'Ciudad', field: 'cityName'},
     {title: 'Provincia', field: 'provinceName'},
-    {title: 'Estado', field: 'ACTIVE' }
+    {title: 'Estado', field: 'active'}
 ];
 
 const Provinces = [
-    { province_name: "Buenos Aires", province_id: 1 },
-    { province_name: "Capital Federal (CABA)", province_id: 2 },
-    { province_name: "Catamarca", province_id: 3 },
-    { province_name: "Chaco", province_id: 4 },
-    { province_name: "Chubut", province_id: 5 },
-    { province_name: "Córdoba", province_id: 6 },
-    { province_name: "Corrientes", province_id: 7 },
-    { province_name: "Entre Rios", province_id: 8 },
-    { province_name: "Formosa", province_id: 9 },
-    { province_name: "Jujuy", province_id: 10 },
-    { province_name: "La Pampa", province_id: 11 },
-    { province_name: "La Rioja", province_id: 12 },
-    { province_name: "Mendoza", province_id: 13 },
-    { province_name: "Misiones", province_id: 14 },
-    { province_name: "Neuquén", province_id: 15 },
-    { province_name: "Río Negro", province_id: 16 },
-    { province_name: "Salta", province_id: 17 },
-    { province_name: "San Juan", province_id: 18 },
-    { province_name: "San Luis", province_id: 19 },
-    { province_name: "Santa Cruz", province_id: 20 },
-    { province_name: "Santa Fe", province_id: 21 },
-    { province_name: "Santiago del Estero", province_id: 22 },
-    { province_name: "Tierra del Fuego", province_id: 23 },
-    { province_name: "Tucumán", province_id: 12 }
-  ];
+    {province_name: "Buenos Aires", province_id: 1},
+    {province_name: "Capital Federal (CABA)", province_id: 2},
+    {province_name: "Catamarca", province_id: 3},
+    {province_name: "Chaco", province_id: 4},
+    {province_name: "Chubut", province_id: 5},
+    {province_name: "Córdoba", province_id: 6},
+    {province_name: "Corrientes", province_id: 7},
+    {province_name: "Entre Rios", province_id: 8},
+    {province_name: "Formosa", province_id: 9},
+    {province_name: "Jujuy", province_id: 10},
+    {province_name: "La Pampa", province_id: 11},
+    {province_name: "La Rioja", province_id: 12},
+    {province_name: "Mendoza", province_id: 13},
+    {province_name: "Misiones", province_id: 14},
+    {province_name: "Neuquén", province_id: 15},
+    {province_name: "Río Negro", province_id: 16},
+    {province_name: "Salta", province_id: 17},
+    {province_name: "San Juan", province_id: 18},
+    {province_name: "San Luis", province_id: 19},
+    {province_name: "Santa Cruz", province_id: 20},
+    {province_name: "Santa Fe", province_id: 21},
+    {province_name: "Santiago del Estero", province_id: 22},
+    {province_name: "Tierra del Fuego", province_id: 23},
+    {province_name: "Tucumán", province_id: 12}
+];
 const baseUrl = `${BACKEND_URL}/lugares`;
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -92,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
 function Places() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     const styles = useStyles();
@@ -107,11 +116,11 @@ function Places() {
     })
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedPlace = {
-            city_id: "",
-            city_name: "",
-            id_province: "",
-            active: ""
-        }
+        city_id: "",
+        city_name: "",
+        id_province: "",
+        active: ""
+    }
     //Para abrir y cerrar los modales
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
@@ -119,14 +128,14 @@ function Places() {
     const [deleteModal, setDeleteModal] = useState(false);
     //Elementos para configurar los mensajes
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
     const [provinceSelectedError, setProvinceSelectedError] = useState(false);
     const [provinceSelected, setProvinceSelected] = useState('');
     //Mensaje de error de los inputs
     const [namesError, setNamesError] = useState(null);
     //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
-        const { name, value } = textFieldAtributes.target;
+        const {name, value} = textFieldAtributes.target;
         setSelectedPlace(prevState => ({
             ...prevState,
             [name]: value
@@ -157,7 +166,7 @@ function Places() {
         setNamesError(null);
         return true;
     }
-    
+
     const peticionPost = async () => {
         if (validateForm()) {
             let postResponse = await postPlace(selectedPlace, provinceSelected);
@@ -187,7 +196,7 @@ function Places() {
             }
         }
     }
-    
+
 
     const peticionPut = async () => {
     }
@@ -217,12 +226,12 @@ function Places() {
     }
 
     const openCloseModalCreate = () => {
-            setCreateModal(!createModal);
-            if (createModal) {
-                setSelectedPlace(formatSelectedPlace);
-                setDefaultErrorMessages();
-            }
+        setCreateModal(!createModal);
+        if (createModal) {
+            setSelectedPlace(formatSelectedPlace);
+            setDefaultErrorMessages();
         }
+    }
 
 
     const openCloseModalViewDetails = () => {
@@ -258,7 +267,7 @@ function Places() {
         } catch (error) {
             console.log(`${ERROR_MSG_API_GET_PLACES} ${error}`);
         }
-        
+
     };
 
 
@@ -270,16 +279,16 @@ function Places() {
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO LUGAR</h3>
             <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
-                required
-                inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
-                autoComplete='off'
-                error={(namesError) ? true : false}
-                helperText={(namesError) ? namesError : false}
-                onChange={handleChange}
-                value={selectedPlace && selectedPlace.city_name} />
-            <br />
-            <br />
-                <FormControl className={styles.inputMaterial}
+                       required
+                       inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                       autoComplete='off'
+                       error={(namesError) ? true : false}
+                       helperText={(namesError) ? namesError : false}
+                       onChange={handleChange}
+                       value={selectedPlace && selectedPlace.city_name}/>
+            <br/>
+            <br/>
+            <FormControl className={styles.inputMaterial}
                          required
                          error={(provinceSelectedError) ? true : false}>
                 <InputLabel>Provincia</InputLabel>
@@ -317,10 +326,10 @@ function Places() {
         <div className={styles.modal}>
             <h3>DETALLE DEL LUGAR</h3>
             <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
-                       value={selectedPlace && selectedPlace.city_name}/>
+                       value={selectedPlace && selectedPlace.cityName}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
-                       value={selectedPlace && provinceSelected}/>
+                       value={selectedPlace && selectedPlace.provinceName}/>
             <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
@@ -334,19 +343,19 @@ function Places() {
             <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
                        onChange={handleChange}
                        value={selectedPlace && selectedPlace.city_name}/>
-            <br /><br />
+            <br/><br/>
             <InputLabel>Provincia</InputLabel>
             <Select label="Provincia" id="Provincia" labelId={selectedPlace.id_province}
-                        name="province"
-                        className={styles.inputMaterial}
-                        value={(selectedPlace.id_province) ? selectedPlace.id_province : 0}
-                        displayEmpty
-                        onChange={handleChange}
-                >
-                    <MenuItem value={0} disabled> Seleccione una provincia </MenuItem>
-                    <MenuItem key={1} value={1}> Buenos Aires </MenuItem>
-                    <MenuItem key={2} value={2}> CABA </MenuItem>
-                </Select>
+                    name="province"
+                    className={styles.inputMaterial}
+                    value={(selectedPlace.id_province) ? selectedPlace.id_province : 0}
+                    displayEmpty
+                    onChange={handleChange}
+            >
+                <MenuItem value={0} disabled> Seleccione una provincia </MenuItem>
+                <MenuItem key={1} value={1}> Buenos Aires </MenuItem>
+                <MenuItem key={2} value={2}> CABA </MenuItem>
+            </Select>
             <br/>
             <br/>
             <div align="right">
@@ -378,7 +387,7 @@ function Places() {
             {   // Esto es para que se muestre la ventanita del mensaje
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
             <br/>
@@ -400,18 +409,18 @@ function Places() {
                         tooltip: 'Visualización de lugar',
                         onClick: (event, rowData) => selectPlace(rowData, "Ver")
                     },
-                    {
+                    rowData => ({
                         icon: 'edit',
                         tooltip: (rowData.active === 'Activo') ? 'Editar lugar' : 'No se puede editar un lugar dado de baja',
                         disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectPlace(rowData, "Editar")
-                    },
-                    {
+                    }),
+                    rowData => ({
                         icon: 'delete',
                         tooltip: (rowData.active === 'Activo') ? 'Eliminar lugar' : 'No se puede eliminar un lugar dado de baja',
                         disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectPlace(rowData, "Eliminar")
-                    }
+                    })
                 ]}
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}
