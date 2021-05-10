@@ -37,7 +37,8 @@ export const getPlaces = async () => {
             }
         }
     }
-}
+};
+
 export const getPlace = async () => {
   const token = localStorage.getItem('token');
   try {
@@ -46,14 +47,14 @@ export const getPlace = async () => {
           headers: {
               Authorization: `Bearer ${token}`
           }
-      })
+      });
       const response = await instance.get();
       return response.data;
   } catch (error) {
       console.log(`${ERROR_MSG_API_GET_PLACES} ${error}`);
       return null;
   }
-}
+};
 
 export const getProvinces = async () => {
   const token = localStorage.getItem('token');
@@ -63,7 +64,7 @@ export const getProvinces = async () => {
           headers: {
               Authorization: `Bearer ${token}`
           }
-      })
+      });
       const response = await instance.get();
       return response;
   } catch (error) {
@@ -75,20 +76,20 @@ export const getProvinces = async () => {
 
 
       if (error.message === 'Network Error') {
-          error.message = ERROR_MSG_INTERNET
+          error.message = ERROR_MSG_INTERNET;
           return error.message;
       } else {
           return error.message;
       }
   }
-}
+};
 
 export const postPlace = async (selectedPlaces, provinceSelected) => {
     const token = localStorage.getItem('token');
 
     const newPlace = {
-        city_name: capitalizeString(selectedPlaces.city_name.trim()),
-        id_province: provinceSelected
+        cityName: capitalizeString(selectedPlaces.cityName.trim()),
+        idProvince: provinceSelected
     };
 
     try {
@@ -123,12 +124,12 @@ export const putPlace = async (selectedPlaces, provinceSelected, id) => {
   const token = localStorage.getItem('token');
 
   const modifiedPlace = {
-    city_name: capitalizeString(selectedPlaces.city_name.trim()),
-    id_province: provinceSelected
+    cityName: capitalizeString(selectedPlaces.cityName.trim()),
+    idProvince: provinceSelected ? provinceSelected : selectedPlaces.idProvince
   };
 
   try {
-      let response = await axios.post(`${BACKEND_URL}/places/${id}`,
+      let response = await axios.put(`${BACKEND_URL}/places/${selectedPlaces.id}`,
           modifiedPlace,
           {
               headers: {
@@ -182,4 +183,4 @@ export const deletePlace = async (id) => {
             }
         }
     }
-}
+};

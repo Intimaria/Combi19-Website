@@ -20,7 +20,7 @@ const normalizeTransport = (rows) => {
                 email: rows[index].EMAIL,
                 phone_number: rows[index].PHONE_NUMBER
             }
-        }
+        };
         results.push(transport);
     }
 
@@ -38,12 +38,12 @@ const normalizeDrivers = (rows) => {
             email: rows[index].EMAIL,
             password1: rows[index].PASSWORD,
             phoneNumber: rows[index].PHONE_NUMBER,
-            active: rows[index].ACTIVE === 1? "Activo" : "Inactivo"
-        }
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
+        };
         results.push(driver);
     }
     return results;
-}
+};
 
 const normalizePlaces = (rows) => {
     let results = [];
@@ -52,16 +52,17 @@ const normalizePlaces = (rows) => {
         let place = {
             id: rows[index].CITY_ID,
             cityName: rows[index].CITY_NAME,
-            provinceName: rows[index].PROVINCE_NAME,
-            active: rows[index].ACTIVE === 1? "Activo" : "Inactivo",
-        }
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
+            idProvince: rows[index].ID_PROVINCE,
+            provinceName: rows[index].PROVINCE_NAME
+        };
         results.push(place);
     }
     return results;
-}
+};
 
 module.exports = {
     normalizeTransport,
     normalizeDrivers,
     normalizePlaces
-}
+};

@@ -489,8 +489,8 @@ function Drivers() {
             {inputsToCreateOrModify}
             <br /><br />
             <div align="right">
-                <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
-                <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
+                <Button color="primary" onClick={() => peticionPost()}>GUARDAR</Button>
+                <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
     )
@@ -536,7 +536,7 @@ function Drivers() {
             </FormControl>
             <br /><br />
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>SALIR</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
     )

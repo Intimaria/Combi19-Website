@@ -5,7 +5,6 @@ import {
     InputLabel,
     MenuItem,
     Modal,
-    NativeSelect,
     TextField
 } from '@material-ui/core';
 // Importo los mensajes de error
@@ -92,14 +91,14 @@ function Places() {
     //Aca se guarda los datos de la fila seleccionada
     const [selectedPlace, setSelectedPlace] = useState({
         city_id: "",
-        city_name: "",
+        cityName: "",
         id_province: "",
         active: ""
     })
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedPlace = {
         city_id: "",
-        city_name: "",
+        cityName: "",
         id_province: "",
         active: ""
     }
@@ -133,19 +132,29 @@ function Places() {
 
     //Aca arrancan las validaciones de los datos
     const validateForm = () => {
-        return validateName();
+        return validateName() & validateProvince();
     };
     const validateName = () => {
-        if (!selectedPlace.city_name) {
+        if (!selectedPlace.cityName) {
             setNamesError(ERROR_MSG_EMPTY_NAME);
             return false;
-        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedPlace.city_name)) {
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedPlace.cityName)) {
             setNamesError(ERROR_MSG_INVALID_NAME);
             return false;
         }
 
         setNamesError(null);
         return true;
+    }
+
+    const validateProvince = () => {
+        if (provinceSelected || selectedPlace.idProvince) {
+            setProvinceSelectedError(null);
+            return true;
+        } else {
+            setProvinceSelectedError(ERROR_MSG_EMPTY_PROVINCE);
+            return false;
+        }
     }
 
     const peticionPost = async () => {
@@ -157,6 +166,7 @@ function Places() {
                     ...options, open: true, type: 'success',
                     message: `Se ha creado el lugar correctamente`
                 });
+                setProvinceSelected(false);
                 openCloseModalCreate();
                 fetchData();
             } else if (postResponse?.status === 400) {
@@ -180,7 +190,9 @@ function Places() {
 
 
     const peticionPut = async () => {
+        console.log('antes del form')
         if (validateForm()) {
+            console.log('después del form')
             let postResponse = await putPlace(selectedPlace, provinceSelected, selectPlace.city_id);
 
             if (postResponse.status === 200) {
@@ -287,14 +299,14 @@ function Places() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO LUGAR</h3>
-            <TextField className={styles.inputMaterial} label="Ciudad" name="city_name"
+            <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
                        required
                        inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
                        autoComplete='off'
                        error={(namesError) ? true : false}
                        helperText={(namesError) ? namesError : false}
                        onChange={handleChange}
-                       value={selectedPlace && selectedPlace.city_name}/>
+                       value={selectedPlace && selectedPlace.cityName}/>
             <br/>
             <br/>
             <FormControl className={styles.inputMaterial}
@@ -325,8 +337,8 @@ function Places() {
                 <FormHelperText>{(provinceSelectedError) ? provinceSelectedError : false}</FormHelperText>
             </FormControl>
             <div align="right">
-                <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
-                <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
+                <Button color="primary" onClick={() => peticionPost()}>GUARDAR</Button>
+                <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
     )
@@ -341,7 +353,7 @@ function Places() {
                        value={selectedPlace && selectedPlace.provinceName}/>
             <br/><br/>
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>Cancelar</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
     )
@@ -351,14 +363,17 @@ function Places() {
             <h3>EDITAR LUGAR</h3>
             <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
                        onChange={handleChange}
-                       value={selectedPlace && selectedPlace.cityName}/>
+                       value={selectedPlace && selectedPlace.cityName}
+                       error={(namesError) ? true : false}
+                       helperText={(namesError) ? namesError : false}
+            />
             <br/><br/>
             <FormControl className={styles.inputMaterial}
                          required>
                 <InputLabel>Provincia</InputLabel>
-                <Select label="Provincia" id="provinceSelected" name="provinceName"
+                <Select label="Provincia" id="provinceSelected" name="idProvince"
                         className={styles.inputMaterial}
-                        value={(provinceSelected) ? provinceSelected : selectedPlace.provinceName}
+                        value={(provinceSelected) ? provinceSelected : selectedPlace.idProvince}
                         displayEmpty
                         onChange={handleChange}
                 >

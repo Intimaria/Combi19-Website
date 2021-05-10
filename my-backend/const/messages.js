@@ -35,6 +35,7 @@ module.exports = {
     ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE: 'No se puede eliminar, el chofer figura como conductor de combis',
     // Places API messages
     OK_MSG_API_LOCATION_POST: 'Se creó el lugar con éxito',
+    OK_MSG_API_LOCATION_PUT: 'Se actualizaron los datos del lugar con éxito',
     ERROR_MSG_EMPTY_PROVINCE: '* Ingrese un nombre de provincia',
     ERROR_MSG_EMPTY_CITY: '* Ingrese un nombre de localidad',
     ERROR_MSG_EMPTY_KM: '* Ingrese una distancia medida en km para la ruta',
