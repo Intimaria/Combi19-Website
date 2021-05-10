@@ -60,4 +60,19 @@ export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugare
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
-
+// Routes API messages
+export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
+export const ERROR_MSG_API_POST_ROUTES = 'Ocurrió un error al crear la ruta:';
+export const ERROR_MSG_API_PUT_ROUTES = 'Ocurrió un error al actualizar los datos de la ruta:';
+export const ERROR_MSG_API_DELETE_ROUTES = 'Ocurrió un error al eliminar la ruta indicada';
+export const ERROR_MSG_EMPTY_KM = '* Ingrese una distancia medida en km para la ruta';
+export const ERROR_MSG_EMPTY_DURATION ='* Ingrese una duracion para la ruta';
+export const ERROR_MSG_EMPTY_TRANSPORT = '* Ingrese una combi para la ruta';
+export const ERROR_MSG_EMPTY_PLACE_DESTINATION = '* Ingrese un lugar de destino';
+export const ERROR_MSG_EMPTY_PLACE_DEPARTURE = '* Ingrese un lugar de origen';
+export const ERROR_MSG_INVALID_KM = '* Ingrese una distancia valida';
+export const ERROR_MSG_INVALID_DURATION = '* Ingrese una duracion valida';
+export const ERROR_MSG_INVALID_TRANSPORT = '* Ingrese una combi valida';
+export const ERROR_MSG_INVALID_PLACE_DESTINATION = '* Ingrese un lugar de destino valido';
+export const ERROR_MSG_INVALID_PLACE_DEPARTURE = '* Ingrese un lugar de origen valido';
+export const ERROR_MSG_REPEAT_PLACES = '* Ingrese lugares de origen y destino distintos';

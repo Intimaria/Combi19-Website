@@ -130,6 +130,7 @@ function Drivers() {
                 console.log('Es necesario agregar un case más en el switch por el name:', name);
                 break;
         }
+        setSuccessMessage(null);
     }
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -240,7 +241,7 @@ function Drivers() {
         return true;
     }
     // Aca ingreso un chofer nuevo
-    const peticionPost = async () => {
+    const requestPost = async () => {
         if (validateForm()) {
             let postResponse = await postDrivers(selectedDriver);
             if (postResponse.status === 201) {
@@ -275,7 +276,7 @@ function Drivers() {
         }
     }
     //Aca realizo la actualizacion de los datos del chofer
-    const peticionPut = async () => {
+    const requestPut = async () => {
         if (validateForm()) {
             let putResponse = await putDrivers(selectedDriver, selectedDriver.id);
 
@@ -311,7 +312,7 @@ function Drivers() {
         }
     }
     //Aca elimino a un chofer
-    const peticionDelete = async () => {
+    const requestDelete = async () => {
         let deleteResponse = await deleteDrivers(selectedDriver.id);
 
         if (deleteResponse.status === 200) {
@@ -489,7 +490,7 @@ function Drivers() {
             {inputsToCreateOrModify}
             <br /><br />
             <div align="right">
-                <Button color="primary" onClick={() => peticionPost()}>Insertar</Button>
+                <Button color="primary" onClick={() => requestPost()}>Insertar</Button>
                 <Button onClick={() => openCloseModalCreate()}>Cancelar</Button>
             </div>
         </div>
@@ -550,7 +551,7 @@ function Drivers() {
             </Tooltip>
             {inputsToCreateOrModify}
             <div align="right">
-                <Button color="primary" onClick={() => peticionPut()}>CONFIRMAR CAMBIOS</Button>
+                <Button color="primary" onClick={() => requestPut()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
@@ -561,7 +562,7 @@ function Drivers() {
             <p>¿Estás seguro que deseas eliminar el chofer con correo electronico <b>{selectedDriver && selectedDriver.email}</b> ?
             </p>
             <div align="right">
-                <Button color="secondary" onClick={() => peticionDelete()}>SÍ, ELIMINAR</Button>
+                <Button color="secondary" onClick={() => requestDelete()}>SÍ, ELIMINAR</Button>
                 <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
             </div>
         </div>

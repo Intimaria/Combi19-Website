@@ -133,8 +133,6 @@ const validatePlaceDestination = async (idPlace) => {
 }
 
 const comparePlaces = (idPlaceDeparture, idPlaceDestination) => {
-    console.log(idPlaceDeparture);
-    console.log(idPlaceDestination);
     if (idPlaceDeparture === idPlaceDestination) {
         placesError = ERROR_MSG_REPEAT_PLACES;
         return false;
