@@ -4,6 +4,8 @@ const {
     REGEX_DURATION,
     REGEX_ONLY_NUMBER } = require('../const/regex.js');
 
+const { ACTIVE } = require('../const/config.js');
+
 const {
     ERROR_MSG_EMPTY_KM,
     ERROR_MSG_EMPTY_DURATION,
@@ -36,7 +38,7 @@ const validateRoutesToModify = async (idPlaceDeparture, idPlaceDestination, idTr
 
 const validateRoutes = async (idPlaceDeparture, idPlaceDestination, idTransport, duration, km) => {
     placesError = null;
-    return ((await validatePlaceDeperture(idPlaceDeparture) & await validatePlaceDestination(idPlaceDestination) & await validateTransport(idTransport) & validateDuration(duration) & validateKm(km)) && comparePlaces(idPlaceDeparture,idPlaceDestination));
+    return ((await validatePlaceDeperture(idPlaceDeparture) & await validatePlaceDestination(idPlaceDestination) & await validateTransport(idTransport) & validateDuration(duration) & validateKm(km)) && comparePlaces(idPlaceDeparture, idPlaceDestination));
 }
 
 const prepareRoutesResponse = () => {
@@ -53,8 +55,8 @@ const prepareRoutesResponse = () => {
 const checkPlaceInDb = async (idPlace) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM CITY WHERE CITY_ID = ? AND ACTIVE = 1';;
-        const [rows] = await connection.execute(sqlSelect, [idPlace]);
+        const sqlSelect = 'SELECT * FROM CITY WHERE CITY_ID = ? AND ACTIVE = ?';;
+        const [rows] = await connection.execute(sqlSelect, [idPlace, ACTIVE]);
         connection.end();
 
         return rows.length >= 1;
@@ -67,8 +69,8 @@ const checkPlaceInDb = async (idPlace) => {
 const checkRoutePlacesInDbToCreate = async (idPlaceDeparture, idPlaceDestination) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ACTIVE = 1';
-        const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination]);
+        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ACTIVE = ?';
+        const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination, ACTIVE]);
         connection.end();
         return rows.length >= 1;
     } catch (error) {
@@ -80,8 +82,8 @@ const checkRoutePlacesInDbToCreate = async (idPlaceDeparture, idPlaceDestination
 const checkRoutePlacesInDbToModify = async (idPlaceDeparture, idPlaceDestination, id) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ROUTE_ID <> ? AND ACTIVE = 1';
-        const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination, id]);
+        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ROUTE_ID <> ? AND ACTIVE = ?';
+        const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination, id, ACTIVE]);
         connection.end();
         return rows.length >= 1;
     } catch (error) {
@@ -93,7 +95,7 @@ const checkRoutePlacesInDbToModify = async (idPlaceDeparture, idPlaceDestination
 const checkTransportInDb = async (idTransport) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ? AND ACTIVE = 1';;
+        const sqlSelect = 'SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ? AND ACTIVE = ?';;
         const [rows] = await connection.execute(sqlSelect, [idTransport, ACTIVE]);
         connection.end();
 

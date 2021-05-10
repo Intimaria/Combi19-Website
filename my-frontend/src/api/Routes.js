@@ -43,7 +43,7 @@ export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestinatio
         idPlaceDestination,
         idTransport,
         duration : routesData.duration,
-        km: routesData.kmDistance
+        km: routesData.km
     }
     try {
         let response = await axios.post(`${BACKEND_URL}/routes`,
@@ -79,7 +79,7 @@ export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination
         idPlaceDestination,
         idTransport,
         duration : routesData.duration,
-        km: routesData.kmDistance
+        km: routesData.km
     }
     try {
         let response = await axios.put(`${BACKEND_URL}/routes/${id}`,

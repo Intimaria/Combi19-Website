@@ -26,7 +26,7 @@ const getRoutes = async (req, res) => {
         INNER JOIN CITY c on (r.id_departure=c.city_id) 
         INNER JOIN CITY c1 on (r.id_destination=c1.city_id) 
         INNER JOIN PROVINCE p on (c.ID_PROVINCE=p.PROVINCE_ID) 
-        INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID)`;
+        INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID) ORDER BY r.KM ASC`;
         const [rows] = await connection.execute(sqlSelect, []);
         connection.end();
         const normalizedResults = normalizeRoutes(rows);
@@ -47,7 +47,7 @@ const getRoutes = async (req, res) => {
 
 const postRoute = async (req, res) => {
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
-
+    console.log(idTransport);
     const inputsErrors = await validateRoutesToCreate(idPlaceDeparture, idPlaceDestination, idTransport, duration, km);
 
     if (inputsErrors) {

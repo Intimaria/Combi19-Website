@@ -158,7 +158,7 @@ function Routes() {
                 case 'duration':
                     setDurationError(false);
                     break;
-                case 'kmDistance':
+                case 'km':
                     setKmError(false);
                     break;
                 default:
@@ -172,10 +172,10 @@ function Routes() {
 
 
     const validateForm = () => {
-        return validatePlaceDeperture() & validatePlaceDestination() & comparePlaces() & validateTransport() & validateDuration() & validateKm();
+        return ((validatePlaceDeperture() & validatePlaceDestination()) && comparePlaces()) & validateTransport() & validateDuration() & validateKm();
     };
 
-    const validatePlaceDeperture = async () => {
+    const validatePlaceDeperture = () => {
         if (!departureSelected) {
             setDepartureError(ERROR_MSG_EMPTY_PLACE_DEPARTURE);
             return false;
@@ -185,7 +185,7 @@ function Routes() {
         return true;
     }
 
-    const validatePlaceDestination = async () => {
+    const validatePlaceDestination = () => {
         if (!destinationSelected) {
             setDestinationError(ERROR_MSG_EMPTY_PLACE_DESTINATION);
             return false;
@@ -196,7 +196,8 @@ function Routes() {
     }
 
     const comparePlaces = () => {
-        if (departureSelected.cityId === destinationSelected.cityId) {
+        if (departureSelected === destinationSelected) {
+
             setDepartureError(ERROR_MSG_REPEAT_PLACES);
             return false;
         }
@@ -204,7 +205,7 @@ function Routes() {
         return true;
     }
 
-    const validateTransport = async () => {
+    const validateTransport = () => {
         if (!transportSelected) {
             setTransportError(ERROR_MSG_EMPTY_TRANSPORT);
             return false;
@@ -228,11 +229,11 @@ function Routes() {
     }
 
     const validateKm = () => {
-        if (!selectedRoute.kmDistance) {
+        if (!selectedRoute.km) {
             setKmError(ERROR_MSG_EMPTY_KM);
             return false;
         }
-        else if (REGEX_ONLY_NUMBER.test(selectedRoute.kmDistance)) {
+        else if (REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
             setKmError(ERROR_MSG_INVALID_KM);
             return false;
         }
@@ -240,39 +241,8 @@ function Routes() {
         return true;
     }
 
-    const fetchData = async () => {
-        try {
-            let getResponse = await getRoutes();
-
-            if (getResponse.status === 200) {
-                let data = getResponse.data;
-
-                setData(data);
-            } else if (getResponse.status === 500) {
-                setSuccessMessage(getResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: getResponse.data
-                });
-
-                return true
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES} ${getResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_ROUTES} ${getResponse}`
-                });
-            }
-
-
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
-        }
-    };
-
     const requestPostRoute = async () => {
         if (validateForm()) {
-
             let postResponse = await postRoutes(selectedRoute, departureSelected, destinationSelected, transportSelected);
 
             if (postResponse?.status === 201) {
@@ -391,22 +361,11 @@ function Routes() {
         }
     };
 
-    const selectRoute = async (routes, action) => {
-        setSelectedRoute(routes);
-        if (action === "Ver") {
-            openCloseModalViewDetails()
-        } else if (action === "Editar") {
-            await openCloseModalUpdate()
-        } else {
-            openCloseModalDelete()
-        }
-    };
-
     const requestGetTransports = async () => {
         let getResponse = await getTransports();
 
         if (getResponse?.status === 200) {
-            setPlaces(getResponse.data);
+            setTransports(getResponse.data);
         } else if (getResponse?.status === 500) {
             setOptions({
                 ...options, open: true, type: 'error',
@@ -425,9 +384,9 @@ function Routes() {
 
     const requestGetPlaces = async () => {
         let getResponse = await getPlaces();
-
+        console.log("a", getResponse);
         if (getResponse?.status === 200) {
-            setTransports(getResponse.data);
+            setPlaces(getResponse.data);
         } else if (getResponse?.status === 500) {
             setOptions({
                 ...options, open: true, type: 'error',
@@ -455,6 +414,18 @@ function Routes() {
         }
     };
 
+    const selectRoute = async (route, action) => {
+        console.log(route);
+        setSelectedRoute(route);
+        if (action === "Ver") {
+            openCloseModalViewDetails()
+        } else if (action === "Editar") {
+            await openCloseModalUpdate()
+        } else {
+            openCloseModalDelete()
+        }
+    };
+
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
     };
@@ -466,6 +437,10 @@ function Routes() {
         if (!updateModal) {
             await requestGetPlaces();
             await requestGetTransports();
+            console.log(selectedRoute);
+            setTransportSelected(selectedRoute.transport.transportId);
+            setDepartureSelected(selectedRoute.departure.cityId);
+            setDestinationSelected(selectedRoute.destination.cityId);
         }
 
         // Data are cleaned when the modal is closed
@@ -483,6 +458,36 @@ function Routes() {
         }
     };
 
+    const fetchData = async () => {
+        try {
+            let getResponse = await getRoutes();
+
+            if (getResponse.status === 200) {
+                let data = getResponse.data;
+
+                setData(data);
+            } else if (getResponse.status === 500) {
+                setSuccessMessage(getResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: getResponse.data
+                });
+
+                return true
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_GET_ROUTES}`
+                });
+            }
+
+
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_GET_ROUTES} ${error}`);
+        }
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -497,14 +502,14 @@ function Routes() {
                 helperText={(durationError) ? durationError : false}
                 value={selectedRoute && selectedRoute.duration}
                 onChange={handleChange} />
-            <TextField label="Distancia en KM" id={"kmDistance"} name="kmDistance"
+            <TextField label="Distancia en KM" id={"km"} name="km"
                 className={styles.inputMaterial}
                 required
                 inputProps={{ maxLength: 9 }}
                 autoComplete='off'
                 error={(kmError) ? true : false}
                 helperText={(kmError) ? kmError : false}
-                value={selectedRoute && selectedRoute.kmDistance}
+                value={selectedRoute && selectedRoute.km}
                 onChange={handleChange} />
             <FormControl className={styles.inputMaterial}
                 required
@@ -520,12 +525,12 @@ function Routes() {
                         Seleccione un lugar
                     </MenuItem>
                     {(places) ?
-                        places.map((place) => (
+                        places.map((places) => (
                             <MenuItem
-                                key={place.id}
-                                value={place.id}
+                                key={places.id}
+                                value={places.id}
                             >
-                                {place.provinceName}, {place.cityName}
+                                {places.provinceName}, {places.cityName}
 
                             </MenuItem>
                         ))
@@ -540,7 +545,7 @@ function Routes() {
                 <InputLabel>Destino</InputLabel>
                 <Select label="Destino" id="destinationSelected" labelId={"destinationSelected"} name="destinationSelected"
                     className={styles.inputMaterial}
-                    value={(destinationError) ? destinationError : 0}
+                    value={(destinationSelected) ? destinationSelected : 0}
                     displayEmpty
                     onChange={handleChange}
                 >
@@ -548,12 +553,12 @@ function Routes() {
                         Seleccione un lugar
                     </MenuItem>
                     {(places) ?
-                        places.map((place) => (
+                        places.map((places) => (
                             <MenuItem
-                                key={place.id}
-                                value={place.id}
+                                key={places.id}
+                                value={places.id}
                             >
-                                {place.provinceName}, {place.cityName}
+                                {places.provinceName}, {places.cityName}
 
                             </MenuItem>
                         ))
@@ -576,12 +581,12 @@ function Routes() {
                         Seleccione una combi
                     </MenuItem>
                     {(transports) ?
-                        transports.map((transport) => (
+                        transports.map((transports) => (
                             <MenuItem
-                                key={transport.transport_id}
-                                value={transport.transport_id}
+                                key={transports.transport_id}
+                                value={transports.transport_id}
                             >
-                                {transport.internal_identification}
+                                {transports.internal_identification}
                             </MenuItem>
                         ))
                         : null
@@ -606,28 +611,28 @@ function Routes() {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE LA RUTA</h3>
-            <TextField className={styles.inputMaterial} label="Estado" name="active"
+            <TextField className={styles.inputMaterial} label="Estado"
                 value={selectedRoute && selectedRoute.active} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Ciudad de origen" name="cityOrigin" onChange={handleChange}
-                value={selectedRoute && selectedRoute.cityOrigin} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Ciudad de origen" 
+                value={selectedRoute && selectedRoute.departure.cityName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Provincia de origen" name="provOrigin" onChange={handleChange}
-                       value={selectedRoute && selectedRoute.provOrigin} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Provincia de origen" 
+                       value={selectedRoute && selectedRoute.departure.provinceName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Ciudad de destino" name="cityDest" onChange={handleChange}
-                value={selectedRoute && selectedRoute.cityDest} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Ciudad de destino" 
+                value={selectedRoute && selectedRoute.destination.cityName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Provincia de destino" name="provDest" onChange={handleChange}
-                value={selectedRoute && selectedRoute.provDest} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Provincia de destino" 
+                value={selectedRoute && selectedRoute.destination.provinceName} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Duración" name="duration"
+            <TextField className={styles.inputMaterial} label="Duración" 
                        value={selectedRoute && selectedRoute.duration} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Combi" name="transport"
-                       value={selectedRoute && selectedRoute.transport} autoComplete="off" />
+            <TextField className={styles.inputMaterial} label="Combi" 
+                       value={selectedRoute && selectedRoute.transport.internalIdentification} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Distancia" name="km"
+            <TextField className={styles.inputMaterial} label="Distancia"
                        value={selectedRoute && selectedRoute.km} autoComplete="off" />
             <br />
             <div align="right">
@@ -690,11 +695,11 @@ function Routes() {
                 data={data}
                 title="Lista de rutas"
                 actions={[
-                    {
+                    /*{
                         icon: () => <VisibilityIcon />,
                         tooltip: 'Visualización de ruta',
                         onClick: (event, rowData) => selectRoute(rowData, "Ver")
-                    },
+                    },*/
                     rowData => ({
                         icon: 'edit',
                         tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una ruta dada de baja',
