@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Modal, TextField, Button } from '@material-ui/core';
 import FormControl from "@material-ui/core/FormControl";
@@ -51,94 +50,15 @@ import {
     REGEX_DURATION,
     REGEX_ONLY_NUMBER
 } from "../const/regex";
-=======
-import { Button, Modal, TextField } from '@material-ui/core';
-// Importo los mensajes de error
-import {
-    ERROR_MSG_API_DELETE_ROUTE,
-    ERROR_MSG_API_GET_ROUTES,
-    ERROR_MSG_API_POST_ROUTE,
-    ERROR_MSG_API_PUT_ROUTE,
-    ERROR_MSG_EMPTY_NAME,
-    ERROR_MSG_INTERNET,
-    ERROR_MSG_INVALID_NAME,
-    OK_MSG_API_ROUTE_POST
-} from '../const/messages.js';
-// Importo las expresiones regulares
-import {
-    REGEX_EMAIL,
-    REGEX_ONLY_ALPHABETICAL,
-    REGEX_PHONE
-} from '../const/regex.js';
-// Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
-import React, { useEffect, useState } from 'react';
-import { deleteRoutes, getRouteById, getRoutes, postRoutes, putRoutes } from '../api/Routes.js';
-
-import AccessibilityIcon from '@material-ui/icons/Accessibility';
-import FormControl from '@material-ui/core/FormControl';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
-import MaterialTable from "material-table";
-import { Message } from "./Message";
-import Tooltip from '@material-ui/core/Tooltip';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-// La configuracion en castellano
-import { materialTableConfiguration } from '../const/materialTableConfiguration';
-//Los estilos de los modals
-import { useStyles } from '../const/modalStyle';
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
 
 const columns = [
-<<<<<<< HEAD
-    { title: 'Origen', field: 'departure.cityName' },
-    { title: 'Destino', field: 'destination.cityName' },
-    { title: 'Identificacion de la combi', field: 'transport.internalIdentificacion' },
-    { title: 'Estado', field: 'active' },
-];
-
-
-function Routes() {
-    const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
-    };
-
-    const formatSelectedRoute = {
-        route_id: "",
-        duration: "",
-        kmDistance: "",
-        active: "",
-        departure: {
-            cityId: "",
-            cityName: "",
-            idProvince: "",
-            provinceName: "",
-            active: ""
-        },
-        destination: {
-            cityId: "",
-            cityName: "",
-            idProvince: "",
-            provinceName: "",
-            active: ""
-        },
-        transport: {
-            transportId: "",
-            internalIdentification: ""
-        }
-    };
-=======
     { title: 'Distancia', field: 'km' },
     { title: 'Duracion', field: 'duration' },
-    { title: 'Combi', field: 'transport' },
-    { title: 'Ciudad origen', field: 'cityOrigin' },
-    { title: 'Provinca origen', field: 'provOrigin' },
-    { title: 'Ciudad destino', field: 'cityDest' },
-    { title: 'Provinca destino', field: 'provDest' },
-    { title: 'Ciudad origen', field: 'cityOrigin' },
+    { title: 'Combi', field: 'transport.internalIdentification' },
+    { title: 'Ciudad origen', field: 'departure.cityName' },
+    { title: 'Provincia origen', field: 'departure.provinceName' },
+    { title: 'Ciudad destino', field: 'destination.cityName' },
+    { title: 'Provincia destino', field: 'destination.provinceName' },
     { title: 'Estado', field: 'active' }
 ];
 
@@ -147,25 +67,33 @@ function Routes() {
     const handleCloseMessage = () => {
         setOptions({ ...options, open: false });
     };
+
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedRoute = {
-        idRoute: '',
-        km: '',
-        duration: '',
-        transport: '',
-        cityOrigin: '',
-        provOrigin: '',
-        cityDest: '',
-        provDest: '',
-        active: ''
-    }
+        idRoute: "",
+        duration: "",
+        km: "",
+        active: "",
+        departure: {
+            cityId: "",
+            cityName: "",
+            provinceName: "",
+        },
+        destination: {
+            cityId: "",
+            cityName: "",
+            provinceName: "",
+        },
+        transport: {
+            transportId: "",
+            internalIdentification: ""
+        }
+    };
 
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
 
     const styles = useStyles();
     const [data, setData] = useState([]);
-<<<<<<< HEAD
-    
+
     const [transports, setTransports] = useState([]);
     const [places, setPlaces] = useState([]);
 
@@ -180,28 +108,13 @@ function Routes() {
     const [transportSelected, setTransportSelected] = useState('');
     const [selectedRoute, setSelectedRoute] = useState(formatSelectedRoute);
 
-=======
-    //Mensaje de error de los inputs
-    const [cityOrNamesError, setCityOrNamesError] = React.useState(null);
-    const [cityDestNamesError, setCityDestNamesError] = React.useState(null);
-    const [provOrNamesError, setProvOrNamesError] = React.useState(null);
-    const [provDestNamesError, setProvDestNamesError] = React.useState(null);
-    //Para abrir y cerrar los modales
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-<<<<<<< HEAD
-
-=======
-    //Aca se guarda los datos de la fila seleccionada
-    const [selectedRoute, setSelectedRoute] = useState(formatSelectedRoute);
-    //Elementos para configurar los mensajes
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
-    
+
     const setDefaultValues = () => {
         setDefaultObjectsValues();
         setDefaultErrorMessages();
@@ -224,7 +137,6 @@ function Routes() {
 
     const handleChange = async (textFieldAtributes) => {
         const { name, value } = textFieldAtributes.target;
-<<<<<<< HEAD
 
         if (name === 'departureSelected') {
             setDepartureError(false);
@@ -329,36 +241,36 @@ function Routes() {
     }
 
     const fetchData = async () => {
-        /*try {
-            let getTransportsResponse = await getRoutes();
+        try {
+            let getResponse = await getRoutes();
 
-            if (getTransportsResponse.status === 200) {
-                let data = getTransportsResponse.data;
+            if (getResponse.status === 200) {
+                let data = getResponse.data;
 
                 setData(data);
-            } else if (getTransportsResponse.status === 500) {
-                setSuccessMessage(getTransportsResponse.data);
+            } else if (getResponse.status === 500) {
+                setSuccessMessage(getResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: getTransportsResponse.data
+                    message: getResponse.data
                 });
 
                 return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES} ${getTransportsResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES} ${getResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_ROUTES} ${getTransportsResponse}`
+                    message: `${ERROR_MSG_API_GET_ROUTES} ${getResponse}`
                 });
             }
 
 
         } catch (error) {
             console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
-        } */
+        }
     };
 
-    const requestPostTransport = async () => {
+    const requestPostRoute = async () => {
         if (validateForm()) {
 
             let postResponse = await postRoutes(selectedRoute, departureSelected, destinationSelected, transportSelected);
@@ -368,111 +280,12 @@ function Routes() {
                 setOptions({
                     ...options, open: true, type: 'success',
                     message: postResponse.data
-=======
-        setSelectedRoute(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-
-
-        //Saca el mensaje de error segun el input que se modifico
-        switch (name) {
-            case 'cityOrigin':
-                cityOrNamesError(null);
-                break;
-            case 'cityDest':
-                cityDestNamesError(null);
-                break;
-            case 'provOrigin':
-                provOrNamesError(null);
-                break;
-            case 'provDest':
-                provDestNamesError(null);
-                break;
-            default:
-                console.log('Es necesario agregar un case más en el switch por el name:', name);
-                break;
-        }
-    }
-
-
-    //Aca arrancan las validaciones de los datos del ruta
-    const validateForm = () => {
-        return  validateCityOrName() & validateCityDestName() & validateProvOr() & validateProvDest();
-    };
-
-    const setDefaultErrorMessages = () => {
-        setCityDestNamesError('');
-        setCityOrNamesError('');
-        setProvDestNamesError('');
-        setProvOrNamesError('');
-    };
-
-
-    const validateCityOrName = () => {
-        if (!selectedRoute.cityOrigin) {
-            setCityOrNamesError(ERROR_MSG_EMPTY_NAME);
-            return false;
-        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedRoute.cityOrigin)) {
-            setCityOrNamesError(ERROR_MSG_INVALID_NAME);
-            return false;
-        }
-        setCityOrNamesError(null);
-        return true;
-    }
-    const validateCityDestName = () => {
-        if (!selectedRoute.cityDest) {
-            setCityDestNamesError(ERROR_MSG_EMPTY_NAME);
-            return false;
-        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedRoute.cityDest)) {
-            setCityDestNamesError(ERROR_MSG_INVALID_NAME);
-            return false;
-        }
-        setCityDestNamesError(null);
-        return true;
-    }
-
-
-
-    const validateProvOr = () => {
-        if (!selectedRoute.provOrigin) {
-            setProvOrNamesError(ERROR_MSG_EMPTY_NAME);
-            return false;
-        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedRoute.provOrigin)) {
-            setProvOrNamesError(ERROR_MSG_INVALID_NAME);
-            return false;
-        }
-        setProvOrNamesError(null);
-        return true;
-    }
-    const validateProvDest = () => {
-        if (!selectedRoute.provDest) {
-            setProvDestNamesError(ERROR_MSG_EMPTY_NAME);
-            return false;
-        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedRoute.provDest)) {
-            setProvDestNamesError(ERROR_MSG_INVALID_NAME);
-            return false;
-        }
-        setProvDestNamesError(null);
-        return true;
-    }
-    // Aca ingreso un ruta nuevo
-    const peticionPost = async () => {
-        if (validateForm()) {
-            let postResponse = await postRoutes(selectedRoute);
-            if (postResponse.status === 201) {
-                setSuccessMessage(`Se ha creado la ruta correctamente`);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: `Se ha creado la ruta correctamente`
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
                 });
 
                 await openCloseModalCreate();
 
                 await fetchData();
             } else if (postResponse?.status === 400) {
-<<<<<<< HEAD
                 if (postResponse.data.placesError) {
                     setDepartureError(postResponse.data.placesError)
                 }
@@ -483,22 +296,6 @@ function Routes() {
                 setTransportError(postResponse.data.transportError)
                 setDurationError(postResponse.data.durationError)
                 setKmError(postResponse.data.kmError)
-=======
-                setSuccessMessage(postResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: postResponse.data
-                });
-                return true
-                /*
-                setEmailError(postResponse.data.emailError);
-                setNamesError(postResponse.data.namesError);
-                setSurnameError(postResponse.data.surnameError);
-                setPhoneNumberError(postResponse.data.phoneNumberError);
-                setPassword1Error(postResponse.data.passwordError1);
-                setPassword2Error(postResponse.data.passwordError2);
-                */
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             } else if (postResponse?.status === 500) {
                 setSuccessMessage(postResponse.data);
                 setOptions({
@@ -508,7 +305,6 @@ function Routes() {
 
                 return true
             } else {
-<<<<<<< HEAD
                 setSuccessMessage(`${ERROR_MSG_API_POST_ROUTES} ${postResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
@@ -518,7 +314,7 @@ function Routes() {
         }
     };
 
-    const requestPutTransport = async () => {
+    const requestPutRoute = async () => {
         if (validateForm()) {
 
             let putResponse = await putRoutes(
@@ -527,33 +323,13 @@ function Routes() {
                 destinationSelected ? destinationSelected : selectedRoute.destination.cityId,
                 transportSelected ? transportSelected : selectedRoute.transport.transportId,
                 selectedRoute.route_id
-                );
+            );
 
             if (putResponse?.status === 200) {
                 setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
                     message: putResponse.data
-=======
-                setSuccessMessage(`${ERROR_MSG_API_POST_ROUTE} ${postResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_ROUTE} ${postResponse}`
-                });
-            }
-        }
-    }
-    //Aca realizo la actualizacion de los datos del ruta
-    const peticionPut = async () => {
-        if (validateForm()) {
-            let putResponse = await putRoutes(selectedRoute, selectedRoute.id);
-
-            if (putResponse.status === 200) {
-                setSuccessMessage(`Se ha actualizado la ruta correctamente`);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: `Se ha actualizado la ruta correctamente`
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
                 });
 
                 await openCloseModalUpdate();
@@ -561,7 +337,6 @@ function Routes() {
                 await fetchData();
                 return true
             } else if (putResponse?.status === 400) {
-<<<<<<< HEAD
                 if (putResponse.data.placesError) {
                     setDepartureError(putResponse.data.placesError)
                 }
@@ -572,22 +347,6 @@ function Routes() {
                 setTransportError(putResponse.data.transportError)
                 setDurationError(putResponse.data.durationError)
                 setKmError(putResponse.data.kmError)
-=======
-                setSuccessMessage(putResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: putResponse.data
-                });
-                return true
-                /*
-                setEmailError(putResponse.data.emailError);
-                setNamesError(putResponse.data.namesError);
-                setSurnameError(putResponse.data.surnameError);
-                setPhoneNumberError(putResponse.data.phoneNumberError);
-                setPassword1Error(putResponse.data.passwordError1);
-                setPassword2Error(putResponse.data.passwordError2);
-                */
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             } else if (putResponse?.status === 500) {
                 setSuccessMessage(putResponse.data);
                 setOptions({
@@ -596,35 +355,16 @@ function Routes() {
                 });
                 return true
             } else {
-<<<<<<< HEAD
-                setSuccessMessage(`${ERROR_MSG_API_POST_ROUTES} ${putResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_PUT_ROUTES} ${putResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_ROUTES} ${putResponse}`
-                });
-            }
-        }
-    };
-
-    const requestDeleteTransport = async () => {
-        let deleteResponse = await deleteRoutes(selectedRoute.route_id);
-
-        if (deleteResponse?.status === 200) {
-            setSuccessMessage(deleteResponse.data);
-            setOptions({
-                ...options, open: true, type: 'success',
-                message: deleteResponse.data
-=======
-                setSuccessMessage(`${ERROR_MSG_API_PUT_ROUTE} ${putResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_PUT_ROUTE} ${putResponse}`
+                    message: `${ERROR_MSG_API_PUT_ROUTES} ${putResponse}`
                 });
             }
         }
     }
     //Aca elimino a un ruta
-    const peticionDelete = async () => {
+    const requestDeleteRoute = async () => {
         let deleteResponse = await deleteRoutes(selectedRoute.id);
 
         if (deleteResponse.status === 200) {
@@ -632,7 +372,6 @@ function Routes() {
             setOptions({
                 ...options, open: true, type: 'success',
                 message: `Se ha eliminado la ruta correctamente`
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             });
             openCloseModalDelete();
             await fetchData();
@@ -644,7 +383,6 @@ function Routes() {
             });
             openCloseModalDelete();
         } else {
-<<<<<<< HEAD
             setSuccessMessage(`${ERROR_MSG_API_DELETE_ROUTES}`);
             setOptions({
                 ...options, open: true, type: 'error',
@@ -655,18 +393,6 @@ function Routes() {
 
     const selectRoute = async (routes, action) => {
         setSelectedRoute(routes);
-=======
-            setSuccessMessage(`${ERROR_MSG_API_DELETE_ROUTE} ${deleteResponse}`);
-            setOptions({
-                ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_DELETE_ROUTE} ${deleteResponse}`
-            });
-        }
-    }
-    //Aca dependiendo del boton que se apreto abro el modal correspondiente
-    const selectRoute = (route, action) => {
-        setSelectedRoute(route);
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         if (action === "Ver") {
             openCloseModalViewDetails()
         } else if (action === "Editar") {
@@ -696,7 +422,6 @@ function Routes() {
             });
         }
     }
-<<<<<<< HEAD
 
     const requestGetPlaces = async () => {
         let getResponse = await getPlaces();
@@ -710,19 +435,11 @@ function Routes() {
             });
             return true
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_GET_TRANSPORTS}`);
+            setSuccessMessage(`${ERROR_MSG_API_GET_PLACES}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_GET_TRANSPORTS}`
+                message: `${ERROR_MSG_API_GET_PLACES}`
             });
-=======
-    //Metodos para cerrar y abrir modales, pone los valores por defecto cuando los abro
-    const openCloseModalCreate = () => {
-        setCreateModal(!createModal);
-        if (createModal) {
-            setSelectedRoute(formatSelectedRoute);
-            setDefaultErrorMessages();            
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         }
     }
 
@@ -740,17 +457,9 @@ function Routes() {
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
-<<<<<<< HEAD
     };
 
     const openCloseModalUpdate = async () => {
-=======
-        if (viewModal) {
-            setSelectedRoute(formatSelectedRoute);
-        }
-    }
-    const openCloseModalUpdate = () => {
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         setUpdateModal(!updateModal);
 
         // Data are loaded when the modal is open
@@ -761,47 +470,16 @@ function Routes() {
 
         // Data are cleaned when the modal is closed
         if (updateModal) {
-<<<<<<< HEAD
             setDefaultValues();
-=======
-            setSelectedRoute(formatSelectedRoute);
-            setDefaultErrorMessages();
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         }
     };
 
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
-<<<<<<< HEAD
 
         // Data are cleaned when the modal is closed
         if (deleteModal) {
             setDefaultValues();
-=======
-        if (deleteModal) {
-            setSelectedRoute(formatSelectedRoute);
-        }
-    }
-
-    //Aca busco los datos de los choferes del backend
-    const fetchData = async () => {
-        try {
-            let getRoutesResponse = await getRoutes();
-
-            if (getRoutesResponse?.status === 200) {
-                let data = getRoutesResponse.data;
-                setData(data);
-            }
-            else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES} ${getRoutesResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_ROUTES} ${getRoutesResponse}`
-                });
-            }
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_GET_ROUTES} ${error}`);
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         }
     };
 
@@ -810,16 +488,11 @@ function Routes() {
     }, []);
     const inputsToCreateOrModify = (
         <div>
-<<<<<<< HEAD
             <TextField label="Duracion" id={"duration"} name="duration"
                 className={styles.inputMaterial}
-=======
-            <TextField className={styles.inputMaterial} label="Nombre de Ciudad Origen" name="cityOrigin"
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
                 required
                 inputProps={{ maxLength: 8 }}
                 autoComplete='off'
-<<<<<<< HEAD
                 error={(durationError) ? true : false}
                 helperText={(durationError) ? durationError : false}
                 value={selectedRoute && selectedRoute.duration}
@@ -916,12 +589,6 @@ function Routes() {
                 </Select>
                 <FormHelperText>{(transportError) ? transportError : false}</FormHelperText>
             </FormControl>
-=======
-                error={(cityOrNamesError) ? true : false}
-                helperText={(cityOrNamesError) ? cityOrNamesError : false}
-                onChange={handleChange}
-                value={selectedRoute && selectedRoute.cityOrigin} />
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
         </div>
     )
     const bodyCreate = (
@@ -930,7 +597,7 @@ function Routes() {
             {inputsToCreateOrModify}
             <br />
             <div align="right">
-                <Button color="primary" onClick={() => requestPostTransport()}>GUARDAR</Button>
+                <Button color="primary" onClick={() => requestPostRoute()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
@@ -940,26 +607,6 @@ function Routes() {
         <div className={styles.modal}>
             <h3>DETALLE DE LA RUTA</h3>
             <TextField className={styles.inputMaterial} label="Estado" name="active"
-<<<<<<< HEAD
-                value={selectedRoute && selectedRoute.active} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Distancia en km" name="kmDistance"
-                value={selectedRoute && selectedRoute.kmDistance} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Duracion" name="duration"
-                value={selectedRoute && selectedRoute.duration} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Origen" name="departureSelect"
-                value={selectedRoute && selectedRoute.departure.cityName} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Destino" name="destinationSelect"
-                value={selectedRoute && selectedRoute.destination.cityName} />
-            <br />
-            <TextField className={styles.inputMaterial} label="Combi" name="transportSelect"
-                value={selectedRoute && selectedRoute.transport.internalIdentification} />
-            <br /><br />
-
-=======
                 value={selectedRoute && selectedRoute.active} autoComplete="off" />
             <br />
             <TextField className={styles.inputMaterial} label="Duración" name="duration"
@@ -980,7 +627,6 @@ function Routes() {
             <TextField className={styles.inputMaterial} label="Provincia Destino" name="provDest" onChange={handleChange}
                 value={selectedRoute && selectedRoute.provDest} autoComplete="off" />
             <br />
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Salir</Button>
             </div>
@@ -990,23 +636,15 @@ function Routes() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR RUTA</h3>
-<<<<<<< HEAD
             <Tooltip title="Debe eliminar la ruta para cambiar el estado">
-                <TextField label="Estado" id={"active"} name="active"
-                    className={styles.inputMaterial}
-                    disabled
-                    value={selectedRoute && selectedRoute.active} />
-=======
-            <Tooltip title="Debe eliminar la combi para cambiar el estado">
                 <TextField className={styles.inputMaterial} label="Estado" name="active"
                     value={selectedRoute && selectedRoute.active} disabled />
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             </Tooltip>
             <br />
             {inputsToCreateOrModify}
             <br />
             <div align="right">
-                <Button color="primary" onClick={() => requestPutTransport()}>CONFIRMAR CAMBIOS</Button>
+                <Button color="primary" onClick={() => requestPutRoute()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
@@ -1014,17 +652,12 @@ function Routes() {
 
     const bodyDelete = (
         <div className={styles.modal}>
-<<<<<<< HEAD
             <p>¿Estás seguro que deseas eliminar la ruta con
                 origen <b>{selectedRoute && selectedRoute.departure.cityName}</b> y
                 destino <b>{selectedRoute && selectedRoute.destination.cityName}</b>?
-=======
-            <p>¿Estás seguro que deseas eliminar la ruta de <b>{selectedRoute && selectedRoute.cityOrigin}</b> a
-            <b>{selectedRoute && selectedRoute.cityDest}</b> ?
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
             </p>
             <div align="right">
-                <Button color="secondary" onClick={() => requestDeleteTransport()}>SÍ, ELIMINAR</Button>
+                <Button color="secondary" onClick={() => requestDeleteRoute()}>SÍ, ELIMINAR</Button>
                 <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
 
             </div>
@@ -1045,13 +678,8 @@ function Routes() {
                 variant="contained"
                 size="large"
                 color="primary"
-<<<<<<< HEAD
-                id="btnNewRuta"
-                startIcon={<TrainIcon />}
-=======
                 id="btnNewRoute"
-                startIcon={<AccessibilityIcon />}
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
+                startIcon={<TrainIcon />}
                 onClick={() => openCloseModalCreate()}>NUEVA RUTA</Button>
             <br /><br />
             <MaterialTable
@@ -1059,32 +687,20 @@ function Routes() {
                 data={data}
                 title="Lista de rutas"
                 actions={[
-                    /*{
+                    {
                         icon: () => <VisibilityIcon />,
                         tooltip: 'Visualización de ruta',
-<<<<<<< HEAD
-                        onClick: (event, rowData) => selectTransport(rowData, "Ver")
-                    },*/
-                    rowData => ({
-                        icon: 'edit',
-                        tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una ruta dada de baja',
-=======
                         onClick: (event, rowData) => selectRoute(rowData, "Ver")
                     },
                     rowData => ({
                         icon: 'edit',
-                        tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una rutar dado de baja',
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
+                        tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una ruta dada de baja',
                         disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectRoute(rowData, "Editar")
                     }),
                     rowData => ({
                         icon: 'delete',
-<<<<<<< HEAD
                         tooltip: (rowData.active === 'Activo') ? 'Eliminar ruta' : 'No se puede eliminar una ruta dada de baja',
-=======
-                        tooltip: (rowData.active === 'Activo') ? 'Eliminar ruta' : 'No se puede eliminar una ruta dado de baja',
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25
                         disabled: rowData.active !== "Activo",
                         onClick: (event, rowData) => selectRoute(rowData, "Eliminar")
                     })
@@ -1122,5 +738,4 @@ function Routes() {
         </div>
     );
 }
-
 export default Routes;

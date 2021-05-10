@@ -53,7 +53,7 @@ const prepareRoutesResponse = () => {
 const checkPlaceInDb = async (idPlace) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM CITY WHERE CITY_ID = ?';;
+        const sqlSelect = 'SELECT * FROM CITY WHERE CITY_ID = ? AND ACTIVE = 1';;
         const [rows] = await connection.execute(sqlSelect, [idPlace]);
         connection.end();
 
@@ -67,7 +67,7 @@ const checkPlaceInDb = async (idPlace) => {
 const checkRoutePlacesInDbToCreate = async (idPlaceDeparture, idPlaceDestination) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ?';
+        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ACTIVE = 1';
         const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination]);
         connection.end();
         return rows.length >= 1;
@@ -80,7 +80,7 @@ const checkRoutePlacesInDbToCreate = async (idPlaceDeparture, idPlaceDestination
 const checkRoutePlacesInDbToModify = async (idPlaceDeparture, idPlaceDestination, id) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ROUTE_ID <> ?';
+        const sqlSelect = 'SELECT * FROM ROUTE WHERE ID_DEPARTURE = ? AND ID_DESTINATION = ? AND ROUTE_ID <> ? AND ACTIVE = 1';
         const [rows] = await connection.execute(sqlSelect, [idPlaceDeparture, idPlaceDestination, id]);
         connection.end();
         return rows.length >= 1;
@@ -93,8 +93,8 @@ const checkRoutePlacesInDbToModify = async (idPlaceDeparture, idPlaceDestination
 const checkTransportInDb = async (idTransport) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ?';;
-        const [rows] = await connection.execute(sqlSelect, [idTransport]);
+        const sqlSelect = 'SELECT * FROM TRANSPORT WHERE TRANSPORT_ID = ? AND ACTIVE = 1';;
+        const [rows] = await connection.execute(sqlSelect, [idTransport, ACTIVE]);
         connection.end();
 
         return rows.length >= 1;

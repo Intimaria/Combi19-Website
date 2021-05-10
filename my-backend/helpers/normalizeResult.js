@@ -68,18 +68,26 @@ const normalizeRoutes = (rows) => {
             idRoute: rows[index].ROUTE_ID,
             km: rows[index].KM,
             duration: rows[index].DURATION,
-            transport: rows[index].INTERNAL_IDENTIFICATION,
-            cityOrigin: rows[index].Origen,
-            provOrigin: rows[index].Provincia_Origen,
-            cityDest: rows[index].Destino,
-            provDest: rows[index].Provincia_Destino,
-            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
+            transport: {
+                transportId: rows[index].TRANSPORT_ID,
+                internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
+            },
+            departure: {
+                cityId: rows[index].Departure_City_Id,
+                cityName: rows[index].Departure_City_Name,
+                provinceName: rows[index].Departure_Province_Name
+            },
+            destination: {
+                cityId: rows[index].Destination_City_Id,
+                cityName: rows[index].Destination_City_Name,
+                provinceName: rows[index].Destination_Province_Name
+            },
         };
         results.push(route);
     }
     return results;
 };
-
 module.exports = {
     normalizeTransport,
     normalizeDrivers,

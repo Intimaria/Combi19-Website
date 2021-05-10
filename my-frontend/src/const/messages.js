@@ -62,7 +62,6 @@ export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las pro
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
 // Routes API messages
-<<<<<<< HEAD
 export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
 export const ERROR_MSG_API_POST_ROUTES = 'Ocurrió un error al crear la ruta:';
 export const ERROR_MSG_API_PUT_ROUTES = 'Ocurrió un error al actualizar los datos de la ruta:';
@@ -78,10 +77,3 @@ export const ERROR_MSG_INVALID_TRANSPORT = '* Ingrese una combi valida';
 export const ERROR_MSG_INVALID_PLACE_DESTINATION = '* Ingrese un lugar de destino valido';
 export const ERROR_MSG_INVALID_PLACE_DEPARTURE = '* Ingrese un lugar de origen valido';
 export const ERROR_MSG_REPEAT_PLACES = '* Ingrese lugares de origen y destino distintos';
-=======
-export const OK_MSG_API_ROUTE_POST = 'Se creó la ruta con éxito';
-export const ERROR_MSG_API_DELETE_ROUTE = 'Ocurrió un error al eliminar la ruta indicada';
-export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
-export const ERROR_MSG_API_POST_ROUTE = 'Ocurrió un error al crear la ruta:';
-export const ERROR_MSG_API_PUT_ROUTE = 'Ocurrió un error al modificar la ruta indicada:';
->>>>>>> 9e2dfd9d0639699ea24fe3c4addb8cf4c777cb25

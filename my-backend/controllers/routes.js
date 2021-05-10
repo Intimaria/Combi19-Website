@@ -19,8 +19,8 @@ const getRoutes = async (req, res) => {
         const connection = await prepareConnection();
         const sqlSelect = `
         SELECT r.ROUTE_ID, r.DURATION, r.KM, t.INTERNAL_IDENTIFICATION, r.ACTIVE,
-        c.CITY_NAME as Origen, p.PROVINCE_NAME as Provincia_Origen, 
-        c1.CITY_NAME as Destino, p1.PROVINCE_NAME as Provincia_Destino 
+        c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
+        c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
         FROM TRANSPORT t
         INNER JOIN ROUTE r ON (r.ID_TRANSPORT=t.TRANSPORT_ID) 
         INNER JOIN CITY c on (r.id_departure=c.city_id) 
