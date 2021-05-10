@@ -60,9 +60,29 @@ const normalizePlaces = (rows) => {
     }
     return results;
 };
+const normalizeRoutes = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let route = {
+            idRoute: rows[index].ROUTE_ID,
+            km: rows[index].KM,
+            duration: rows[index].DURATION,
+            transport: rows[index].INTERNAL_IDENTIFICATION,
+            cityOrigin: rows[index].Origen,
+            provOrigin: rows[index].Provincia_Origen,
+            cityDest: rows[index].Destino,
+            provDest: rows[index].Provincia_Destino,
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
+        };
+        results.push(route);
+    }
+    return results;
+};
 
 module.exports = {
     normalizeTransport,
     normalizeDrivers,
-    normalizePlaces
+    normalizePlaces,
+    normalizeRoutes
 };
