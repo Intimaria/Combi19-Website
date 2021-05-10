@@ -105,7 +105,9 @@ function Transports() {
     };
 
     const setDefaultObjectsValues = () => {
-        setDefaultErrorMessages();
+        setSelectedTransport(formatSelectedTransport);
+        setDriverSelectedError('');
+        setTypeComfortSelected('');
     };
 
     const setDefaultErrorMessages = () => {
