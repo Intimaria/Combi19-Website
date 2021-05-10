@@ -39,14 +39,14 @@ import { useStyles } from '../const/modalStyle';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    { title: 'Distancia', field: 'km' },
-    { title: 'Duracion', field: 'duration' },
+    { title: 'Ciudad origen', field: 'cityOrigin' },
+    { title: 'Provincia de origen', field: 'provOrigin' },
+    { title: 'Ciudad de destino', field: 'cityDest' },
+    { title: 'Provincia de destino', field: 'provDest' },
+    { title: 'Ciudad de origen', field: 'cityOrigin' },
+    { title: 'Duración', field: 'duration' },
     { title: 'Combi', field: 'transport' },
-    { title: 'Ciudad origen', field: 'cityOrigin' },
-    { title: 'Provinca origen', field: 'provOrigin' },
-    { title: 'Ciudad destino', field: 'cityDest' },
-    { title: 'Provinca destino', field: 'provDest' },
-    { title: 'Ciudad origen', field: 'cityOrigin' },
+    { title: 'Distancia', field: 'km' },
     { title: 'Estado', field: 'active' }
 ];
 
@@ -389,23 +389,26 @@ function Routes() {
             <TextField className={styles.inputMaterial} label="Estado" name="active"
                 value={selectedRoute && selectedRoute.active} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Duración" name="duration"
-                value={selectedRoute && selectedRoute.duration} autoComplete="off" />
-            <br />
-            <TextField className={styles.inputMaterial} label="Kilometros" name="km"
-                value={selectedRoute && selectedRoute.km} autoComplete="off" />
-            <br />
-            <TextField className={styles.inputMaterial} label="Ciudad Origen" name="cityOrigin" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Ciudad de origen" name="cityOrigin" onChange={handleChange}
                 value={selectedRoute && selectedRoute.cityOrigin} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Ciudad Destino" name="cityDest" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Provincia de origen" name="provOrigin" onChange={handleChange}
+                       value={selectedRoute && selectedRoute.provOrigin} autoComplete="off" />
+            <br />
+            <TextField className={styles.inputMaterial} label="Ciudad de destino" name="cityDest" onChange={handleChange}
                 value={selectedRoute && selectedRoute.cityDest} autoComplete="off" />
             <br />
-            <TextField className={styles.inputMaterial} label="Provincia Origen" name="provOrigin" onChange={handleChange}
-                value={selectedRoute && selectedRoute.provOrigin} autoComplete="off" />
-            <br />
-            <TextField className={styles.inputMaterial} label="Provincia Destino" name="provDest" onChange={handleChange}
+            <TextField className={styles.inputMaterial} label="Provincia de destino" name="provDest" onChange={handleChange}
                 value={selectedRoute && selectedRoute.provDest} autoComplete="off" />
+            <br />
+            <TextField className={styles.inputMaterial} label="Duración" name="duration"
+                       value={selectedRoute && selectedRoute.duration} autoComplete="off" />
+            <br />
+            <TextField className={styles.inputMaterial} label="Combi" name="transport"
+                       value={selectedRoute && selectedRoute.transport} autoComplete="off" />
+            <br />
+            <TextField className={styles.inputMaterial} label="Distancia" name="km"
+                       value={selectedRoute && selectedRoute.km} autoComplete="off" />
             <br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>SALIR</Button>
