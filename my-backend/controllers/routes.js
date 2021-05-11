@@ -81,7 +81,7 @@ const postRoute = async (req, res) => {
             const sqlInsert = "INSERT INTO ROUTE (ID_DEPARTURE, ID_DESTINATION, ID_TRANSPORT, DURATION, KM, ACTIVE) VALUES (?,?,?,?,?,?)";
             const [rows] = await connection.execute(sqlInsert, [idPlaceDeparture, idPlaceDestination, idTransport, duration, km, ACTIVE]);
             connection.end();
-            res.status(200).send("Se ha registrado el ruta con éxito");
+            res.status(201).send("Se ha registrado el ruta con éxito");
         } catch (error) {
             console.log('Ha ocurrido un error al crear el ruta: ', error);
             res.status(500);
