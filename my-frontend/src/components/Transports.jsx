@@ -6,7 +6,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import MaterialTable from "material-table";
+import MaterialTable from '@material-table/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import HelpIcon from '@material-ui/icons/Help';

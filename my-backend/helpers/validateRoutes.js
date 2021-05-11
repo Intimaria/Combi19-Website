@@ -203,7 +203,21 @@ const validateKm = (km) => {
     return true;
 }
 
+const validateRouteTripsDependence = async (id) =>{
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = 'SELECT * FROM TRIP WHERE ID_ROUTE = ? AND ID_STATUS_TRIP = 1';
+        const [rows] = await connection.execute(sqlSelect, [id]);
+        connection.end();
+        return rows.length >= 1;
+    } catch (error) {
+        console.log("Ha ocurrido un error al comprobar la dependencia con viajes", error);
+        return false;
+    }
+}
+
 module.exports = {
     validateRoutesToCreate,
-    validateRoutesToModify
+    validateRoutesToModify,
+    validateRouteTripsDependence
 }

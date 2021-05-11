@@ -1,12 +1,15 @@
 
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
-const { validateRoutesToCreate, validateRoutesToModify } = require("../helpers/validateRoutes.js");
+const { validateRoutesToCreate, validateRoutesToModify, validateRouteTripsDependence } = require("../helpers/validateRoutes.js");
 
 const {normalizeRoutes} = require('../helpers/normalizeResult.js');
 
 const {
-    ERROR_MSG_API_ROUTES
+    ERROR_MSG_API_ROUTES,
+    ERROR_MSG_API_DELETE_ROUTE,
+    OK_MSG_API_DELETE_ROUTE
+    
 } = require('../const/messages.js');
 
 const {
@@ -43,6 +46,26 @@ const getRoutes = async (req, res) => {
     }
 
     const deleteRoute = async (req, res) => {
+            const {id} = req.params;
+     
+            if (await validateRouteTripsDependence(id)) {
+                res.status(400).send(`${ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE}`);
+            } else {
+
+                try {
+                    const connection = await prepareConnection();
+                    const sqlUpdate =
+                    'UPDATE ROUTE SET ACTIVE = 0 WHERE ROUTE_ID = ?';
+                    const [rows] = await connection.execute(sqlUpdate, [id]);
+                    connection.end();
+                    return res.status(200).send(OK_MSG_API_DELETE_ROUTE);
+                } catch (error) {
+                    console.log(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
+                    res.status(500).send(`${ERROR_MSG_API_DELETE_ROUTE} ${error}`);
+                }
+            }
+            res.end();
+        
     }
 
 const postRoute = async (req, res) => {

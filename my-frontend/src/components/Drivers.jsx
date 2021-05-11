@@ -1,7 +1,7 @@
 // Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
 import React, { useState, useEffect } from 'react';
 import { Modal, TextField, Button } from '@material-ui/core';
-import MaterialTable from "material-table";
+import MaterialTable from '@material-table/core';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Tooltip from '@material-ui/core/Tooltip';

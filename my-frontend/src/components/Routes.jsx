@@ -4,8 +4,9 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
+import MaterialTable from '@material-table/core';
+import { Message } from "./Message";
 import MenuItem from '@material-ui/core/MenuItem';
-import MaterialTable from "material-table";
 import Tooltip from '@material-ui/core/Tooltip';
 import TrainIcon from '@material-ui/icons/Train';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -750,8 +751,8 @@ function Routes() {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar la ruta con
-                origen <b>{selectedRoute && selectedRoute.departure.cityName}</b> y
-                destino <b>{selectedRoute && selectedRoute.destination.cityName}</b>?
+                origen <b>{selectedRoute && selectedRoute.departure.cityName}, {selectedRoute && selectedRoute.departure.provinceName}</b> y
+                destino <b>{selectedRoute && selectedRoute.destination.cityName}, {selectedRoute && selectedRoute.destination.provinceName}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDeleteRoute()}>SÍ, ELIMINAR</Button>

@@ -68,4 +68,7 @@ module.exports = {
     ERROR_MSG_INVALID_PLACE_DEPARTURE: '* Ingrese un lugar de origen valido',
     ERROR_MSG_REPEAT_PLACES: '* Ingrese lugares de origen y destino distintos',
     ERROR_MSG_EXISTING_PLACES: '* Ya existe una ruta con los mismos lugares de origen y destino',
+    ERROR_MSG_API_DELETE_ROUTE: 'Ocurrió un error al eliminar la ruta indicada',
+    ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE: 'No se puede eliminar, la ruta está asignada a viajes pendientes',
+    OK_MSG_API_DELETE_ROUTE: 'Se eliminó la ruta con éxito'
 };

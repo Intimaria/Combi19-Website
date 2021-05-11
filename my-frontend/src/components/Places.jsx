@@ -30,7 +30,7 @@ import {
 } from '../api/Places';
 
 import {BACKEND_URL} from '../const/config.js';
-import MaterialTable from "material-table";
+import MaterialTable from '@material-table/core';
 import {Message} from "./Message";
 import PinDropIcon from '@material-ui/icons/PinDrop';
 // Importo las expresiones regulares
