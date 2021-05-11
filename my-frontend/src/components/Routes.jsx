@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TrainIcon from '@material-ui/icons/Train';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useStyles } from '../const/modalStyle';
-import { Message } from '../components/Message';
+
 import { materialTableConfiguration } from '../const/materialTableConfiguration';
 
 import {

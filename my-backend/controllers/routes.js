@@ -8,7 +8,8 @@ const {normalizeRoutes} = require('../helpers/normalizeResult.js');
 const {
     ERROR_MSG_API_ROUTES,
     ERROR_MSG_API_DELETE_ROUTE,
-    OK_MSG_API_DELETE_ROUTE
+    OK_MSG_API_DELETE_ROUTE,
+    ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE
     
 } = require('../const/messages.js');
 
