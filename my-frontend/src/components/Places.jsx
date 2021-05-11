@@ -398,7 +398,10 @@ function Places() {
             <br/>
             <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
                        value={selectedPlace && selectedPlace.provinceName}/>
-            <br/><br/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Estado" name="active"
+                       value={selectedPlace && selectedPlace.active}/>
+            <br/><br/>           
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
