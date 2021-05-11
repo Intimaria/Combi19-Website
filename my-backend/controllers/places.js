@@ -42,6 +42,19 @@ const getPlaces = async (req, res) => {
     res.end();
 }
 
+const getActivePlaces = async (req, res) => {
+    const connection = await prepareConnection();
+    await connection.query("SELECT c.CITY_ID, c.CITY_NAME, c.ACTIVE, c.ID_PROVINCE, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) WHERE ACTIVE = ? ORDER BY c.CITY_NAME ASC, p.PROVINCE_NAME ASC", [ACTIVE]).then((result) => {
+        connection.end();
+        const normalizeResults = normalizePlaces(result[0]);
+        res.status(200).send(normalizeResults);
+    }).catch(function (err) {
+        console.log('Ha ocurrido un error al obtener los activos lugares: ', err);
+        res.status(500);
+    });
+    res.end();
+}
+
 
 const getPlaceById = async (req, res) => {
     const {id} = req.params;
@@ -131,6 +144,7 @@ const deletePlace = async (req, res) => {
 module.exports = {
     getProvinces,
     getPlaces,
+    getActivePlaces,
     postPlace,
     getPlaceById,
     putPlace,

@@ -5,7 +5,6 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import MaterialTable from '@material-table/core';
-import { Message } from "./Message";
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import TrainIcon from '@material-ui/icons/Train';
@@ -22,11 +21,13 @@ import {
 } from '../api/Routes';
 
 import {
-    getTransports
+    getActiveTransports
 } from '../api/Transports.js';
+
 import {
-    getPlaces
+    getActivePlaces
 } from '../api/Places.js';
+
 import {
     ERROR_MSG_API_GET_ROUTES,
     ERROR_MSG_API_POST_ROUTES,
@@ -362,7 +363,7 @@ function Routes() {
     };
 
     const requestGetTransports = async () => {
-        let getResponse = await getTransports();
+        let getResponse = await getActiveTransports();
 
         if (getResponse?.status === 200) {
             setTransports(getResponse.data);
@@ -383,7 +384,7 @@ function Routes() {
     }
 
     const requestGetPlaces = async () => {
-        let getResponse = await getPlaces();
+        let getResponse = await getActivePlaces();
         if (getResponse?.status === 200) {
             setPlaces(getResponse.data);
         } else if (getResponse?.status === 500) {
@@ -534,7 +535,7 @@ function Routes() {
                                 key={places.id}
                                 value={places.id}
                             >
-                                {places.provinceName}, {places.cityName}
+                                 {places.cityName}, {places.provinceName}
 
                             </MenuItem>
                         ))
@@ -562,7 +563,7 @@ function Routes() {
                                 key={places.id}
                                 value={places.id}
                             >
-                                {places.provinceName}, {places.cityName}
+                                {places.cityName}, {places.provinceName}
 
                             </MenuItem>
                         ))
@@ -670,7 +671,7 @@ function Routes() {
                                 key={places.id}
                                 value={places.id}
                             >
-                                {places.provinceName}, {places.cityName}
+                                {places.cityName}, {places.provinceName}
 
                             </MenuItem>
                         ))
@@ -701,7 +702,7 @@ function Routes() {
                                 key={places.id}
                                 value={places.id}
                             >
-                                {places.provinceName}, {places.cityName}
+                                {places.cityName}, {places.provinceName}
 
                             </MenuItem>
                         ))

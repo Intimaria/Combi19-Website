@@ -2,6 +2,7 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 
 const {
     ERROR_MSG_API_GET_TRANSPORTS,
+    ERROR_MSG_API_GET_ACTIVE_TRANSPORTS,
     ERROR_MSG_API_GET_TRANSPORT_BY_ID,
     OK_MSG_API_TRANSPORT_POST,
     ERROR_MSG_API_POST_TRANSPORT,
@@ -11,6 +12,11 @@ const {
     ERROR_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
 } = require("../const/messages");
+
+const {
+    ACTIVE,
+    NO_ACTIVE
+} = require('../const/config.js');
 
 const {
     validateTransportToCreate,
@@ -48,6 +54,37 @@ const getTransports = async (req, res) => {
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
         res.status(500).send(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
+    }
+    res.end();
+};
+
+const getActiveTransports = async (req, res) => {
+    //const {start = 1, limit = 5} = req.query;
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlSelect =
+            `
+            SELECT t.TRANSPORT_ID, t.INTERNAL_IDENTIFICATION, t.MODEL, t.REGISTRATION_NUMBER, t.SEATING, t.ACTIVE,
+            tc.TYPE_COMFORT_ID, tc.TYPE_COMFORT_NAME, u.*            
+            FROM TRANSPORT t
+            INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
+            INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
+            WHERE ACTIVE = ${ACTIVE}
+            ORDER BY TRANSPORT_ID ASC;
+            `;
+        const [rows] = await connection.execute(sqlSelect);
+
+        connection.end();
+
+        const normalizedResults = normalizeTransport(rows);
+
+        res.json(normalizedResults);
+
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_ACTIVE_TRANSPORTS} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_ACTIVE_TRANSPORTS} ${error}`);
     }
     res.end();
 };
@@ -176,6 +213,7 @@ const deleteTransport = async (req, res) => {
 
 module.exports = {
     getTransports,
+    getActiveTransports,
     getTransportById,
     postTransport,
     putTransport,

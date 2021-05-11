@@ -10,7 +10,7 @@ const Navbar = ({userData}) => {
 
     const logout = () => {
         localStorage.clear();
-        history.push('/')
+        history.push('/login')
     }
 
     const loginRegistrationMenu = (

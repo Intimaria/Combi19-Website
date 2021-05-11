@@ -43,6 +43,7 @@ module.exports = {
     ERROR_MSG_INEXISTENT_PLACE: '* El lugar no se encontró en la región',
     // Transports API messages
     ERROR_MSG_API_GET_TRANSPORTS: 'Ocurrió un error al obtener las combis:',
+    ERROR_MSG_API_GET_ACTIVE_TRANSPORTS: 'Ocurrió un error al obtener las activas combis:',
     ERROR_MSG_API_GET_TRANSPORT_BY_ID: 'Ocurrió un error al obtener la combi indicada:',
     OK_MSG_API_TRANSPORT_POST: 'Se creó la combi con éxito',
     ERROR_MSG_API_POST_TRANSPORT: 'Ocurrió un error al crear la combi:',

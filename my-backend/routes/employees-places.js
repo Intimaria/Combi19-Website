@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { getProvinces, getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
+const { getProvinces, getActivePlaces, getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
 
 const { authenticateAdminRol } = require("../middlewares/authorization.js");
 
@@ -18,6 +18,9 @@ router.post('/', authenticateAdminRol, postPlace);
 
 // Retrieve a single lugares by id
 router.get('/:id', authenticateAdminRol, getPlaceById);
+
+// Retrieve all actives lugares
+router.get('/custom/actives', authenticateAdminRol, getActivePlaces);
 
 // Update a lugares by id
 router.put('/:id', authenticateAdminRol, putPlace);

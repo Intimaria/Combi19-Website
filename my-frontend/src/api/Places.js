@@ -1,6 +1,7 @@
 import {
     ERROR_MSG_API_DELETE_PLACES,
     ERROR_MSG_API_GET_PLACES,
+    ERROR_MSG_API_GET_ACTIVE_PLACES,
     ERROR_MSG_API_GET_PROVINCES,
     ERROR_MSG_API_POST_PLACES,
     ERROR_MSG_API_PUT_PLACES,
@@ -38,6 +39,34 @@ export const getPlaces = async () => {
         }
     }
 };
+
+export const getActivePlaces = async () => {
+    const token = localStorage.getItem('token');
+      try {
+          let response = await axios.get(`${BACKEND_URL}/places/custom/actives`,
+              {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              });
+          return response;
+      } catch (error) {
+          if (error.response?.status) {
+              return error.response;
+          } else {
+              // In this situation, is NOT an axios handled error
+  
+              console.log(`${ERROR_MSG_API_GET_ACTIVE_PLACES} ${error}`);
+  
+              if (error.message === 'Network Error') {
+                  error.message = ERROR_MSG_INTERNET;
+                  return error.message;
+              } else {
+                  return error.message;
+              }
+          }
+      }
+  };
 
 export const getPlace = async () => {
   const token = localStorage.getItem('token');

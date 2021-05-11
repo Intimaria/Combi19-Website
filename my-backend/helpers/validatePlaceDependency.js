@@ -4,10 +4,10 @@ const {NO_ACTIVE, ACTIVE} = require('../const/config.js');
 const validatePlaceDependency = async (id) => {
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM CITY c INNER JOIN ROUTE r ON (c.CITY_ID=r.ID_DESTINATION) UNION SELECT * FROM CITY c INNER JOIN ROUTE r ON (c.CITY_ID=r.ID_DEPARTURE) WHERE c.CITY_ID = ? and r.ACTIVE = ?';
-        const [rows] = await connection.execute(sqlSelect, [id,ACTIVE]);
+        const sqlSelect = 'SELECT * FROM CITY c INNER JOIN ROUTE r ON (c.CITY_ID=r.ID_DESTINATION) WHERE c.CITY_ID = ? and r.ACTIVE = ? UNION SELECT * FROM CITY c INNER JOIN ROUTE r ON (c.CITY_ID=r.ID_DEPARTURE) WHERE c.CITY_ID = ? and r.ACTIVE = ?';
+        const [rows] = await connection.execute(sqlSelect, [id,ACTIVE,id,ACTIVE]);
         connection.end();
-        return rows.length <= 1;
+        return rows.length >= 1;
     } catch (error) {
         console.log("Ha ocurrido un error al comprobar las dependencias del lugar", error);
         return false;

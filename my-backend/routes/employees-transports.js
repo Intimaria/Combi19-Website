@@ -4,7 +4,8 @@ const {
     getTransportById,
     postTransport,
     putTransport,
-    deleteTransport
+    deleteTransport,
+    getActiveTransports
 } = require('../controllers/transports');
 
 // The administrator role should be validated with a middleware before performing any operation
@@ -20,6 +21,9 @@ router.get('/:id', authenticateAdminRol, getTransportById);
 
 // Create a new transport
 router.post('/', authenticateAdminRol, postTransport);
+
+// Retrieve all actives transports
+router.get('/custom/actives', authenticateAdminRol, getActiveTransports);
 
 // Update a transport by id
 router.put('/:id', authenticateAdminRol, putTransport);

@@ -49,6 +49,7 @@ export const ERROR_MSG_INVALID_VALUE_SEATING = '* Sólo se permite valores numé
 export const ERROR_MSG_EMPTY_TYPE_COMFORT = '* Seleccione un tipo confort';
 // Transports API messages
 export const ERROR_MSG_API_GET_TRANSPORTS = 'Ocurrió un error al obtener las combis:';
+export const ERROR_MSG_API_GET_ACTIVE_TRANSPORTS = 'Ocurrió un error al obtener las combis activas:';
 export const ERROR_MSG_API_POST_TRANSPORT = 'Ocurrió un error al crear la combi:';
 export const ERROR_MSG_API_PUT_TRANSPORT = 'Ocurrió un error al actualizar los datos de la combi:';
 export const ERROR_MSG_API_DELETE_TRANSPORT = 'Ocurrió un error al eliminar la combi indicada';
@@ -58,6 +59,7 @@ export const ERROR_MSG_EMPTY_PROVINCE = "* Seleccione una provincia";
 export const OK_MSG_API_LOCATION_POST = 'Se creó el lugar con éxito';
 export const ERROR_MSG_API_DELETE_PLACES = 'Ocurrió un error al eliminar el lugar indicado';
 export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugares:';
+export const ERROR_MSG_API_GET_ACTIVE_PLACES = 'Ocurrió un error al obtener los lugares activos:';
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
