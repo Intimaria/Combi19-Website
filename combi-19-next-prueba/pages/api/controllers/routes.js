@@ -71,7 +71,7 @@ const putRoute = async (req, res) => {
              */
 
             connection.end();
-            res.status(201).send("Se ha actualizado los datos del ruta con éxito");
+            res.status(201).send("Se actualizaron los datos de la ruta con éxito");
         } catch (error) {
             console.log('Ha ocurrido un error al actualizar los datos del ruta: ', error);
             res.status(500);

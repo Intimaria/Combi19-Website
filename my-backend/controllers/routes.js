@@ -113,7 +113,7 @@ const putRoute = async (req, res) => {
             const [rows] = await connection.execute(sqlUptate, [idPlaceDeparture, idPlaceDestination, idTransport, duration, km, id]);
 
             connection.end();
-            res.status(200).send("Se ha actualizado los datos del ruta con éxito");
+            res.status(200).send("Se actualizaron los datos de la ruta con éxito");
         } catch (error) {
             console.log(ERROR_MSG_API_PUT_ROUTE, error);
             res.status(500).send(`${ERROR_MSG_API_PUT_ROUTE} ${error}`);
