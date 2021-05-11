@@ -41,7 +41,7 @@ const getTransports = async (req, res) => {
             FROM TRANSPORT t
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
-            ORDER BY TRANSPORT_ID ASC;
+            ORDER BY t.INTERNAL_IDENTIFICATION ASC;
             `;
         const [rows] = await connection.execute(sqlSelect);
 
@@ -72,7 +72,7 @@ const getActiveTransports = async (req, res) => {
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
             WHERE ACTIVE = ${ACTIVE}
-            ORDER BY TRANSPORT_ID ASC;
+            ORDER BY t.INTERNAL_IDENTIFICATION ASC;
             `;
         const [rows] = await connection.execute(sqlSelect);
 

@@ -29,8 +29,8 @@ import {
     putPlace
 } from '../api/Places';
 
-import {BACKEND_URL} from '../const/config.js';
 import MaterialTable from '@material-table/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import {Message} from "./Message";
 import PinDropIcon from '@material-ui/icons/PinDrop';
 // Importo las expresiones regulares
@@ -248,33 +248,33 @@ function Places() {
     }
 
     const peticionDelete = async () => {
-            let postResponse = await deletePlace(selectedPlace.id);
-            if (postResponse.status === 200) {
-                setSuccessMessage(`Se ha eliminado el lugar correctamente`);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: `Se ha eliminado el lugar correctamente`
-                });
-                setSelectedPlace(false);
-                setProvinceSelected(false);
-                setNamesError('')
-                setDefaultErrorMessages(null);
-                openCloseModalDelete();
-                fetchData();
-            } else if ((postResponse?.status === 500)||(postResponse?.status === 400)||(postResponse?.status === 404)) {
-                setSuccessMessage(postResponse.data);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: postResponse.data
-                });
-                return true
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`
-                });
-            }
+        let postResponse = await deletePlace(selectedPlace.id);
+        if (postResponse.status === 200) {
+            setSuccessMessage(`Se ha eliminado el lugar correctamente`);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: `Se ha eliminado el lugar correctamente`
+            });
+            setSelectedPlace(false);
+            setProvinceSelected(false);
+            setNamesError('')
+            setDefaultErrorMessages(null);
+            openCloseModalDelete();
+            fetchData();
+        } else if ((postResponse?.status === 500) || (postResponse?.status === 400) || (postResponse?.status === 404)) {
+            setSuccessMessage(postResponse.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: postResponse.data
+            });
+            return true
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`
+            });
+        }
     }
 
     const selectPlace = (place, action) => {
@@ -353,7 +353,6 @@ function Places() {
                        onChange={handleChange}
                        value={selectedPlace && selectedPlace.cityName}/>
             <br/>
-            <br/>
             <FormControl className={styles.inputMaterial}
                          required
                          error={(provinceSelectedError) ? true : false}>
@@ -381,6 +380,8 @@ function Places() {
                 </Select>
                 <FormHelperText>{(provinceSelectedError) ? provinceSelectedError : false}</FormHelperText>
             </FormControl>
+            <br/>
+            <br/>
             <div align="right">
                 <Button color="primary" onClick={() => peticionPost()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
@@ -406,13 +407,19 @@ function Places() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR LUGAR</h3>
+            <Tooltip title="Debe eliminar el lugar para cambiar el estado">
+                <TextField className={styles.inputMaterial} label="Estado" name="active"
+                           value={selectedPlace && selectedPlace.active} disabled
+                />
+            </Tooltip>
+            <br/>
             <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
                        onChange={handleChange}
                        value={selectedPlace && selectedPlace.cityName}
                        error={(namesError) ? true : false}
                        helperText={(namesError) ? namesError : false}
             />
-            <br/><br/>
+            <br/>
             <FormControl className={styles.inputMaterial}
                          required>
                 <InputLabel>Provincia</InputLabel>
