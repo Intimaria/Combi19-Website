@@ -195,6 +195,14 @@ const validateKm = (km) => {
         kmError = ERROR_MSG_EMPTY_KM;
         return false;
     }
+    if (km <= 0) {
+        kmError = ERROR_MSG_INVALID_KM;
+        return false;
+    }
+    if (km > 999999) {
+        kmError = ERROR_MSG_INVALID_KM;
+        return false;
+    }
     else if (REGEX_ONLY_NUMBER.test(km)) {
         kmError = ERROR_MSG_INVALID_KM;
         return false;

@@ -42,6 +42,9 @@ import {
 
 // Importo las expresiones regulares
 import {
+    REGEX_ONLY_NUMBER,
+    REGEX_ONLY_LOWERCASE,
+    REGEX_ONLY_UPPERCASE,
     REGEX_PHONE,
     REGEX_EMAIL,
     REGEX_ONLY_ALPHABETICAL
@@ -191,27 +194,22 @@ function Drivers() {
     }
 
     const validatePassword = () => {
-        const reg1 = /[1-9]/;
-        /*const reg2 = /[A-Z]/;
-        const reg3 = /[a-z]/;*/
-
         if (!selectedDriver.password1) {
             setPassword1Error(ERROR_MSG_EMPTY_PASSWORD);
             return false;
         } else if (selectedDriver.password1.length < 6) {
             setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
             return false;
-        } else if (!reg1.test(selectedDriver.password1)) {
+        }/* else if (!REGEX_ONLY_NUMBER.test(selectedDriver.password1)) {
             setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
             return false;
-        }/* else if (!reg2.test(selectedDriver.password1)) {
+        } else if (!REGEX_ONLY_UPPERCASE.test(selectedDriver.password1)) {
             setPassword1Error(ERROR_MSG_INVALID_NO_CAPITAL_LETTERS);
             return false;
-        } else if (!reg3.test(selectedDriver.password1)) {
+        } else if (!REGEX_ONLY_LOWERCASE.test(selectedDriver.password1)) {
             setPassword1Error(ERROR_MSG_INVALID_NO_LOWER_CASE);
             return false;
         } */
-
         setPassword1Error(null);
         return true;
     }

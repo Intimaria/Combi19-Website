@@ -6,7 +6,9 @@ const { validateRoutesToCreate, validateRoutesToModify, validateRouteTripsDepend
 const {normalizeRoutes} = require('../helpers/normalizeResult.js');
 
 const {
-    ERROR_MSG_API_ROUTES,
+    ERROR_MSG_API_GET_ROUTE,
+    ERROR_MSG_API_POST_ROUTE,
+    ERROR_MSG_API_PUT_ROUTE,
     ERROR_MSG_API_DELETE_ROUTE,
     OK_MSG_API_DELETE_ROUTE,
     ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE
@@ -42,8 +44,8 @@ const getRoutes = async (req, res) => {
         const normalizedResults = normalizeRoutes(rows);
         return res.status(200).send(normalizedResults);
     } catch (error) {
-        console.log(`${ERROR_MSG_API_ROUTES}: ${error}`);
-        res.status(500).send(`${ERROR_MSG_API_ROUTES}: ${error}`);
+        console.log(`${ERROR_MSG_API_GET_ROUTE}: ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_ROUTE}: ${error}`);
     }
     res.end();
 };
@@ -89,8 +91,8 @@ const postRoute = async (req, res) => {
             connection.end();
             res.status(201).send("Se ha registrado el ruta con éxito");
         } catch (error) {
-            console.log('Ha ocurrido un error al crear el ruta: ', error);
-            res.status(500);
+            console.log(ERROR_MSG_API_POST_ROUTE, error);
+            res.status(500).send(`${ERROR_MSG_API_POST_ROUTE} ${error}`);
         }
     }
     res.end();
@@ -113,15 +115,12 @@ const putRoute = async (req, res) => {
             connection.end();
             res.status(200).send("Se ha actualizado los datos del ruta con éxito");
         } catch (error) {
-            console.log('Ha ocurrido un error al actualizar los datos del ruta: ', error);
-            res.status(500);
+            console.log(ERROR_MSG_API_PUT_ROUTE, error);
+            res.status(500).send(`${ERROR_MSG_API_PUT_ROUTE} ${error}`);
         }
     }
     res.end();
 }
-
-
-
 
 module.exports = {
     getRoutes,

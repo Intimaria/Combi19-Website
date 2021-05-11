@@ -167,23 +167,19 @@ const validateSurname = (surname) => {
 }
 
 const validatePassword = (password1) => {
-    const reg1 = /[1-9]/;
-    const reg2 = /[A-Z]/;
-    const reg3 = /[a-z]/;
-
     if (!password1) {
         passwordError1 = (ERROR_MSG_EMPTY_PASSWORD);
         return false;
     } else if (password1.length < 6) {
         passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
         return false;
-    } else if (!reg1.test(password1)) {
+    }/*else if (!REGEX_ONLY_NUMBER.test(password1)) {
         passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
         return false;
-    } /* else if (!reg2.test(password1)) {
+    }  else if (!REGEX_ONLY_LOWERCASE.test(password1)) {
         passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS);
         return false;
-    } else if (!reg3.test(password1)) {
+    } else if (!REGEX_ONLY_UPPERCASE.test(password1)) {
         passwordError1 = (ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE);
         return false;
     } */

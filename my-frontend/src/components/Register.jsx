@@ -37,7 +37,8 @@ function Register() {
 
 
     const today = new Date().toISOString().slice(0, 10);
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword1, setShowPassword1] = React.useState(false);
+    const [showPassword2, setShowPassword2] = React.useState(false);
     const [email, setEmail] = React.useState('');
     const [names, setNames] = React.useState('');
     const [surname, setSurname] = React.useState('');
@@ -53,9 +54,11 @@ function Register() {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword);
-        console.log(showPassword);
+    const handleShowPassword1 = () => {
+        setShowPassword1(!showPassword1);
+    }
+    const handleShowPassword2 = () => {
+        setShowPassword2(!showPassword2);
     }
     const mySubmitHandler = (event) => {
         event.preventDefault();
@@ -330,20 +333,23 @@ function Register() {
                     </div>
                     <div className="w-100"></div>
                     <div className="col-md">
-                        <input id="inpPassword" type={showPassword ? "text" : "password"} className="form-control mt-3" name="password1"
+                        <input id="inpPassword" type={showPassword1 ? "text" : "password"} className="form-control mt-3" name="password1"
                             placeholder="Contraseña" maxLength="30" value={password1}
                             onChange={newValue => handlePassword1(newValue)} />
 
                     </div>
                     <div className="col-md">
-                        <input id="inpRepeatPassword" type={showPassword ? "text" : "password"} className="form-control mt-3" name="password2"
+                        <input id="inpRepeatPassword" type={showPassword2 ? "text" : "password"} className="form-control mt-3" name="password2"
                             placeholder="Repita la contraseña" maxLength="30" value={password2}
                             onChange={newValue => handlePassword2(newValue)} />
 
                     </div>
                     <div className="w-100"></div>
                     <label className="text-light w-50">
-                        Mostrar contraseñas: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
+                        Mostrar contraseña: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword1()}/>
+                    </label>
+                    <label className="text-light w-50">
+                        Mostrar contraseña: <input type="checkbox" key="inpRepeatPassword" onChange={() => handleShowPassword2()}/>
                     </label>
                     <div className="w-100"></div>
                     {

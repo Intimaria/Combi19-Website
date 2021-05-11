@@ -238,7 +238,13 @@ function Routes() {
         if (!selectedRoute.km) {
             setKmError(ERROR_MSG_EMPTY_KM);
             return false;
-        } else if (!REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
+        } else if (selectedRoute.km <= 0) {
+            setKmError (ERROR_MSG_INVALID_KM);
+            return false;
+        } else if (selectedRoute.km > 999999) {
+            setKmError (ERROR_MSG_INVALID_KM);
+            return false;
+        }else if (!REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
             setKmError(ERROR_MSG_INVALID_KM);
             return false;
         }
@@ -356,10 +362,10 @@ function Routes() {
             });
             openCloseModalDelete();
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_DELETE_ROUTES}`);
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_ROUTES} ${deleteResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_DELETE_ROUTES}`
+                message: `${ERROR_MSG_API_DELETE_ROUTES} ${deleteResponse}`
             });
         }
     };
@@ -377,10 +383,10 @@ function Routes() {
 
             return true
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_GET_TRANSPORTS}`);
+            setSuccessMessage(`${ERROR_MSG_API_GET_TRANSPORTS} ${getResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_GET_TRANSPORTS}`
+                message: `${ERROR_MSG_API_GET_TRANSPORTS} ${getResponse}`
             });
         }
     }
@@ -396,10 +402,10 @@ function Routes() {
             });
             return true
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_GET_PLACES}`);
+            setSuccessMessage(`${ERROR_MSG_API_GET_PLACES} ${getResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_GET_PLACES}`
+                message: `${ERROR_MSG_API_GET_PLACES} ${getResponse}`
             });
         }
     }
@@ -476,10 +482,10 @@ function Routes() {
 
                 return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES}`);
+                setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES} ${getResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_ROUTES}`
+                    message: `${ERROR_MSG_API_GET_ROUTES} ${getResponse}`
                 });
             }
 
