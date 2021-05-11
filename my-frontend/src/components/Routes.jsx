@@ -694,7 +694,7 @@ function Routes() {
                         Seleccione un lugar
                     </MenuItem>
                     <MenuItem value={selectedRoute.departure.cityId}>
-                        {selectedRoute.departure.provinceName}, {selectedRoute.departure.cityName}
+                         {selectedRoute.departure.cityName}, {selectedRoute.departure.provinceName}
                     </MenuItem>
                     {(places) ?
                         places.filter(place => place.id !== selectedRoute.departure.cityId).map((places) => (
@@ -733,7 +733,7 @@ function Routes() {
                         Seleccione un lugar
                     </MenuItem>
                     <MenuItem value={selectedRoute.destination.cityId}>
-                        {selectedRoute.destination.provinceName}, {selectedRoute.destination.cityName}
+                        {selectedRoute.destination.cityName}, {selectedRoute.destination.provinceName}
                     </MenuItem>
                     {(places) ?
                         places.filter(place => place.id !== selectedRoute.destination.cityId).map((places) => (
