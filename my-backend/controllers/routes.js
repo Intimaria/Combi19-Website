@@ -71,7 +71,6 @@ const getRoutes = async (req, res) => {
 
 const postRoute = async (req, res) => {
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
-    console.log(idTransport);
     const inputsErrors = await validateRoutesToCreate(idPlaceDeparture, idPlaceDestination, idTransport, duration, km);
 
     if (inputsErrors) {
@@ -82,7 +81,7 @@ const postRoute = async (req, res) => {
             const sqlInsert = "INSERT INTO ROUTE (ID_DEPARTURE, ID_DESTINATION, ID_TRANSPORT, DURATION, KM, ACTIVE) VALUES (?,?,?,?,?,?)";
             const [rows] = await connection.execute(sqlInsert, [idPlaceDeparture, idPlaceDestination, idTransport, duration, km, ACTIVE]);
             connection.end();
-            res.status(201).send("Se ha registrado el ruta con éxito");
+            res.status(200).send("Se ha registrado el ruta con éxito");
         } catch (error) {
             console.log('Ha ocurrido un error al crear el ruta: ', error);
             res.status(500);
@@ -95,7 +94,6 @@ const putRoute = async (req, res) => {
     const { id } = req.params;
 
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
-
     const inputsErrors = await validateRoutesToModify(idPlaceDeparture, idPlaceDestination, idTransport, duration, km, id);
 
     if (inputsErrors) {
@@ -107,7 +105,7 @@ const putRoute = async (req, res) => {
             const [rows] = await connection.execute(sqlUptate, [idPlaceDeparture, idPlaceDestination, idTransport, duration, km, id]);
 
             connection.end();
-            res.status(201).send("Se ha actualizado los datos del ruta con éxito");
+            res.status(200).send("Se ha actualizado los datos del ruta con éxito");
         } catch (error) {
             console.log('Ha ocurrido un error al actualizar los datos del ruta: ', error);
             res.status(500);

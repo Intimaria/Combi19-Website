@@ -340,7 +340,6 @@ function Drivers() {
     //Aca dependiendo del boton que se apreto abro el modal correspondiente
     const selectDriver = (driver, action) => {
         setSelectedDriver(driver);
-        console.log(selectedDriver);
         if (action === "Ver") {
             openCloseModalViewDetails()
         } else if (action === "Editar") {

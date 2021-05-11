@@ -26,9 +26,7 @@ const Addresses = () => {
             <Navbar userData={userData}/>
             <Switch>
                 <Route path="/" exact>
-                    <body><h1 className="text-light"> Página de inicio </h1>
-                    </body>
-
+                    <h1 className="text-light"> Página de inicio </h1>
                 </Route>
                 <Route path="/login" exact>
                     <Login path="login"/>
