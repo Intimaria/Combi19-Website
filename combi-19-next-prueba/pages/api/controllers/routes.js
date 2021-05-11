@@ -46,7 +46,7 @@ const postRoute = async (req, res) => {
             Continue with the code
              */
             connection.end();
-            res.status(201).send("Se ha registrado el ruta con éxito");
+            res.status(201).send("Se creó la ruta con éxito");
         } catch (error) {
             console.log('Ha ocurrido un error al crear el ruta: ', error);
             res.status(500);

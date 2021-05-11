@@ -51,8 +51,7 @@ const verifyUniqueInternalIdentificationToCreate = async (internal_identificatio
             `
             SELECT *        
             FROM TRANSPORT
-            WHERE ACTIVE = 1 
-            AND INTERNAL_IDENTIFICATION = '${internal_identification}';`
+            WHERE INTERNAL_IDENTIFICATION = '${internal_identification}';`
         ;
 
         const [rows] = await connection.execute(sqlSelect);
@@ -81,8 +80,7 @@ const verifyUniqueRegistrationNumberToCreate = async (registration_number) => {
         const sqlSelect = `
             SELECT *
             FROM TRANSPORT
-            WHERE ACTIVE = 1 
-            AND REGISTRATION_NUMBER = '${registration_number}'`;
+            WHERE REGISTRATION_NUMBER = '${registration_number}'`;
 
         const [rows] = await connection.execute(sqlSelect);
 
