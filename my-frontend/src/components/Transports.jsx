@@ -106,7 +106,7 @@ function Transports() {
 
     const setDefaultObjectsValues = () => {
         setSelectedTransport(formatSelectedTransport);
-        setDriverSelectedError('');
+        setDriverSelected('');
         setTypeComfortSelected('');
     };
 
