@@ -18,7 +18,7 @@ module.exports = {
     ERROR_MSG_INVALID_PHONE_NUMBER: "* El ingrese un numero de telefono valido",
     ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS: '* La contraseña no posee letras mayúsculas',
     ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE: '* La contraseña no posee letras minúsculas',
-    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener mas de 6 caracteres',
+    ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener 6 o mas caracteres',
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS: '* La contraseña no posee números',
     ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
