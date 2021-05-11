@@ -262,6 +262,7 @@ function Places() {
             openCloseModalDelete();
             fetchData();
         } else if ((postResponse?.status === 500) || (postResponse?.status === 400) || (postResponse?.status === 404)) {
+            openCloseModalDelete();
             setSuccessMessage(postResponse.data);
             setOptions({
                 ...options, open: true, type: 'error',

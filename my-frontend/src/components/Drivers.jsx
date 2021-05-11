@@ -9,6 +9,7 @@ import {getDrivers, postDrivers, putDrivers, deleteDrivers} from '../api/Drivers
 import {Message} from "./Message";
 import IconButton from '@material-ui/core/IconButton';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
@@ -78,7 +79,8 @@ function Drivers() {
         active: ""
     }
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword1, setShowPassword1] = React.useState(false);
+    const [showPassword2, setShowPassword2] = React.useState(false);
     const styles = useStyles();
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
@@ -135,9 +137,11 @@ function Drivers() {
         }
         setSuccessMessage(null);
     }
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword);
-        console.log(showPassword);
+    const handleShowPassword1 = () => {
+        setShowPassword1(!showPassword1);
+    }
+    const handleShowPassword2 = () => {
+        setShowPassword2(!showPassword2);
     }
 
     //Aca arrancan las validaciones de los datos del chofer
@@ -314,14 +318,15 @@ function Drivers() {
         let deleteResponse = await deleteDrivers(selectedDriver.id);
 
         if (deleteResponse.status === 200) {
+            openCloseModalDelete();
             setSuccessMessage(`Se ha eliminado el chofer correctamente`);
             setOptions({
                 ...options, open: true, type: 'success',
                 message: `Se ha eliminado el chofer correctamente`
             });
-            openCloseModalDelete();
             fetchData();
         } else if (deleteResponse?.status === 500 || deleteResponse?.status === 400) {
+            openCloseModalDelete();
             setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'error',
@@ -352,15 +357,19 @@ function Drivers() {
         if (createModal) {
             setSelectedDriver(formatSelectedDriver);
             setDefaultErrorMessages();
-            setShowPassword(false);
+            setShowPassword1(false);
+            setShowPassword2(false);
         }
+        console.log(password1Error);
+        console.log(password2Error);
     }
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
             setSelectedDriver(formatSelectedDriver);
-            setShowPassword(false);
+            setShowPassword1(false);
+            setShowPassword2(false);
         }
     }
     const openCloseModalUpdate = () => {
@@ -368,7 +377,8 @@ function Drivers() {
         if (updateModal) {
             setSelectedDriver(formatSelectedDriver);
             setDefaultErrorMessages();
-            setShowPassword(false);
+            setShowPassword1(false);
+            setShowPassword2(false);
         }
     }
 
@@ -441,16 +451,14 @@ function Drivers() {
                        helperText={(emailError) ? emailError : false}
                        value={selectedDriver && selectedDriver.email}/>
             <br/>
-            <FormControl className={styles.inputMaterial}>
+            <FormControl className={styles.inputMaterial} error={(password1Error) ? true : false}>
                 <InputLabel htmlFor="password1">Contraseña</InputLabel>
                 <Input
                     id="password1"
                     required
                     inputProps={{maxLength: 100}}
                     autoComplete='off'
-                    type={showPassword ? 'text' : 'password'}
-                    error={(password1Error) ? true : false}
-                    helperText={(password1Error) ? password2Error : false}
+                    type={showPassword1 ? 'text' : 'password'}
                     name="password1"
                     onChange={handleChange}
                     value={selectedDriver && selectedDriver.password1}
@@ -458,25 +466,41 @@ function Drivers() {
                         <InputAdornment position="end">
                             <IconButton
                                 aria-label="toggle password visibility"
-                                onClick={handleShowPassword}
+                                onClick={handleShowPassword1}
                                 edge="end"
                             >
-                                {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                {showPassword1 ? <Visibility/> : <VisibilityOff/>}
                             </IconButton>
                         </InputAdornment>
                     }
                 />
+            <FormHelperText>{(password1Error) ? password1Error : false}</FormHelperText>
             </FormControl>
-            <TextField className={styles.inputMaterial} label="Repita la contraseña"
-                       required
-                       inputProps={{maxLength: 100}}
-                       autoComplete='off'
-                       type={showPassword ? 'text' : 'password'}
-                       error={(password2Error) ? true : false}
-                       helperText={(password2Error) ? password2Error : false}
-                       name="password2"
-                       onChange={handleChange}
-                       value={selectedDriver && selectedDriver.password2}/>
+            <FormControl className={styles.inputMaterial} error={(password2Error) ? true : false}>
+                <InputLabel htmlFor="password2">Contraseña</InputLabel>
+                <Input
+                    id="password2"
+                    required
+                    inputProps={{maxLength: 100}}
+                    autoComplete='off'
+                    type={showPassword2 ? 'text' : 'password'}
+                    name="password2"
+                    onChange={handleChange}
+                    value={selectedDriver && selectedDriver.password2}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleShowPassword2}
+                                edge="end"
+                            >
+                                {showPassword2 ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
+                <FormHelperText>{(password2Error) ? password2Error : false}</FormHelperText>
+            </FormControl>
             <br/><br/>
         </div>
     )
@@ -515,17 +539,17 @@ function Drivers() {
                 <Input
                     id="password1"
                     autoComplete='off'
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword1 ? 'text' : 'password'}
                     name="password1"
                     value={selectedDriver && selectedDriver.password1}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
                                 aria-label="toggle password visibility"
-                                onClick={handleShowPassword}
+                                onClick={handleShowPassword1}
                                 edge="end"
                             >
-                                {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                {showPassword1 ? <Visibility/> : <VisibilityOff/>}
                             </IconButton>
                         </InputAdornment>
                     }
