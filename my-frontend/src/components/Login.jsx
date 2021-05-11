@@ -115,7 +115,7 @@ const Login = ({ path }) => {
                             <span className="text-danger small w-50">&nbsp;</span>
                     }
                     <label className="text-light w-50">
-                        Mostrar Contraseña: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
+                        Mostrar contraseña: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
                     </label>
                     <div className="w-100"></div>
                     <div className="text-center">

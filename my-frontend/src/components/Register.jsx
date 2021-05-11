@@ -343,7 +343,7 @@ function Register() {
                     </div>
                     <div className="w-100"></div>
                     <label className="text-light w-50">
-                        Mostrar Contraseñas: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
+                        Mostrar contraseñas: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword()}/>
                     </label>
                     <div className="w-100"></div>
                     {
