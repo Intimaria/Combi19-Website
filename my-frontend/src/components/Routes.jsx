@@ -55,7 +55,11 @@ import {
     REGEX_DURATION,
     REGEX_ONLY_NUMBER
 } from "../const/regex";
-import {validateDurationZero} from "../helpers/strings";
+
+import {
+    validateDurationZero,
+    validateDurationFormat
+} from "../helpers/strings";
 
 const columns = [
     {title: 'Ciudad de origen', field: 'departure.cityName'},
@@ -229,7 +233,11 @@ function Routes() {
         } else if (!validateDurationZero(selectedRoute.duration)) {
             setDurationError(ERROR_MSG_INVALID_ZERO_DURATION);
             return false;
+        } else if (!validateDurationFormat(selectedRoute.duration)) {
+            setDurationError(ERROR_MSG_INVALID_DURATION);
+            return false;
         }
+
         setDurationError(false);
         return true;
     }
@@ -239,12 +247,12 @@ function Routes() {
             setKmError(ERROR_MSG_EMPTY_KM);
             return false;
         } else if (selectedRoute.km <= 0) {
-            setKmError (ERROR_MSG_INVALID_KM);
+            setKmError(ERROR_MSG_INVALID_KM);
             return false;
         } else if (selectedRoute.km > 999999) {
-            setKmError (ERROR_MSG_INVALID_KM);
+            setKmError(ERROR_MSG_INVALID_KM);
             return false;
-        }else if (!REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
+        } else if (!REGEX_ONLY_NUMBER.test(selectedRoute.km)) {
             setKmError(ERROR_MSG_INVALID_KM);
             return false;
         }

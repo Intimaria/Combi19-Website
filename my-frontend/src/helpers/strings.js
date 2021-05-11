@@ -17,3 +17,14 @@ export const validateDurationZero = (duration) => {
         return true;
     }
 };
+
+
+export const validateDurationFormat = (duration) => {
+    let durationSplitted = duration.split(":");
+
+    if (durationSplitted.length === 2) {
+        return true;
+    } else {
+        return false;
+    }
+}
