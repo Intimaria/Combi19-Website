@@ -292,7 +292,7 @@ function Register() {
                     }
                     <div className="col-md">
                         <input id="inpEmail" type="email" className="form-control mt-3" name="email"
-                            placeholder="Email" maxLength="70"
+                            placeholder="Correo electronico" maxLength="70"
                             value={email} onChange={newValue => handleEmail(newValue)} />
                         {
                             emailError ? <span className="text-danger small">{emailError}</span> :
