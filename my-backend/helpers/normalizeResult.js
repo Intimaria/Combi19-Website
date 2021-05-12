@@ -3,22 +3,22 @@ const normalizeTransport = (rows) => {
 
     for (let index = 0; index < rows.length; index++) {
         let transport = {
-            transport_id: rows[index].TRANSPORT_ID,
-            internal_identification: rows[index].INTERNAL_IDENTIFICATION,
+            transportId: rows[index].TRANSPORT_ID,
+            internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
             model: rows[index].MODEL,
-            registration_number: rows[index].REGISTRATION_NUMBER,
+            registrationNumber: rows[index].REGISTRATION_NUMBER,
             seating: rows[index].SEATING,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             comfort: {
-                type_comfort_id: rows[index].TYPE_COMFORT_ID,
-                type_comfort_name: rows[index].TYPE_COMFORT_NAME
+                typeComfortId: rows[index].TYPE_COMFORT_ID,
+                typeComfortName: rows[index].TYPE_COMFORT_NAME
             },
             driver: {
-                user_id: rows[index].USER_ID,
+                userId: rows[index].USER_ID,
                 name: rows[index].NAME,
                 surname: rows[index].SURNAME,
                 email: rows[index].EMAIL,
-                phone_number: rows[index].PHONE_NUMBER
+                phoneNumber: rows[index].PHONE_NUMBER
             }
         };
         results.push(transport);

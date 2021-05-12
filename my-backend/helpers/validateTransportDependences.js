@@ -23,8 +23,8 @@ const validateTransportRouteDependence = async (id) => {
         console.log("Ha ocurrido un error al comprobar las dependencias de la combi", error);
         return false;
     }
-}
+};
 
 module.exports = {
     validateTransportRouteDependence
-}
+};

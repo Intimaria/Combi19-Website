@@ -44,10 +44,10 @@ import {
 } from "../const/regex";
 
 const columns = [
-    {title: 'Identificación interna', field: 'internal_identification'},
-    {title: 'Patente', field: 'registration_number'},
+    {title: 'Identificación interna', field: 'internalIdentification'},
+    {title: 'Patente', field: 'registrationNumber'},
     {title: 'Modelo', field: 'model'},
-    {title: 'Tipo de confort', field: 'comfort.type_comfort_name'},
+    {title: 'Tipo de confort', field: 'comfort.typeComfortName'},
     {
         title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`,
         customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
@@ -62,20 +62,20 @@ function Transports() {
     };
 
     const formatSelectedTransport = {
-        internal_identification: "",
-        registration_number: "",
+        internalIdentification: "",
+        registrationNumber: "",
         model: "",
         seating: "",
         comfort: {
-            type_comfort_id: "",
-            type_comfort_name: ""
+            typeComfortId: "",
+            typeComfortName: ""
         },
         driver: {
-            user_id: "",
+            userId: "",
             name: "",
             surname: "",
             email: "",
-            phone_number: ""
+            phoneNumber: ""
         },
         active: "",
     };
@@ -139,10 +139,10 @@ function Transports() {
             }))
 
             switch (name) {
-                case 'internal_identification':
+                case 'internalIdentification':
                     setInternalIdentificationError(false);
                     break;
-                case 'registration_number':
+                case 'registrationNumber':
                     setRegistrationNumberError(false);
                     break;
                 case 'model':
@@ -166,7 +166,7 @@ function Transports() {
     };
 
     const validateInternalIdentification = () => {
-        if (!selectedTransport.internal_identification) {
+        if (!selectedTransport.internalIdentification) {
             setInternalIdentificationError(ERROR_MSG_EMPTY_INTERNAL_IDENTIFICATION);
             return false;
         }
@@ -184,11 +184,11 @@ function Transports() {
     };
 
     const validateRegistrationNumber = () => {
-        if (!selectedTransport.registration_number) {
+        if (!selectedTransport.registrationNumber) {
             setRegistrationNumberError(ERROR_MSG_EMPTY_REGISTRATION_NUMBER);
             return false;
-        } else if (!REGEX_OLD_REGISTRATION_NUMBER.test(selectedTransport.registration_number)
-            && !REGEX_NEW_REGISTRATION_NUMBER.test(selectedTransport.registration_number)) {
+        } else if (!REGEX_OLD_REGISTRATION_NUMBER.test(selectedTransport.registrationNumber)
+            && !REGEX_NEW_REGISTRATION_NUMBER.test(selectedTransport.registrationNumber)) {
             setRegistrationNumberError(ERROR_MSG_INVALID_REGISTRATION_NUMBER);
             return false;
         }
@@ -215,7 +215,7 @@ function Transports() {
     };
 
     const validateTypeComfort = () => {
-        if (typeComfortSelected || selectedTransport.comfort.type_comfort_id) {
+        if (typeComfortSelected || selectedTransport.comfort.typeComfortId) {
             setTypeComfortSelectedError(null);
             return true;
         } else {
@@ -225,7 +225,7 @@ function Transports() {
     };
 
     const validateDriver = () => {
-        if (driverSelected || selectedTransport.driver.user_id) {
+        if (driverSelected || selectedTransport.driver.userId) {
             setDriverSelectedError(null);
             return true;
         } else {
@@ -307,8 +307,8 @@ function Transports() {
             setDefaultApiErrorMessages();
 
             let postResponse = await putTransport(selectedTransport,
-                typeComfortSelected ? typeComfortSelected : selectedTransport.comfort.type_comfort_id,
-                driverSelected ? driverSelected : selectedTransport.driver.user_id);
+                typeComfortSelected ? typeComfortSelected : selectedTransport.comfort.typeComfortId,
+                driverSelected ? driverSelected : selectedTransport.driver.userId);
 
             if (postResponse.status === 200) {
                 setSuccessMessage(postResponse.data);
@@ -321,9 +321,15 @@ function Transports() {
 
                 await fetchData();
                 return true
-            } else if (postResponse.status === 400) {
+            } else if (postResponse.status === 400 && postResponse.data.errorCode === 1) {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
                 setRegistrationNumberError(postResponse.data.registrationNumberError);
+            } else if (postResponse.status === 400 && postResponse.data.errorCode === 2) {
+                setSuccessMessage(postResponse.data.dependenceError);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: postResponse.data.dependenceError
+                });
             } else if (postResponse.status === 500) {
                 setSuccessMessage(postResponse.data);
                 setOptions({
@@ -343,7 +349,7 @@ function Transports() {
     };
 
     const requestDeleteTransport = async () => {
-        let deleteResponse = await deleteTransport(selectedTransport.transport_id);
+        let deleteResponse = await deleteTransport(selectedTransport.transportId);
 
         if (deleteResponse.status === 200) {
             setSuccessMessage(deleteResponse.data);
@@ -423,8 +429,8 @@ function Transports() {
 
         // Data are loaded when the modal is open
         if (!updateModal) {
-            setTypeComfortSelected(selectedTransport.comfort.type_comfort_id);
-            setDriverSelected(selectedTransport.driver.user_id);
+            setTypeComfortSelected(selectedTransport.comfort.typeComfortId);
+            setDriverSelected(selectedTransport.driver.userId);
 
             await requestGetAvailableDrivers();
         }
@@ -454,7 +460,7 @@ function Transports() {
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVA COMBI</h3>
-            <TextField label="Identificación interna" id={"internal_identification"} name="internal_identification"
+            <TextField label="Identificación interna" id={"internalIdentification"} name="internalIdentification"
                        className={styles.inputMaterial}
                        required
                        inputProps={{maxLength: 5, style: {textTransform: 'uppercase'}}}
@@ -462,7 +468,7 @@ function Transports() {
                        error={(internalIdentificationError) ? true : false}
                        helperText={(internalIdentificationError) ? internalIdentificationError : false}
                        onChange={handleChange}/>
-            <TextField label="Patente" id={"registration_number"} name="registration_number"
+            <TextField label="Patente" id={"registrationNumber"} name="registrationNumber"
                        className={styles.inputMaterial}
                        required
                        inputProps={{maxLength: 7, style: {textTransform: 'uppercase'}}}
@@ -519,8 +525,8 @@ function Transports() {
                     {(drivers) ?
                         drivers.map((drivers) => (
                             <MenuItem
-                                key={drivers.user_id}
-                                value={drivers.user_id}
+                                key={drivers.userId}
+                                value={drivers.userId}
                             >
                                 {drivers.surname}, {drivers.name}
 
@@ -552,11 +558,11 @@ function Transports() {
             <TextField className={styles.inputMaterial} label="Estado" name="active"
                        value={selectedTransport && selectedTransport.active}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
-                       value={selectedTransport && selectedTransport.internal_identification}/>
+            <TextField className={styles.inputMaterial} label="Identificación interna" name="internalIdentification"
+                       value={selectedTransport && selectedTransport.internalIdentification}/>
             <br/>
-            <TextField className={styles.inputMaterial} label="Patente" name="registration_number"
-                       value={selectedTransport && selectedTransport.registration_number}/>
+            <TextField className={styles.inputMaterial} label="Patente" name="registrationNumber"
+                       value={selectedTransport && selectedTransport.registrationNumber}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Modelo" name="model"
                        value={selectedTransport && selectedTransport.model}/>
@@ -565,7 +571,7 @@ function Transports() {
                        value={selectedTransport && selectedTransport.seating}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Tipo de confort" name="type_comfort_name"
-                       value={selectedTransport && selectedTransport.comfort.type_comfort_name}/>
+                       value={selectedTransport && selectedTransport.comfort.typeComfortName}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Chofer" name="driver"
                        value={selectedTransport && `${selectedTransport.driver.surname}, ${selectedTransport.driver.name}`}/>
@@ -587,23 +593,23 @@ function Transports() {
                            value={selectedTransport && selectedTransport.active}/>
             </Tooltip>
             <br/>
-            <TextField label="Identificación interna" id={"internal_identification"} name="internal_identification"
+            <TextField label="Identificación interna" id={"internalIdentification"} name="internalIdentification"
                        className={styles.inputMaterial}
                        required
                        inputProps={{maxLength: 5, style: {textTransform: 'uppercase'}}}
                        autoComplete='off'
                        error={(internalIdentificationError) ? true : false}
                        helperText={(internalIdentificationError) ? internalIdentificationError : false}
-                       value={selectedTransport && selectedTransport.internal_identification}
+                       value={selectedTransport && selectedTransport.internalIdentification}
                        onChange={handleChange}/>
-            <TextField label="Patente" id={"registration_number"} name="registration_number"
+            <TextField label="Patente" id={"registrationNumber"} name="registrationNumber"
                        className={styles.inputMaterial}
                        required
                        inputProps={{maxLength: 7, style: {textTransform: 'uppercase'}}}
                        autoComplete='off'
                        error={(registrationNumberError) ? true : false}
                        helperText={(registrationNumberError) ? registrationNumberError : false}
-                       value={selectedTransport && selectedTransport.registration_number}
+                       value={selectedTransport && selectedTransport.registrationNumber}
                        onChange={handleChange}/>
             <TextField label="Modelo" id={"model"} name="model"
                        className={styles.inputMaterial}
@@ -629,7 +635,7 @@ function Transports() {
                 <Select label="Tipo de comfort" labelId="typeComfortSelected" id="typeComfortSelected"
                         name="typeComfortSelected"
                         className={styles.inputMaterial}
-                        value={(typeComfortSelected) ? typeComfortSelected : selectedTransport.comfort.type_comfort_id}
+                        value={(typeComfortSelected) ? typeComfortSelected : selectedTransport.comfort.typeComfortId}
                         onChange={handleChange}
                         displayEmpty
                 >
@@ -644,25 +650,26 @@ function Transports() {
                 <InputLabel>Chofer</InputLabel>
                 <Select label="Chofer" labelId="driverSelected" id="driverSelected" name="driverSelected"
                         className={styles.inputMaterial}
-                        value={(driverSelected) ? driverSelected : selectedTransport.driver.user_id}
+                        value={(driverSelected) ? driverSelected : selectedTransport.driver.userId}
                         onChange={handleChange}
                         displayEmpty
                 >
                     <MenuItem value="" disabled>
                         Seleccione un chofer
                     </MenuItem>
-                    <MenuItem value={selectedTransport.driver.user_id}>
+                    <MenuItem value={selectedTransport.driver.userId}>
                         {selectedTransport.driver.surname}, {selectedTransport.driver.name}
                     </MenuItem>
                     {(drivers) ?
-                        drivers.map((drivers) => (
-                            <MenuItem
-                                key={drivers.user_id}
-                                value={drivers.user_id}
-                            >
-                                {drivers.surname}, {drivers.name}
-                            </MenuItem>
-                        )) : null
+                        drivers.filter((item) => item.userId !== selectedTransport.driver.userId)
+                            .map((drivers) => (
+                                <MenuItem
+                                    key={drivers.userId}
+                                    value={drivers.userId}
+                                >
+                                    {drivers.surname}, {drivers.name}
+                                </MenuItem>
+                            )) : null
                     }
                 </Select>
                 <Tooltip
@@ -673,87 +680,6 @@ function Transports() {
                     </FormHelperText>
                 </Tooltip>
             </FormControl>
-
-
-            {
-                /*
-                <TextField inputProps={{maxLength: 5}}
-                       className={styles.inputMaterial} label="Identificación interna" name="internal_identification"
-                       onChange={handleChange}
-                       value={selectedTransport && selectedTransport.internal_identification}/>
-            <br/>
-            <TextField inputProps={{maxLength: 7}}
-                       className={styles.inputMaterial} label="Patente" name="registration_number"
-                       onChange={handleChange}
-                       value={selectedTransport && selectedTransport.registration_number}/>
-            <br/>
-            <TextField inputProps={{maxLength: 45}}
-                       className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}
-                       value={selectedTransport && selectedTransport.model}/>
-            <br/>
-            <TextField inputProps={{maxLength: 2}} InputProps={{min: 1, max: 99}}
-                       className={styles.inputMaterial} label="Cantidad de asientos" name="seating"
-                       onChange={handleChange}
-                       value={selectedTransport && selectedTransport.seating}/>
-            <br/>
-            <FormHelperText>Tipo de confort</FormHelperText>
-            <Select
-                label="Tipo de comfort"
-                labelId="typeComfortSelected"
-                id="typeComfortSelected"
-                name="typeComfortSelected"
-                value={(typeComfortSelected) ? typeComfortSelected : selectedTransport.comfort.type_comfort_id}
-                onChange={handleChange}
-                displayEmpty
-                className={styles.inputMaterial}
-            >
-                <MenuItem value="" disabled> Seleccione un tipo de confort </MenuItem>
-                <MenuItem key={1} value={1}> Cómoda </MenuItem>
-                <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
-
-            </Select>
-            <br/>
-            <FormControl required className={styles.inputMaterial}>
-                <InputLabel>Chofer</InputLabel>
-                <Select
-                    label="Chofer"
-                    labelId="driverSelected"
-                    id="driverSelected"
-                    name="driverSelected"
-                    value={(driverSelected) ? driverSelected : selectedTransport.driver.user_id}
-                    onChange={handleChange}
-                    displayEmpty
-                    className={styles.inputMaterial}
-                >
-                    <MenuItem value="" disabled>
-                        Seleccione un chofer
-                    </MenuItem>
-                    <MenuItem value={selectedTransport.driver.user_id}>
-                        {selectedTransport.driver.surname}, {selectedTransport.driver.name}
-                    </MenuItem>
-                    {(drivers) ?
-                        drivers.map((drivers) => (
-                            <MenuItem
-                                key={drivers.user_id}
-                                value={drivers.user_id}
-                            >
-                                {drivers.surname}, {drivers.name}
-                            </MenuItem>
-                        )) : null
-                    }
-                </Select>
-                <Tooltip
-                    title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
-                    <FormHelperText>
-                        <HelpIcon color='primary' fontSize="small"/>
-                        Sólo se visualizan los choferes disponibles
-                    </FormHelperText>
-                </Tooltip>
-            </FormControl>
-                 */
-            }
-
-
             <br/>
             <div align="right">
                 <Button color="primary" onClick={() => requestPutTransport()}>CONFIRMAR CAMBIOS</Button>
@@ -765,8 +691,8 @@ function Transports() {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar la combi con
-                identificación <b>{selectedTransport && selectedTransport.internal_identification}</b> y
-                patente <b>{selectedTransport && selectedTransport.registration_number}</b>?
+                identificación <b>{selectedTransport && selectedTransport.internalIdentification}</b> y
+                patente <b>{selectedTransport && selectedTransport.registrationNumber}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDeleteTransport()}>SÍ, ELIMINAR</Button>

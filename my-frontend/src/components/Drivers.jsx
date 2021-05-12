@@ -477,7 +477,7 @@ function Drivers() {
             <FormHelperText>{(password1Error) ? password1Error : false}</FormHelperText>
             </FormControl>
             <FormControl className={styles.inputMaterial} error={(password2Error) ? true : false}>
-                <InputLabel htmlFor="password2">Repita la Contraseña</InputLabel>
+                <InputLabel htmlFor="password2">Repita la contraseña</InputLabel>
                 <Input
                     id="password2"
                     required

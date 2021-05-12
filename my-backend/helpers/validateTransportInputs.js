@@ -10,11 +10,11 @@ const {
 let internalIdentificationError = null;
 let registrationNumberError = null;
 
-const validateTransportToCreate = async (internal_identification, registration_number) => {
-    let isInternalIdentificationValid = await verifyUniqueInternalIdentificationToCreate(internal_identification);
+const validateTransportToCreate = async (internalIdentification, registrationNumber) => {
+    let isInternalIdentificationValid = await verifyUniqueInternalIdentificationToCreate(internalIdentification);
     if (isInternalIdentificationValid) internalIdentificationError = null;
 
-    let isRegistrationNumberValid = await verifyUniqueRegistrationNumberToCreate(registration_number);
+    let isRegistrationNumberValid = await verifyUniqueRegistrationNumberToCreate(registrationNumber);
 
     if (isRegistrationNumberValid) registrationNumberError = null;
 
@@ -25,11 +25,11 @@ const validateTransportToCreate = async (internal_identification, registration_n
     }
 };
 
-const validateTransportToUpdate = async (internal_identification, registration_number, id) => {
-    let isInternalIdentificationValid = await verifyUniqueInternalIdentificationToUpdate(internal_identification, id);
+const validateTransportToUpdate = async (internalIdentification, registrationNumber, id) => {
+    let isInternalIdentificationValid = await verifyUniqueInternalIdentificationToUpdate(internalIdentification, id);
     if (isInternalIdentificationValid) internalIdentificationError = null;
 
-    let isRegistrationNumberValid = await verifyUniqueRegistrationNumberToUpdate(registration_number, id);
+    let isRegistrationNumberValid = await verifyUniqueRegistrationNumberToUpdate(registrationNumber, id);
 
     if (isRegistrationNumberValid) registrationNumberError = null;
 
@@ -41,8 +41,7 @@ const validateTransportToUpdate = async (internal_identification, registration_n
 };
 
 
-
-const verifyUniqueInternalIdentificationToCreate = async (internal_identification) => {
+const verifyUniqueInternalIdentificationToCreate = async (internalIdentification) => {
     try {
 
         const connection = await prepareConnection();
@@ -51,7 +50,7 @@ const verifyUniqueInternalIdentificationToCreate = async (internal_identificatio
             `
             SELECT *        
             FROM TRANSPORT
-            WHERE INTERNAL_IDENTIFICATION = '${internal_identification}';`
+            WHERE INTERNAL_IDENTIFICATION = '${internalIdentification}';`
         ;
 
         const [rows] = await connection.execute(sqlSelect);
@@ -72,7 +71,7 @@ const verifyUniqueInternalIdentificationToCreate = async (internal_identificatio
     }
 };
 
-const verifyUniqueRegistrationNumberToCreate = async (registration_number) => {
+const verifyUniqueRegistrationNumberToCreate = async (registrationNumber) => {
 
     try {
         const connection = await prepareConnection();
@@ -80,7 +79,7 @@ const verifyUniqueRegistrationNumberToCreate = async (registration_number) => {
         const sqlSelect = `
             SELECT *
             FROM TRANSPORT
-            WHERE REGISTRATION_NUMBER = '${registration_number}'`;
+            WHERE REGISTRATION_NUMBER = '${registrationNumber}'`;
 
         const [rows] = await connection.execute(sqlSelect);
 
@@ -99,7 +98,7 @@ const verifyUniqueRegistrationNumberToCreate = async (registration_number) => {
     }
 };
 
-const verifyUniqueInternalIdentificationToUpdate = async(internal_identification, id) => {
+const verifyUniqueInternalIdentificationToUpdate = async (internalIdentification, id) => {
     try {
 
         const connection = await prepareConnection();
@@ -109,7 +108,7 @@ const verifyUniqueInternalIdentificationToUpdate = async(internal_identification
             SELECT *        
             FROM TRANSPORT
             WHERE TRANSPORT_ID <> ${id}
-            AND INTERNAL_IDENTIFICATION = '${internal_identification}';
+            AND INTERNAL_IDENTIFICATION = '${internalIdentification}';
             `
         ;
 
@@ -131,7 +130,7 @@ const verifyUniqueInternalIdentificationToUpdate = async(internal_identification
     }
 };
 
-const verifyUniqueRegistrationNumberToUpdate = async(registration_number, id) => {
+const verifyUniqueRegistrationNumberToUpdate = async (registrationNumber, id) => {
     try {
 
         const connection = await prepareConnection();
@@ -141,7 +140,7 @@ const verifyUniqueRegistrationNumberToUpdate = async(registration_number, id) =>
             SELECT *        
             FROM TRANSPORT
             WHERE TRANSPORT_ID <> ${id}
-            AND REGISTRATION_NUMBER = '${registration_number}';
+            AND REGISTRATION_NUMBER = '${registrationNumber}';
             `
         ;
 
@@ -164,6 +163,7 @@ const verifyUniqueRegistrationNumberToUpdate = async(registration_number, id) =>
 
 const prepareTransportsResponse = () => {
     return {
+        errorCode: 1,
         internalIdentificationError,
         registrationNumberError
     }

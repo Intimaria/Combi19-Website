@@ -8,6 +8,7 @@ const {
     ERROR_MSG_API_POST_TRANSPORT,
     OK_MSG_API_PUT_TRANSPORT,
     ERROR_MSG_API_PUT_TRANSPORT,
+    ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE,
     OK_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
@@ -117,9 +118,9 @@ const getTransportById = async (req, res) => {
 };
 
 const postTransport = async (req, res) => {
-    const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
+    const {internalIdentification, model, registrationNumber, seating, idTypeComfort, idDriver} = req.body;
 
-    const inputsErrors = await validateTransportToCreate(internal_identification, registration_number);
+    const inputsErrors = await validateTransportToCreate(internalIdentification, registrationNumber);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -131,7 +132,7 @@ const postTransport = async (req, res) => {
                 `
                 INSERT INTO TRANSPORT
                 (INTERNAL_IDENTIFICATION, MODEL, REGISTRATION_NUMBER, SEATING, ID_TYPE_COMFORT, ID_DRIVER, ACTIVE)
-                VALUES ('${internal_identification}', '${model}', '${registration_number}', ${seating}, ${id_type_comfort}, ${id_driver}, 1);
+                VALUES ('${internalIdentification}', '${model}', '${registrationNumber}', ${seating}, ${idTypeComfort}, ${idDriver}, 1);
                 `;
 
             await connection.execute(sqlInsert);
@@ -151,12 +152,19 @@ const putTransport = async (req, res) => {
 
     const {id} = req.params;
 
-    const {internal_identification, model, registration_number, seating, id_type_comfort, id_driver} = req.body;
+    const {internalIdentification, model, registrationNumber, seating, idTypeComfort, idDriver} = req.body;
 
-    const inputsErrors = await validateTransportToUpdate(internal_identification, registration_number, id);
+    const inputsErrors = await validateTransportToUpdate(internalIdentification, registrationNumber, id);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
+    } else if (await validateTransportRouteDependence(id)) {
+        res.status(400).json(
+            {
+                errorCode: 2,
+                dependenceError: `${ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE}`
+            }
+        );
     } else {
         try {
             const connection = await prepareConnection();
@@ -164,12 +172,12 @@ const putTransport = async (req, res) => {
             let sqlUpdate =
                 `
                 UPDATE TRANSPORT 
-                SET INTERNAL_IDENTIFICATION = '${internal_identification}', 
+                SET INTERNAL_IDENTIFICATION = '${internalIdentification}', 
                 MODEL = '${model}', 
-                REGISTRATION_NUMBER = '${registration_number}', 
+                REGISTRATION_NUMBER = '${registrationNumber}', 
                 SEATING = ${seating}, 
-                ID_TYPE_COMFORT = ${id_type_comfort}, 
-                ID_DRIVER = ${id_driver}
+                ID_TYPE_COMFORT = ${idTypeComfort}, 
+                ID_DRIVER = ${idDriver}
                 WHERE TRANSPORT_ID = ${id};
               `;
 

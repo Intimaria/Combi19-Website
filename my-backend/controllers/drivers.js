@@ -62,7 +62,7 @@ const getAvailableDrivers = async (req, res) => {
         const connection = await prepareConnection();
         const sqlSelect =
             `
-                SELECT u.USER_ID user_id, u.NAME name, u.SURNAME surname
+                SELECT DISTINCT u.USER_ID userId, u.NAME name, u.SURNAME surname
                 FROM USER u
                 INNER JOIN ROLE_USER ru ON u.USER_ID = ru.ID_USER
                 LEFT JOIN TRANSPORT t ON u.USER_ID = t.ID_DRIVER

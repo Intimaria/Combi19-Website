@@ -74,12 +74,12 @@ export const postTransport = async (selectedTransport, typeComfortSelected, driv
     const token = localStorage.getItem('token');
 
     const newTransport = {
-        internal_identification: selectedTransport.internal_identification.toUpperCase(),
-        registration_number: selectedTransport.registration_number.toUpperCase(),
+        internalIdentification: selectedTransport.internalIdentification.toUpperCase(),
+        registrationNumber: selectedTransport.registrationNumber.toUpperCase(),
         model: capitalizeString(selectedTransport.model),
         seating: selectedTransport.seating,
-        id_type_comfort: typeComfortSelected,
-        id_driver: driverSelected
+        idTypeComfort: typeComfortSelected,
+        idDriver: driverSelected
     };
 
     try {
@@ -114,16 +114,16 @@ export const putTransport = async (selectedTransport, typeComfortSelected, drive
     const token = localStorage.getItem('token');
 
     const newTransport = {
-        internal_identification: selectedTransport.internal_identification.toUpperCase(),
-        registration_number: selectedTransport.registration_number.toUpperCase(),
+        internalIdentification: selectedTransport.internalIdentification.toUpperCase(),
+        registrationNumber: selectedTransport.registrationNumber.toUpperCase(),
         model: selectedTransport.model,
         seating: selectedTransport.seating,
-        id_type_comfort: typeComfortSelected,
-        id_driver: driverSelected
+        idTypeComfort: typeComfortSelected,
+        idDriver: driverSelected
     };
 
     try {
-        let response = await axios.put(`${BACKEND_URL}/transports/${selectedTransport.transport_id}`,
+        let response = await axios.put(`${BACKEND_URL}/transports/${selectedTransport.transportId}`,
             newTransport,
             {
                 headers: {

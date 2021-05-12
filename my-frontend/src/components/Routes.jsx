@@ -619,10 +619,10 @@ function Routes() {
                     {(transports) ?
                         transports.map((transports) => (
                             <MenuItem
-                                key={transports.transport_id}
-                                value={transports.transport_id}
+                                key={transports.transportId}
+                                value={transports.transportId}
                             >
-                                {transports.internal_identification}
+                                {transports.internalIdentification}
                             </MenuItem>
                         ))
                         : null
@@ -782,12 +782,12 @@ function Routes() {
                         {selectedRoute.transport.internalIdentification}
                     </MenuItem>
                     {(transports) ?
-                        transports.filter(transport => transport.internal_identification !== selectedRoute.transport.internalIdentification).map((transports) => (
+                        transports.filter(transport => transport.internalIdentification !== selectedRoute.transport.internalIdentification).map((transports) => (
                             <MenuItem
-                                key={transports.transport_id}
-                                value={transports.transport_id}
+                                key={transports.transportId}
+                                value={transports.transportId}
                             >
-                                {transports.internal_identification}
+                                {transports.internalIdentification}
                             </MenuItem>
                         ))
                         : null
