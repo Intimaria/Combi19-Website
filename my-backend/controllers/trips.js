@@ -15,7 +15,7 @@ const getTrips = async (req, res) => {
         res.status(500);
     }
     res.end();
-}
+};
 
 const getTripById = async (req, res) => {
     try {
@@ -31,7 +31,7 @@ const getTripById = async (req, res) => {
         res.status(500);
     }
     res.end();
-}
+};
 
 const postTrip = async (req, res) => {
     const {names, surname, email, phoneNumber, password1, password2} = req.body;
@@ -55,7 +55,7 @@ const postTrip = async (req, res) => {
 
     }
     res.end();
-}
+};
 
 const putTrip = async (req, res) => {
     const {id} = req.params;
@@ -79,7 +79,7 @@ const putTrip = async (req, res) => {
         }
     }
     res.end();
-}
+};
 
 const deleteTrip = async (req, res) => {
     const {id} = req.params;
@@ -87,7 +87,7 @@ const deleteTrip = async (req, res) => {
     Continue with the code
      */
     res.end();
-}
+};
 
 module.exports = {
     getTrips,

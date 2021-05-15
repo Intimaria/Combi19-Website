@@ -68,7 +68,11 @@ const getAvailableDrivers = async (req, res) => {
                 LEFT JOIN TRANSPORT t ON u.USER_ID = t.ID_DRIVER
                 WHERE ru.ACTIVE = 1
                 AND ru.ID_ROLE = 2
-                AND (t.TRANSPORT_ID IS NULL OR t.ACTIVE = 0)
+                AND u.USER_ID NOT IN (
+					SELECT t2.ID_DRIVER FROM
+					TRANSPORT t2 
+					WHERE t2.ACTIVE = 1
+					)
                 ORDER BY u.SURNAME ASC, u.NAME ASC;
                 `;
         const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);

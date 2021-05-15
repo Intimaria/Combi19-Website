@@ -2,6 +2,7 @@ const {Router} = require('express');
 const {
     getTransports,
     getTransportById,
+    getTransportDependenceById,
     postTransport,
     putTransport,
     deleteTransport,
@@ -19,11 +20,14 @@ router.get('/', authenticateAdminRol, getTransports);
 // Retrieve a single transport by id
 router.get('/:id', authenticateAdminRol, getTransportById);
 
-// Create a new transport
-router.post('/', authenticateAdminRol, postTransport);
-
 // Retrieve all actives transports
 router.get('/custom/actives', authenticateAdminRol, getActiveTransports);
+
+// Retrieve transport dependence by id
+router.get('/custom/transportDependenceById/:id', authenticateAdminRol, getTransportDependenceById);
+
+// Create a new transport
+router.post('/', authenticateAdminRol, postTransport);
 
 // Update a transport by id
 router.put('/:id', authenticateAdminRol, putTransport);

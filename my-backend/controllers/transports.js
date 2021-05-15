@@ -8,7 +8,7 @@ const {
     ERROR_MSG_API_POST_TRANSPORT,
     OK_MSG_API_PUT_TRANSPORT,
     ERROR_MSG_API_PUT_TRANSPORT,
-    ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE,
     OK_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
@@ -117,6 +117,35 @@ const getTransportById = async (req, res) => {
     res.end();
 };
 
+const getTransportDependenceById = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlSelect =
+            `
+            SELECT t.TRANSPORT_ID, t.ACTIVE, r.ROUTE_ID, r.ACTIVE
+            FROM TRANSPORT t
+            INNER JOIN ROUTE r ON t.TRANSPORT_ID = r.ID_TRANSPORT
+            WHERE t.TRANSPORT_ID = ${id}
+            AND t.ACTIVE = 1;
+            `;
+
+        const [rows] = await connection.execute(sqlSelect);
+
+        connection.end();
+
+        res.json({
+            transportRouteDependence: rows.length >= 1
+        });
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
+    }
+    res.end();
+};
+
 const postTransport = async (req, res) => {
     const {internalIdentification, model, registrationNumber, seating, idTypeComfort, idDriver} = req.body;
 
@@ -158,13 +187,6 @@ const putTransport = async (req, res) => {
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
-    } else if (await validateTransportRouteDependence(id)) {
-        res.status(400).json(
-            {
-                errorCode: 2,
-                dependenceError: `${ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE}`
-            }
-        );
     } else {
         try {
             const connection = await prepareConnection();
@@ -196,25 +218,21 @@ const putTransport = async (req, res) => {
 const deleteTransport = async (req, res) => {
     const {id} = req.params;
 
-    if (await validateTransportRouteDependence(id)) {
-        res.status(400).send(`${ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE}`);
-    } else {
-        try {
-            const connection = await prepareConnection();
-            const sqlUptate =
-                `
+    try {
+        const connection = await prepareConnection();
+        const sqlUptate =
+            `
             UPDATE TRANSPORT SET ACTIVE = 0 
             WHERE TRANSPORT_ID = ${id};
             `;
 
-            const [rows] = await connection.execute(sqlUptate);
-            connection.end();
+        const [rows] = await connection.execute(sqlUptate);
+        connection.end();
 
-            return res.status(200).send(OK_MSG_API_DELETE_TRANSPORT);
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
-            res.status(500).send(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
-        }
+        return res.status(200).send(OK_MSG_API_DELETE_TRANSPORT);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
     }
     res.end();
 };
@@ -222,6 +240,7 @@ const deleteTransport = async (req, res) => {
 module.exports = {
     getTransports,
     getActiveTransports,
+    getTransportDependenceById,
     getTransportById,
     postTransport,
     putTransport,

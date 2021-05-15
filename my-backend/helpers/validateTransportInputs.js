@@ -163,7 +163,6 @@ const verifyUniqueRegistrationNumberToUpdate = async (registrationNumber, id) =>
 
 const prepareTransportsResponse = () => {
     return {
-        errorCode: 1,
         internalIdentificationError,
         registrationNumberError
     }

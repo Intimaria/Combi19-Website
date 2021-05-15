@@ -54,6 +54,7 @@ module.exports = {
     OK_MSG_API_PUT_TRANSPORT: 'Se actualizaron los datos de la combi con éxito',
     ERROR_MSG_API_PUT_TRANSPORT: 'Ocurrió un error al actualizar los datos de la combi:',
     ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede editar, la combi está asignada a rutas',
+    ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de la combi',
     OK_MSG_API_DELETE_TRANSPORT: 'Se eliminó la combi con éxito',
     ERROR_MSG_API_DELETE_TRANSPORT: 'Ocurrió un error al eliminar la combi indicada',
     ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede eliminar, la combi está asignada a rutas',

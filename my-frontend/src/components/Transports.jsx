@@ -16,6 +16,7 @@ import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {
     getTransports,
+    getTransportDependenceById,
     postTransport,
     putTransport,
     deleteTransport
@@ -35,7 +36,9 @@ import {
     ERROR_MSG_INVALID_VALUE_SEATING,
     ERROR_MSG_EMPTY_TYPE_COMFORT,
     ERROR_MSG_API_POST_TRANSPORT,
-    ERROR_MSG_API_DELETE_TRANSPORT
+    ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_DELETE_TRANSPORT,
+    ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
 } from "../const/messages";
 import {
     REGEX_ONLY_NUMBER,
@@ -321,16 +324,10 @@ function Transports() {
 
                 await fetchData();
                 return true
-            } else if (postResponse.status === 400 && postResponse.data.errorCode === 1) {
+            } else if (postResponse.status === 400) {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
                 setRegistrationNumberError(postResponse.data.registrationNumberError);
-            } else if (postResponse.status === 400 && postResponse.data.errorCode === 2) {
-                setSuccessMessage(postResponse.data.dependenceError);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: postResponse.data.dependenceError
-                });
-            } else if (postResponse.status === 500) {
+            }  else if (postResponse.status === 500) {
                 setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
@@ -380,9 +377,9 @@ function Transports() {
         if (action === "Ver") {
             openCloseModalViewDetails()
         } else if (action === "Editar") {
-            await openCloseModalUpdate()
+            await openCloseModalUpdate(transport)
         } else {
-            openCloseModalDelete()
+            await openCloseModalDelete(transport)
         }
     };
 
@@ -424,24 +421,61 @@ function Transports() {
         setViewModal(!viewModal);
     };
 
-    const openCloseModalUpdate = async () => {
-        setUpdateModal(!updateModal);
-
-        // Data are loaded when the modal is open
+    const openCloseModalUpdate = async (transport) => {
+        // If the modal is closed, transport dependence is validate before open the modal
         if (!updateModal) {
-            setTypeComfortSelected(selectedTransport.comfort.typeComfortId);
-            setDriverSelected(selectedTransport.driver.userId);
+            let dependenceResponse = await getTransportDependenceById(transport.transportId);
 
-            await requestGetAvailableDrivers();
-        }
+            // If the transport is used on a route, the modal will NOT be open
+            if (dependenceResponse.data.transportRouteDependence) {
+                setSuccessMessage(dependenceResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE
+                });
+                setDefaultValues();
+            } else {
+                // If the transport is NOT used on a route, the modal will be open
+                setUpdateModal(!updateModal);
 
-        // Data are cleaned when the modal is closed
-        if (updateModal) {
+                setTypeComfortSelected(selectedTransport.comfort.typeComfortId);
+                setDriverSelected(selectedTransport.driver.userId);
+
+                // Data are loaded when the modal is open
+                await requestGetAvailableDrivers();
+            }
+        } else {
+            // The modal is closed
+            setUpdateModal(!updateModal);
+            // Data are cleaned when the modal is closed
             setDefaultValues();
         }
     };
 
-    const openCloseModalDelete = () => {
+    const openCloseModalDelete = async (transport) => {
+        // If the modal is closed, transport dependence is validate before open the modal
+        if (!deleteModal) {
+            let dependenceResponse = await getTransportDependenceById(transport.transportId);
+
+            // If the transport is used on a route, the modal will NOT be open
+            if (dependenceResponse.data.transportRouteDependence) {
+                setSuccessMessage(dependenceResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
+                });
+                setDefaultValues();
+            } else {
+                // If the transport is NOT used on a route, the modal will be open
+                setDeleteModal(!deleteModal);
+            }
+        } else {
+            // The modal is closed
+            setDeleteModal(!deleteModal);
+            // Data are cleaned when the modal is closed
+            setDefaultValues();
+        }
+        /*
         setDeleteModal(!deleteModal);
 
         // Data are cleaned when the modal is closed
@@ -449,7 +483,7 @@ function Transports() {
             setSelectedTransport(formatSelectedTransport);
             setDriverSelected("");
             setTypeComfortSelected("");
-        }
+        }*/
     };
 
     useEffect(() => {
@@ -771,8 +805,6 @@ function Transports() {
                 onClose={openCloseModalDelete}>
                 {bodyDelete}
             </Modal>
-
-
         </div>
     );
 }

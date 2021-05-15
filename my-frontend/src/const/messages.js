@@ -52,7 +52,10 @@ export const ERROR_MSG_API_GET_TRANSPORTS = 'Ocurrió un error al obtener las co
 export const ERROR_MSG_API_GET_ACTIVE_TRANSPORTS = 'Ocurrió un error al obtener las combis activas:';
 export const ERROR_MSG_API_POST_TRANSPORT = 'Ocurrió un error al crear la combi:';
 export const ERROR_MSG_API_PUT_TRANSPORT = 'Ocurrió un error al actualizar los datos de la combi:';
+export const ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE = 'No se puede editar, la combi está asignada a rutas';
+export const ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias de la combi';
 export const ERROR_MSG_API_DELETE_TRANSPORT = 'Ocurrió un error al eliminar la combi indicada';
+export const ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE = 'No se puede eliminar, la combi está asignada a rutas';
 // Places form
 export const ERROR_MSG_EMPTY_PROVINCE = "* Seleccione una provincia";
 // Places API messages
