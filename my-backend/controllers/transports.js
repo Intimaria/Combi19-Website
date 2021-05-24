@@ -8,10 +8,9 @@ const {
     ERROR_MSG_API_POST_TRANSPORT,
     OK_MSG_API_PUT_TRANSPORT,
     ERROR_MSG_API_PUT_TRANSPORT,
-    ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE,
     OK_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT,
-    ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
+    ERROR_MSG_API_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE
 } = require("../const/messages");
 
 const {
@@ -23,9 +22,6 @@ const {
     validateTransportToCreate,
     validateTransportToUpdate
 } = require("../helpers/validateTransportInputs");
-
-const {validateTransportRouteDependence} = require("../helpers/validateTransportDependences");
-
 
 const {normalizeTransport} = require("../helpers/normalizeResult");
 
@@ -140,8 +136,8 @@ const getTransportDependenceById = async (req, res) => {
             transportRouteDependence: rows.length >= 1
         });
     } catch (error) {
-        console.log(`${ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
-        res.status(500).send(`${ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
+        console.log(`${ERROR_MSG_API_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
     }
     res.end();
 };

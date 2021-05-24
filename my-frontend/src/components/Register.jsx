@@ -10,7 +10,8 @@ import {Visibility, VisibilityOff} from "@material-ui/icons";
 import {useStyles} from '../const/modalStyle';
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import moment from "moment";
+
 
 import {BACKEND_URL} from '../const/config.js';
 
@@ -56,7 +57,11 @@ function Register() {
     const [surname, setSurname] = React.useState('');
     const [password1, setPassword1] = React.useState('');
     const [password2, setPassword2] = React.useState('');
-    const [birthday, setBirthday] = React.useState('');
+    const [birthday, setBirthday] = React.useState(moment()
+        .subtract(18, "years")
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .format('YYYY-MM-DD')
+    );
     const [emailError, setEmailError] = React.useState(null);
     const [namesError, setNamesError] = React.useState(null);
     const [surnameError, setSurnameError] = React.useState(null);
@@ -121,7 +126,11 @@ function Register() {
         setEmail('');
         setNames('');
         setSurname('');
-        setBirthday('');
+        setBirthday(moment()
+            .subtract(18, "years")
+            .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+            .format('YYYY-MM-DD')
+        );
         setPassword1('');
         setPassword1('');
         setPassword2('');
@@ -305,7 +314,6 @@ function Register() {
                                 <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
                                            id="inpEmail"
                                            type={"email"}
-                                           onChange={newValue => handleEmail(newValue)}
                                            required
                                            inputProps={{maxLength: 70}}
                                            autoComplete='off'
@@ -340,18 +348,14 @@ function Register() {
                                            onChange={newValue => handleSurname(newValue)}
                                 />
                             </Grid>
-                            {
-
-                                <Grid item xs={12}>
-                                    <CustomDatePicker
-                                        label={'Fecha de nacimiento'}
-                                        handleDate={handleBirthday}
-                                        invalidDateMessage={birthdayError}
-                                    />
-                                </Grid>
-
-                            }
-
+                            <Grid item xs={12}>
+                                <CustomDatePicker
+                                    label={'Fecha de nacimiento'}
+                                    handleDate={handleBirthday}
+                                    invalidDateMessage={birthdayError}
+                                    selectedDate={birthday}
+                                />
+                            </Grid>
                             <Grid item xs={12}>
                                 <FormControl className={styles.inputMaterial} required
                                              error={(password1Error) ? true : false}>

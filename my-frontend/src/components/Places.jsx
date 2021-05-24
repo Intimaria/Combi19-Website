@@ -11,10 +11,10 @@ import {
 import {
     ERROR_MSG_API_DELETE_PLACES,
     ERROR_MSG_API_GET_PLACES,
-    ERROR_MSG_API_GET_PROVINCES,
     ERROR_MSG_API_POST_PLACES,
     ERROR_MSG_API_PUT_PLACES,
     ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_API_GET_PROVINCES,
     ERROR_MSG_EMPTY_PROVINCE,
     ERROR_MSG_INTERNET,
     ERROR_MSG_INVALID_NAME
@@ -95,7 +95,7 @@ function Places() {
         active: '',
         idProvince: '',
         provinceName: ''
-    })
+    });
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedPlace = {
         id: '',
@@ -103,7 +103,7 @@ function Places() {
         active: '',
         idProvince: '',
         provinceName: ''
-    }
+    };
     //Para abrir y cerrar los modales
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
@@ -152,6 +152,7 @@ function Places() {
     const validateForm = () => {
         return validateName() & validateProvince();
     };
+
     const validateName = () => {
         if (!selectedPlace.cityName) {
             setNamesError(ERROR_MSG_EMPTY_NAME);
@@ -163,7 +164,7 @@ function Places() {
 
         setNamesError(null);
         return true;
-    }
+    };
 
     const validateProvince = () => {
         if (provinceSelected || selectedPlace.idProvince) {
@@ -173,20 +174,20 @@ function Places() {
             setProvinceSelectedError(ERROR_MSG_EMPTY_PROVINCE);
             return false;
         }
-    }
+    };
 
     const peticionPost = async () => {
         if (validateForm()) {
             let postResponse = await postPlace(selectedPlace, provinceSelected);
             if (postResponse.status === 201) {
-                setSuccessMessage(`Se ha creado el lugar correctamente`);
+                setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: `Se ha creado el lugar correctamente`
+                    message: postResponse.data
                 });
                 setSelectedPlace(false);
                 setProvinceSelected(false);
-                setNamesError('')
+                setNamesError('');
                 setDefaultErrorMessages(null);
                 openCloseModalCreate();
                 fetchData();
@@ -207,20 +208,18 @@ function Places() {
                 });
             }
         }
-    }
+    };
 
 
     const peticionPut = async () => {
-        console.log('antes del form')
         if (validateForm()) {
-            console.log('después del form')
             let postResponse = await putPlace(selectedPlace, provinceSelected);
 
             if (postResponse.status === 200) {
-                setSuccessMessage(`Se ha actualizado el lugar correctamente`);
+                setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: `Se ha actualizado el lugar correctamente`
+                    message: postResponse.data
                 });
                 setSelectedPlace(false);
                 setProvinceSelected(false);
@@ -245,38 +244,38 @@ function Places() {
                 });
             }
         }
-    }
+    };
 
     const peticionDelete = async () => {
-        let postResponse = await deletePlace(selectedPlace.id);
-        if (postResponse.status === 200) {
-            setSuccessMessage(`Se ha eliminado el lugar correctamente`);
+        let deleteResponse = await deletePlace(selectedPlace.id);
+        if (deleteResponse.status === 200) {
+            setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'success',
-                message: `Se ha eliminado el lugar correctamente`
+                message: deleteResponse.data
             });
             setSelectedPlace(false);
             setProvinceSelected(false);
-            setNamesError('')
+            setNamesError('');
             setDefaultErrorMessages(null);
             openCloseModalDelete();
             fetchData();
-        } else if ((postResponse?.status === 500) || (postResponse?.status === 400) || (postResponse?.status === 404)) {
+        } else if ((deleteResponse?.status === 500) || (deleteResponse?.status === 400) || (deleteResponse?.status === 404)) {
             openCloseModalDelete();
-            setSuccessMessage(postResponse.data);
+            setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: postResponse.data
+                message: deleteResponse.data
             });
             return true
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`);
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_PLACES} ${deleteResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_DELETE_PLACES} ${postResponse}`
+                message: `${ERROR_MSG_API_DELETE_PLACES} ${deleteResponse}`
             });
         }
-    }
+    };
 
     const selectPlace = (place, action) => {
         setSelectedPlace(place);
@@ -288,7 +287,7 @@ function Places() {
             openCloseModalDelete()
         }
 
-    }
+    };
 
     const openCloseModalCreate = () => {
         setCreateModal(!createModal);
@@ -297,7 +296,7 @@ function Places() {
             setProvinceSelected('');
             setDefaultErrorMessages();
         }
-    }
+    };
 
 
     const openCloseModalViewDetails = () => {
@@ -305,14 +304,15 @@ function Places() {
         if (viewModal) {
             setSelectedPlace(formatSelectedPlace);
         }
-    }
+    };
+
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
         if (updateModal) {
             setSelectedPlace(formatSelectedPlace);
             setDefaultErrorMessages();
         }
-    }
+    };
 
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
@@ -320,7 +320,7 @@ function Places() {
             setSelectedPlace(formatSelectedPlace);
             setDefaultErrorMessages();
         }
-    }
+    };
 
     //Aca busco los datos de los choferes del backend
     const fetchData = async () => {
@@ -388,7 +388,7 @@ function Places() {
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyViewDetails = (
         <div className={styles.modal}>
@@ -406,7 +406,7 @@ function Places() {
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyEdit = (
         <div className={styles.modal}>
@@ -457,7 +457,7 @@ function Places() {
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
 
     const bodyDelete = (
         <div className={styles.modal}>
@@ -472,7 +472,7 @@ function Places() {
             </div>
 
         </div>
-    )
+    );
 
     console.log("LA DATA ES:", data);
 

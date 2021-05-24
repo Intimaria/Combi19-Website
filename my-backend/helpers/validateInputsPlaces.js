@@ -1,4 +1,4 @@
-const { ERROR_MSG_EMPTY_CITY, ERROR_MSG_INVALID_CITY, ERROR_MSG_EMPTY_PROVINCE, ERROR_MSG_INVALID_PROVINCE, ERROR_MSG_INEXISTENT_PLACE } = require('../const/messages.js');
+const { ERROR_MSG_EMPTY_PLACE, ERROR_MSG_INVALID_PLACE, ERROR_MSG_EMPTY_PROVINCE, ERROR_MSG_INVALID_PROVINCE, ERROR_MSG_INEXISTENT_PLACE } = require('../const/messages.js');
 
 const { REGEX_ONLY_ALPHABETICAL } = require('../const/regex.js');
 
@@ -15,10 +15,10 @@ const validatePlace = async (cityName, provinceName) => {
 
 const validateCity = (cityName) => {
     if (!cityName) {
-        namesError = (ERROR_MSG_EMPTY_CITY);
+        namesError = (ERROR_MSG_EMPTY_PLACE);
         return false;
     } else if (!REGEX_ONLY_ALPHABETICAL.test(cityName)) {
-        namesError = (ERROR_MSG_INVALID_CITY);
+        namesError = (ERROR_MSG_INVALID_PLACE);
         return false;
     }
 

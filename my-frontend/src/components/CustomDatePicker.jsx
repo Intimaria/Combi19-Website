@@ -28,7 +28,7 @@ export const CustomDatePicker = (options) => {
     };
 
     const [defaultDate, setDefaultDate] = React.useState(options.maxDate || defaultOptions.maxDate);
-    const [selectedDate, setSelectedDate] = React.useState(false);
+    //const [selectedDate, setSelectedDate] = React.useState(false);
 
     /*
     const handleDateChange = (date) => {
@@ -36,8 +36,6 @@ export const CustomDatePicker = (options) => {
         setSelectedDate(date);
     };
     */
-
-    console.log('options es:', options);
 
     return (
         <MuiPickersUtilsProvider
@@ -61,7 +59,7 @@ export const CustomDatePicker = (options) => {
                 minDateMessage={options.minDateMessage || defaultOptions.minDateMessage}
                 maxDate={options.maxDate || defaultOptions.maxDate}
                 maxDateMessage={options.maxDateMessage || defaultOptions.maxDateMessage}
-                value={selectedDate ? selectedDate : defaultDate}
+                value={options.selectedDate ? options.selectedDate : defaultDate}
                 onChange={(event) => options.handleDate(event)}
                 error={(options.invalidDateMessage) ? true : false}
                 helperText={(options.invalidDateMessage) ? options.invalidDateMessage : false}
