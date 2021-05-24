@@ -27,11 +27,17 @@ export const CustomDatePicker = (options) => {
         maxDateMessage: ERROR_MSG_INVALID_AGE
     };
 
-    const [selectedDate, setSelectedDate] = React.useState(options.maxDate || defaultOptions.maxDate);
+    const [defaultDate, setDefaultDate] = React.useState(options.maxDate || defaultOptions.maxDate);
+    const [selectedDate, setSelectedDate] = React.useState(false);
 
+    /*
     const handleDateChange = (date) => {
+        console.log('la fecha es:', date)
         setSelectedDate(date);
     };
+    */
+
+    console.log('options es:', options);
 
     return (
         <MuiPickersUtilsProvider
@@ -55,8 +61,10 @@ export const CustomDatePicker = (options) => {
                 minDateMessage={options.minDateMessage || defaultOptions.minDateMessage}
                 maxDate={options.maxDate || defaultOptions.maxDate}
                 maxDateMessage={options.maxDateMessage || defaultOptions.maxDateMessage}
-                value={selectedDate}
-                onChange={handleDateChange}
+                value={selectedDate ? selectedDate : defaultDate}
+                onChange={(event) => options.handleDate(event)}
+                error={(options.invalidDateMessage) ? true : false}
+                helperText={(options.invalidDateMessage) ? options.invalidDateMessage : false}
                 KeyboardButtonProps={{
                     "aria-label": "Calendario"
                 }}

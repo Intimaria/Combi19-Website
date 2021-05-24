@@ -1,7 +1,18 @@
 import React from 'react';
-import { Message } from '../components/Message';
+import {Message} from '../components/Message';
+import {TextField, Button} from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Input from '@material-ui/core/Input';
+import FormControl from '@material-ui/core/FormControl';
+import {Visibility, VisibilityOff} from "@material-ui/icons";
+import {useStyles} from '../const/modalStyle';
+import IconButton from "@material-ui/core/IconButton";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
-import { BACKEND_URL } from '../const/config.js';
+import {BACKEND_URL} from '../const/config.js';
 
 import {
     ERROR_MSG_EMPTY_DATE,
@@ -14,32 +25,30 @@ import {
     ERROR_MSG_INVALID_DATE,
     ERROR_MSG_INVALID_EMAIL,
     ERROR_MSG_INVALID_NAME,
-    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
-    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
     ERROR_MSG_PASSWORD_NO_MATCH,
-    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
     ERROR_MSG_INVALID_SURNAME
 } from '../const/messages.js';
 
 import {
     REGEX_DATE_YYYY_MM_DD,
     REGEX_EMAIL,
-    REGEX_ONLY_ALPHABETICAL,
-    REGEX_ONLY_NUMBER,
-    REGEX_ONLY_LOWERCASE,
-    REGEX_ONLY_UPPERCASE
+    REGEX_ONLY_ALPHABETICAL
 } from '../const/regex.js';
+
+import {CustomDatePicker} from '../components/CustomDatePicker';
 
 
 const axios = require("axios");
+
 function Register() {
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
 
     const today = new Date().toISOString().slice(0, 10);
+    const styles = useStyles();
     const [showPassword1, setShowPassword1] = React.useState(false);
     const [showPassword2, setShowPassword2] = React.useState(false);
     const [email, setEmail] = React.useState('');
@@ -55,14 +64,16 @@ function Register() {
     const [password2Error, setPassword2Error] = React.useState(null);
     const [birthdayError, setBirthdayError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const handleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
-    }
+    };
+
     const handleShowPassword2 = () => {
         setShowPassword2(!showPassword2);
-    }
+    };
+
     const mySubmitHandler = (event) => {
         event.preventDefault();
 
@@ -75,7 +86,8 @@ function Register() {
         postRequest();
         return true;
 
-    }
+    };
+
     const postRequest = () => {
         axios.post(`${BACKEND_URL}/register`, {
             names,
@@ -103,7 +115,7 @@ function Register() {
                 setPassword1Error(error.response.data.passwordError1);
                 setPassword2Error(error.response.data.passwordError2);
             });
-    }
+    };
 
     const setDefaultValues = () => {
         setEmail('');
@@ -119,37 +131,39 @@ function Register() {
         setEmail(newValue.target.value);
         setSuccessMessage(null);
         setEmailError(null);
-    }
+    };
 
     const handleNames = (newValue) => {
         setNames(newValue.target.value);
         setSuccessMessage(null);
         setNamesError(null);
-    }
+    };
 
     const handleSurname = (newValue) => {
         setSurname(newValue.target.value);
         setSuccessMessage(null);
         setSurnameError(null);
-    }
+    };
 
     const handleBirthday = (newValue) => {
-        setBirthday(newValue.target.value);
+        if (newValue) {
+            setBirthday(newValue.format('YYYY-MM-DD'));
+            setBirthdayError(null);
+        }
         setSuccessMessage(null);
-        setBirthdayError(null);
-    }
+    };
 
     const handlePassword1 = (newValue) => {
         setPassword1(newValue.target.value);
         setSuccessMessage(null);
         setPassword1Error(null);
-    }
+    };
 
     const handlePassword2 = (newValue) => {
         setPassword2(newValue.target.value);
         setSuccessMessage(null);
         setPassword2Error(null);
-    }
+    };
 
     const validate = () => {
         return validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateDate();
@@ -159,16 +173,18 @@ function Register() {
     const validateEmail = () => {
         if (!email) {
             setEmailError(ERROR_MSG_EMPTY_EMAIL);
+            console.log('entró1')
             return false;
         }
         if (!REGEX_EMAIL.test(email)) {
             setEmailError(ERROR_MSG_INVALID_EMAIL);
+            console.log('entró2')
             return false;
         }
 
         setEmailError(null);
         return true;
-    }
+    };
 
     const validateName = () => {
         if (!names) {
@@ -181,7 +197,8 @@ function Register() {
 
         setNamesError(null);
         return true;
-    }
+    };
+
     const validateSurname = () => {
         if (!surname) {
             setSurnameError(ERROR_MSG_EMPTY_SURNAME);
@@ -193,7 +210,7 @@ function Register() {
 
         setSurnameError(null);
         return true;
-    }
+    };
 
     const validatePassword = () => {
         if (!password1) {
@@ -202,20 +219,11 @@ function Register() {
         } else if (password1.length < 6) {
             setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS);
             return false;
-        }/* else if (!REGEX_ONLY_NUMBER.test(password1)) {
-            setPassword1Error(ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS);
-            return false;
-        } else if (!REGEX_ONLY_UPPERCASE.test(password1)) {
-            setPassword1Error(ERROR_MSG_INVALID_NO_CAPITAL_LETTERS);
-            return false;
-        } else if (!REGEX_ONLY_LOWERCASE.test(password1)) {
-            setPassword1Error(ERROR_MSG_INVALID_NO_LOWER_CASE);
-            return false;
-        } */
+        }
 
         setPassword1Error(null);
         return true;
-    }
+    };
 
     const comparePasswords = () => {
         if (!password2) {
@@ -228,12 +236,13 @@ function Register() {
 
         setPassword2Error(null);
         return true;
-    }
+    };
 
     const validateDate = () => {
         function calculateAge() {
             let birthdayDate = new Date(birthday);
             let todayDate = new Date();
+
             var age = todayDate.getFullYear() - birthdayDate.getFullYear();
             var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
             if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate() + 1))))
@@ -277,91 +286,140 @@ function Register() {
         }
         setBirthdayError(null);
         return true;
-    }
+    };
 
     return (
-        <div className="container w-50 bg-dark pb-3 rounded">
+        <div className={styles.modal}>
             <form onSubmit={mySubmitHandler} encType="multipart/form-data">
-                <h2 className="text-light">Registrarse</h2>
+                <h2 align={'center'}>Registrarse</h2>
                 <div className="row ">
                     {
                         successMessage ?
                             <Message open={options.open} type={options.type} message={options.message}
-                                handleClose={options.handleClose} />
+                                     handleClose={options.handleClose}/>
                             : null
                     }
-                    <div className="col-md">
-                        <input id="inpEmail" type="email" className="form-control mt-3" name="email"
-                            placeholder="Correo electronico" maxLength="70"
-                            value={email} onChange={newValue => handleEmail(newValue)} />
-                        {
-                            emailError ? <span className="text-danger small">{emailError}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
-                    </div>
-                    <div className="w-100"></div>
-                    <div className="col-md">
-                        <input id="inpName" type="text" className="form-control mt-3" name="names"
-                            placeholder="Nombre" maxLength="45"
-                            value={names} onChange={newValue => handleNames(newValue)} />
-                        {
-                            namesError ? <span className="text-danger small">{namesError}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
-                    </div>
-                    <div className="col-md">
-                        <input id="inpApellido" type="text" className="form-control mt-3" name="surname"
-                            placeholder="Apellido" maxLength="45" value={surname}
-                            onChange={newValue => handleSurname(newValue)} />
-                        {
-                            surnameError ? <span className="text-danger small">{surnameError}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
-                    </div>
-                    <div className="w-100"></div>
-                    <div className="col-md">
-                        <div className="d-flex justify-content-between">
-                            <label htmlFor="birthday" className="text-light mt-3">Fecha de nacimiento</label>
-                        </div>
-                        <input id="inpBirthday" type="date" className="form-control" name="birthday" value={birthday}
-                            onChange={newValue => handleBirthday(newValue)}></input>
-                        {
-                            birthdayError ? <span className="text-danger small">{birthdayError}</span> :
-                                <span className="text-danger small">&nbsp;</span>
-                        }
-                    </div>
-                    <div className="w-100"></div>
-                    <div className="col-md">
-                        <input id="inpPassword" type={showPassword1 ? "text" : "password"} className="form-control mt-3" name="password1"
-                            placeholder="Contraseña" maxLength="30" value={password1}
-                            onChange={newValue => handlePassword1(newValue)} />
+                    <div>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
+                                           id="inpEmail"
+                                           type={"email"}
+                                           onChange={newValue => handleEmail(newValue)}
+                                           required
+                                           inputProps={{maxLength: 70}}
+                                           autoComplete='off'
+                                           error={(emailError) ? true : false}
+                                           helperText={(emailError) ? emailError : false}
+                                           value={email}
+                                           onChange={newValue => handleEmail(newValue)}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial} label="Nombre" name="names" id={"inpName"}
+                                           required
+                                           inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                                           style={{paddingRight: '10px'}}
+                                           autoComplete='off'
+                                           error={(namesError) ? true : false}
+                                           helperText={(namesError) ? namesError : false}
+                                           value={names}
+                                           onChange={newValue => handleNames(newValue)}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial} label="Apellido" name="surname"
+                                           id="inpSurname"
+                                           required
+                                           inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                                           style={{paddingRight: '10px', marginLeft: '10px'}}
+                                           autoComplete='off'
+                                           error={(surnameError) ? true : false}
+                                           helperText={(surnameError) ? surnameError : false}
+                                           value={surname}
+                                           onChange={newValue => handleSurname(newValue)}
+                                />
+                            </Grid>
+                            {
 
-                    </div>
-                    <div className="col-md">
-                        <input id="inpRepeatPassword" type={showPassword2 ? "text" : "password"} className="form-control mt-3" name="password2"
-                            placeholder="Repita la contraseña" maxLength="30" value={password2}
-                            onChange={newValue => handlePassword2(newValue)} />
+                                <Grid item xs={12}>
+                                    <CustomDatePicker
+                                        label={'Fecha de nacimiento'}
+                                        handleDate={handleBirthday}
+                                        invalidDateMessage={birthdayError}
+                                    />
+                                </Grid>
 
-                    </div>
-                    <div className="w-100"></div>
-                    <label className="text-light w-50">
-                        Mostrar contraseña: <input type="checkbox" key="inpPassword" onChange={() => handleShowPassword1()}/>
-                    </label>
-                    <label className="text-light w-50">
-                        Mostrar contraseña: <input type="checkbox" key="inpRepeatPassword" onChange={() => handleShowPassword2()}/>
-                    </label>
-                    <div className="w-100"></div>
-                    {
-                        password1Error ? <span className="text-danger small w-50">{password1Error}</span> :
-                            <span className="text-danger small w-50">&nbsp;</span>
-                    }
-                    {
-                        password2Error ? <span className="text-danger small w-50">{password2Error}</span> :
-                            <span className="text-danger small w-50">&nbsp;</span>
-                    }
-                    <div className="text-center">
-                        <input id="btnRegister" type="submit" value="Registrarse"
-                            className="btn btn-primary w-50 mt-3" />
+                            }
+
+                            <Grid item xs={12}>
+                                <FormControl className={styles.inputMaterial} required
+                                             error={(password1Error) ? true : false}>
+                                    <InputLabel htmlFor="password1">Contraseña</InputLabel>
+                                    <Input
+                                        id="password1"
+                                        required
+                                        inputProps={{maxLength: 100}}
+                                        autoComplete='off'
+                                        type={showPassword1 ? 'text' : 'password'}
+                                        name="password1"
+                                        value={password1}
+                                        onChange={newValue => handlePassword1(newValue)}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleShowPassword1}
+                                                    edge="end"
+                                                >
+                                                    {showPassword1 ? <Visibility/> : <VisibilityOff/>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <FormHelperText>{(password1Error) ? password1Error : false}</FormHelperText>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl className={styles.inputMaterial}
+                                             required
+                                             error={(password2Error) ? true : false}>
+                                    <InputLabel htmlFor="password2">Repita la contraseña</InputLabel>
+                                    <Input
+                                        id="password2"
+                                        required
+                                        inputProps={{maxLength: 100}}
+                                        autoComplete='off'
+                                        type={showPassword2 ? 'text' : 'password'}
+                                        name="password2"
+                                        value={password2}
+                                        onChange={newValue => handlePassword2(newValue)}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleShowPassword2}
+                                                    edge="end"
+                                                >
+                                                    {showPassword2 ? <Visibility/> : <VisibilityOff/>}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <FormHelperText>{(password2Error) ? password2Error : false}</FormHelperText>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/><br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="primary"
+                                        id="btnRegister"
+                                        type="submit"
+                                >REGISTRARSE</Button>
+                            </Grid>
+                        </Grid>
                     </div>
                 </div>
             </form>

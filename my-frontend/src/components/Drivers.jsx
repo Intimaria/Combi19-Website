@@ -451,7 +451,9 @@ function Drivers() {
                        helperText={(emailError) ? emailError : false}
                        value={selectedDriver && selectedDriver.email}/>
             <br/>
-            <FormControl className={styles.inputMaterial} error={(password1Error) ? true : false}>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(password1Error) ? true : false}>
                 <InputLabel htmlFor="password1">Contraseña</InputLabel>
                 <Input
                     id="password1"
@@ -476,7 +478,9 @@ function Drivers() {
                 />
             <FormHelperText>{(password1Error) ? password1Error : false}</FormHelperText>
             </FormControl>
-            <FormControl className={styles.inputMaterial} error={(password2Error) ? true : false}>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(password2Error) ? true : false}>
                 <InputLabel htmlFor="password2">Repita la contraseña</InputLabel>
                 <Input
                     id="password2"
