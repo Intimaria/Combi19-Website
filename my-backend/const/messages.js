@@ -33,6 +33,7 @@ module.exports = {
     OK_MSG_API_DELETE_DRIVER: 'Se eliminó el chofer con éxito',
     ERROR_MSG_API_DELETE_DRIVER: 'Ocurrió un error al eliminar el chofer indicado',
     ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE: 'No se puede eliminar, el chofer figura como conductor de combis',
+    ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de el chofer',
     // Places API messages
     ERROR_MSG_API_GET_PLACES: 'Ocurrió un error al obtener los lugares:',
     ERROR_MSG_API_GET_ACTIVE_PLACES: 'Ocurrió un error al obtener los activos lugares:',
@@ -85,5 +86,24 @@ module.exports = {
     ERROR_MSG_API_PUT_ROUTE: 'Ocurrió un error al modificar la ruta indicada',
     ERROR_MSG_API_DELETE_ROUTE: 'Ocurrió un error al eliminar la ruta indicada',
     ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE: 'No se puede eliminar, la ruta está asignada a viajes pendientes',
-    OK_MSG_API_DELETE_ROUTE: 'Se eliminó la ruta con éxito'
+    ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de la ruta',
+    OK_MSG_API_DELETE_ROUTE: 'Se eliminó la ruta con éxito',
+    // Products API messages
+    ERROR_MSG_API_GET_PRODUCTS: 'Ocurrió un error al obtener los producto: ',
+    ERROR_MSG_API_GET_PRODUCT_BY_ID: 'Ocurrió un error al obtener el producto indicado:',
+    ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE: 'Ocurrió un error al obtener los productos disponibles:',
+    OK_MSG_API_POST_PRODUCT: 'Se registró el producto con éxito',
+    ERROR_MSG_API_POST_PRODUCT: 'Ocurrió un error al crear el producto:',
+    OK_MSG_API_PUT_PRODUCT: 'Se actualizaron los datos del producto con éxito',
+    ERROR_MSG_API_PUT_PRODUCT: 'Ocurrió un error al actualizar los datos del producto:',
+    OK_MSG_API_DELETE_PRODUCT: 'Se eliminó el producto con éxito',
+    ERROR_MSG_API_DELETE_PRODUCT: 'Ocurrió un error al eliminar el producto indicado',
+    ERROR_MSG_INVALID_NAME_PRODUCT: '* Ingrese un nombre de producto valido',
+    ERROR_MSG_INVALID_PRICE_PRODUCT: '* Ingrese un precio de producto valido',
+    ERROR_MSG_INVALID_TYPE_PRODUCT: '* Ingrese un tipo de producto valido',
+    ERROR_MSG_EXISTING_NAME_PRODUCT: '* Ya existe un producto con ese nombre',
+    ERROR_MSG_EMPTY_NAME_PRODUCT: '* Ingrese un nombre de producto',
+    ERROR_MSG_EMPTY_PRICE_PRODUCT: '* Ingrese un precio de producto',
+    ERROR_MSG_EMPTY_TYPE_PRODUCT: '* Ingrese un tipo de producto',
+    ERROR_MSG_API_PUT_PRODUCT_VALIDATE_CLIENT_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de el producto',
 };

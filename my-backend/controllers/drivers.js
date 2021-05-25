@@ -1,10 +1,10 @@
-const {prepareConnection} = require("../helpers/connectionDB.js");
+const { prepareConnection } = require("../helpers/connectionDB.js");
 
-const {validateDriversToCreate, validateDriversToModify} = require("../helpers/validateUserInputs.js");
+const { validateDriversToCreate, validateDriversToModify } = require("../helpers/validateUserInputs.js");
 
-const {validateDriverTransportDependence} = require('../helpers/validateDriverDependences.js');
+const { validateDriverTransportDependence } = require('../helpers/validateDriverDependences.js');
 
-const {normalizeDrivers} = require('../helpers/normalizeResult.js');
+const { normalizeDrivers } = require('../helpers/normalizeResult.js');
 
 // const { validateDriverTripDependence } = require('../helpers/validateDriverDependences.js');
 
@@ -23,7 +23,7 @@ const {
     ERROR_MSG_API_PUT_DRIVER,
     OK_MSG_API_DELETE_DRIVER,
     ERROR_MSG_API_DELETE_DRIVER,
-    ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE
+    ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE
 } = require('../const/messages.js');
 
 const getDrivers = async (req, res) => {
@@ -44,7 +44,7 @@ const getDrivers = async (req, res) => {
 
 const getDriverById = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const connection = await prepareConnection();
         const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, PASSWORD, PHONE_NUMBER, ACTIVE FROM USER a INNER JOIN ROLE_USER r ON (a.USER_ID = r.ID_USER) WHERE r.ID_ROLE = ? AND a.USER_ID = ?';
         const [rows, fields] = await connection.execute(sqlSelect, [DRIVER_ROLE, id]);
@@ -86,7 +86,7 @@ const getAvailableDrivers = async (req, res) => {
 }
 
 const postDriver = async (req, res) => {
-    const {names, surname, email, phoneNumber, password1, password2} = req.body;
+    const { names, surname, email, phoneNumber, password1, password2 } = req.body;
 
     const inputsErrors = await validateDriversToCreate(email, names, surname, password1, password2, phoneNumber);
 
@@ -113,8 +113,8 @@ const postDriver = async (req, res) => {
 };
 
 const putDriver = async (req, res) => {
-    const {id} = req.params
-    const {names, surname, email, phoneNumber, password1, password2} = req.body;
+    const { id } = req.params
+    const { names, surname, email, phoneNumber, password1, password2 } = req.body;
 
     const inputsErrors = await validateDriversToModify(email, names, surname, password1, password2, phoneNumber, id);
 
@@ -137,25 +137,30 @@ const putDriver = async (req, res) => {
 };
 
 const deleteDriver = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
+    try {
+        const connection = await prepareConnection();
+        const sqlUpdate = 'UPDATE ROLE_USER SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
+        const [rows] = await connection.execute(sqlUpdate, [NO_ACTIVE, id, DRIVER_ROLE]);
+        connection.end();
+        return res.status(200).send(OK_MSG_API_DELETE_DRIVER);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
+    }
 
-    if (await validateDriverTransportDependence(id)) {
-        res.status(400).send(`${ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE}`);
-    }/*// Analizar: creo que no es necesario agregar esta validación, ya que una cosa lleva a la otra
-    else if (await validateDriverTripDependence(id)) {
-        res.status(400).send("No se puede eliminar, el chofer figura como conductor de viajes");
-    } */
-    else {
-        try {
-            const connection = await prepareConnection();
-            const sqlUpdate = 'UPDATE ROLE_USER SET ACTIVE= ? WHERE ID_USER = ? AND ID_ROLE = ?';
-            const [rows] = await connection.execute(sqlUpdate, [NO_ACTIVE, id, DRIVER_ROLE]);
-            connection.end();
-            return res.status(200).send(OK_MSG_API_DELETE_DRIVER);
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
-            res.status(500).send(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
-        }
+    res.end();
+};
+
+const getDriversDependenceById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        res.json({
+            driverTransportDependence: await validateDriverTransportDependence(id)
+        });
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE}`);
     }
     res.end();
 };
@@ -166,5 +171,6 @@ module.exports = {
     getAvailableDrivers,
     postDriver,
     putDriver,
-    deleteDriver
+    deleteDriver,
+    getDriversDependenceById
 }

@@ -1,6 +1,6 @@
 const {Router} = require('express');
 
-const {getRoutes, getRouteById, postRoute, putRoute, deleteRoute} = require("../controllers/routes.js");
+const {getRoutes, getRouteById, postRoute, putRoute, deleteRoute, getRouteDependenceById} = require("../controllers/routes.js");
 
 // The administrator role should be validated with a middleware before performing any operation
 const {authenticateAdminRol} = require("../middlewares/authorization.js");
@@ -15,6 +15,9 @@ router.get('/:id', authenticateAdminRol, getRouteById);
 
 // Create a new route
 router.post('/', authenticateAdminRol, postRoute);
+
+// Retrieve route dependence by id
+router.get('/custom/routeDependenceById/:id', authenticateAdminRol, getRouteDependenceById);
 
 // Update a route by id
 router.put('/:id', authenticateAdminRol, putRoute);
