@@ -474,15 +474,6 @@ function Transports() {
             // Data are cleaned when the modal is closed
             setDefaultValues();
         }
-        /*
-        setDeleteModal(!deleteModal);
-
-        // Data are cleaned when the modal is closed
-        if (deleteModal) {
-            setSelectedTransport(formatSelectedTransport);
-            setDriverSelected("");
-            setTypeComfortSelected("");
-        }*/
     };
 
     useEffect(() => {
