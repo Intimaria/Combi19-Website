@@ -88,9 +88,28 @@ const normalizeRoutes = (rows) => {
     }
     return results;
 };
+
+const normalizeProducts = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let product = {
+            idProduct: rows[index].PRODUCT_ID,
+            typeProductId: rows[index].TYPE_PRODUCT_ID,
+            typeProductDescription: rows[index].TYPE_PRODUCT_DESCRIPTION,
+            name: rows[index].PRODUCT_NAME,
+            price: rows[index].PRICE,
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
+        };
+        results.push(product);
+    }
+    return results;
+};
+
 module.exports = {
     normalizeTransport,
     normalizeDrivers,
     normalizePlaces,
-    normalizeRoutes
+    normalizeRoutes,
+    normalizeProducts
 };

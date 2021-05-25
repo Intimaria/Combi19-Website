@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Modal, TextField, Button} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Modal, TextField, Button } from '@material-ui/core';
 import FormControl from "@material-ui/core/FormControl";
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -10,16 +10,17 @@ import Tooltip from '@material-ui/core/Tooltip';
 import HelpIcon from '@material-ui/icons/Help';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {useStyles} from '../const/modalStyle';
-import {Message} from '../components/Message';
+import { useStyles } from '../const/modalStyle';
+import { Message } from '../components/Message';
 
-import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import { materialTableConfiguration } from '../const/materialTableConfiguration';
 
 import {
     getRoutes,
     postRoutes,
     putRoutes,
-    deleteRoutes
+    deleteRoutes,
+    getRouteDependenceById
 } from '../api/Routes';
 
 import {
@@ -48,7 +49,9 @@ import {
     ERROR_MSG_INVALID_TRANSPORT,
     ERROR_MSG_INVALID_PLACE_DESTINATION,
     ERROR_MSG_INVALID_PLACE_DEPARTURE,
-    ERROR_MSG_REPEAT_PLACES
+    ERROR_MSG_REPEAT_PLACES,
+    ERROR_MSG_API_MODIFY_ROUTE_TRIP_DEPENDENCE,
+    ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE
 } from "../const/messages";
 
 import {
@@ -62,20 +65,20 @@ import {
 } from "../helpers/strings";
 
 const columns = [
-    {title: 'Ciudad de origen', field: 'departure.cityName'},
-    {title: 'Provincia de origen', field: 'departure.provinceName'},
-    {title: 'Ciudad de destino', field: 'destination.cityName'},
-    {title: 'Provincia de destino', field: 'destination.provinceName'},
-    {title: 'Combi', field: 'transport.internalIdentification'},
-    {title: 'Duración (HH:MM)', field: 'duration'},
-    {title: 'Distancia en km', field: 'km'},
-    {title: 'Estado', field: 'active'}
+    { title: 'Ciudad de origen', field: 'departure.cityName' },
+    { title: 'Provincia de origen', field: 'departure.provinceName' },
+    { title: 'Ciudad de destino', field: 'destination.cityName' },
+    { title: 'Provincia de destino', field: 'destination.provinceName' },
+    { title: 'Combi', field: 'transport.internalIdentification' },
+    { title: 'Duración (HH:MM)', field: 'duration' },
+    { title: 'Distancia en km', field: 'km' },
+    { title: 'Estado', field: 'active' }
 ];
 
 function Routes() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
-        setOptions({...options, open: false});
+        setOptions({ ...options, open: false });
     };
 
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
@@ -123,7 +126,7 @@ function Routes() {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     const setDefaultValues = () => {
         setDefaultObjectsValues();
@@ -146,7 +149,7 @@ function Routes() {
     };
 
     const handleChange = async (textFieldAtributes) => {
-        const {name, value} = textFieldAtributes.target;
+        const { name, value } = textFieldAtributes.target;
 
         if (name === 'departureSelected') {
             setDepartureError(false);
@@ -354,7 +357,7 @@ function Routes() {
     const requestDeleteRoute = async () => {
         let deleteResponse = await deleteRoutes(selectedRoute.idRoute);
 
-        if (deleteResponse.status === 200) {
+        if (deleteResponse?.status === 200) {
             setSuccessMessage(`Se ha eliminado la ruta correctamente`);
             setOptions({
                 ...options, open: true, type: 'success',
@@ -362,13 +365,6 @@ function Routes() {
             });
             openCloseModalDelete();
             await fetchData();
-        } else if (deleteResponse?.status === 400 || deleteResponse?.status === 500) {
-            setSuccessMessage(deleteResponse.data);
-            setOptions({
-                ...options, open: true, type: 'error',
-                message: deleteResponse.data
-            });
-            openCloseModalDelete();
         } else {
             setSuccessMessage(`${ERROR_MSG_API_DELETE_ROUTES} ${deleteResponse}`);
             setOptions({
@@ -435,9 +431,9 @@ function Routes() {
         if (action === "Ver") {
             openCloseModalViewDetails()
         } else if (action === "Editar") {
-            await openCloseModalUpdate()
+            await openCloseModalUpdate(route)
         } else {
-            openCloseModalDelete()
+            await openCloseModalDelete(route)
         }
     };
 
@@ -445,30 +441,50 @@ function Routes() {
         setViewModal(!viewModal);
     };
 
-    const openCloseModalUpdate = async () => {
-        setUpdateModal(!updateModal);
-
-        // Data are loaded when the modal is open
+    const openCloseModalUpdate = async (route) => {
         if (!updateModal) {
-            setTransportSelected(selectedRoute.transport.transportId);
-            setDepartureSelected(selectedRoute.departure.cityId);
-            setDestinationSelected(selectedRoute.destination.cityId);
+            let dependenceResponse = await getRouteDependenceById(route.idRoute);
 
-            await requestGetPlaces();
-            await requestGetTransports();
-        }
+            if (dependenceResponse.data.routeTripDependence) {
+                setSuccessMessage(ERROR_MSG_API_MODIFY_ROUTE_TRIP_DEPENDENCE);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_MODIFY_ROUTE_TRIP_DEPENDENCE
+                });
+                setDefaultValues();
+            } else {
+                setUpdateModal(!updateModal);
 
-        // Data are cleaned when the modal is closed
-        if (updateModal) {
+                setTransportSelected(selectedRoute.transport.transportId);
+                setDepartureSelected(selectedRoute.departure.cityId);
+                setDestinationSelected(selectedRoute.destination.cityId);
+
+                await requestGetPlaces();
+                await requestGetTransports();
+
+            }
+        } else {
+            setUpdateModal(!updateModal);
             setDefaultValues();
         }
     };
 
-    const openCloseModalDelete = () => {
-        setDeleteModal(!deleteModal);
+    const openCloseModalDelete = async (route) => {
+        if (!deleteModal) {
+            let dependenceResponse = await getRouteDependenceById(route.idRoute);
 
-        // Data are cleaned when the modal is closed
-        if (deleteModal) {
+            if (dependenceResponse.data.routeTripDependence) {
+                setSuccessMessage(ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_DELETE_ROUTE_TRIP_DEPENDENCE
+                });
+                setDefaultValues();
+            } else {
+                setDeleteModal(!deleteModal);
+            }
+        } else {
+            setDeleteModal(!deleteModal);
             setDefaultValues();
         }
     };
@@ -509,30 +525,30 @@ function Routes() {
     const inputsToCreateOrModify = (
         <div>
             <TextField label="Duración" id={"duration"} name="duration"
-                       className={styles.inputMaterial}
-                       required
-                       inputProps={{maxLength: 8}}
-                       autoComplete='off'
-                       error={(durationError) ? true : false}
-                       helperText={(durationError) ? durationError : false}
-                       value={selectedRoute && selectedRoute.duration}
-                       onChange={handleChange}/>
+                className={styles.inputMaterial}
+                required
+                inputProps={{ maxLength: 8 }}
+                autoComplete='off'
+                error={(durationError) ? true : false}
+                helperText={(durationError) ? durationError : false}
+                value={selectedRoute && selectedRoute.duration}
+                onChange={handleChange} />
             <Tooltip
                 title="El formato debe ser horas:minutos, por ejemplo, 26:30">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     En formato horas:minutos
                 </FormHelperText>
             </Tooltip>
             <TextField label="Distancia en km" id={"km"} name="km"
-                       className={styles.inputMaterial}
-                       required
-                       inputProps={{maxLength: 9}}
-                       autoComplete='off'
-                       error={(kmError) ? true : false}
-                       helperText={(kmError) ? kmError : false}
-                       value={selectedRoute && selectedRoute.km}
-                       onChange={handleChange}/>
+                className={styles.inputMaterial}
+                required
+                inputProps={{ maxLength: 9 }}
+                autoComplete='off'
+                error={(kmError) ? true : false}
+                helperText={(kmError) ? kmError : false}
+                value={selectedRoute && selectedRoute.km}
+                onChange={handleChange} />
         </div>
     )
     const bodyCreate = (
@@ -540,14 +556,14 @@ function Routes() {
             <h3>AGREGAR NUEVA RUTA</h3>
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(departureError) ? true : false}>
+                required
+                error={(departureError) ? true : false}>
                 <InputLabel>Origen</InputLabel>
                 <Select label="Origen" id="departureSelected" labelId={"departureSelected"} name="departureSelected"
-                        className={styles.inputMaterial}
-                        value={(departureSelected) ? departureSelected : 0}
-                        displayEmpty
-                        onChange={handleChange}
+                    className={styles.inputMaterial}
+                    value={(departureSelected) ? departureSelected : 0}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione un lugar
@@ -568,15 +584,15 @@ function Routes() {
                 <FormHelperText>{(departureError) ? departureError : false}</FormHelperText>
             </FormControl>
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(destinationError) ? true : false}>
+                required
+                error={(destinationError) ? true : false}>
                 <InputLabel>Destino</InputLabel>
                 <Select label="Destino" id="destinationSelected" labelId={"destinationSelected"}
-                        name="destinationSelected"
-                        className={styles.inputMaterial}
-                        value={(destinationSelected) ? destinationSelected : 0}
-                        displayEmpty
-                        onChange={handleChange}
+                    name="destinationSelected"
+                    className={styles.inputMaterial}
+                    value={(destinationSelected) ? destinationSelected : 0}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione un lugar
@@ -599,19 +615,19 @@ function Routes() {
             <Tooltip
                 title="Se considera disponible si el lugar no está dado de baja">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Sólo se visualizan los lugares disponibles
                 </FormHelperText>
             </Tooltip>
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(transportError) ? true : false}>
+                required
+                error={(transportError) ? true : false}>
                 <InputLabel>Combi</InputLabel>
                 <Select label="Combi" id="transportSelected" labelId={"transportSelected"} name="transportSelected"
-                        className={styles.inputMaterial}
-                        value={(transportSelected) ? transportSelected : 0}
-                        displayEmpty
-                        onChange={handleChange}
+                    className={styles.inputMaterial}
+                    value={(transportSelected) ? transportSelected : 0}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione una combi
@@ -633,12 +649,12 @@ function Routes() {
             <Tooltip
                 title="Se considera disponible si la combi no está dada">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Sólo se visualizan las combis disponibles
                 </FormHelperText>
             </Tooltip>
-            <br/>
-            <br/>
+            <br />
+            <br />
             <div align="right">
                 <Button color="primary" onClick={() => requestPostRoute()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
@@ -650,29 +666,29 @@ function Routes() {
         <div className={styles.modal}>
             <h3>DETALLE DE LA RUTA</h3>
             <TextField className={styles.inputMaterial} label="Estado"
-                       value={selectedRoute && selectedRoute.active} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.active} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Ciudad de origen"
-                       value={selectedRoute && selectedRoute.departure.cityName} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.departure.cityName} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Provincia de origen"
-                       value={selectedRoute && selectedRoute.departure.provinceName} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.departure.provinceName} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Ciudad de destino"
-                       value={selectedRoute && selectedRoute.destination.cityName} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.destination.cityName} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Provincia de destino"
-                       value={selectedRoute && selectedRoute.destination.provinceName} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.destination.provinceName} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Duración"
-                       value={selectedRoute && selectedRoute.duration} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.duration} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Combi"
-                       value={selectedRoute && selectedRoute.transport.internalIdentification} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.transport.internalIdentification} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Distancia"
-                       value={selectedRoute && selectedRoute.km} autoComplete="off"/>
-            <br/>
+                value={selectedRoute && selectedRoute.km} autoComplete="off" />
+            <br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>Salir</Button>
             </div>
@@ -684,25 +700,25 @@ function Routes() {
             <h3>EDITAR RUTA</h3>
             <Tooltip title="Debe eliminar la ruta para cambiar el estado">
                 <TextField className={styles.inputMaterial} label="Estado" name="active"
-                           value={selectedRoute && selectedRoute.active} disabled/>
+                    value={selectedRoute && selectedRoute.active} disabled />
             </Tooltip>
-            <br/>
+            <br />
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(departureError) ? true : false}>
+                required
+                error={(departureError) ? true : false}>
                 <InputLabel>Origen</InputLabel>
                 <Select label="Origen" id="departureSelected" labelId={"departureSelected"} name="departureSelected"
-                        className={styles.inputMaterial}
-                        value={(departureSelected) ? departureSelected : selectedRoute.departure.cityId}
-                        displayEmpty
-                        onChange={handleChange}
+                    className={styles.inputMaterial}
+                    value={(departureSelected) ? departureSelected : selectedRoute.departure.cityId}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione un lugar
                     </MenuItem>
                     <MenuItem value={selectedRoute.departure.cityId}>
-                         {selectedRoute.departure.cityName}, {selectedRoute.departure.provinceName}
+                        {selectedRoute.departure.cityName}, {selectedRoute.departure.provinceName}
                     </MenuItem>
                     {(places) ?
                         places.filter(place => place.id !== selectedRoute.departure.cityId).map((places) => (
@@ -722,20 +738,20 @@ function Routes() {
             <Tooltip
                 title="Se considera disponible si el lugar no está dado de baja">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Sólo se visualizan los lugares disponibles
                 </FormHelperText>
             </Tooltip>
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(destinationError) ? true : false}>
+                required
+                error={(destinationError) ? true : false}>
                 <InputLabel>Destino</InputLabel>
                 <Select label="Destino" id="destinationSelected" labelId={"destinationSelected"}
-                        name="destinationSelected"
-                        className={styles.inputMaterial}
-                        value={(destinationSelected) ? destinationSelected : selectedRoute.destination.cityId}
-                        displayEmpty
-                        onChange={handleChange}
+                    name="destinationSelected"
+                    className={styles.inputMaterial}
+                    value={(destinationSelected) ? destinationSelected : selectedRoute.destination.cityId}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value={0} disabled>
                         Seleccione un lugar
@@ -761,19 +777,19 @@ function Routes() {
             <Tooltip
                 title="Se considera disponible si el lugar no está dado de baja">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Sólo se visualizan los lugares disponibles
                 </FormHelperText>
             </Tooltip>
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(transportError) ? true : false}>
+                required
+                error={(transportError) ? true : false}>
                 <InputLabel>Combi</InputLabel>
                 <Select label="Combi" id="transportSelected" labelId={"transportSelected"} name="transportSelected"
-                        className={styles.inputMaterial}
-                        value={(transportSelected) ? transportSelected : selectedRoute.transport.transportId}
-                        displayEmpty
-                        onChange={handleChange}
+                    className={styles.inputMaterial}
+                    value={(transportSelected) ? transportSelected : selectedRoute.transport.transportId}
+                    displayEmpty
+                    onChange={handleChange}
                 >
                     <MenuItem value="" disabled>
                         Seleccione una combi
@@ -798,11 +814,11 @@ function Routes() {
             <Tooltip
                 title="Se considera disponible si la combi no está dada de baja">
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Sólo se visualizan las combis disponibles
                 </FormHelperText>
             </Tooltip>
-            <br/>
+            <br />
             <div align="right">
                 <Button color="primary" onClick={() => requestPutRoute()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
@@ -830,28 +846,28 @@ function Routes() {
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                             handleClose={options.handleClose}/>
+                        handleClose={options.handleClose} />
                     : null
             }
-            <br/>
-            <Button style={{marginLeft: '8px'}}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnNewRoute"
-                    startIcon={<TimelineIcon/>}
-                    onClick={() => openCloseModalCreate()}>NUEVA RUTA</Button>
-            <br/><br/>
+            <br />
+            <Button style={{ marginLeft: '8px' }}
+                variant="contained"
+                size="large"
+                color="primary"
+                id="btnNewRoute"
+                startIcon={<TimelineIcon />}
+                onClick={() => openCloseModalCreate()}>NUEVA RUTA</Button>
+            <br /><br />
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de rutas"
                 actions={[
-                    /*{
+                    {
                         icon: () => <VisibilityIcon />,
                         tooltip: 'Visualización de ruta',
                         onClick: (event, rowData) => selectRoute(rowData, "Ver")
-                    },*/
+                    },
                     rowData => ({
                         icon: 'edit',
                         tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una ruta dada de baja',

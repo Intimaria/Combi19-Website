@@ -5,7 +5,8 @@ const {
     getAvailableDrivers,
     postDriver,
     putDriver,
-    deleteDriver
+    deleteDriver,
+    getDriversDependenceById
 } = require("../controllers/drivers.js");
 
 // The administrator role should be validated with a middleware before performing any operation
@@ -21,6 +22,9 @@ router.get('/:id', authenticateAdminRol, getDriverById);
 
 // Retrieve all available drivers
 router.get('/custom/available', authenticateAdminRol, getAvailableDrivers);
+
+// Retrieve driver dependence by id
+router.get('/custom/driverDependenceById/:id', authenticateAdminRol, getDriversDependenceById);
 
 // Create a new driver
 router.post('/', authenticateAdminRol, postDriver);

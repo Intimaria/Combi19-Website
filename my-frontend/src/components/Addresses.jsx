@@ -9,6 +9,7 @@ import Register from './Register.jsx';
 import Transports from './Transports.jsx';
 import Routes from './Routes.jsx';
 import Drivers from './Drivers.jsx';
+import Products from './Products.jsx';
 import {useHistory} from "react-router-dom";
 
 const Addresses = () => {
@@ -52,6 +53,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/routes" exact>
                     <Routes/>
+                </Route>
+                <Route path="/products" exact>
+                    <Products/>
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
