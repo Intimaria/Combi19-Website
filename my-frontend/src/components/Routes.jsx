@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import HelpIcon from '@material-ui/icons/Help';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {useStyles} from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 import {Message} from '../components/Message';
 
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
@@ -45,9 +45,6 @@ import {
     ERROR_MSG_INVALID_KM,
     ERROR_MSG_INVALID_DURATION,
     ERROR_MSG_INVALID_ZERO_DURATION,
-    ERROR_MSG_INVALID_TRANSPORT,
-    ERROR_MSG_INVALID_PLACE_DESTINATION,
-    ERROR_MSG_INVALID_PLACE_DEPARTURE,
     ERROR_MSG_REPEAT_PLACES
 } from "../const/messages";
 
@@ -702,7 +699,7 @@ function Routes() {
                         Seleccione un lugar
                     </MenuItem>
                     <MenuItem value={selectedRoute.departure.cityId}>
-                         {selectedRoute.departure.cityName}, {selectedRoute.departure.provinceName}
+                        {selectedRoute.departure.cityName}, {selectedRoute.departure.provinceName}
                     </MenuItem>
                     {(places) ?
                         places.filter(place => place.id !== selectedRoute.departure.cityId).map((places) => (
@@ -847,11 +844,11 @@ function Routes() {
                 data={data}
                 title="Lista de rutas"
                 actions={[
-                    /*{
-                        icon: () => <VisibilityIcon />,
+                    {
+                        icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de ruta',
                         onClick: (event, rowData) => selectRoute(rowData, "Ver")
-                    },*/
+                    },
                     rowData => ({
                         icon: 'edit',
                         tooltip: (rowData.active === 'Activo') ? 'Editar ruta' : 'No se puede editar una ruta dada de baja',

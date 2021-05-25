@@ -7,7 +7,20 @@ const {
 const {PASSENGER_ROLE, ACTIVE} = require('../const/config.js');
 
 const Register = async (req, res) => {
-    const {names, surname, email, birthday, password1, password2} = req.body;
+    const {
+        names,
+        surname,
+        email,
+        birthday,
+        password1,
+        password2,
+        goldCheck,
+        typeCardSelected,
+        cardNumber,
+        expirationDate,
+        nameSurnameCardOwner,
+        documentNumberCardOwner
+    } = req.body;
 
     const inputsErrors = await validateDriversToCreate(email, names, surname, password1, password2, birthday);
 
@@ -17,12 +30,27 @@ const Register = async (req, res) => {
         try {
             const connection = await prepareConnection();
 
-            let sqlInsert = "INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) VALUES (?,?,?,?,?,?,?)"
-            const [rows] = await connection.execute(sqlInsert, [names, surname, birthday, email, password1, null, null]);
+            let sqlInsert =
+                `
+                INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) 
+                VALUES ('${names}', '${surname}', '${birthday}', '${email}', '${password1}', NULL, NULL);
+                `
+
+            const [rows] = await connection.execute(sqlInsert);
 
             const id = rows.insertId;
-            sqlInsert = 'INSERT INTO ROLE_USER (ID_ROLE, ID_USER, ACTIVE) VALUES (?,?,?)'
-            connection.execute(sqlInsert, [PASSENGER_ROLE, id, ACTIVE]);
+
+            sqlInsert = `INSERT INTO ROLE_USER (ID_ROLE, ID_USER, ACTIVE) VALUES (${PASSENGER_ROLE}, ${id}, ${ACTIVE});`
+            connection.execute(sqlInsert);
+
+            if (goldCheck) {
+                let sqlInsert =
+                `
+                INSERT INTO CARD (ID_CARD_NETWORK, ID_CARD_TYPE, ID_PASSENGER, NUMBER, NAME_SURNAME, EXPIRATION_DATE, OWNER_DOCUMENT_NUMBER, ACTIVE) 
+                VALUES (${typeCardSelected}, 1, ${id}, '${cardNumber}', '${nameSurnameCardOwner}', '${expirationDate}', '${documentNumberCardOwner}', ${ACTIVE});
+                `;
+                connection.execute(sqlInsert);
+            }
 
             connection.end();
             res.status(201).send(OK_MSG_API_USER_POST);

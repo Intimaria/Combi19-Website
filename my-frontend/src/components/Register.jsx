@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Message} from '../components/Message';
 import {TextField, Button} from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -6,38 +6,75 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
-import {Visibility, VisibilityOff} from "@material-ui/icons";
-import {useStyles} from '../const/modalStyle';
+import {Favorite, FavoriteBorder, Visibility, VisibilityOff} from "@material-ui/icons";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import HelpIcon from '@material-ui/icons/Help';
+import Tooltip from '@material-ui/core/Tooltip';
+import {useStyles} from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
+import Link from '@material-ui/core/Link';
+import {green} from '@material-ui/core/colors';
+import {CustomDatePicker} from '../components/CustomDatePicker';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import Divider from "@material-ui/core/Divider";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import CardActions from "@material-ui/core/CardActions";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import moment from "moment";
-
+import MomentUtils from "@date-io/moment";
 
 import {BACKEND_URL} from '../const/config.js';
 
 import {
-    ERROR_MSG_EMPTY_DATE,
     ERROR_MSG_EMPTY_EMAIL,
+    ERROR_MSG_INVALID_EMAIL,
     ERROR_MSG_EMPTY_NAME,
+    ERROR_MSG_INVALID_NAME,
+    ERROR_MSG_EMPTY_SURNAME,
+    ERROR_MSG_INVALID_SURNAME,
+    ERROR_MSG_EMPTY_DATE,
+    ERROR_MSG_INVALID_DATE,
+    ERROR_MSG_INVALID_AGE,
     ERROR_MSG_EMPTY_PASSWORD,
     ERROR_MSG_EMPTY_REPEAT_PASSWORD,
-    ERROR_MSG_EMPTY_SURNAME,
-    ERROR_MSG_INVALID_AGE,
-    ERROR_MSG_INVALID_DATE,
-    ERROR_MSG_INVALID_EMAIL,
-    ERROR_MSG_INVALID_NAME,
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
     ERROR_MSG_PASSWORD_NO_MATCH,
-    ERROR_MSG_INVALID_SURNAME
+    ERROR_MSG_EMPTY_TYPE_CARD,
+    ERROR_MSG_EMPTY_CARD_NUMBER,
+    ERROR_MSG_INVALID_CARD_NUMBER,
+    ERROR_MSG_DEBIT_CARD,
+    ERROR_MSG_DISABLED_CARD,
+    ERROR_MSG_INSUFFICIENT_AMOUNT,
+    ERROR_MSG_EMPTY_SECURITY_CODE,
+    ERROR_MSG_INVALID_SECURITY_CODE,
+    ERROR_MSG_WRONG_SECURITY_CODE,
+    ERROR_MSG_EMPTY_EXPIRATION_DATE,
+    ERROR_MSG_INVALID_EXPIRATION_DATE,
+    ERROR_MSG_OVERDUE_EXPIRATION_DATE,
+    ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER,
+    ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER,
+    ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER,
+    ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER,
+
 } from '../const/messages.js';
+
 
 import {
     REGEX_DATE_YYYY_MM_DD,
+    REGEX_DATE_MM_YY,
     REGEX_EMAIL,
-    REGEX_ONLY_ALPHABETICAL
-} from '../const/regex.js';
+    REGEX_ONLY_ALPHABETICAL,
+    REGEX_ONLY_NUMBER
+} from '../const/regex';
 
-import {CustomDatePicker} from '../components/CustomDatePicker';
+import {capitalizeString} from "../helpers/strings";
 
 
 const axios = require("axios");
@@ -47,29 +84,49 @@ function Register() {
         setOptions({...options, open: false});
     };
 
-
-    const today = new Date().toISOString().slice(0, 10);
     const styles = useStyles();
-    const [showPassword1, setShowPassword1] = React.useState(false);
-    const [showPassword2, setShowPassword2] = React.useState(false);
     const [email, setEmail] = React.useState('');
     const [names, setNames] = React.useState('');
     const [surname, setSurname] = React.useState('');
-    const [password1, setPassword1] = React.useState('');
-    const [password2, setPassword2] = React.useState('');
     const [birthday, setBirthday] = React.useState(moment()
         .subtract(18, "years")
         .set({hour: 0, minute: 0, second: 0, millisecond: 0})
         .format('YYYY-MM-DD')
     );
+    const [password1, setPassword1] = React.useState('');
+    const [showPassword1, setShowPassword1] = React.useState(false);
+    const [password2, setPassword2] = React.useState('');
+    const [showPassword2, setShowPassword2] = React.useState(false);
+    const [goldCheck, setGoldCheck] = React.useState(false);
+    const [typeCardSelected, setTypeCardSelected] = React.useState('');
+    const [cardNumber, setCardNumber] = React.useState('');
+    const [securityCode, setSecurityCode] = React.useState('');
+    const [expirationDate, setExpirationDate] = React.useState(moment().set({hour: 0, minute: 0, second: 0, millisecond: 0}));
+    const [nameSurnameCardOwner, setNameSurnameCardOwner] = React.useState('');
+    const [documentNumberCardOwner, setDocumentNumberCardOwner] = React.useState('');
     const [emailError, setEmailError] = React.useState(null);
     const [namesError, setNamesError] = React.useState(null);
     const [surnameError, setSurnameError] = React.useState(null);
     const [password1Error, setPassword1Error] = React.useState(null);
     const [password2Error, setPassword2Error] = React.useState(null);
     const [birthdayError, setBirthdayError] = React.useState(null);
+    const [typeCardSelectedError, setTypeCardSelectedError] = React.useState(null);
+    const [cardNumberError, setCardNumberError] = React.useState(null);
+    const [securityCodeError, setSecurityCodeError] = React.useState(null);
+    const [expirationDateError, setExpirationDateError] = React.useState(null);
+    const [nameSurnameCardOwnerError, setNameSurnameCardOwnerError] = React.useState(null);
+    const [documentNumberCardOwnerError, setDocumentNumberCardOwnerError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
+
+    const expirationDateConfiguration = {
+        name: "expirationDate",
+        label: "Vencimiento",
+        invalidDateMessage: ERROR_MSG_INVALID_EXPIRATION_DATE,
+        minDate: moment(),
+        minDateMessage: ERROR_MSG_OVERDUE_EXPIRATION_DATE,
+        maxDateMessage: ERROR_MSG_INVALID_AGE
+    };
 
     const handleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
@@ -84,7 +141,7 @@ function Register() {
 
         if (successMessage) setSuccessMessage(null);
         if (!validate()) {
-            console.log("the entries have errors, modify them");
+            console.log("the entries have errors, y them");
             return false;
         }
 
@@ -95,12 +152,19 @@ function Register() {
 
     const postRequest = () => {
         axios.post(`${BACKEND_URL}/register`, {
-            names,
-            surname,
+            names: capitalizeString(names),
+            surname: capitalizeString(surname),
             email,
             password1,
             password2,
-            birthday
+            birthday,
+            goldCheck,
+            typeCardSelected,
+            cardNumber,
+            securityCode,
+            expirationDate: expirationDate.format('MM/YY'),
+            nameSurnameCardOwner: nameSurnameCardOwner.toUpperCase(),
+            documentNumberCardOwner
         })
             .then((response) => {
                 console.log("The inputs were submitted successfully");
@@ -132,8 +196,16 @@ function Register() {
             .format('YYYY-MM-DD')
         );
         setPassword1('');
-        setPassword1('');
+        setShowPassword1(false);
         setPassword2('');
+        setShowPassword2(false);
+        setGoldCheck(false);
+        setTypeCardSelected('');
+        setCardNumber('');
+        setSecurityCode('');
+        setExpirationDate(moment().set({hour: 0, minute: 0, second: 0, millisecond: 0}));
+        setNameSurnameCardOwner('');
+        setDocumentNumberCardOwner('');
     };
 
     const handleEmail = (newValue) => {
@@ -155,10 +227,18 @@ function Register() {
     };
 
     const handleBirthday = (newValue) => {
-        if (newValue) {
-            setBirthday(newValue.format('YYYY-MM-DD'));
+        if (!newValue) {
+            setBirthday(null)
+        } else {
+            let formattedDate = newValue.format('YYYY-MM-DD');
+            if (formattedDate === 'Fecha inválida') {
+                setBirthday(newValue);
+            } else {
+                setBirthday(formattedDate);
+            }
             setBirthdayError(null);
         }
+
         setSuccessMessage(null);
     };
 
@@ -174,20 +254,74 @@ function Register() {
         setPassword2Error(null);
     };
 
+    const handleGoldCheck = () => {
+        setGoldCheck(!goldCheck);
+        setSuccessMessage(null);
+    };
+
+    const handleBeGold = () => {
+        setGoldCheck(true);
+        setSuccessMessage(null);
+    };
+
+    const handleTypeCard = (newValue) => {
+        setTypeCardSelected(newValue.target.value);
+        setSuccessMessage(null);
+        setTypeCardSelectedError(false);
+    };
+
+    const handleCardNumber = (newValue) => {
+        setCardNumber(newValue.target.value);
+        setSuccessMessage(null);
+        setCardNumberError(null);
+    };
+
+    const handleSecurityCode = (newValue) => {
+        setSecurityCode(newValue.target.value);
+        setSuccessMessage(null);
+        setSecurityCodeError(null);
+    };
+
+    const handleExpirationDate = (newValue) => {
+        if (!newValue) {
+            setExpirationDate(null)
+        } else {
+            setExpirationDate(newValue);
+            setExpirationDateError(null);
+        }
+
+        setSuccessMessage(null);
+    };
+
+    const handleNameSurnameCardOwner = (newValue) => {
+        setNameSurnameCardOwner(newValue.target.value);
+        setSuccessMessage(null);
+        setNameSurnameCardOwnerError(null);
+    };
+
+    const handleDocumentNumberCardOwner = (newValue) => {
+        setDocumentNumberCardOwner(newValue.target.value);
+        setSuccessMessage(null);
+        setDocumentNumberCardOwnerError(null);
+    };
+
     const validate = () => {
-        return validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateDate();
+        let resultValidations = validateEmail() & validateName() & validateSurname() & validatePassword() & comparePasswords() & validateBirthday();
+        if (goldCheck) {
+            return resultValidations & validateCard();
+        } else {
+            return resultValidations;
+        }
     };
 
 
     const validateEmail = () => {
         if (!email) {
             setEmailError(ERROR_MSG_EMPTY_EMAIL);
-            console.log('entró1')
             return false;
         }
         if (!REGEX_EMAIL.test(email)) {
             setEmailError(ERROR_MSG_INVALID_EMAIL);
-            console.log('entró2')
             return false;
         }
 
@@ -247,7 +381,7 @@ function Register() {
         return true;
     };
 
-    const validateDate = () => {
+    const validateBirthday = () => {
         function calculateAge() {
             let birthdayDate = new Date(birthday);
             let todayDate = new Date();
@@ -259,7 +393,7 @@ function Register() {
             return age;
         }
 
-        if (birthday === today) {
+        if (!birthday) {
             setBirthdayError(ERROR_MSG_EMPTY_DATE);
             return false;
         }
@@ -297,9 +431,177 @@ function Register() {
         return true;
     };
 
+    const validateCard = () => {
+        let resultValidateTypeCard = true,
+            resultValidateCardNumber = true,
+            resultValidateSecurityCode = true,
+            resultValidateExpirationDate = true,
+            resultValidateNameSurnameCardOwner = true,
+            resultValidateDocumentNumberCardOwner = true;
+
+        if (!typeCardSelected || typeCardSelected === 0) {
+            setTypeCardSelectedError(ERROR_MSG_EMPTY_TYPE_CARD);
+            resultValidateTypeCard = false;
+        }
+
+        if (!cardNumber) {
+            setCardNumberError(ERROR_MSG_EMPTY_CARD_NUMBER);
+            resultValidateCardNumber = false;
+        }
+
+        if (!securityCode) {
+            setSecurityCodeError(ERROR_MSG_EMPTY_SECURITY_CODE);
+            resultValidateSecurityCode = false;
+        }
+
+        if (!expirationDate) {
+            setExpirationDateError(ERROR_MSG_EMPTY_EXPIRATION_DATE);
+            resultValidateExpirationDate = false;
+        }
+
+        if (!nameSurnameCardOwner) {
+            setNameSurnameCardOwnerError(ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER);
+            resultValidateNameSurnameCardOwner = false;
+        }
+
+        if (!documentNumberCardOwner) {
+            setDocumentNumberCardOwnerError(ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER);
+            resultValidateDocumentNumberCardOwner = false;
+        }
+
+        if (resultValidateTypeCard & resultValidateCardNumber & resultValidateSecurityCode & resultValidateExpirationDate & resultValidateNameSurnameCardOwner & resultValidateDocumentNumberCardOwner) {
+            return validateTypeCard() & validateCardNumber() & validateSecurityCode() & validateExpirationDate() & validateNameSurnameCardOwner() & validateDocumentNumberCardOwner();
+        } else {
+            return false;
+        }
+    };
+
+    const validateTypeCard = () => {
+        setTypeCardSelectedError(null);
+        return true;
+    };
+
+    const validateCardNumber = () => {
+        if (!REGEX_ONLY_NUMBER.test(cardNumber)) {
+            setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+            return false;
+        }
+
+        if (cardNumber.length < 15) {
+            setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+            return false;
+        }
+
+        if (typeCardSelected === 1) {
+            if (cardNumber.length !== 15) {
+                setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+                return false;
+            }
+            if (securityCode.length !== 4) {
+                setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+                return false;
+            }
+        }
+
+        if (typeCardSelected === 2 || typeCardSelected === 3) {
+            if (cardNumber.length !== 16) {
+                setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+                return false;
+            }
+            if (securityCode.length !== 3) {
+                setCardNumberError(ERROR_MSG_INVALID_CARD_NUMBER);
+                return false;
+            }
+        }
+
+        if (cardNumber === '1111111111111111') {
+            setCardNumberError(ERROR_MSG_DEBIT_CARD);
+            return false;
+        }
+
+        if (cardNumber === '2222222222222222') {
+            setCardNumberError(ERROR_MSG_DISABLED_CARD);
+            return false;
+        }
+
+        if (cardNumber === '3333333333333333') {
+            setCardNumberError(ERROR_MSG_INSUFFICIENT_AMOUNT);
+            return false;
+        }
+
+        setCardNumberError(null);
+        return true;
+
+    };
+
+    const validateSecurityCode = () => {
+        if (!REGEX_ONLY_NUMBER.test(securityCode)) {
+            setSecurityCodeError(ERROR_MSG_INVALID_SECURITY_CODE);
+            return false;
+        }
+
+        if (cardNumber === '4444444444444444') {
+            setSecurityCodeError(ERROR_MSG_INVALID_SECURITY_CODE);
+            return false;
+        }
+
+        if (cardNumber === '5555555555555555') {
+            setSecurityCodeError(ERROR_MSG_WRONG_SECURITY_CODE);
+            return false;
+        }
+
+        setSecurityCodeError(null);
+        return true;
+    };
+
+    const validateExpirationDate = () => {
+        if (!REGEX_DATE_MM_YY.test(expirationDate.format('MM/YY'))) {
+            setExpirationDateError(ERROR_MSG_INVALID_EXPIRATION_DATE);
+            return false;
+        }
+
+        if (expirationDate.set({hour: 0, minute: 0, second: 0, millisecond: 0}) < moment().set({hour: 0, minute: 0, second: 0, millisecond: 0})) {
+            setExpirationDateError(ERROR_MSG_OVERDUE_EXPIRATION_DATE);
+            return false;
+        }
+
+        setExpirationDateError(null);
+        return true;
+    };
+
+    const validateNameSurnameCardOwner = () => {
+        if (!REGEX_ONLY_ALPHABETICAL.test(nameSurnameCardOwner)) {
+            setNameSurnameCardOwnerError(ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER);
+            return false;
+        }
+
+        if (cardNumber === '6666666666666666') {
+            setNameSurnameCardOwnerError(ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER);
+            return false;
+        }
+
+        setNameSurnameCardOwnerError(null);
+        return true;
+    };
+
+    const validateDocumentNumberCardOwner = () => {
+        if (!REGEX_ONLY_NUMBER.test(documentNumberCardOwner)) {
+            setDocumentNumberCardOwnerError(ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER);
+            return false;
+        }
+
+        if (cardNumber === '7777777777777777') {
+            setDocumentNumberCardOwnerError(ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER);
+            return false;
+        }
+
+        setDocumentNumberCardOwnerError(null);
+        return true;
+    };
+
     return (
-        <div className={styles.modal}>
-            <form onSubmit={mySubmitHandler} encType="multipart/form-data">
+        <div className={styles.root}>
+            <form className={styles.form} onSubmit={mySubmitHandler} encType="multipart/form-data">
                 <h2 align={'center'}>Registrarse</h2>
                 <div className="row ">
                     {
@@ -311,10 +613,9 @@ function Register() {
                     <div>
                         <Grid container>
                             <Grid item xs={12}>
-                                <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
+                                <TextField className={styles.inputMaterial} label="Correo electrónico *" name="email"
                                            id="inpEmail"
                                            type={"email"}
-                                           required
                                            inputProps={{maxLength: 70}}
                                            autoComplete='off'
                                            error={(emailError) ? true : false}
@@ -324,8 +625,7 @@ function Register() {
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField className={styles.inputMaterial} label="Nombre" name="names" id={"inpName"}
-                                           required
+                                <TextField className={styles.inputMaterial} label="Nombre *" name="names" id={"inpName"}
                                            inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
                                            style={{paddingRight: '10px'}}
                                            autoComplete='off'
@@ -336,9 +636,8 @@ function Register() {
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField className={styles.inputMaterial} label="Apellido" name="surname"
+                                <TextField className={styles.inputMaterial} label="Apellido *" name="surname"
                                            id="inpSurname"
-                                           required
                                            inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
                                            style={{paddingRight: '10px', marginLeft: '10px'}}
                                            autoComplete='off'
@@ -350,19 +649,18 @@ function Register() {
                             </Grid>
                             <Grid item xs={12}>
                                 <CustomDatePicker
-                                    label={'Fecha de nacimiento'}
+                                    label={'Fecha de nacimiento *'}
                                     handleDate={handleBirthday}
                                     invalidDateMessage={birthdayError}
                                     selectedDate={birthday}
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl className={styles.inputMaterial} required
+                                <FormControl className={styles.inputMaterial}
                                              error={(password1Error) ? true : false}>
-                                    <InputLabel htmlFor="password1">Contraseña</InputLabel>
+                                    <InputLabel htmlFor="password1">Contraseña *</InputLabel>
                                     <Input
                                         id="password1"
-                                        required
                                         inputProps={{maxLength: 100}}
                                         autoComplete='off'
                                         type={showPassword1 ? 'text' : 'password'}
@@ -386,12 +684,10 @@ function Register() {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl className={styles.inputMaterial}
-                                             required
                                              error={(password2Error) ? true : false}>
-                                    <InputLabel htmlFor="password2">Repita la contraseña</InputLabel>
+                                    <InputLabel htmlFor="password2">Repita la contraseña *</InputLabel>
                                     <Input
                                         id="password2"
-                                        required
                                         inputProps={{maxLength: 100}}
                                         autoComplete='off'
                                         type={showPassword2 ? 'text' : 'password'}
@@ -414,6 +710,177 @@ function Register() {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={<Checkbox icon={<FavoriteBorder/>}
+                                                       checkedIcon={<Favorite/>}
+                                                       checked={goldCheck}
+                                                       onChange={() => handleGoldCheck()}
+                                                       name="goldCheck"
+                                                       id={"goldCheck"}
+                                    />}
+                                    label="¡Quiero ser miembro GOLD!"
+                                />
+                                <Link href="#mas-info" fontSize={"small"}>
+                                    ¡Más info!
+                                </Link>
+                            </Grid>
+
+                            {
+                                goldCheck ?
+                                    <Fragment>
+                                        <Grid item xs={6}>
+                                            <FormControl className={styles.inputMaterial}
+                                                         style={{paddingRight: '10px'}}
+                                                         error={(typeCardSelectedError) ? true : false}>
+                                                <InputLabel>Tipo de tarjeta *</InputLabel>
+                                                <Select label="Tipo de tarjeta *" id="typeCardSelected"
+                                                        labelId={"typeCardSelected"}
+                                                        name="typeCardSelected"
+                                                        className={styles.selectEmpty}
+                                                        value={typeCardSelected}
+                                                        displayEmpty
+                                                        onChange={newValue => handleTypeCard(newValue)}
+                                                >
+                                                    <MenuItem value={0} disabled> Seleccione un tipo de
+                                                        tarjeta </MenuItem>
+                                                    <MenuItem key={1} value={1}> American Express </MenuItem>
+                                                    <MenuItem key={2} value={2}> MasterCard </MenuItem>
+                                                    <MenuItem key={3} value={3}> Visa </MenuItem>
+                                                </Select>
+                                                <FormHelperText>{(typeCardSelectedError) ? typeCardSelectedError : false}</FormHelperText>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <TextField className={styles.inputMaterial}
+                                                       label="Número de tarjeta *"
+                                                       name="cardNumber"
+                                                       id="cardNumber"
+                                                       inputProps={{maxLength: 16}}
+                                                       style={{paddingRight: '10px', marginLeft: '10px'}}
+                                                       autoComplete='off'
+                                                       error={(cardNumberError) ? true : false}
+                                                       helperText={(cardNumberError) ? cardNumberError : false}
+                                                       value={cardNumber}
+                                                       onChange={newValue => handleCardNumber(newValue)}
+                                            />
+                                        </Grid>
+
+                                        <Grid container alignItems="flex-start" item xs={6}>
+                                            <Grid container alignItems={(securityCodeError) ? "center" : "flex-end"}
+                                                  item xs={12}>
+                                                <Grid item xs={9}>
+                                                    <TextField className={styles.inputMaterial} label="CCV *"
+                                                               name="securityCode"
+                                                               id="securityCode"
+                                                               inputProps={{maxLength: 4}}
+                                                               autoComplete='off'
+                                                               error={(securityCodeError) ? true : false}
+                                                               helperText={(securityCodeError) ? securityCodeError : false}
+                                                               value={securityCode}
+                                                               onChange={newValue => handleSecurityCode(newValue)}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={3} align={'center'}>
+                                                    <Tooltip
+                                                        title="Código de seguridad ubicado en el dorso de la tarjeta">
+                                                        <HelpIcon color='primary' fontSize="small"/>
+                                                    </Tooltip>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <MuiPickersUtilsProvider
+                                                libInstance={moment}
+                                                utils={MomentUtils}
+                                                locale={"es"}
+                                            >
+                                                <KeyboardDatePicker
+                                                    className={styles.inputMaterial}
+                                                    style={{
+                                                        paddingRight: '10px',
+                                                        marginLeft: '10px',
+                                                        marginTop: '-1px',
+                                                        marginBottom: '-1px'
+                                                    }}
+                                                    //disablePast
+                                                    disableToolbar
+                                                    cancelLabel="CANCELAR"
+                                                    okLabel="CONFIRMAR"
+                                                    format="MM/YY"
+                                                    margin="normal"
+                                                    views={["year", "month"]}
+                                                    autoComplete='off'
+                                                    id={expirationDateConfiguration.name}
+                                                    name={expirationDateConfiguration.name}
+                                                    label={expirationDateConfiguration.label}
+                                                    invalidDateMessage={expirationDateConfiguration.invalidDateMessage}
+                                                    minDate={expirationDateConfiguration.minDate}
+                                                    minDateMessage={expirationDateConfiguration.minDateMessage}
+                                                    value={(goldCheck) ? expirationDate : ''}
+                                                    onChange={newValue => handleExpirationDate(newValue)}
+                                                    error={(expirationDateError) ? true : false}
+                                                    helperText={(expirationDateError) ? expirationDateError : false}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
+
+
+                                        <Grid container alignItems={(nameSurnameCardOwnerError) ? "center" : "flex-end"}
+                                              item xs={12}>
+                                            <Grid item xs={11}>
+                                                <TextField className={styles.inputMaterial} label="Titular *"
+                                                           name="nameSurnameCardOwner"
+                                                           id="nameSurnameCardOwner"
+                                                           inputProps={{
+                                                               maxLength: 20,
+                                                               style: {textTransform: 'uppercase'}
+                                                           }}
+                                                           autoComplete='off'
+                                                           error={(nameSurnameCardOwnerError) ? true : false}
+                                                           helperText={(nameSurnameCardOwnerError) ? nameSurnameCardOwnerError : false}
+                                                           value={nameSurnameCardOwner}
+                                                           onChange={newValue => handleNameSurnameCardOwner(newValue)}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={1} align={'right'}>
+                                                <Tooltip
+                                                    title="Nombre completo ubicado en el frente de la tarjeta">
+                                                    <HelpIcon color='primary' fontSize="small"/>
+                                                </Tooltip>
+                                            </Grid>
+                                        </Grid>
+
+
+                                        <Grid container
+                                              alignItems={(documentNumberCardOwnerError) ? "center" : "flex-end"} item
+                                              xs={12}>
+                                            <Grid item xs={11}>
+                                                <TextField className={styles.inputMaterial} label="Documento *"
+                                                           name="documentNumberCardOwner"
+                                                           id="documentNumberCardOwner"
+                                                           inputProps={{maxLength: 10}}
+                                                           style={{paddingRight: '10px'}}
+                                                           autoComplete='off'
+                                                           error={(documentNumberCardOwnerError) ? true : false}
+                                                           helperText={(documentNumberCardOwnerError) ? documentNumberCardOwnerError : false}
+                                                           value={documentNumberCardOwner}
+                                                           onChange={newValue => handleDocumentNumberCardOwner(newValue)}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={1} align={'right'}>
+                                                <Tooltip
+                                                    title="Número de documento de la persona titular de la tarjeta">
+                                                    <HelpIcon color='primary' fontSize="small"/>
+                                                </Tooltip>
+                                            </Grid>
+                                        </Grid>
+                                    </Fragment>
+                                    : null
+                            }
+
+
+                            <Grid item xs={12}>
                                 <br/><br/>
                                 <Button style={{width: '100%'}}
                                         variant="contained"
@@ -427,6 +894,40 @@ function Register() {
                     </div>
                 </div>
             </form>
+            <br/><br/>
+            <Card id="mas-info" className={styles.cardGold.root}>
+                <CardHeader align="center" title="Membresía GOLD" className={styles.cardGold.header}/>
+                <Divider variant="middle"/>
+                <CardContent>
+                    <Typography variant="h4" align="center">
+                        $ 250,00
+                    </Typography>
+                    <Typography align={'center'} fontSize={'small'}>Sólo se aceptan tarjeta de crédito</Typography>
+                    <Divider variant="middle"/>
+                    <div className={styles.cardGold.list}>
+                        <Typography><CheckCircleIcon style={{color: green[500]}}/>¡
+                            Descuento del 10% en todos tus viajes
+                            !</Typography>
+                        <Typography><CheckCircleIcon style={{color: green[500]}}/>
+                            Precarga de datos para que no pierdas el tiempo
+                        </Typography>
+                    </div>
+                </CardContent>
+                <Divider variant="middle"/>
+                <CardActions className={styles.cardGold.action}>
+                    <Link href="#goldCheck" style={{width: '100%'}}>
+                        <Button className={styles.cardGold.button}
+                                style={{width: '100%'}}
+                                variant="contained"
+                                size="large"
+                                color="primary"
+                                id="btnGoToCard"
+                                onClick={() => handleBeGold()}
+                        >¡QUIERO SER GOLD!</Button>
+                    </Link>
+                </CardActions>
+
+            </Card>
         </div>
     );
 }

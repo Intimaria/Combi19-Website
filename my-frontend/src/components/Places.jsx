@@ -14,17 +14,13 @@ import {
     ERROR_MSG_API_POST_PLACES,
     ERROR_MSG_API_PUT_PLACES,
     ERROR_MSG_EMPTY_NAME,
-    ERROR_MSG_API_GET_PROVINCES,
     ERROR_MSG_EMPTY_PROVINCE,
-    ERROR_MSG_INTERNET,
     ERROR_MSG_INVALID_NAME
 } from "../const/messages";
 import React, {useEffect, useState} from 'react';
 import {
     deletePlace,
-    getPlace,
     getPlaces,
-    getProvinces,
     postPlace,
     putPlace
 } from '../api/Places';
@@ -39,11 +35,11 @@ import {
 } from '../const/regex.js';
 import Select from '@material-ui/core/Select';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import axios from 'axios';
-import {makeStyles} from '@material-ui/core/styles';
+
+
 // La configuracion en castellano
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import {useStyles} from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [

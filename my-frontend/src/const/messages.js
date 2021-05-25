@@ -1,22 +1,38 @@
 // General messages
 export const ERROR_MSG_INTERNET = 'verifique su conexión a internet';
 // Passenger registration form
-export const ERROR_MSG_EMPTY_DATE = '* Ingrese una fecha';
 export const ERROR_MSG_EMPTY_EMAIL = '* Ingrese un correo electrónico';
+export const ERROR_MSG_INVALID_EMAIL = '* El correo electrónico posee un formato inválido';
 export const ERROR_MSG_EMPTY_NAME = '* Ingrese un nombre';
+export const ERROR_MSG_INVALID_NAME = '* El nombre debe poseer solo caracteres alfabéticos';
+export const ERROR_MSG_EMPTY_SURNAME = '* Ingrese un apellido';
+export const ERROR_MSG_INVALID_SURNAME = '* El apellido debe poseer solo caracteres alfabéticos';
+export const ERROR_MSG_EMPTY_DATE = '* Ingrese una fecha';
+export const ERROR_MSG_INVALID_DATE = '* La fecha ingresada en inválida';
+export const ERROR_MSG_INVALID_AGE = '* Debe ser mayor de 18 años';
 export const ERROR_MSG_EMPTY_PASSWORD = '* Ingrese una contraseña';
 export const ERROR_MSG_EMPTY_REPEAT_PASSWORD = '* Ingrese la contraseña nuevamente';
-export const ERROR_MSG_EMPTY_SURNAME = '* Ingrese un apellido';
-export const ERROR_MSG_INVALID_AGE = '* Debe ser mayor de 18 años';
-export const ERROR_MSG_INVALID_DATE = '* La fecha ingresada en inválida';
-export const ERROR_MSG_INVALID_EMAIL = '* El correo electrónico posee un formato inválido';
-export const ERROR_MSG_INVALID_NAME = '* El nombre debe poseer solo caracteres alfabéticos';
+export const ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS = '* La contraseña debe tener al menos 6 caracteres';
 export const ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS = '* La contraseña no posee letras mayúsculas';
 export const ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE = '* La contraseña no posee letras minúsculas';
-export const ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS = '* La contraseña debe tener al menos 6 caracteres';
 export const ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS = '* La contraseña no posee números';
-export const ERROR_MSG_INVALID_SURNAME = '* El apellido debe poseer solo caracteres alfabéticos';
 export const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
+export const ERROR_MSG_EMPTY_TYPE_CARD = '* Seleccione un tipo de tarjeta';
+export const ERROR_MSG_EMPTY_CARD_NUMBER = '* Ingrese el número de tarjeta';
+export const ERROR_MSG_INVALID_CARD_NUMBER = '* Tarjeta inválida';
+export const ERROR_MSG_DEBIT_CARD = '* Sólo se aceptan tarjetas de crédito';
+export const ERROR_MSG_DISABLED_CARD = '* Tarjeta dada de baja';
+export const ERROR_MSG_INSUFFICIENT_AMOUNT = '* Saldo insuficiente';
+export const ERROR_MSG_EMPTY_SECURITY_CODE = '* Ingrese el CCV';
+export const ERROR_MSG_INVALID_SECURITY_CODE = '* CCV inválido';
+export const ERROR_MSG_WRONG_SECURITY_CODE = '* CCV incorrecto';
+export const ERROR_MSG_EMPTY_EXPIRATION_DATE = '* Ingrese la fecha de vencimiento';
+export const ERROR_MSG_INVALID_EXPIRATION_DATE = '* Fecha de vencimiento inválida';
+export const ERROR_MSG_OVERDUE_EXPIRATION_DATE = '* Tarjeta vencida';
+export const ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER = '* Ingrese nombre completo de la persona titular de la tarjeta';
+export const ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER = '* El titular es incorrecto';
+export const ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER = '* Ingrese documento de la persona titular de la tarjeta';
+export const ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER = '* El número de documento es incorrecto';
 // Passenger API messages
 export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
 export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';

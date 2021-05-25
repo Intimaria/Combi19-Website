@@ -16,7 +16,7 @@ import Input from '@material-ui/core/Input';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 //Los estilos de los modals
-import {useStyles} from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 
 // Importo los mensajes de error
 import {
@@ -40,9 +40,6 @@ import {
 
 // Importo las expresiones regulares
 import {
-    REGEX_ONLY_NUMBER,
-    REGEX_ONLY_LOWERCASE,
-    REGEX_ONLY_UPPERCASE,
     REGEX_PHONE,
     REGEX_EMAIL,
     REGEX_ONLY_ALPHABETICAL

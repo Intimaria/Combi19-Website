@@ -8,9 +8,9 @@ import moment from "moment";
 import MomentUtils from "@date-io/moment";
 import "moment/locale/es";
 import {ERROR_MSG_INVALID_AGE} from "../const/messages";
-import {useStyles} from "../const/modalStyle";
+import {useStyles} from "../const/componentStyles";
 
-export const CustomDatePicker = (options) => {
+export const CustomDatePicker = (props) => {
     const styles = useStyles();
 
     const defaultOptions = {
@@ -27,16 +27,6 @@ export const CustomDatePicker = (options) => {
         maxDateMessage: ERROR_MSG_INVALID_AGE
     };
 
-    const [defaultDate, setDefaultDate] = React.useState(options.maxDate || defaultOptions.maxDate);
-    //const [selectedDate, setSelectedDate] = React.useState(false);
-
-    /*
-    const handleDateChange = (date) => {
-        console.log('la fecha es:', date)
-        setSelectedDate(date);
-    };
-    */
-
     return (
         <MuiPickersUtilsProvider
             libInstance={moment}
@@ -45,24 +35,26 @@ export const CustomDatePicker = (options) => {
         >
             <KeyboardDatePicker
                 className={styles.inputMaterial}
-                required
+                style={{marginTop: '-1px', marginBottom: '-1px'}}
+                //required
                 disableFuture
                 disableToolbar
-                variant="inline"
+                cancelLabel="CANCELAR"
+                okLabel="CONFIRMAR"
                 format="DD/MM/yyyy"
                 margin="normal"
-                id={options.name || defaultOptions.name}
-                name={options.name || defaultOptions.name}
-                label={options.label || defaultOptions.label}
-                invalidDateMessage={options.invalidDateMessage || defaultOptions.invalidDateMessage}
-                minDate={options.minDate || defaultOptions.minDate}
-                minDateMessage={options.minDateMessage || defaultOptions.minDateMessage}
-                maxDate={options.maxDate || defaultOptions.maxDate}
-                maxDateMessage={options.maxDateMessage || defaultOptions.maxDateMessage}
-                value={options.selectedDate ? options.selectedDate : defaultDate}
-                onChange={(event) => options.handleDate(event)}
-                error={(options.invalidDateMessage) ? true : false}
-                helperText={(options.invalidDateMessage) ? options.invalidDateMessage : false}
+                id={props.name || defaultOptions.name}
+                name={props.name || defaultOptions.name}
+                label={props.label || defaultOptions.label}
+                invalidDateMessage={props.invalidDateMessage || defaultOptions.invalidDateMessage}
+                minDate={props.minDate || defaultOptions.minDate}
+                minDateMessage={props.minDateMessage || defaultOptions.minDateMessage}
+                maxDate={props.maxDate || defaultOptions.maxDate}
+                maxDateMessage={props.maxDateMessage || defaultOptions.maxDateMessage}
+                value={props.selectedDate}
+                onChange={(event) => props.handleDate(event)}
+                error={(props.invalidDateMessage) ? true : false}
+                helperText={(props.invalidDateMessage) ? props.invalidDateMessage : false}
                 KeyboardButtonProps={{
                     "aria-label": "Calendario"
                 }}

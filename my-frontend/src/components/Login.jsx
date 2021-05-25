@@ -8,7 +8,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import {Visibility, VisibilityOff} from "@material-ui/icons";
-import {useStyles} from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 
 import {
