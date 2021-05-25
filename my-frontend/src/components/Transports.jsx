@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
 import {Modal, TextField, Button} from '@material-ui/core';
 import FormControl from "@material-ui/core/FormControl";
 import Select from '@material-ui/core/Select';

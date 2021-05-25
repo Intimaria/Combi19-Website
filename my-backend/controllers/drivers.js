@@ -156,7 +156,7 @@ const getDriversDependenceById = async (req, res) => {
     const { id } = req.params;
     try {
         res.json({
-            driverTransportDependence: validateDriverTransportDependence(id)
+            driverTransportDependence: await validateDriverTransportDependence(id)
         });
     } catch (error) {
         console.log(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE} ${error}`);

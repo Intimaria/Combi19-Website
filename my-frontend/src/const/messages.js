@@ -60,7 +60,6 @@ export const ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE = 'No se puede elim
 // Places form
 export const ERROR_MSG_EMPTY_PROVINCE = "* Seleccione una provincia";
 // Places API messages
-export const OK_MSG_API_LOCATION_POST = 'Se creó el lugar con éxito';
 export const ERROR_MSG_API_DELETE_PLACES = 'Ocurrió un error al eliminar el lugar indicado';
 export const ERROR_MSG_API_GET_PLACES = 'Ocurrió un error al obtener los lugares:';
 export const ERROR_MSG_API_GET_ACTIVE_PLACES = 'Ocurrió un error al obtener los lugares activos:';

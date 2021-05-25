@@ -29,11 +29,8 @@ import {
     ERROR_MSG_INVALID_PHONE_NUMBER,
     ERROR_MSG_INVALID_EMAIL,
     ERROR_MSG_INVALID_NAME,
-    ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
-    ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS,
     ERROR_MSG_PASSWORD_NO_MATCH,
-    ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
     ERROR_MSG_INVALID_SURNAME,
     ERROR_MSG_API_GET_DRIVERS,
     ERROR_MSG_API_POST_DRIVER,
@@ -384,10 +381,10 @@ function Drivers() {
                     ...options, open: true, type: 'error',
                     message: MSG_DELETE_DRIVER_TRANSPORT_DEPENDENCE
                 });
+                setSelectedDriver(formatSelectedDriver);
             } else {
                 setDeleteModal(!deleteModal);
             }
-            setSelectedDriver(formatSelectedDriver);
         } else {
             setDeleteModal(!deleteModal);
             setSelectedDriver(formatSelectedDriver);
@@ -449,14 +446,16 @@ function Drivers() {
                 value={selectedDriver && selectedDriver.phoneNumber} />
             <br />
             <TextField className={styles.inputMaterial} label="Correo electrónico" name="email" onChange={handleChange}
-                required
-                inputProps={{ maxLength: 70 }}
-                autoComplete='off'
-                error={(emailError) ? true : false}
-                helperText={(emailError) ? emailError : false}
-                value={selectedDriver && selectedDriver.email} />
-            <br />
-            <FormControl className={styles.inputMaterial} error={(password1Error) ? true : false}>
+                       required
+                       inputProps={{maxLength: 70}}
+                       autoComplete='off'
+                       error={(emailError) ? true : false}
+                       helperText={(emailError) ? emailError : false}
+                       value={selectedDriver && selectedDriver.email}/>
+            <br/>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(password1Error) ? true : false}>
                 <InputLabel htmlFor="password1">Contraseña</InputLabel>
                 <Input
                     id="password1"
@@ -481,7 +480,9 @@ function Drivers() {
                 />
                 <FormHelperText>{(password1Error) ? password1Error : false}</FormHelperText>
             </FormControl>
-            <FormControl className={styles.inputMaterial} error={(password2Error) ? true : false}>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(password2Error) ? true : false}>
                 <InputLabel htmlFor="password2">Repita la contraseña</InputLabel>
                 <Input
                     id="password2"
