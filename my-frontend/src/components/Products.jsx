@@ -1,12 +1,12 @@
 // Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
-import React, { useState, useEffect } from 'react';
-import { Modal, TextField, Button } from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
+import {Modal, TextField, Button} from '@material-ui/core';
 import MaterialTable from '@material-table/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById } from '../api/Products.js';
-import { Message } from "./Message";
+import {getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById} from '../api/Products.js';
+import {Message} from "./Message";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,7 +14,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 
 //Los estilos de los modals
-import { useStyles } from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 
 // Importo los mensajes de error
 import {
@@ -39,20 +39,20 @@ import {
 } from '../const/regex.js';
 
 // La configuracion en castellano
-import { materialTableConfiguration } from '../const/materialTableConfiguration';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    { title: 'Nombre', field: 'name' },
-    { title: 'Precio', field: 'price' },
-    { title: 'Tipo', field: 'typeProductDescription' },
-    { title: 'Estado', field: 'active' }
+    {title: 'Nombre', field: 'name'},
+    {title: 'Precio', field: 'price'},
+    {title: 'Tipo', field: 'typeProductDescription'},
+    {title: 'Estado', field: 'active'}
 ];
 
 function Products() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
@@ -83,11 +83,11 @@ function Products() {
     const [typeProductSelected, setTypeProductSelected] = useState(null);
     //Elementos para configurar los mensajes
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
-        const { name, value } = textFieldAtributes.target;
+        const {name, value} = textFieldAtributes.target;
         if (name === 'typeProduct') {
             setTypeProductError(false);
             setTypeProductSelected(value);
@@ -129,8 +129,7 @@ function Products() {
         if (!selectedProduct.name) {
             setNameError(ERROR_MSG_EMPTY_NAME_PRODUCT);
             return false;
-        }
-        else if (!REGEX_ONLY_ALPHABETICAL.test(selectedProduct.name) || selectedProduct.name.length > 45) {
+        } else if (!REGEX_ONLY_ALPHABETICAL.test(selectedProduct.name) || selectedProduct.name.length > 45) {
             setNameError(ERROR_MSG_INVALID_NAME_PRODUCT);
             return false;
         }
@@ -142,8 +141,7 @@ function Products() {
         if (!selectedProduct.price) {
             setPriceError(ERROR_MSG_EMPTY_PRICE_PRODUCT);
             return false;
-        }
-        else if (REGEX_ONLY_DECIMAL_NUMBER.test(selectedProduct.price) || selectedProduct.price >= 100000 || selectedProduct.price <= 0) {
+        } else if (REGEX_ONLY_DECIMAL_NUMBER.test(selectedProduct.price) || selectedProduct.price >= 100000 || selectedProduct.price <= 0) {
             setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT);
             return false;
         }
@@ -155,8 +153,7 @@ function Products() {
         if (!selectedProduct.typeProductId && !typeProductSelected) {
             setTypeProductError(ERROR_MSG_EMPTY_TYPE_PRODUCT);
             return false;
-        }
-        else if (!REGEX_ONLY_NUMBER.test(selectedProduct.typeProductId) && !REGEX_ONLY_NUMBER.test(typeProductSelected)) {
+        } else if (!REGEX_ONLY_NUMBER.test(selectedProduct.typeProductId) && !REGEX_ONLY_NUMBER.test(typeProductSelected)) {
             console.log(selectedProduct.typeProductId);
             console.log(typeProductSelected);
             setTypeProductError(ERROR_MSG_INVALID_TYPE_PRODUCT);
@@ -257,7 +254,7 @@ function Products() {
     }
 
     //Aca dependiendo del boton que se apreto abro el modal correspondiente
-    const selectProduct = async(product, action) => {
+    const selectProduct = async (product, action) => {
         setSelectedProduct(product);
         if (action === "Ver") {
             openCloseModalViewDetails()
@@ -285,7 +282,7 @@ function Products() {
         }
     }
 
-    const openCloseModalUpdate = async(product) => {
+    const openCloseModalUpdate = async (product) => {
         // If the modal is closed, product dependence is validate before open the modal
         if (!updateModal) {
             let dependenceResponse = await getProductDependenceById(product.idProduct);
@@ -347,23 +344,23 @@ function Products() {
     const inputsToCreateOrModify = (
         <div>
             <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                required
-                inputProps={{ maxLength: 45 }}
-                autoComplete='off'
-                error={(nameError) ? true : false}
-                helperText={(nameError) ? nameError : false}
-                onChange={handleChange}
-                value={selectedProduct && selectedProduct.name} />
-            <br />
+                       required
+                       inputProps={{maxLength: 45}}
+                       autoComplete='off'
+                       error={(nameError) ? true : false}
+                       helperText={(nameError) ? nameError : false}
+                       onChange={handleChange}
+                       value={selectedProduct && selectedProduct.name}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                required
-                inputProps={{ maxLength: 7 }}
-                autoComplete='off'
-                error={(priceError) ? true : false}
-                helperText={(priceError) ? priceError : false}
-                onChange={handleChange}
-                value={selectedProduct && selectedProduct.price} />
-            <br />
+                       required
+                       inputProps={{maxLength: 7}}
+                       autoComplete='off'
+                       error={(priceError) ? true : false}
+                       helperText={(priceError) ? priceError : false}
+                       onChange={handleChange}
+                       value={selectedProduct && selectedProduct.price}/>
+            <br/>
         </div>
     )
     // Modal de creacion
@@ -372,13 +369,13 @@ function Products() {
             <h3>AGREGAR NUEVO PRODUCTO</h3>
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                required
-                error={(typeProductError) ? true : false}>
+                         required
+                         error={(typeProductError) ? true : false}>
                 <InputLabel>Tipo</InputLabel>
                 <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
-                    className={styles.inputMaterial}
-                    onChange={handleChange}
-                    value={(typeProductSelected) ? typeProductSelected : 0}
+                        className={styles.inputMaterial}
+                        onChange={handleChange}
+                        value={(typeProductSelected) ? typeProductSelected : 0}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
                     <MenuItem key={1} value={1}> Dulce </MenuItem>
@@ -397,17 +394,17 @@ function Products() {
         <div className={styles.modal}>
             <h3>DETALLE DE EL PRODUCTO</h3>
             <TextField className={styles.inputMaterial} label="Estado" name="active"
-                value={selectedProduct && selectedProduct.active} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.active} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                value={selectedProduct && selectedProduct.name} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.name} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                value={selectedProduct && selectedProduct.price} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.price} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Tipo" name="typeProduct"
-                value={selectedProduct && selectedProduct.typeProductId} autoComplete="off" />
-            <br /><br />
+                       value={selectedProduct && selectedProduct.typeProductId} autoComplete="off"/>
+            <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
@@ -419,17 +416,17 @@ function Products() {
             <h3>EDITAR PRODUCTO</h3>
             <Tooltip title="Debe eliminar el producto para cambiar el estado">
                 <TextField className={styles.inputMaterial} label="Estado" name="active"
-                    value={selectedProduct && selectedProduct.active} disabled />
+                           value={selectedProduct && selectedProduct.active} disabled/>
             </Tooltip>
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                required
-                error={(typeProductError) ? true : false}>
+                         required
+                         error={(typeProductError) ? true : false}>
                 <InputLabel>Tipo</InputLabel>
                 <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
-                    className={styles.inputMaterial}
-                    value={(typeProductSelected) ? typeProductSelected : selectedProduct.typeProductId}
-                    onChange={handleChange}
+                        className={styles.inputMaterial}
+                        value={(typeProductSelected) ? typeProductSelected : selectedProduct.typeProductId}
+                        onChange={handleChange}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
                     <MenuItem key={1} value={1}> Dulce </MenuItem>
@@ -446,7 +443,8 @@ function Products() {
     //Modal de elimincacion
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar el producto con nombre <b>{selectedProduct && selectedProduct.name}</b> ?
+            <p>¿Estás seguro que deseas eliminar el producto con
+                nombre <b>{selectedProduct && selectedProduct.name}</b> ?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDelete()}>SÍ, ELIMINAR</Button>
@@ -460,25 +458,25 @@ function Products() {
             {   // Esto es para que se muestre la ventanita del mensaje
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
-            <br />
-            <Button style={{ marginLeft: '8px' }}
-                variant="contained"
-                size="large"
-                color="primary"
-                id="btnNewDriver"
-                startIcon={<ShoppingCartIcon />}
-                onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
-            <br /><br />
+            <br/>
+            <Button style={{marginLeft: '8px'}}
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                    id="btnNewDriver"
+                    startIcon={<ShoppingCartIcon/>}
+                    onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
+            <br/><br/>
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de productos"
                 actions={[
                     {
-                        icon: () => <VisibilityIcon />,
+                        icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de producto',
                         onClick: (event, rowData) => selectProduct(rowData, "Ver")
                     },

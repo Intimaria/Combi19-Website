@@ -101,7 +101,12 @@ function Register() {
     const [typeCardSelected, setTypeCardSelected] = React.useState('');
     const [cardNumber, setCardNumber] = React.useState('');
     const [securityCode, setSecurityCode] = React.useState('');
-    const [expirationDate, setExpirationDate] = React.useState(moment().set({hour: 0, minute: 0, second: 0, millisecond: 0}));
+    const [expirationDate, setExpirationDate] = React.useState(moment().set({
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0
+    }));
     const [nameSurnameCardOwner, setNameSurnameCardOwner] = React.useState('');
     const [documentNumberCardOwner, setDocumentNumberCardOwner] = React.useState('');
     const [emailError, setEmailError] = React.useState(null);
@@ -560,7 +565,12 @@ function Register() {
             return false;
         }
 
-        if (expirationDate.set({hour: 0, minute: 0, second: 0, millisecond: 0}) < moment().set({hour: 0, minute: 0, second: 0, millisecond: 0})) {
+        if (expirationDate.set({hour: 0, minute: 0, second: 0, millisecond: 0}) < moment().set({
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0
+        })) {
             setExpirationDateError(ERROR_MSG_OVERDUE_EXPIRATION_DATE);
             return false;
         }
