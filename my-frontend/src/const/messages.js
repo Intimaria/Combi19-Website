@@ -66,6 +66,9 @@ export const ERROR_MSG_API_GET_ACTIVE_PLACES = 'Ocurrió un error al obtener los
 export const ERROR_MSG_API_GET_PROVINCES = 'Ocurrió un error al obtener las provincias:';
 export const ERROR_MSG_API_POST_PLACES = 'Ocurrió un error al crear el lugar:';
 export const ERROR_MSG_API_PUT_PLACES = 'Ocurrió un error al modificar el lugar indicado:';
+export const ERROR_MSG_API_PLACE_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias del lugar indicado:';
+export const ERROR_MSG_API_MODIFY_PLACE_DEPENDENCE = 'No se puede editar, el lugar pertenece a rutas activas:';
+export const ERROR_MSG_API_DELETE_PLACE_DEPENDENCE = 'No se puede editar, el lugar pertenece a rutas activas:';
 // Routes API messages
 export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
 export const ERROR_MSG_API_POST_ROUTES = 'Ocurrió un error al crear la ruta:';
