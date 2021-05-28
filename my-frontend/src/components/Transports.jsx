@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import HelpIcon from '@material-ui/icons/Help';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {useStyles} from '../const/modalStyle';
+import {useStyles} from '../const/componentStyles';
 import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {
@@ -474,15 +474,6 @@ function Transports() {
             // Data are cleaned when the modal is closed
             setDefaultValues();
         }
-        /*
-        setDeleteModal(!deleteModal);
-
-        // Data are cleaned when the modal is closed
-        if (deleteModal) {
-            setSelectedTransport(formatSelectedTransport);
-            setDriverSelected("");
-            setTypeComfortSelected("");
-        }*/
     };
 
     useEffect(() => {

@@ -125,7 +125,7 @@ const getTransportDependenceById = async (req, res) => {
             FROM TRANSPORT t
             INNER JOIN ROUTE r ON t.TRANSPORT_ID = r.ID_TRANSPORT
             WHERE t.TRANSPORT_ID = ${id}
-            AND t.ACTIVE = 1;
+            AND r.ACTIVE = 1;
             `;
 
         const [rows] = await connection.execute(sqlSelect);

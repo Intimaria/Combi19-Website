@@ -95,7 +95,6 @@ const putPlace = async (req, res) => {
     if (await validatePlaceDependency(id)) {
         res.status(400).send(ERROR_MSG_API_MODIFY_PLACE_ROUTE_DEPENDENCE);
     }
-
     //const inputsErrors = await validatePlace(city, province);
     else if (await validatePlaceToUpdate(cityName, idProvince, id)) {
         res.status(409).send("* La ciudad ya existe para esta provincia");
@@ -152,9 +151,9 @@ const deletePlace = async (req, res) => {
     if (! await validatePlaceExistsForDelete (id, idProvince)) {
         res.status(404).send("No se puede eliminar, el lugar no existe.");
     }
-
+    */
     else {
-     */
+ 
         const connection = await prepareConnection();
         await connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ?' /* AND ID_PROVINCE = ?'*/, [NO_ACTIVE, id, /*idProvince*/]).then((place) => {
             connection.end();
@@ -165,7 +164,8 @@ const deletePlace = async (req, res) => {
         });
   //  }
     res.end();
-}
+    }
+}  
 
 const getPlaceDependenceById = async (req, res) => {
     const { id } = req.params;
