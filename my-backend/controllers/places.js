@@ -10,8 +10,10 @@ const {
     OK_MSG_API_PLACE_PUT,
     ERROR_MSG_API_PUT_PLACE,
     OK_MSG_API_DELETE_PLACE,
-    ERROR_MSG_API_DELETE_PLACE,
-    ERROR_MSG_API_DELETE_PLACE_ROUTE_DEPENDENCE
+    ERROR_MSG_API_DELETE_PLACE,    
+    ERROR_MSG_API_MODIFY_PLACE_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_DELETE_PLACE_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_PLACE_DEPENDENCE
 } = require('../const/messages.js');
 
 const {prepareConnection} = require("../helpers/connectionDB.js");
@@ -88,9 +90,14 @@ const putPlace = async (req, res) => {
 
     const {id} = req.params;
     console.log(req.body, id);
+
+    
+    if (await validatePlaceDependency(id)) {
+        res.status(400).send(ERROR_MSG_API_MODIFY_PLACE_ROUTE_DEPENDENCE);
+    }
     //const inputsErrors = await validatePlace(city, province);
-    if (await validatePlaceToUpdate(cityName, idProvince, id)) {
-        res.status(400).send("* La ciudad ya existe para esta provincia");
+    else if (await validatePlaceToUpdate(cityName, idProvince, id)) {
+        res.status(409).send("* La ciudad ya existe para esta provincia");
     } else {
         const connection = await prepareConnection();
         await connection.query(
@@ -135,13 +142,18 @@ const deletePlace = async (req, res) => {
     //const {idProvince} = req.body;
     //console.log(req.body, id, idProvince);
     // validate place exists? validate place exists else return error code.
+
     if (await validatePlaceDependency(id)) {
         res.status(400).send(ERROR_MSG_API_DELETE_PLACE_ROUTE_DEPENDENCE);
-    }/*
-    else if (! await validatePlaceExistsForDelete (id, idProvince)) {
+    }
+    /*
+    else 
+    if (! await validatePlaceExistsForDelete (id, idProvince)) {
         res.status(404).send("No se puede eliminar, el lugar no existe.");
-    }*/
+    }
+    */
     else {
+ 
         const connection = await prepareConnection();
         await connection.query('UPDATE CITY SET ACTIVE= ? WHERE CITY_ID = ?' /* AND ID_PROVINCE = ?'*/, [NO_ACTIVE, id, /*idProvince*/]).then((place) => {
             connection.end();
@@ -150,10 +162,24 @@ const deletePlace = async (req, res) => {
             console.log(`${ERROR_MSG_API_DELETE_PLACE} ${error}`);
             res.status(500);
         });
+  //  }
+    res.end();
+    }
+}  
+
+const getPlaceDependenceById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        res.json({
+            placeDependence: validatePlaceDependency(id)
+        });
+        console.log(res);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_PLACE_DEPENDENCE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_PLACE_DEPENDENCE}`);
     }
     res.end();
-}
-
+};
 
 module.exports = {
     getProvinces,
@@ -162,5 +188,6 @@ module.exports = {
     postPlace,
     getPlaceById,
     putPlace,
-    deletePlace
+    deletePlace,
+    getPlaceDependenceById
 }

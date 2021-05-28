@@ -26,7 +26,6 @@ import {
 } from '../api/Places';
 
 import MaterialTable from '@material-table/core';
-import Tooltip from '@material-ui/core/Tooltip';
 import {Message} from "./Message";
 import PinDropIcon from '@material-ui/icons/PinDrop';
 // Importo las expresiones regulares
@@ -34,9 +33,8 @@ import {
     REGEX_ONLY_ALPHABETICAL
 } from '../const/regex.js';
 import Select from '@material-ui/core/Select';
+import Tooltip from '@material-ui/core/Tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
-
 // La configuracion en castellano
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
