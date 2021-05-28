@@ -15,7 +15,7 @@ module.exports = {
     ERROR_MSG_INVALID_EMAIL: '* El correo electrónico posee un formato inválido',
     ERROR_MSG_INVALID_LOGIN: '* El correo y/o contraseña son incorrectos',
     ERROR_MSG_INVALID_NAME: '* El nombre debe poseer solo caracteres alfabéticos',
-    ERROR_MSG_INVALID_PHONE_NUMBER: "* El ingrese un numero de telefono valido",
+    ERROR_MSG_INVALID_PHONE_NUMBER: "* El ingrese un numero de telefono válido",
     ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS: '* La contraseña no posee letras mayúsculas',
     ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE: '* La contraseña no posee letras minúsculas',
     ERROR_MSG_INVALID_PASSWORD_NO_MIN_CHARACTERS: '* La contraseña debe tener 6 o mas caracteres',
@@ -63,10 +63,10 @@ module.exports = {
     ERROR_MSG_API_TRANSPORT_VALIDATE_EXISTING_REGISTRATION_NUMBER: 'Ocurrió un error al verificar si la patente es única:',
     OK_MSG_API_PUT_TRANSPORT: 'Se actualizaron los datos de la combi con éxito',
     ERROR_MSG_API_PUT_TRANSPORT: 'Ocurrió un error al actualizar los datos de la combi:',
-    ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede editar, la combi está asignada a rutas',
+    //ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede editar, la combi está asignada a rutas',
     OK_MSG_API_DELETE_TRANSPORT: 'Se eliminó la combi con éxito',
     ERROR_MSG_API_DELETE_TRANSPORT: 'Ocurrió un error al eliminar la combi indicada',
-    ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede eliminar, la combi está asignada a rutas',
+    //ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede eliminar, la combi está asignada a rutas',
     ERROR_MSG_API_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de la combi',
     // Routes API messages
     ERROR_MSG_EMPTY_KM: '* Ingrese una distancia medida en km para la ruta',
@@ -98,12 +98,35 @@ module.exports = {
     ERROR_MSG_API_PUT_PRODUCT: 'Ocurrió un error al actualizar los datos del producto:',
     OK_MSG_API_DELETE_PRODUCT: 'Se eliminó el producto con éxito',
     ERROR_MSG_API_DELETE_PRODUCT: 'Ocurrió un error al eliminar el producto indicado',
-    ERROR_MSG_INVALID_NAME_PRODUCT: '* Ingrese un nombre de producto valido',
-    ERROR_MSG_INVALID_PRICE_PRODUCT: '* Ingrese un precio de producto valido',
-    ERROR_MSG_INVALID_TYPE_PRODUCT: '* Ingrese un tipo de producto valido',
+    ERROR_MSG_INVALID_NAME_PRODUCT: '* Ingrese un nombre de producto válido',
+    ERROR_MSG_INVALID_PRICE_PRODUCT: '* Ingrese un precio de producto válido',
+    ERROR_MSG_INVALID_TYPE_PRODUCT: '* Ingrese un tipo de producto válido',
     ERROR_MSG_EXISTING_NAME_PRODUCT: '* Ya existe un producto con ese nombre',
     ERROR_MSG_EMPTY_NAME_PRODUCT: '* Ingrese un nombre de producto',
     ERROR_MSG_EMPTY_PRICE_PRODUCT: '* Ingrese un precio de producto',
     ERROR_MSG_EMPTY_TYPE_PRODUCT: '* Ingrese un tipo de producto',
     ERROR_MSG_API_PUT_PRODUCT_VALIDATE_CLIENT_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de el producto',
+    // Trips API messages
+    ERROR_MSG_API_GET_TRIPS: 'Ocurrió un error al obtener los viajes:',
+    OK_MSG_API_TRIP_POST: 'Se creó el viaje con éxito',
+    ERROR_MSG_API_POST_TRIP: 'Ocurrió un error al crear el viaje:',
+    ERROR_MSG_API_TRIP_DATE_OVERLAP: '* La combi ya se encuentra en uso para la fecha y hora indicada',
+    ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP: 'Ocurrió un error al verificar si la combi está en uso:',
+    OK_MSG_API_PUT_TRIP: 'Se actualizaron los datos del viaje con éxito',
+    ERROR_MSG_API_PUT_TRIP: 'Ocurrió un error al actualizar los datos del viaje:',
+    ERROR_MSG_API_PUT_TRIP_ROUTE_DEPENDENCE: 'No se puede editar, el viaje está en curso',
+    OK_MSG_API_DELETE_TRIP: 'Se eliminó el viaje con éxito',
+    ERROR_MSG_API_DELETE_TRIP: 'Ocurrió un error al eliminar el viaje indicado',
+    ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
+    ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del viaje',
+
 };
+
+
+
+
+
+
+
+
+

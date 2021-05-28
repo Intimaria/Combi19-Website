@@ -99,6 +99,7 @@ const getTransportById = async (req, res) => {
             INNER JOIN TYPE_COMFORT tc ON t.ID_TYPE_COMFORT = tc.TYPE_COMFORT_ID
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
             WHERE TRANSPORT_ID = ${id};`;
+
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();

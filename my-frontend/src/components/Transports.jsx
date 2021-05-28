@@ -326,7 +326,7 @@ function Transports() {
             } else if (postResponse.status === 400) {
                 setInternalIdentificationError(postResponse.data.internalIdentificationError);
                 setRegistrationNumberError(postResponse.data.registrationNumberError);
-            }  else if (postResponse.status === 500) {
+            } else if (postResponse.status === 500) {
                 setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
@@ -481,9 +481,8 @@ function Transports() {
         fetchData();
     }, []);
 
-    const bodyCreate = (
-        <div className={styles.modal}>
-            <h3>AGREGAR NUEVA COMBI</h3>
+    const inputsToCreateOrModify = (
+        <div>
             <TextField label="Identificación interna" id={"internalIdentification"} name="internalIdentification"
                        className={styles.inputMaterial}
                        required
@@ -491,6 +490,7 @@ function Transports() {
                        autoComplete='off'
                        error={(internalIdentificationError) ? true : false}
                        helperText={(internalIdentificationError) ? internalIdentificationError : false}
+                       value={selectedTransport && selectedTransport.internalIdentification}
                        onChange={handleChange}/>
             <TextField label="Patente" id={"registrationNumber"} name="registrationNumber"
                        className={styles.inputMaterial}
@@ -499,6 +499,7 @@ function Transports() {
                        autoComplete='off'
                        error={(registrationNumberError) ? true : false}
                        helperText={(registrationNumberError) ? registrationNumberError : false}
+                       value={selectedTransport && selectedTransport.registrationNumber}
                        onChange={handleChange}/>
             <TextField label="Modelo" id={"model"} name="model"
                        className={styles.inputMaterial}
@@ -507,6 +508,7 @@ function Transports() {
                        autoComplete='off'
                        error={(modelError) ? true : false}
                        helperText={(modelError) ? modelError : false}
+                       value={selectedTransport && selectedTransport.model}
                        onChange={handleChange}/>
             <TextField label="Cantidad de asientos" id={"seating"} name="seating"
                        className={styles.inputMaterial}
@@ -515,7 +517,15 @@ function Transports() {
                        required
                        error={(seatingError) ? true : false}
                        helperText={(seatingError) ? seatingError : false}
+                       value={selectedTransport && selectedTransport.seating}
                        onChange={handleChange}/>
+        </div>
+    )
+
+    const bodyCreate = (
+        <div className={styles.modal}>
+            <h3>AGREGAR NUEVA COMBI</h3>
+            {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
                          required
                          error={(typeComfortSelectedError) ? true : false}>
@@ -617,42 +627,7 @@ function Transports() {
                            value={selectedTransport && selectedTransport.active}/>
             </Tooltip>
             <br/>
-            <TextField label="Identificación interna" id={"internalIdentification"} name="internalIdentification"
-                       className={styles.inputMaterial}
-                       required
-                       inputProps={{maxLength: 5, style: {textTransform: 'uppercase'}}}
-                       autoComplete='off'
-                       error={(internalIdentificationError) ? true : false}
-                       helperText={(internalIdentificationError) ? internalIdentificationError : false}
-                       value={selectedTransport && selectedTransport.internalIdentification}
-                       onChange={handleChange}/>
-            <TextField label="Patente" id={"registrationNumber"} name="registrationNumber"
-                       className={styles.inputMaterial}
-                       required
-                       inputProps={{maxLength: 7, style: {textTransform: 'uppercase'}}}
-                       autoComplete='off'
-                       error={(registrationNumberError) ? true : false}
-                       helperText={(registrationNumberError) ? registrationNumberError : false}
-                       value={selectedTransport && selectedTransport.registrationNumber}
-                       onChange={handleChange}/>
-            <TextField label="Modelo" id={"model"} name="model"
-                       className={styles.inputMaterial}
-                       required
-                       inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
-                       autoComplete='off'
-                       error={(modelError) ? true : false}
-                       helperText={(modelError) ? modelError : false}
-                       value={selectedTransport && selectedTransport.model}
-                       onChange={handleChange}/>
-            <TextField label="Cantidad de asientos" id={"seating"} name="seating"
-                       className={styles.inputMaterial}
-                       inputProps={{maxLength: 2}}
-                       autoComplete='off'
-                       required
-                       error={(seatingError) ? true : false}
-                       helperText={(seatingError) ? seatingError : false}
-                       value={selectedTransport && selectedTransport.seating}
-                       onChange={handleChange}/>
+            {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
                          required>
                 <InputLabel>Tipo de confort</InputLabel>

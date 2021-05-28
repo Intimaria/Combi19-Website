@@ -19,7 +19,7 @@ router.get('/', authenticateAdminRol, getTrips);
 router.get('/:id', authenticateAdminRol, getTripById);
 
 // Create a new trip
-router.post('/:id', authenticateAdminRol, postTrip);
+router.post('/', authenticateAdminRol, postTrip);
 
 // Update a trip by id
 router.put('/:id', authenticateAdminRol, putTrip);
