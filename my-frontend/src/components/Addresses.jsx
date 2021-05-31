@@ -65,6 +65,9 @@ const Addresses = () => {
                 <Route path="/userConfiguration" exact>
                     <UserConfiguration/>
                 </Route>
+                <Route path="/comments" exact>
+                    <Comments/>
+                </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
                         Atlántida &#127965;&#128561;</h1>
