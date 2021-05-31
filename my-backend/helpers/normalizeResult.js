@@ -1,4 +1,4 @@
-const normalizeTransport = (rows) => {
+const normalizeTransports = (rows) => {
     let results = [];
 
     for (let index = 0; index < rows.length; index++) {
@@ -105,6 +105,7 @@ const normalizeProducts = (rows) => {
     }
     return results;
 };
+
 const normalizeComments = (rows) => {
     let results = [];
     for (let index = 0; index < rows.length; index++) {
@@ -124,11 +125,37 @@ const normalizeComments = (rows) => {
     }
     return results;
 };
+
+const normalizeTrips = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let trip = {
+            tripId: rows[index].TRIP_ID,
+            price: rows[index].PRICE,
+            departureDay: rows[index].DEPARTURE_DAY,
+            arrivalDay: rows[index].ARRIVAL_DAY,
+            active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
+            transport: {
+                internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
+                registrationNumber: rows[index].REGISTRATION_NUMBER,
+            },
+            departure: rows[index].DEPARTURE,
+            destination: rows[index].DESTINATION
+        };
+        results.push(trip);
+    }
+
+    return results;
+};
+
+
 module.exports = {
     normalizeComments,
-    normalizeTransport,
+    normalizeTransports,
     normalizeDrivers,
     normalizePlaces,
     normalizeRoutes,
-    normalizeProducts
+    normalizeProducts,
+    normalizeTrips
 };

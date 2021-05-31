@@ -23,8 +23,8 @@ const verifyAccount = async (req) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY FROM USER WHERE BINARY EMAIL = (?) AND BINARY PASSWORD = (?)';
-        const [rows, fields] = await connection.execute(sqlSelect, [email, password]);
+        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
+        const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
 
