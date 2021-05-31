@@ -84,6 +84,7 @@ function Comments(props) {
     const styles = useStyles();
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
+    const [newData, setNewData] = useState(true);
     // errores de los inputs
     const [commentError, setCommentError] = React.useState(null);
     // modals
@@ -98,6 +99,13 @@ function Comments(props) {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
    
+    const updateData = (data) => {
+        setData(prevState => ({
+            ...prevState,
+            data
+        }));
+    }
+
     const handleChange = (textFieldAtributes) => {
         const { name, value } = textFieldAtributes.target;
         setSelectedComment(prevState => ({
@@ -142,8 +150,8 @@ function Comments(props) {
                     ...options, open: true, type: 'success',
                     message: `Se ha creado el comentario correctamente`
                 });
+                setNewData(true);
                 openCloseModalCreate();
-                fetchData();
             } else if (postResponse?.status === 400) {
                 setCommentError(postResponse.data.commentError);
             } else if (postResponse?.status === 500) {
@@ -173,8 +181,8 @@ function Comments(props) {
                     ...options, open: true, type: 'success',
                     message: `Se ha actualizado el comentario correctamente`
                 });
+                setNewData(true);
                 openCloseModalUpdate();
-                fetchData();
             } else if (putResponse?.status === 400) {
                 setCommentError(putResponse.data.commentError);
             } else if (putResponse?.status === 500) {
@@ -204,7 +212,7 @@ function Comments(props) {
                     ...options, open: true, type: 'success',
                     message: `Se ha eliminado el comentario correctamente`
                 });
-                fetchData();
+                setNewData(true);
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_DELETE_COMMENT} ${deleteResponse}`);
                 setOptions({
@@ -222,7 +230,7 @@ function Comments(props) {
                     ...options, open: true, type: 'success',
                     message: `Se ha restaurado el comentario correctamente`
                 });
-                fetchData();
+                setNewData(true);
                 console.log(undeleteResponse);
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`);
@@ -268,14 +276,14 @@ function Comments(props) {
             setDefaultErrorMessages();
         }
     }
-    const openCloseModalDelete = (comment) => {
+    const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
         if (deleteModal) {
             setSelectedComment(formatSelectedComment);
             setDefaultErrorMessages();
         }
     };
-    const openCloseModalUnDelete = (comment) => {
+    const openCloseModalUnDelete = () => {
         setUndeleteModal(!undeleteModal);
         if (undeleteModal) {
             setSelectedComment(formatSelectedComment);
@@ -302,10 +310,14 @@ function Comments(props) {
                 console.log(`${ERROR_MSG_API_GET_COMMENT} ${error}`);
             }
         };
+
     useEffect(() => {
+        if (newData) {
+        console.log("fetch new data");
         fetchData();
-        console.log("se llamo fetch data");
-    }, []);
+        }
+        return setNewData(false);
+    }, [newData]);
 
     const bodyCreate = (
         <div className={styles.modal}>
