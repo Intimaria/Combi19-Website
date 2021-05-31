@@ -324,7 +324,11 @@ function Comments(props) {
             <h3>AGREGAR NUEVO COMENTARIO</h3>
             <TextField className={styles.inputMaterial} label="Comentario" name="comment"
                        required
-                       inputProps={{maxLength: 150}}
+                       id="standard-multiline-flexible"
+                       label="Agregue su comentario aqui:"
+                       multiline
+                       rowsMax={8}
+                       inputProps={{maxLength: 400}}
                        autoComplete='off'
                        error={(commentError) ? true : false}
                        helperText={(commentError) ? commentError : false}
@@ -369,7 +373,11 @@ function Comments(props) {
             <br/>
             <TextField className={styles.inputMaterial} label="Comentario" name="comment"
                        required
-                       inputProps={{maxLength: 150}}
+                       id="standard-multiline-flexible"
+                       label="Edite su comentario aqui:"
+                       multiline
+                       rowsMax={8}
+                       inputProps={{maxLength: 400}}
                        autoComplete='off'
                        error={(commentError) ? true : false}
                        helperText={(commentError) ? commentError : false}
