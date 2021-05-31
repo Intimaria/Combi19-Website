@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-
+import {formatDecimalNumber} from "../helpers/numbers";
 //Los estilos de los modals
 import { useStyles } from '../const/componentStyles';
 
@@ -30,7 +30,7 @@ import {
     ERROR_MSG_API_DELETE_PRODUCT,
     ERROR_MSG_API_MODIFY_PRODUCT_BUY_DEPENDENCE,
     ERROR_MSG_LARGE_PRICE_PRODUCT,
-    ERROR_MSG_INVALID_MIN_PRICE
+    ERROR_MSG_INVALID_MIN_PRICE_PRODUCT
 } from '../const/messages.js';
 
 // Importo las expresiones regulares
@@ -105,12 +105,18 @@ function Products() {
                     setNameError(null);
                     break;
                 case 'price':
-                    let priceFormatted = formatDecimalNumber(value, 7, 2);
+                    let priceFormatted = formatDecimalNumber(value, 5, 2);
 
-                    setSelectedProduct(prevState => ({
-                        ...prevState,
-                        [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
-                    }));
+                    if (priceFormatted[0] > 2) {
+                        setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT)
+                    } else {
+                        setSelectedProduct(prevState => ({
+                            ...prevState,
+                            [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                        }));
+
+                        setPriceError(false);
+                    }
 
                     setPriceError(null);
                     break;
@@ -154,7 +160,7 @@ function Products() {
             setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT);
             return false;
         } else if (selectedProduct.price <= 0) {
-            setPriceError(ERROR_MSG_INVALID_MIN_PRICE);
+            setPriceError(ERROR_MSG_INVALID_MIN_PRICE_PRODUCT);
             return false;
         } else if (selectedProduct.price > 99999.99) {
             setPriceError(ERROR_MSG_LARGE_PRICE_PRODUCT);

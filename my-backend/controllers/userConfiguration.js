@@ -39,7 +39,6 @@ const userConfigurationWitoutNewPassword = async (req, res) => {
     const { names, surname, email, birthday, actualPassword } = req.body;
 
     const inputsErrors = await validatePassengersToModifyWihoutNewPassword(email, names, surname, actualPassword, birthday, id);
-    console.log(inputsErrors);
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {
