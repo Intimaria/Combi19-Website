@@ -11,6 +11,7 @@ import Routes from './Routes.jsx';
 import Drivers from './Drivers.jsx';
 import Trips from './Trips.jsx';
 import Products from './Products.jsx';
+import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
 import {useHistory} from "react-router-dom";
 

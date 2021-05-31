@@ -1,4 +1,4 @@
-const normalizeTransports = (rows) => {
+const normalizeTransport = (rows) => {
     let results = [];
 
     for (let index = 0; index < rows.length; index++) {
@@ -60,7 +60,6 @@ const normalizePlaces = (rows) => {
     }
     return results;
 };
-
 const normalizeRoutes = (rows) => {
     let results = [];
 
@@ -99,44 +98,37 @@ const normalizeProducts = (rows) => {
             typeProductId: rows[index].TYPE_PRODUCT_ID,
             typeProductDescription: rows[index].TYPE_PRODUCT_DESCRIPTION,
             name: rows[index].PRODUCT_NAME,
-            price: rows[index].PRICE.toString().replace(".",","),
+            price: rows[index].PRICE,
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
         };
         results.push(product);
     }
     return results;
 };
-
-const normalizeTrips = (rows) => {
+const normalizeComments = (rows) => {
     let results = [];
-
     for (let index = 0; index < rows.length; index++) {
-        let trip = {
-            tripId: rows[index].TRIP_ID,
-            price: rows[index].PRICE,
-            departureDay: rows[index].DEPARTURE_DAY,
-            arrivalDay: rows[index].ARRIVAL_DAY,
-            active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
-            transport: {
-                internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
-                registrationNumber: rows[index].REGISTRATION_NUMBER,
+        let comment = {
+            id: rows[index].COMMENT_ID,
+            user: {
+                id: rows[index].ID_USER,
+                name: rows[index].NAME,
+                surname: rows[index].SURNAME
             },
-            departure: rows[index].DEPARTURE,
-            destination: rows[index].DESTINATION
+            comment: rows[index].COMMENT,
+            date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar').replace(/\//g, "-"),
+            time: new Date(rows[index].COMMENT_DATE).toLocaleTimeString(),
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
         };
-        results.push(trip);
+        results.push(comment);
     }
-
     return results;
-
-
-}
-
+};
 module.exports = {
-    normalizeTransports,
+    normalizeComments,
+    normalizeTransport,
     normalizeDrivers,
     normalizePlaces,
-    normalizeProducts,
     normalizeRoutes,
-    normalizeTrips
+    normalizeProducts
 };
