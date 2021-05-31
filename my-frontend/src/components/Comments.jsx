@@ -242,7 +242,7 @@ function Comments(props) {
             openCloseModalUpdate()
         } else if (action === "Eliminar") {
             await openCloseModalDelete(comment)
-        } else {
+        } else if (action === "Restaurar"){
             await openCloseModalUnDelete(comment)
         }
     }
@@ -268,14 +268,14 @@ function Comments(props) {
             setDefaultErrorMessages();
         }
     }
-    const openCloseModalDelete = () => {
+    const openCloseModalDelete = (comment) => {
         setDeleteModal(!deleteModal);
         if (deleteModal) {
             setSelectedComment(formatSelectedComment);
             setDefaultErrorMessages();
         }
     };
-    const openCloseModalUnDelete = () => {
+    const openCloseModalUnDelete = (comment) => {
         setUndeleteModal(!undeleteModal);
         if (undeleteModal) {
             setSelectedComment(formatSelectedComment);

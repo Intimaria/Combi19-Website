@@ -35,6 +35,6 @@ router.put('/:id', authenticatePassengerRol, putComment);
 router.delete('/:id', authenticatePassengerRol, deleteComment);
 
 // unDelete a Comment by id
-router.put('/custom/:id', authenticatePassengerRol, unDeleteComment);
+ router.put('/custom/:id',  unDeleteComment);
 
 module.exports = router;

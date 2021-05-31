@@ -115,26 +115,22 @@ const deleteComment = async (req, res) => {
 
 const unDeleteComment = async (req, res) => {
   const { id } = req.params;
-  try {
-      const connection = await prepareConnection();
-      const sqlUpdate =
-      `UPDATE COMMENT SET ACTIVE = '${ACTIVE}' WHERE COMMENT.COMMENT_ID = ${id};`;
-      const [rows] = await connection.execute(sqlUpdate, [ACTIVE, id]);
-      connection.end();
-      console.log(res);
-      return res.status(200).send("Se restauró el comentario con éxito");
-  } catch (error) {
-      console.log(`${ERROR_MSG_API_PUT_COMMENT} ${error}`);
-      res.status(500).send(`${ERROR_MSG_API_PUT_COMMENT} ${error}`);
-  }
+   try {
+            const connection = await prepareConnection();
+            let sqlUptate = `UPDATE COMMENT SET ACTIVE = ${ACTIVE} WHERE COMMENT.COMMENT_ID = ${id};`;
+            const [rows] = await connection.execute(sqlUptate, [ACTIVE, id]);
+            connection.end();
+            res.status(200).send("Se actualizó el comentario con éxito");
+        } catch (error) {
+            console.log(ERROR_MSG_API_PUT_COMMENT, error);
+            res.status(500).send(`${ERROR_MSG_API_PUT_COMMENT} ${error}`);
+        }
   res.end();
 
 }
 
 const postComment = async (req, res) => {
     const { comment /*, date*/ } = req.body;
-    console.log(req.body);
-    console.log(req.params);
     const {id } = req.params; // have to send user id in for logged in users (is there a differnt way?)
     const inputsErrors = await validateCommentsToCreate(comment /*, date*/);
      // setting date makes system prone to errors, post date should default to current date curdate() or now()
@@ -171,7 +167,7 @@ const putComment = async (req, res) => {
             const [rows] = await connection.execute(sqlUptate, [comment, id]);
 
             connection.end();
-            res.status(201).send("Se actualizó el comentario con éxito");
+            res.status(200).send("Se actualizó el comentario con éxito");
         } catch (error) {
             console.log(ERROR_MSG_API_PUT_COMMENT, error);
             res.status(500).send(`${ERROR_MSG_API_PUT_COMMENT} ${error}`);
