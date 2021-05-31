@@ -15,6 +15,8 @@ const {
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
 
+const {validateTripToCreate} = require("../helpers/validateTripInputs");
+
 const getTrips = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
 
@@ -75,10 +77,7 @@ const postTrip = async (req, res) => {
 
     console.log('idRoute, price, departureDay es', routeId, price, departureDay);
 
-    // Validar que no se solape las fechas: que la combi no esté en uso en otro lugar
-    //const inputsErrors = await validateTrips(/*COMPLETE WITH THE RIGHT PARAMETERS*/);
-
-    const inputsErrors = false;
+    const inputsErrors = await validateTripToCreate(routeId, departureDay);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);

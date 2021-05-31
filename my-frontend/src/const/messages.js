@@ -129,6 +129,7 @@ export const ERROR_MSG_EMPTY_ROUTE_DEPARTURE = '* Seleccione un origen';
 export const ERROR_MSG_EMPTY_ROUTE_DESTINATION = '* Seleccione un destino';
 export const ERROR_MSG_EMPTY_DEPARTURE_DAY = '* Ingrese fecha y hora del viaje';
 export const ERROR_MSG_INVALID_DEPARTURE_DAY = '* La fecha y hora del viaje ingresada es inválida';
+export const ERROR_MSG_INVALID_MIN_VALUE = '* La fecha y hora debe ser superior a la fecha y hora actual';
 export const ERROR_MSG_EMPTY_PRICE = '* Ingrese un precio';
 export const ERROR_MSG_INVALID_PRICE = '* El precio ingresado es inválido';
 export const ERROR_MSG_INVALID_MIN_PRICE = '* El precio mínimo es $0,01';
