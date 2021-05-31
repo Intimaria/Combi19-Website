@@ -25,7 +25,6 @@ class Server {
     }
 
     routes() {
-        this.app.use('/authorization', require('../routes/authorization.js'));
         this.app.use('/drivers', require('../routes/employees-drivers.js'));
         this.app.use('/employee/login', require('../routes/employees-login.js'));
         this.app.use('/products', require('../routes/employees-products.js'));
@@ -36,6 +35,8 @@ class Server {
         this.app.use('/places', require('../routes/employees-places.js'));
         this.app.use('/prov', require('../routes/employees-provinces.js'));
         this.app.use('/register', require('../routes/register.js'));
+        this.app.use('/userConfiguration', require('../routes/userConfiguration.js'));
+        this.app.use('/getPassangersValues', require('../routes/passangerValues.js'));
     }
 
     listen() {

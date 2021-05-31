@@ -1,7 +1,9 @@
 module.exports = {
     // Passengers API messages
     OK_MSG_API_USER_POST: 'Se creó el usuario con éxito',
+    OK_MSG_API_USER_PUT: 'Se editó los datos del usuario con éxito',
     ERROR_MSG_API_POST_USER: 'Ocurrió un error al insertar el usuario:',
+    ERROR_MSG_API_PUT_USER: 'Ocurrió un error al editar los datos del usuario:',
     ERROR_MSG_EMPTY_DATE: '* Ingrese una fecha',
     ERROR_MSG_EMPTY_EMAIL: '* Ingrese un correo electrónico',
     ERROR_MSG_EMPTY_NAME: '* Ingrese un nombre',
@@ -22,6 +24,8 @@ module.exports = {
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS: '* La contraseña no posee números',
     ERROR_MSG_INVALID_SURNAME: '* El apellido debe poseer solo caracteres alfabéticos',
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
+    ERROR_MSG_SAME_NEW_PASSWORD: '* La nueva contraseña debe ser diferente a la anterior',
+    ERROR_MSG_INCORRECT_ACTUAL_PASSWORD: '* La contraseña actual es incorrecta',
     // Drivers API messages
     ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
     ERROR_MSG_API_GET_DRIVER_BY_ID: 'Ocurrió un error al obtener al chofer indicado:',
@@ -120,7 +124,6 @@ module.exports = {
     ERROR_MSG_API_DELETE_TRIP: 'Ocurrió un error al eliminar el viaje indicado',
     ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
     ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del viaje',
-
 };
 
 

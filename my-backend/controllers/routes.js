@@ -121,7 +121,7 @@ const getRouteDependenceById = async (req, res) => {
     const { id } = req.params;
     try {
         res.json({
-            routeTripDependence: validateRouteTripsDependence(id)
+            routeTripDependence: await validateRouteTripsDependence(id)
         });
     } catch (error) {
         console.log(`${ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE} ${error}`);

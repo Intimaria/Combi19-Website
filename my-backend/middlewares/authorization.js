@@ -1,9 +1,7 @@
 require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
-const verifyToken = (req, res) => {
-  res.sendStatus(200);
-}
+
 const {
   ADMIN_ROLE,
   DRIVER_ROLE,
@@ -21,6 +19,7 @@ const authenticateToken = (token, res) => {
 }
 
 const authenticateRol = (req, res, next, rol) => {
+  if (!req.headers) return res.sendStatus(400);
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -44,7 +43,6 @@ const authenticatePassengerRol = (req, res, next) => {
 }
 
 module.exports = {
-  verifyToken,
   authenticateToken,
   authenticateAdminRol,
   authenticateDriverRol,
