@@ -224,7 +224,7 @@ function Comments(props) {
         const requestUnDelete = async () => {
             let undeleteResponse = await unDeleteComments(selectedComment.id);
             if (undeleteResponse?.status === 200) {
-                openCloseModalDelete();
+                openCloseModalUnDelete();
                 setSuccessMessage(`Se ha restaurado el comentario correctamente`);
                 setOptions({
                     ...options, open: true, type: 'success',
