@@ -24,10 +24,11 @@ const getTrips = async (req, res) => {
         let sqlSelect =
             `
             SELECT 
-            tri.TRIP_ID, tri.PRICE, tri.ACTIVE,
+            tri.TRIP_ID, FORMAT(tri.PRICE, 2, 'es_AR') PRICE, tri.ACTIVE,
             CONCAT(DATE_FORMAT(tri.DEPARTURE_DAY, '%d/%m/%Y %H:%i'), 'hs') DEPARTURE_DAY, 
             CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
-            CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION, 
+            CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
+            CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
             tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER
             FROM TRIP tri
             INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
@@ -36,7 +37,7 @@ const getTrips = async (req, res) => {
             INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
             INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
             INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
-            ORDER BY tri.TRIP_ID ASC;
+            ORDER BY tri.DEPARTURE_DAY ASC, ARRIVAL_DAY ASC, DEPARTURE ASC, DESTINATION ASC;
             `;
 
         const [rows] = await connection.execute(sqlSelect);

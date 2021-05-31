@@ -115,6 +115,7 @@ const normalizeTrips = (rows) => {
             tripId: rows[index].TRIP_ID,
             price: rows[index].PRICE,
             departureDay: rows[index].DEPARTURE_DAY,
+            arrivalDay: rows[index].ARRIVAL_DAY,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             transport: {
                 internalIdentification: rows[index].INTERNAL_IDENTIFICATION,

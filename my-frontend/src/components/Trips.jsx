@@ -54,7 +54,8 @@ const columns = [
     {title: 'Origen', field: 'departure'},
     {title: 'Destino', field: 'destination'},
     {title: 'Precio', field: 'price'},
-    {title: 'Fecha', field: 'departureDay'},
+    {title: 'Fecha de salida', field: 'departureDay'},
+    {title: 'Fecha de llegada', field: 'arrivalDay'},
     {
         title: 'Combi',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
