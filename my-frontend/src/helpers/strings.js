@@ -27,4 +27,4 @@ export const validateDurationFormat = (duration) => {
     } else {
         return false;
     }
-}
+};

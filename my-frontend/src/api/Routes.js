@@ -6,7 +6,8 @@ import {
     ERROR_MSG_API_PUT_ROUTES,
     ERROR_MSG_API_DELETE_ROUTES,
     ERROR_MSG_INTERNET,
-    ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE
+    ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE,
+    ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE
 } from "../const/messages";
 
 export const getRoutes = async () => {
@@ -35,7 +36,7 @@ export const getRoutes = async () => {
             }
         }
     }
-}
+};
 
 export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport) => {
     const token = localStorage.getItem('token');
@@ -71,7 +72,7 @@ export const postRoutes = async (routesData, idPlaceDeparture, idPlaceDestinatio
             }
         }
     }
-}
+};
 
 export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination, idTransport,id) => {
     const token = localStorage.getItem('token');
@@ -81,7 +82,7 @@ export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination
         idTransport,
         duration : routesData.duration,
         km: routesData.km
-    }
+    };
     try {
         let response = await axios.put(`${BACKEND_URL}/routes/${id}`,
         modifyRoute,
@@ -136,7 +137,7 @@ export const deleteRoutes = async (id) => {
             }
         }
     }
-}
+};
 
 export const getRouteDependenceById = async (id) => {
     const token = localStorage.getItem('token');
@@ -163,6 +164,29 @@ export const getRouteDependenceById = async (id) => {
             } else {
                 return error.message;
             }
+        }
+    }
+};
+
+export const getAvailableRoutes = async () => {
+    const token = localStorage.getItem('token');
+    try {
+        const instance = axios.create({
+            baseURL: `${BACKEND_URL}/routes/custom/available`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const response = await instance.get();
+        return response;
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE} ${error}`);
+
+        if (error.message === 'Network Error') {
+            error.message = ERROR_MSG_INTERNET;
+            return error.message;
+        } else {
+            return error.message;
         }
     }
 };

@@ -83,6 +83,7 @@ module.exports = {
     ERROR_MSG_REPEAT_PLACES: '* Ingrese lugares de origen y destino distintos',
     ERROR_MSG_EXISTING_PLACES: '* Ya existe una ruta con los mismos lugares de origen y destino',
     ERROR_MSG_API_GET_ROUTE: 'Ocurrió un error al obtener las rutas',
+    ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE: 'Ocurrió un error al obtener las rutas disponibles:',
     ERROR_MSG_API_POST_ROUTE: 'Ocurrió un error al crear la ruta indicada',
     ERROR_MSG_API_PUT_ROUTE: 'Ocurrió un error al modificar la ruta indicada',
     ERROR_MSG_API_DELETE_ROUTE: 'Ocurrió un error al eliminar la ruta indicada',
@@ -115,10 +116,10 @@ module.exports = {
     ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP: 'Ocurrió un error al verificar si la combi está en uso:',
     OK_MSG_API_PUT_TRIP: 'Se actualizaron los datos del viaje con éxito',
     ERROR_MSG_API_PUT_TRIP: 'Ocurrió un error al actualizar los datos del viaje:',
-    ERROR_MSG_API_PUT_TRIP_ROUTE_DEPENDENCE: 'No se puede editar, el viaje está en curso',
+    //ERROR_MSG_API_PUT_TRIP_ROUTE_DEPENDENCE: 'No se puede editar, el viaje está en curso',
     OK_MSG_API_DELETE_TRIP: 'Se eliminó el viaje con éxito',
     ERROR_MSG_API_DELETE_TRIP: 'Ocurrió un error al eliminar el viaje indicado',
-    ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
+    //ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
     ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del viaje',
 
 };

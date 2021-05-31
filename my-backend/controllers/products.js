@@ -1,4 +1,4 @@
-const { prepareConnection } = require("../helpers/connectionDB.js");
+const {prepareConnection} = require("../helpers/connectionDB.js");
 const {
     ERROR_MSG_API_GET_PRODUCTS,
     ERROR_MSG_API_GET_PRODUCT_BY_ID,
@@ -9,7 +9,8 @@ const {
     ERROR_MSG_API_PUT_PRODUCT,
     OK_MSG_API_DELETE_PRODUCT,
     ERROR_MSG_API_DELETE_PRODUCT,
-    ERROR_MSG_API_PUT_PRODUCT_VALIDATE_CLIENT_DEPENDENCE } = require('../const/messages.js');
+    ERROR_MSG_API_PUT_PRODUCT_VALIDATE_CLIENT_DEPENDENCE
+} = require('../const/messages.js');
 
 const {
     NO_ACTIVE,
@@ -18,11 +19,13 @@ const {
     TICKET_ON_TRACK_STATUS
 } = require('../const/config.js');
 
-const { normalizeProducts } = require("../helpers/normalizeResult.js");
+const {normalizeProducts} = require("../helpers/normalizeResult.js");
 const {
     validateProductsToCreate,
     validateProductsToModify,
-    validateProductClientDependence } = require("../helpers/validateProducts.js")
+    validateProductClientDependence
+} = require("../helpers/validateProducts.js")
+
 const getProducts = async (req, res) => {
     // const {start = 1, limit = 5} = req.query;
 
@@ -57,7 +60,7 @@ const getAvailableProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
         const connection = await prepareConnection();
         const sqlSelect = 'SELECT * FROM PRODUCT p INNER JOIN TYPE_PRODUCT tp ON (tp.TYPE_PRODUCT_ID=p.ID_TYPE_PRODUCT) WHERE PRODUCT_ID = ? ORDER BY PRODUCT_NAME ASC';
         const [rows] = await connection.execute(sqlSelect, [id]);
@@ -72,9 +75,9 @@ const getProductById = async (req, res) => {
 }
 
 const postProduct = async (req, res) => {
-    const { name, price, typeProduct } = req.body;
+    const {name, price, typeProduct} = req.body;
 
-    const inputsErrors = await validateProductsToCreate (name, price, typeProduct);
+    const inputsErrors = await validateProductsToCreate(name, price, typeProduct);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -95,9 +98,9 @@ const postProduct = async (req, res) => {
 }
 
 const putProduct = async (req, res) => {
-    const { id } = req.params;
-    const { name, price, typeProduct } = req.body;
-    const inputsErrors = await validateProductsToModify (name, price, typeProduct, id);
+    const {id} = req.params;
+    const {name, price, typeProduct} = req.body;
+    const inputsErrors = await validateProductsToModify(name, price, typeProduct, id);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -117,7 +120,7 @@ const putProduct = async (req, res) => {
 }
 
 const deleteProduct = async (req, res) => {
-    const { id } = req.params;
+    const {id} = req.params;
     try {
         const connection = await prepareConnection();
         const sqlUpdate = 'UPDATE PRODUCT SET ACTIVE= ? WHERE PRODUCT_ID = ?';

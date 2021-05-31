@@ -23,7 +23,7 @@ const {
     validateTransportToUpdate
 } = require("../helpers/validateTransportInputs");
 
-const {normalizeTransport} = require("../helpers/normalizeResult");
+const {normalizeTransports} = require("../helpers/normalizeResult");
 
 const getTransports = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
@@ -40,14 +40,14 @@ const getTransports = async (req, res) => {
             INNER JOIN USER u ON t.ID_DRIVER = u.USER_ID
             ORDER BY t.INTERNAL_IDENTIFICATION ASC;
             `;
+
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
 
-        const normalizedResults = normalizeTransport(rows);
+        const normalizedResults = normalizeTransports(rows);
 
-        res.json(normalizedResults);
-
+        return res.status(200).send(normalizedResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
         res.status(500).send(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
@@ -75,7 +75,7 @@ const getActiveTransports = async (req, res) => {
 
         connection.end();
 
-        const normalizedResults = normalizeTransport(rows);
+        const normalizedResults = normalizeTransports(rows);
 
         res.json(normalizedResults);
 
@@ -217,13 +217,13 @@ const deleteTransport = async (req, res) => {
 
     try {
         const connection = await prepareConnection();
-        const sqlUptate =
+        const sqlUpdate =
             `
             UPDATE TRANSPORT SET ACTIVE = 0 
             WHERE TRANSPORT_ID = ${id};
             `;
 
-        const [rows] = await connection.execute(sqlUptate);
+        const [rows] = await connection.execute(sqlUpdate);
         connection.end();
 
         return res.status(200).send(OK_MSG_API_DELETE_TRANSPORT);

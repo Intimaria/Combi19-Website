@@ -9,6 +9,7 @@ import Register from './Register.jsx';
 import Transports from './Transports.jsx';
 import Routes from './Routes.jsx';
 import Drivers from './Drivers.jsx';
+import Trips from './Trips.jsx';
 import Products from './Products.jsx';
 import {useHistory} from "react-router-dom";
 
@@ -53,6 +54,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/routes" exact>
                     <Routes/>
+                </Route>
+                <Route path="/trips" exact>
+                    <Trips/>
                 </Route>
                 <Route path="/products" exact>
                     <Products/>

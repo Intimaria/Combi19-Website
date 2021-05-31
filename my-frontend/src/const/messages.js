@@ -87,6 +87,7 @@ export const ERROR_MSG_API_MODIFY_PLACE_DEPENDENCE = 'No se puede editar, el lug
 export const ERROR_MSG_API_DELETE_PLACE_DEPENDENCE = 'No se puede editar, el lugar pertenece a rutas activas:';
 // Routes API messages
 export const ERROR_MSG_API_GET_ROUTES = 'Ocurrió un error al obtener las rutas:';
+export const ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE = 'Ocurrió un error al obtener las rutas disponibles:';
 export const ERROR_MSG_API_POST_ROUTES = 'Ocurrió un error al crear la ruta:';
 export const ERROR_MSG_API_PUT_ROUTES = 'Ocurrió un error al actualizar los datos de la ruta:';
 export const ERROR_MSG_API_DELETE_ROUTES = 'Ocurrió un error al eliminar la ruta indicada';
@@ -102,8 +103,8 @@ export const ERROR_MSG_INVALID_KM = '* Ingrese una distancia válida';
 export const ERROR_MSG_INVALID_DURATION = '* Ingrese una duración válida';
 export const ERROR_MSG_INVALID_ZERO_DURATION = '* La duración debe ser mayor a cero';
 export const ERROR_MSG_INVALID_TRANSPORT = '* Ingrese una combi válida';
-export const ERROR_MSG_INVALID_PLACE_DESTINATION = '* Ingrese un lugar de destino valido';
-export const ERROR_MSG_INVALID_PLACE_DEPARTURE = '* Ingrese un lugar de origen valido';
+export const ERROR_MSG_INVALID_PLACE_DESTINATION = '* Ingrese un lugar de destino válido';
+export const ERROR_MSG_INVALID_PLACE_DEPARTURE = '* Ingrese un lugar de origen válido';
 export const ERROR_MSG_REPEAT_PLACES = '* Ingrese lugares de origen y destino distintos';
 // Products API messages
 export const ERROR_MSG_API_GET_PRODUCTS = 'Ocurrió un error al obtener los producto: ';
@@ -113,10 +114,25 @@ export const ERROR_MSG_API_POST_PRODUCT = 'Ocurrió un error al crear el product
 export const ERROR_MSG_API_PUT_PRODUCT = 'Ocurrió un error al actualizar los datos del producto:';
 export const ERROR_MSG_API_DELETE_PRODUCT = 'Ocurrió un error al eliminar el producto indicado';
 export const ERROR_MSG_API_MODIFY_PRODUCT_BUY_DEPENDENCE = 'No se puede editar, el producto ya ha sido comprado por algun cliente';
-export const ERROR_MSG_INVALID_NAME_PRODUCT = '* Ingrese un nombre de producto valido';
-export const ERROR_MSG_INVALID_PRICE_PRODUCT = '* Ingrese un precio de producto valido';
-export const ERROR_MSG_INVALID_TYPE_PRODUCT = '* Ingrese un tipo de producto valido';;
+export const ERROR_MSG_INVALID_NAME_PRODUCT = '* Ingrese un nombre de producto válido';
+export const ERROR_MSG_INVALID_PRICE_PRODUCT = '* Ingrese un precio de producto válido';
+export const ERROR_MSG_INVALID_TYPE_PRODUCT = '* Ingrese un tipo de producto válido';;
 export const ERROR_MSG_EMPTY_NAME_PRODUCT = '* Ingrese un nombre de producto';
 export const ERROR_MSG_EMPTY_PRICE_PRODUCT = '* Ingrese un precio de producto';
 export const ERROR_MSG_EMPTY_TYPE_PRODUCT = '* Ingrese un tipo de producto';
 export const ERROR_MSG_API_PUT_PRODUCT_VALIDATE_CLIENT_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias de el producto';
+// Trip registration form
+export const ERROR_MSG_EMPTY_ROUTE_DEPARTURE = '* Seleccione un origen';
+export const ERROR_MSG_EMPTY_ROUTE_DESTINATION = '* Seleccione un destino';
+export const ERROR_MSG_EMPTY_DEPARTURE_DAY = '* Ingrese fecha y hora del viaje';
+export const ERROR_MSG_INVALID_DEPARTURE_DAY = '* La fecha y hora del viaje ingresada es inválida';
+export const ERROR_MSG_EMPTY_PRICE = '* Ingrese un precio';
+export const ERROR_MSG_INVALID_PRICE = '* El precio ingresado es inválido';
+export const ERROR_MSG_INVALID_MIN_PRICE = '* El precio mínimo es $0,01';
+export const ERROR_MSG_INVALID_MAX_PRICE = '* El precio máximo es $9999999,99';
+// Trips API messages
+export const ERROR_MSG_API_GET_TRIPS = 'Ocurrió un error al obtener los viajes:';
+export const ERROR_MSG_API_POST_TRIP = 'Ocurrió un error al crear el viaje:';
+export const ERROR_MSG_API_TRIP_DATE_OVERLAP = '* La combi ya se encuentra en uso para la fecha y hora indicada';
+export const ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP = 'Ocurrió un error al verificar si la combi está en uso:';
+export const ERROR_MSG_API_PUT_TRIP = 'Ocurrió un error al actualizar los datos del viaje:';

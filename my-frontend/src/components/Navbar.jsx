@@ -11,30 +11,34 @@ const Navbar = ({userData}) => {
     const logout = () => {
         localStorage.clear();
         history.push('/login')
-    }
+    };
 
     const loginRegistrationMenu = (
         <div>
             <NavLink to="/login" className="btn btn-dark mr-2"> Iniciar sesión </NavLink>
             <NavLink to="/register" className="btn btn-dark mr-2"> Registrar </NavLink>
         </div>
-    )
+    );
+
     const logoutOption = (
         <button className="btn btn-dark mr-2" onClick={() => logout()}> Cerrar sesión </button>
-    )
+    );
 
     const passengerMenu = (
         <div>
         </div>
-    )
+    );
+
     const driverMenu = (
         <div>
             <NavLink to="/pendingTrips" className="btn btn-dark mr-2"> Viajes pendientes </NavLink>
             <NavLink to="/tripsMade" className="btn btn-dark mr-2"> Viajes realizados </NavLink>
         </div>
-    )
+    );
+
     const adminMenu = (
         <div>
+            <NavLink to="/trips" className="btn btn-dark mr-2"> Viajes </NavLink>
             <NavLink to="/routes" className="btn btn-dark mr-2"> Rutas </NavLink>
             <NavLink to="/transports" className="btn btn-dark mr-2"> Combis </NavLink>
             <NavLink to="/drivers" className="btn btn-dark mr-2"> Choferes </NavLink>
@@ -47,7 +51,8 @@ const Navbar = ({userData}) => {
                  */
             }
         </div>
-    )
+    );
+
     return (
         <div className="navbar navbar-dark bg-dark px-5 mb-4">
             <Link to="/" className="navbar-brand"> <img src={logo} alt="Logo" className="logo-navbar"/> </Link>
@@ -60,5 +65,6 @@ const Navbar = ({userData}) => {
             </div>
         </div>
     )
-}
+};
+
 export default Navbar
