@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 
-const {prepareConnection} = require("../helpers/connectionDB.js");
+const { prepareConnection } = require("../helpers/connectionDB.js");
 
 const {
     EXPIRY_TIME,
@@ -15,15 +15,15 @@ const {
     ERROR_MSG_INVALID_LOGIN
 } = require('../const/messages');
 
-let userData = {userName: '', userSurname: '', userEmail: '', userRoleId: []};
+let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [] };
 
 const verifyAccount = async (req) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL FROM USER WHERE BINARY EMAIL = (?) AND BINARY PASSWORD = (?)';
+        const sqlSelect = 'SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY FROM USER WHERE BINARY EMAIL = (?) AND BINARY PASSWORD = (?)';
         const [rows, fields] = await connection.execute(sqlSelect, [email, password]);
 
         connection.end();
@@ -32,6 +32,8 @@ const verifyAccount = async (req) => {
             userData.userName = rows[0].NAME;
             userData.userSurname = rows[0].SURNAME;
             userData.userEmail = rows[0].EMAIL;
+            userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
+            userData.userId = rows[0].USER_ID;
             return rows[0].USER_ID;
         }
     } catch (error) {
@@ -62,14 +64,14 @@ const verifyRole = async (verifiableRoles, userId) => {
 }
 
 const Login = async (req, res, verifiableRoles) => {
-    userData = {userName: '', userSurname: '', userEmail: '', userRoleId: []};
+    userData = { userName: '', userSurname: '', userEmail: '', userRoleId: [] };
 
     const userId = await verifyAccount(req);
 
     if (userId && await verifyRole(verifiableRoles, userId)) {
         const userRoles = userData.userRoleId
-        const token = jwt.sign({ userId, userRoles }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: EXPIRY_TIME});
-        return res.status(200).send({token, userData});
+        const token = jwt.sign({ userId, userRoles }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: EXPIRY_TIME });
+        return res.status(200).send({ token, userData });
     } else {
         res.status(400).send(ERROR_MSG_INVALID_LOGIN);
     }

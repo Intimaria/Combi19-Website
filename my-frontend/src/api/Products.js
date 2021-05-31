@@ -43,7 +43,7 @@ export const postProducts = async (productData, typeProduct) => {
     const newProduct = {
         typeProduct,
         name : productData.name,
-        price: productData.price
+        price: productData.price.includes(",") ? productData.price.replace(",",".") : productData.price
     }
     try {
         let response = await axios.post(`${BACKEND_URL}/products`,
@@ -77,7 +77,7 @@ export const putProducts = async (productData, typeProduct ,id) => {
     const newProduct = {
         typeProduct,
         name : productData.name,
-        price: productData.price
+        price: productData.price.includes(",") ? productData.price.replace(",",".") : productData.price
     }
     try {
         let response = await axios.put(`${BACKEND_URL}/products/${id}`,

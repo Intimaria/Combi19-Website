@@ -99,7 +99,7 @@ const normalizeProducts = (rows) => {
             typeProductId: rows[index].TYPE_PRODUCT_ID,
             typeProductDescription: rows[index].TYPE_PRODUCT_DESCRIPTION,
             name: rows[index].PRODUCT_NAME,
-            price: rows[index].PRICE,
+            price: rows[index].PRICE.toString().replace(".",","),
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
         };
         results.push(product);

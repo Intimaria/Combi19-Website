@@ -14,7 +14,12 @@ const {
     ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
     ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
-    ERROR_MSG_INVALID_SURNAME, ERROR_MSG_EMPTY_DATE, ERROR_MSG_INVALID_DATE, ERROR_MSG_INVALID_AGE,
+    ERROR_MSG_INVALID_SURNAME, 
+    ERROR_MSG_EMPTY_DATE, 
+    ERROR_MSG_INVALID_DATE, 
+    ERROR_MSG_INVALID_AGE,
+    ERROR_MSG_SAME_NEW_PASSWORD,
+    ERROR_MSG_INCORRECT_ACTUAL_PASSWORD 
 } = require('../const/messages.js');
 
 const {
@@ -33,13 +38,25 @@ let passwordError1;
 let passwordError2;
 let birthdayError;
 let phoneNumberError;
+let actualPasswordError;
 
 const validatePassengersToCreate = async (email, names, surname, password1, password2, birthday) => {
+    actualPasswordError = null;
     return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToCreate(email)) ? null : preparePassengerResponse();
 }
 
-const validatePassengersToModify = async (email, names, surname, password1, password2, birthday, id) => {
-    return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToModify(email, id)) ? null : preparePassengerResponse();
+const validatePassengersToModifyWihoutNewPassword = async (email, names, surname, actualPassword, birthday ,id) => {
+    passwordError1 = null;
+    passwordError2 = null;
+    return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id)) ? null : preparePassengerResponse();
+}
+
+const validatePassengersToModifyWithNewPassword = async (email, names, surname, newPassword1, newPassword2, actualPassword ,birthday, id) => {
+    return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id) && validatePassword(newPassword1) && comparePasswords(newPassword1,newPassword2) && compareActualPasswordWithNewPassword(actualPassword, newPassword1)) ? null : preparePassengerResponse();
+}
+
+const validatePassengerToModify = (email, names, surname,birthday) => {
+    return (validateEmail(email) & validateName(names) & validateSurname(surname) & validateDate(birthday))
 }
 
 const validateDriversToCreate = async (email, names, surname, password1, password2, phoneNumber) => {
@@ -69,7 +86,8 @@ const preparePassengerResponse = () => {
         namesError,
         surnameError,
         passwordError1,
-        passwordError2
+        passwordError2,
+        actualPasswordError
     }
 }
 
@@ -128,8 +146,6 @@ const verifyUniqueEmailToModify = async (email, id) => {
         connection.end();
 
         if (rows.length >= 1) {
-            console.log(rows);
-            console.log(id);
             emailError = ERROR_MSG_EXISTING_EMAIL;
             return false;
         }
@@ -240,12 +256,12 @@ const validateDate = (birthday) => {
         monthLength[1] = 29;
 
     if (!(day > 0 && day <= monthLength[month - 1])) {
-        setBirthdayError(ERROR_MSG_INVALID_DATE);
+        birthdayError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
 
     if (calculateAge() < 18) {
-        setBirthdayError(ERROR_MSG_INVALID_AGE);
+        birthdayError = (ERROR_MSG_INVALID_AGE);
         return false;
     }
     birthdayError = null;
@@ -263,9 +279,42 @@ const validatePhoneNumber = (phoneNumber) => {
     phoneNumberError = null;
     return true;
 }
+
+const validateActualPassword = async(actualPassword, id) => {
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY PASSWORD = (?) AND USER_ID = ?';
+        const [rows] = await connection.execute(selectSql, [actualPassword, id]);
+
+        connection.end();
+
+        if (rows.length != 1) {
+            actualPasswordError = ERROR_MSG_INCORRECT_ACTUAL_PASSWORD;
+            return false;
+        }
+        actualPasswordError = null;
+        return true;
+    } catch (error) {
+        console.log('Ocurrió un error al verificar la contraseña actual del usuario:', error);
+        return false;
+    }
+}
+
+const compareActualPasswordWithNewPassword = (actualPassword, newPassword) => {
+    if (actualPassword === newPassword) {
+        passwordError1 = (ERROR_MSG_SAME_NEW_PASSWORD);
+        return false;
+    }
+
+    passwordError1 = null;
+    return true;
+}
+
 module.exports = {
     validatePassengersToCreate,
-    validatePassengersToModify,
+    validatePassengersToModifyWithNewPassword,
+    validatePassengersToModifyWihoutNewPassword,
     validateDriversToCreate,
     validateDriversToModify
 }
