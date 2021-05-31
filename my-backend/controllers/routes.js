@@ -11,8 +11,8 @@ const {
     ERROR_MSG_API_PUT_ROUTE,
     ERROR_MSG_API_DELETE_ROUTE,
     OK_MSG_API_DELETE_ROUTE,
-    ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE
-
+    ERROR_MSG_API_ROUTE_VALIDATE_TRIP_DEPENDENCE,
+    ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE
 } = require('../const/messages.js');
 
 const {
@@ -27,21 +27,28 @@ const getRoutes = async (req, res) => {
         concat(cast(substring(DURATION, 1, 2) AS UNSIGNED), IF(substring(DURATION, 1, 2) = "01", ' hora y ', ' horas y ') , substring(DURATION, 4, 2) , ' minutos') as DURATION
          */
 
-        const sqlSelect = `
-        SELECT r.ROUTE_ID, 
-        substring(DURATION, 1, 5) as DURATION, 
-        r.KM, t.INTERNAL_IDENTIFICATION, t.TRANSPORT_ID, r.ACTIVE,
-        c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
-        c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
-        FROM TRANSPORT t
-        INNER JOIN ROUTE r ON (r.ID_TRANSPORT=t.TRANSPORT_ID) 
-        INNER JOIN CITY c on (r.id_departure=c.city_id) 
-        INNER JOIN CITY c1 on (r.id_destination=c1.city_id) 
-        INNER JOIN PROVINCE p on (c.ID_PROVINCE=p.PROVINCE_ID) 
-        INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID) ORDER BY r.KM ASC`;
+        const sqlSelect =
+                `
+                SELECT r.ROUTE_ID, 
+                substring(DURATION, 1, 5) as DURATION, 
+                r.KM, t.INTERNAL_IDENTIFICATION, t.TRANSPORT_ID, r.ACTIVE,
+                c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
+                c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
+                FROM TRANSPORT t
+                INNER JOIN ROUTE r ON (r.ID_TRANSPORT=t.TRANSPORT_ID) 
+                INNER JOIN CITY c on (r.id_departure=c.city_id) 
+                INNER JOIN CITY c1 on (r.id_destination=c1.city_id) 
+                INNER JOIN PROVINCE p on (c.ID_PROVINCE=p.PROVINCE_ID) 
+                INNER JOIN PROVINCE p1 on (c1.ID_PROVINCE=p1.PROVINCE_ID) 
+                ORDER BY c.CITY_NAME, p.PROVINCE_NAME, c1.CITY_NAME, p1.PROVINCE_NAME ASC;
+                `;
+
         const [rows] = await connection.execute(sqlSelect, []);
+
         connection.end();
+
         const normalizedResults = normalizeRoutes(rows);
+
         return res.status(200).send(normalizedResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_ROUTE}: ${error}`);
@@ -52,7 +59,38 @@ const getRoutes = async (req, res) => {
 
 
 const getRouteById = async (req, res) => {
-}
+};
+
+const getAvailableRoutes = async (req, res) => {
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect =
+            `
+            SELECT r.ROUTE_ID routeId, CONCAT(t.INTERNAL_IDENTIFICATION, ' - ', t.REGISTRATION_NUMBER) transport,
+            c1.CITY_ID departureId, CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) departure,
+            c2.CITY_ID destinationId, CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) destination
+            FROM ROUTE r
+            INNER JOIN TRANSPORT t ON r.ID_TRANSPORT = t.TRANSPORT_ID
+            INNER JOIN CITY c1 ON r.ID_DEPARTURE = c1.CITY_ID
+            INNER JOIN PROVINCE p1 ON c1.ID_PROVINCE = p1.PROVINCE_ID
+            INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
+            INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
+            WHERE r.ACTIVE = ${ACTIVE}
+            ORDER BY DEPARTURE ASC, DESTINATION ASC;
+            `;
+
+        const [rows] = await connection.execute(sqlSelect);
+
+        connection.end();
+
+        return res.status(200).send(rows);
+
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE} ${error}`);
+    }
+    res.end();
+};
 
 const deleteRoute = async (req, res) => {
     const { id } = req.params;
@@ -70,7 +108,7 @@ const deleteRoute = async (req, res) => {
     }
     res.end();
 
-}
+};
 
 const postRoute = async (req, res) => {
     const { idPlaceDeparture, idPlaceDestination, idTransport, duration, km } = req.body;
@@ -91,7 +129,7 @@ const postRoute = async (req, res) => {
         }
     }
     res.end();
-}
+};
 
 const putRoute = async (req, res) => {
     const { id } = req.params;
@@ -115,7 +153,7 @@ const putRoute = async (req, res) => {
         }
     }
     res.end();
-}
+};
 
 const getRouteDependenceById = async (req, res) => {
     const { id } = req.params;
@@ -136,5 +174,6 @@ module.exports = {
     postRoute,
     putRoute,
     deleteRoute,
-    getRouteDependenceById
-}
+    getRouteDependenceById,
+    getAvailableRoutes
+};

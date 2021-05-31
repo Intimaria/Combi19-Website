@@ -39,6 +39,7 @@ import {
     ERROR_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE
 } from "../const/messages";
+
 import {
     REGEX_ONLY_NUMBER,
     REGEX_NEW_REGISTRATION_NUMBER,
@@ -138,7 +139,7 @@ function Transports() {
             setSelectedTransport(prevState => ({
                 ...prevState,
                 [name]: value
-            }))
+            }));
 
             switch (name) {
                 case 'internalIdentification':
@@ -253,10 +254,10 @@ function Transports() {
 
                 return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_GET_TRANSPORTS} ${getTransportsResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getTransportsResponse}`
+                    message: `${ERROR_MSG_API_GET_TRANSPORTS} ${getTransportsResponse}`
                 });
             }
 
@@ -520,7 +521,7 @@ function Transports() {
                        value={selectedTransport && selectedTransport.seating}
                        onChange={handleChange}/>
         </div>
-    )
+    );
 
     const bodyCreate = (
         <div className={styles.modal}>

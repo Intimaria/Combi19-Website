@@ -29,7 +29,8 @@ import {
     ERROR_MSG_API_PUT_PRODUCT,
     ERROR_MSG_API_DELETE_PRODUCT,
     ERROR_MSG_API_MODIFY_PRODUCT_BUY_DEPENDENCE,
-    ERROR_MSG_LARGE_PRICE_PRODUCT
+    ERROR_MSG_LARGE_PRICE_PRODUCT,
+    ERROR_MSG_INVALID_MIN_PRICE
 } from '../const/messages.js';
 
 // Importo las expresiones regulares
@@ -104,6 +105,13 @@ function Products() {
                     setNameError(null);
                     break;
                 case 'price':
+                    let priceFormatted = formatDecimalNumber(value, 7, 2);
+
+                    setSelectedProduct(prevState => ({
+                        ...prevState,
+                        [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                    }));
+
                     setPriceError(null);
                     break;
                 default:
@@ -139,22 +147,23 @@ function Products() {
     }
 
     const validatePrice = () => {
-        let auxPrice = selectedProduct.price;
-        if (selectedProduct.price.includes(",")) auxPrice = auxPrice.replace(",",".");
-        if (!auxPrice) {
+        if (!selectedProduct.price) {
             setPriceError(ERROR_MSG_EMPTY_PRICE_PRODUCT);
             return false;
-        } else if (REGEX_ONLY_DECIMAL_NUMBER.test(auxPrice) || auxPrice <= 0 || (auxPrice.includes(".") && ![1,2].includes(auxPrice.split(".")[1].length))) {
+        } else if (!REGEX_ONLY_DECIMAL_NUMBER.test(selectedProduct.price)) {
             setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT);
             return false;
-        }
-        else if (auxPrice >= 100000) {
+        } else if (selectedProduct.price <= 0) {
+            setPriceError(ERROR_MSG_INVALID_MIN_PRICE);
+            return false;
+        } else if (selectedProduct.price > 99999.99) {
             setPriceError(ERROR_MSG_LARGE_PRICE_PRODUCT);
             return false;
         }
+
         setPriceError(null);
         return true;
-    }
+    };
 
     const validateTypeProduct = () => {
         if (!selectedProduct.typeProductId && !typeProductSelected) {

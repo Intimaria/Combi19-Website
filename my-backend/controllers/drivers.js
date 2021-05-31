@@ -66,8 +66,8 @@ const getAvailableDrivers = async (req, res) => {
                 FROM USER u
                 INNER JOIN ROLE_USER ru ON u.USER_ID = ru.ID_USER
                 LEFT JOIN TRANSPORT t ON u.USER_ID = t.ID_DRIVER
-                WHERE ru.ACTIVE = 1
-                AND ru.ID_ROLE = 2
+                WHERE ru.ACTIVE = ${ACTIVE}
+                AND ru.ID_ROLE = ${DRIVER_ROLE}
                 AND u.USER_ID NOT IN (
 					SELECT t2.ID_DRIVER FROM
 					TRANSPORT t2 
@@ -75,15 +75,15 @@ const getAvailableDrivers = async (req, res) => {
 					)
                 ORDER BY u.SURNAME ASC, u.NAME ASC;
                 `;
-        const [rows] = await connection.execute(sqlSelect, [DRIVER_ROLE]);
+        const [rows] = await connection.execute(sqlSelect);
         connection.end();
         return res.status(200).send(rows);
     } catch (error) {
-        console.log(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
-        res.status(500).send(`${ERROR_MSG_API_GET_DRIVERS} ${error}`);
+        console.log(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${error}`);
     }
     res.end();
-}
+};
 
 const postDriver = async (req, res) => {
     const { names, surname, email, phoneNumber, password1, password2 } = req.body;
