@@ -160,12 +160,16 @@ function Trips() {
                 case 'price':
                     let priceFormatted = formatDecimalNumber(value, 7, 2);
 
-                    setSelectedTrip(prevState => ({
-                        ...prevState,
-                        [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
-                    }));
+                    if (priceFormatted[0] > 2) {
+                        setPriceError(ERROR_MSG_INVALID_PRICE)
+                    } else {
+                        setSelectedTrip(prevState => ({
+                            ...prevState,
+                            [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                        }));
 
-                    setPriceError(false);
+                        setPriceError(false);
+                    }
                     break;
                 default:
                     console.log('Es necesario agregar un case más en el switch por el name:', name);
