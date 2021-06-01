@@ -34,7 +34,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
 
-const userData = JSON.parse(localStorage.getItem('userData'));
+
 
 
 const columns = [
@@ -63,6 +63,7 @@ render: rowData => <p style={{width: 360, overflow: "hidden", whiteSpace: "nowra
 
 function Comments(props) {
     //Configuracion del mensaje de exito o error
+    
     const handleCloseMessage = () => {
             setOptions({...options, open: false});
         };
@@ -99,7 +100,14 @@ function Comments(props) {
     //Elementos para configurar los mensajes
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
-   
+    
+    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')))
+    const newUser = JSON.parse(localStorage.getItem('userData'))
+    useEffect(() => {
+        setUserData(newUser)
+    }, []);
+
+
     const updateData = (data) => {
         setData(prevState => ({
             ...prevState,

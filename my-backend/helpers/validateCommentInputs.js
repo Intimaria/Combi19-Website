@@ -2,6 +2,7 @@
 const {
   ERROR_MSG_EMPTY_TEXT_COMMENT,
   ERROR_MSG_INVALID_DATE,
+  ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER
 } = require('../const/messages.js');
 
 const {
@@ -37,6 +38,7 @@ const validateUserIsCustomer = async (id) => {
         WHERE STATUS_TICKET_ID = 5 AND USER.USER_ID = ${id}`;
         const [rows] = await connection.execute(sqlSelect, [id]);
         connection.end();
+        commentError = (ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER)
         return (rows.length >= 1);
     } catch (error) {
         console.log("Ha ocurrido un error al comprobar que el usuario es un consumidor", error);
