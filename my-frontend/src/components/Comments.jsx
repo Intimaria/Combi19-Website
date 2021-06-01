@@ -71,12 +71,11 @@ function Comments(props) {
     const formatSelectedComment = {
         id: "",
         comment: "",
-        date: "",
-        time: "",
+        datetime: "",
         user: {
             id: "",
             name: "",
-            surname: ""
+            email: ""
         },
         active: "",
         };
