@@ -39,27 +39,26 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 
 const columns = [
 {title: 'Comentario', field: 'comment',
-render: rowData => <p style={{width: 600, overflow: "hidden", whiteSpace: "nowrap",
+render: rowData => <p style={{width: 560, overflow: "hidden", whiteSpace: "nowrap",
         textOverflow: "ellipsis" }}>{rowData.comment}</p>
         },
-{title: 'Fecha', field: 'date'},
-{title: 'Hora', field: 'time'},
-{title: 'Estado', field: 'active'}
+{title: 'Fecha', field: 'datetime', 
+render: rowData => <p style={{width: 140, whiteSpace: "nowrap" }}>{rowData.datetime}</p>
+        },
+{title: 'Estado', field: 'active',
+render: rowData => <p style={{width: 30, whiteSpace: "nowrap" }}>{rowData.active}</p>
+        }
 ];
 
-/*
-        let comment = {
-            id: rows[index].COMMENT_ID,
-            user: {
-                id: rows[index].ID_USER,
-                name: rows[index].NAME,
-                surname: rows[index].SURNAME
-            },
-            comment: rows[index].COMMENT,
-            date: rows[index].COMMENT_DATE,
-            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
-        };
-*/
+const altColumns = [
+{title: 'Comentario', field: 'comment',
+render: rowData => <p style={{width: 360, overflow: "hidden", whiteSpace: "nowrap",
+        textOverflow: "ellipsis" }}>{rowData.comment}</p>
+        },
+//{title: 'Email', field: 'user.email'},
+{title: 'Nombre', field: 'user.name'},
+{title: 'Fecha', field: 'datetime'},
+];
 
 
 function Comments(props) {
@@ -86,6 +85,8 @@ function Comments(props) {
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
     const [newData, setNewData] = useState(true);
+    //front y back options
+    const [isFront, setIsFront] = useState(false);
     // errores de los inputs
     const [commentError, setCommentError] = React.useState(null);
     // modals
@@ -314,12 +315,11 @@ function Comments(props) {
 
     useEffect(() => {
         if (newData) {
-        console.log("fetch new data");
+        console.log(newData);
         fetchData();
         }
         return setNewData(false);
     }, [newData]);
-
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO COMENTARIO</h3>
@@ -345,17 +345,20 @@ function Comments(props) {
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DEL COMENTARIO</h3>
-            <TextField className={styles.inputMaterial} label="Comentario" name="comment"
-                       value={selectedComment && selectedComment.comment}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Fecha" name="date"
-                       value={selectedComment && selectedComment.date}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Nombre" name="user.name"
-                       value={selectedComment && selectedComment.user.name}/>
-            <br/>  
             <TextField className={styles.inputMaterial} label="Estado" name="active"
-                       value={selectedComment && selectedComment.active}/>
+                       value={selectedComment && selectedComment.active} autoComplete="off"/>
+            <TextField id="standard-multiline-flexible" multiline
+            className={styles.inputMaterial} label="Comentario" name="comment"
+                       value={selectedComment && selectedComment.comment} autoComplete="off"/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Fecha y Hora" name="date" autoComplete="off"
+                       value={selectedComment && selectedComment.datetime /*+ ' ' + selectedComment.time + 'hs'*/}/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Nombre y Apellido" name="user.name"
+                       value={selectedComment && selectedComment.user.name} autoComplete="off"/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Email" name="user.email"
+                       value={selectedComment && selectedComment.user.email} autoComplete="off"/>
             <br/><br/>           
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
@@ -395,7 +398,7 @@ function Comments(props) {
 
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar este comentario <b>{selectedComment && selectedComment.comment}</b> de
+            <p>¿Estás seguro que deseas eliminar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
                 fecha <b>{selectedComment && selectedComment.date}</b>?
             </p>
             <div align="right">
@@ -408,7 +411,7 @@ function Comments(props) {
     );
     const bodyUnDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas restaurar este comentario <b>{selectedComment && selectedComment.comment}</b> de
+            <p>¿Estás seguro que deseas restaurar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
                 fecha <b>{selectedComment && selectedComment.date}</b>?
             </p>
             <div align="right">
@@ -438,9 +441,9 @@ function Comments(props) {
                     onClick={() => openCloseModalCreate()}>NUEVO COMENTARIO</Button>
             <br/><br/>
             <MaterialTable
-                columns={columns}
+                columns={isFront ? altColumns : columns}
                 data={data}
-                title="Lista de comentarios"
+                title="Lista de mis comentarios"
                 actions={[
                     {
                         icon: () => <VisibilityIcon/>,

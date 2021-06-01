@@ -108,17 +108,23 @@ const normalizeProducts = (rows) => {
 
 const normalizeComments = (rows) => {
     let results = [];
+    function makeDateTime(date) {
+        const newDate = new Date(date).toLocaleDateString('Es-ar');
+        const newTime = new Date(date).toLocaleTimeString();
+        return newDate + ' ' + newTime + 'hs'
+    }
     for (let index = 0; index < rows.length; index++) {
         let comment = {
             id: rows[index].COMMENT_ID,
             user: {
                 id: rows[index].ID_USER,
-                name: rows[index].NAME,
-                surname: rows[index].SURNAME
+                name: rows[index].NAME + ' ' + rows[index].SURNAME,
+                email: rows[index].EMAIL,
             },
             comment: rows[index].COMMENT,
-            date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar'),
-            time: new Date(rows[index].COMMENT_DATE).toLocaleTimeString(),
+            datetime: rows[index].COMMENT_DATE + 'hs',
+            //date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar'),
+            //time: new Date(rows[index].COMMENT_DATE).toLocaleTimeString(),
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
         };
         results.push(comment);

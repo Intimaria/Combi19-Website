@@ -23,7 +23,9 @@ const getCommentsUser = async (req, res) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, c.COMMENT_DATE, c.ACTIVE, u.NAME, u.SURNAME
+        SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, 
+        (DATE_FORMAT(c.COMMENT_DATE, '%d/%m/%Y %H:%i')) AS COMMENT_DATE, 
+        c.ACTIVE, u.NAME, u.SURNAME,  u.EMAIL
         FROM COMMENT c INNER JOIN USER u ON (c.ID_USER=u.USER_ID) 
         WHERE c.ID_USER = ${id}
         ORDER BY c.COMMENT_DATE DESC`;
@@ -42,7 +44,9 @@ const getAllComments = async (req, res) => {
   try {
       const connection = await prepareConnection();
       const sqlSelect = `
-      SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, CAST(c.COMMENT_DATE AS DATE) AS COMMENT_DATE, c.ACTIVE, u.NAME, u.SURNAME
+      SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, 
+      (DATE_FORMAT(c.COMMENT_DATE, '%d/%m/%Y %H:%i')) AS COMMENT_DATE, 
+      c.ACTIVE, u.NAME, u.SURNAME,  u.EMAIL
       FROM COMMENT c INNER JOIN USER u ON c.ID_USER=u.USER_ID 
       WHERE ACTIVE = ${ACTIVE} ORDER BY c.COMMENT_DATE DESC`;
       const [rows] = await connection.execute(sqlSelect, [ACTIVE]);
@@ -61,7 +65,9 @@ const getLatestComments = async (req, res) => {
   try {
       const connection = await prepareConnection();
       const sqlSelect = `
-      SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, c.COMMENT_DATE, c.ACTIVE, u.NAME, u.SURNAME
+      SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, 
+      (DATE_FORMAT(c.COMMENT_DATE, '%d/%m/%Y %H:%i')) AS COMMENT_DATE, 
+      c.ACTIVE, u.NAME, u.SURNAME, u.EMAIL
       FROM COMMENT c INNER JOIN USER u ON c.ID_USER=u.USER_ID 
       WHERE ACTIVE = ${ACTIVE} ORDER BY c.COMMENT_DATE DESC LIMIT ${num}`;
       const [rows] = await connection.execute(sqlSelect, [ACTIVE, num]);
@@ -81,7 +87,9 @@ const getCommentById = async (req, res) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, c.COMMENT_DATE, c.ACTIVE, u.NAME, u.SURNAME
+        SELECT c.COMMENT_ID, c.ID_USER, c.COMMENT, 
+        (DATE_FORMAT(c.COMMENT_DATE, '%d/%m/%Y %H:%i')) AS COMMENT_DATE, 
+        c.ACTIVE, u.NAME, u.SURNAME, u.EMAIL
         FROM COMMENT c INNER JOIN USER u ON (c.ID_USER=u.USER_ID) 
         WHERE c.COMMENT_ID = ${id} AND ACTIVE = ${ACTIVE} 
         ORDER BY c.COMMENT_DATE DESC`;
