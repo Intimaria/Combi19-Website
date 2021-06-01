@@ -116,7 +116,7 @@ const normalizeComments = (rows) => {
                 surname: rows[index].SURNAME
             },
             comment: rows[index].COMMENT,
-            date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar').replace(/\//g, "-"),
+            date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar'),
             time: new Date(rows[index].COMMENT_DATE).toLocaleTimeString(),
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
         };

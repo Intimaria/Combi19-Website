@@ -38,9 +38,10 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 
 
 const columns = [
-{title: 'Comentario', field: 'comment' },
-{title: 'Nombre', field: 'user.name'},
-{title: 'Apellido', field: 'user.surname' },
+{title: 'Comentario', field: 'comment',
+render: rowData => <p style={{width: 600, overflow: "hidden", whiteSpace: "nowrap",
+        textOverflow: "ellipsis" }}>{rowData.comment}</p>
+        },
 {title: 'Fecha', field: 'date'},
 {title: 'Hora', field: 'time'},
 {title: 'Estado', field: 'active'}
