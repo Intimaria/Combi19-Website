@@ -406,7 +406,7 @@ function Comments(props) {
     const bodyDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
-                fecha <b>{selectedComment && selectedComment.date}</b>?
+                fecha <b>{selectedComment && selectedComment.datetime}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDelete()}>SÍ, ELIMINAR</Button>
@@ -419,7 +419,7 @@ function Comments(props) {
     const bodyUnDelete = (
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas restaurar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
-                fecha <b>{selectedComment && selectedComment.date}</b>?
+                fecha <b>{selectedComment && selectedComment.datetime}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestUnDelete()}>SÍ, RESTAURAR</Button>
