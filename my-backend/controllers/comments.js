@@ -1,4 +1,4 @@
-const { validateCommentsToCreate } = require ('../helpers/validateCommentInputs');
+const { validateCommentsToCreate, validateCommentsToModify } = require ('../helpers/validateCommentInputs');
 
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
@@ -140,7 +140,7 @@ const unDeleteComment = async (req, res) => {
 const postComment = async (req, res) => {
     const { comment /*, date*/ } = req.body;
     const {id } = req.params; // have to send user id in for logged in users (is there a differnt way?)
-    const inputsErrors = await validateCommentsToCreate(comment /*, date*/);
+    const inputsErrors = await validateCommentsToCreate(comment, id /*, date*/);
      // setting date makes system prone to errors, post date should default to current date curdate() or now()
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -164,7 +164,7 @@ const putComment = async (req, res) => {
     const { id } = req.params;
 
     const { comment, date } = req.body;
-    const inputsErrors = await validateCommentsToCreate(comment /*, date*/);
+    const inputsErrors = await validateCommentsToModify(comment /*, date*/);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);

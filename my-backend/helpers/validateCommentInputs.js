@@ -7,14 +7,18 @@ const {
 const {
   REGEX_DATE_YYYY_MM_DD
 } = require('../const/regex.js');
+const { prepareConnection } = require("./connectionDB.js");
 
 let dateError = null;
 let commentError = null;
 
-const validateCommentsToCreate = async (text, date) => {
+const validateCommentsToCreate = async (text,  id) => {
+  return (validateComment(text) && await validateUserIsCustomer(id)/*&& await validateCommentDate(date)*/) ? null : { commentError /*, dateError */};
+}
+const validateCommentsToModify = async (text) => {
   return (validateComment(text) /*&& await validateCommentDate(date)*/) ? null : { commentError /*, dateError */};
 }
-const validateComment = (text) => {
+const validateComment =  (text) => {
   if (!text) {
       namesError = (ERROR_MSG_EMPTY_TEXT_COMMENT);
       return false;
@@ -22,6 +26,23 @@ const validateComment = (text) => {
   namesError = (null);
   return true;
 }
+
+const validateUserIsCustomer = async (id) => {
+    console.log("estoy validando el usuario es consumidor:" , id);
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = `SELECT * FROM USER INNER JOIN CART ON (USER.USER_ID=CART.ID_USER) 
+        INNER JOIN TICKET ON (TICKET.ID_CART=CART.CART_ID) 
+        INNER JOIN STATUS_TICKET ON (STATUS_TICKET.STATUS_TICKET_ID=TICKET.ID_STATUS_TICKET) 
+        WHERE STATUS_TICKET_ID = 5 AND USER.USER_ID = ${id}`;
+        const [rows] = await connection.execute(sqlSelect, [id]);
+        connection.end();
+        return (rows.length >= 1);
+    } catch (error) {
+        console.log("Ha ocurrido un error al comprobar que el usuario es un consumidor", error);
+        return false;
+    }
+};
 
 
 const validateCommentDate = (date) => {
@@ -59,5 +80,6 @@ const validateCommentDate = (date) => {
 
 module.exports = {
   validateCommentsToCreate,
+  validateCommentsToModify,
 }
 
