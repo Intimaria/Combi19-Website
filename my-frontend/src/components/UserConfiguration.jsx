@@ -203,11 +203,13 @@ function UserConfiguration() {
         setNewPassword1(newValue.target.value);
         setSuccessMessage(null);
         setNewPassword1Error(null);
+        setNewPassword2Error(null);
     };
 
     const handleNewPassword2 = (newValue) => {
         setNewPassword2(newValue.target.value);
         setSuccessMessage(null);
+        setNewPassword1Error(null);
         setNewPassword2Error(null);
     };
 

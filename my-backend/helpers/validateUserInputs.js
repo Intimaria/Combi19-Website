@@ -120,7 +120,7 @@ const verifyUniqueEmailToCreate = async (email) => {
     try {
         const connection = await prepareConnection();
 
-        const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?)';
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?)';
         const [rows] = await connection.execute(selectSql, [email]);
 
         connection.end();
@@ -140,7 +140,7 @@ const verifyUniqueEmailToModify = async (email, id) => {
     try {
         const connection = await prepareConnection();
 
-        const selectSql = 'SELECT USER_ID FROM USER WHERE BINARY EMAIL = (?) AND USER_ID <> ?';
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?) AND USER_ID <> ?';
         const [rows] = await connection.execute(selectSql, [email, id]);
 
         connection.end();
