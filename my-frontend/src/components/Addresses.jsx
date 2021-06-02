@@ -11,6 +11,7 @@ import Routes from './Routes.jsx';
 import Drivers from './Drivers.jsx';
 import Trips from './Trips.jsx';
 import Products from './Products.jsx';
+import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
 import {useHistory} from "react-router-dom";
 
@@ -64,6 +65,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/userConfiguration" exact>
                     <UserConfiguration/>
+                </Route>
+                <Route path="/comments" exact>
+                    <Comments/>
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la

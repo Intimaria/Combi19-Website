@@ -1,5 +1,5 @@
 module.exports = {
-    // Passengers API messages
+       // Passengers API messages
     OK_MSG_API_USER_POST: 'Se creó el usuario con éxito',
     OK_MSG_API_USER_PUT: 'Se editó los datos del usuario con éxito',
     ERROR_MSG_API_POST_USER: 'Ocurrió un error al insertar el usuario:',
@@ -125,13 +125,16 @@ module.exports = {
     ERROR_MSG_API_DELETE_TRIP: 'Ocurrió un error al eliminar el viaje indicado',
     //ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
     ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del viaje',
+    // Comments API messages
+    ERROR_MSG_API_GET_COMMENT: 'Ocurrió un error al obtener los comentario: ',
+    ERROR_MSG_API_GET_COMMENT_BY_ID: 'Ocurrió un error al obtener el comentario indicado: ',
+    ERROR_MSG_API_POST_COMMENT: 'Ocurrió un error al crear el comentario: ',
+    OK_MSG_API_POST_COMMENT: 'Se registró el comentario con éxito',
+    ERROR_MSG_API_PUT_COMMENT: 'Ocurrió un error al actualizar los datos del comentario: ',
+    OK_MSG_API_PUT_COMMENT: 'Se actualizaron los datos del comentario con éxito',
+    ERROR_MSG_API_DELETE_COMMENT: 'Ocurrió un error al eliminar el comentario indicado',
+    OK_MSG_API_DELETE_COMMENT: 'Se eliminó el comentario con éxito',
+    ERROR_MSG_API_COMMENT_VALIDATE_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del comentario',
+    ERROR_MSG_EMPTY_TEXT_COMMENT: '* Ingrese un texto',
+    ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER: 'Solo los usuarios con viajes realizados pueden hacer comentrios en el sitio.'
 };
-
-
-
-
-
-
-
-
-

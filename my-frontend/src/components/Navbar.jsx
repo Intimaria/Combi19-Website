@@ -27,6 +27,7 @@ const Navbar = ({userData}) => {
     const passengerMenu = (
         <div>
             <NavLink to="/userConfiguration" className="btn btn-dark mr-2"> Configuracion </NavLink>
+            <NavLink to="/comments" className="btn btn-dark mr-2"> Mis Comentarios </NavLink>
         </div>
     );
 

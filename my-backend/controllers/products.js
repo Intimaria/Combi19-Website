@@ -31,7 +31,13 @@ const getProducts = async (req, res) => {
 
     try {
         const connection = await prepareConnection();
-        const sqlSelect = 'SELECT * FROM PRODUCT p INNER JOIN TYPE_PRODUCT tp ON (tp.TYPE_PRODUCT_ID=p.ID_TYPE_PRODUCT) ORDER BY PRODUCT_NAME ASC';
+        const sqlSelect =
+                `
+                SELECT p.PRODUCT_ID, tp.TYPE_PRODUCT_ID, tp.TYPE_PRODUCT_DESCRIPTION, p.PRODUCT_NAME, FORMAT(p.PRICE, 2, 'es_AR') PRICE, p.ACTIVE
+                FROM PRODUCT p 
+                INNER JOIN TYPE_PRODUCT tp ON tp.TYPE_PRODUCT_ID=p.ID_TYPE_PRODUCT
+                ORDER BY p.PRODUCT_NAME ASC;
+                `;
         const [rows] = await connection.execute(sqlSelect);
         connection.end();
         const normalizedResults = normalizeProducts(rows);

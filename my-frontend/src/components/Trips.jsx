@@ -13,7 +13,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/componentStyles';
 import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import {KeyboardDatePicker, KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
@@ -34,6 +34,7 @@ import {
     ERROR_MSG_EMPTY_ROUTE_DESTINATION,
     ERROR_MSG_EMPTY_DEPARTURE_DAY,
     ERROR_MSG_INVALID_DEPARTURE_DAY,
+    ERROR_MSG_INVALID_MIN_VALUE,
     ERROR_MSG_EMPTY_PRICE,
     ERROR_MSG_INVALID_PRICE,
     ERROR_MSG_INVALID_MIN_PRICE,
@@ -48,13 +49,15 @@ import {
 import {
     REGEX_DATE_YYYY_MM_DD_HH_MM, REGEX_ONLY_DECIMAL_NUMBER
 } from "../const/regex";
+
 import {formatDecimalNumber} from "../helpers/numbers";
 
 const columns = [
     {title: 'Origen', field: 'departure'},
     {title: 'Destino', field: 'destination'},
     {title: 'Precio', field: 'price'},
-    {title: 'Fecha', field: 'departureDay'},
+    {title: 'Fecha de salida', field: 'departureDay'},
+    {title: 'Fecha de llegada', field: 'arrivalDay'},
     {
         title: 'Combi',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
@@ -145,7 +148,7 @@ function Trips() {
                 ['routeId']: routeSelected[0].routeId
             }));
 
-            setRouteTransport(routeSelected[0].transport)
+            setRouteTransport(routeSelected[0].transport);
 
         } else {
             setSelectedTrip(prevState => ({
@@ -182,7 +185,6 @@ function Trips() {
 
 
     const handleDepartureDay = (newValue) => {
-        console.log('departure day es:', newValue)
         if (!newValue) {
             setSelectedTrip(prevState => ({
                 ...prevState,
@@ -215,7 +217,6 @@ function Trips() {
     const validateRouteDeparture = () => {
         if (departureRouteSelected) {
             setDepartureRouteSelectedError(null);
-            console.log('OK validateRouteDeparture');
             return true;
         } else {
             setDepartureRouteSelectedError(ERROR_MSG_EMPTY_ROUTE_DEPARTURE);
@@ -226,7 +227,6 @@ function Trips() {
     const validateRouteDestination = () => {
         if (destinationRouteSelected) {
             setDestinationRouteSelectedError(null);
-            console.log('OK validateRouteDestination');
             return true;
         } else {
             setDestinationRouteSelectedError(ERROR_MSG_EMPTY_ROUTE_DESTINATION);
@@ -241,8 +241,11 @@ function Trips() {
         } else if (!REGEX_DATE_YYYY_MM_DD_HH_MM.test(selectedTrip.departureDay)) {
             setDepartureDayError(ERROR_MSG_INVALID_DEPARTURE_DAY);
             return false;
+        }else if (moment(selectedTrip.departureDay) <= moment()) {
+            setDepartureDayError(ERROR_MSG_INVALID_MIN_VALUE);
+            return false;
         }
-        console.log(' OKvalidateDepartureDay')
+
         setDepartureDayError(null);
         return true;
     };
@@ -297,7 +300,6 @@ function Trips() {
 
     const requestPostTrip = async () => {
         if (validateForm()) {
-            console.log('dio OK el validateForm')
             setDefaultApiErrorMessages();
 
             let postResponse = await postTrip(selectedTrip);
@@ -314,9 +316,8 @@ function Trips() {
                 await fetchData();
                 return true
             } else if (postResponse.status === 400) {
-                setDepartureRouteSelectedError(postResponse.data.transportSelectedError);
+                setDepartureDayError(postResponse.data.departureDayError);
             } else if (postResponse.status === 500) {
-                console.log('entró')
                 setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
@@ -552,10 +553,12 @@ function Trips() {
                         label="Fecha y hora del viaje"
                         invalidDateMessage={ERROR_MSG_INVALID_DEPARTURE_DAY}
                         minDate={moment().subtract(1, "minutes")}
-                        minDateMessage="* La fecha y hora debe ser superior a la fecha y hora actual"
+                        minDateMessage={ERROR_MSG_INVALID_MIN_VALUE}
                         maxDate={moment().add(10, "year").set({hour: 0, minute: 0, second: 0, millisecond: 0})}
                         maxDateMessage={"* La fecha y hora debe ser anterior a los próximos 10 años"}
                         ampm={false}
+                        error={(departureDayError) ? true : false}
+                        helperText={(departureDayError) ? departureDayError : false}
                         value={selectedTrip.departureDay || moment().add(1, 'minutes')}
                         onChange={handleDepartureDay}
                     />

@@ -60,7 +60,6 @@ const normalizePlaces = (rows) => {
     }
     return results;
 };
-
 const normalizeRoutes = (rows) => {
     let results = [];
 
@@ -99,10 +98,36 @@ const normalizeProducts = (rows) => {
             typeProductId: rows[index].TYPE_PRODUCT_ID,
             typeProductDescription: rows[index].TYPE_PRODUCT_DESCRIPTION,
             name: rows[index].PRODUCT_NAME,
-            price: rows[index].PRICE.toString().replace(".",","),
+            price: rows[index].PRICE,
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
         };
         results.push(product);
+    }
+    return results;
+};
+
+const normalizeComments = (rows) => {
+    let results = [];
+    function makeDateTime(date) {
+        const newDate = new Date(date).toLocaleDateString('Es-ar');
+        const newTime = new Date(date).toLocaleTimeString();
+        return newDate + ' ' + newTime + 'hs'
+    }
+    for (let index = 0; index < rows.length; index++) {
+        let comment = {
+            id: rows[index].COMMENT_ID,
+            user: {
+                id: rows[index].ID_USER,
+                name: rows[index].NAME + ' ' + rows[index].SURNAME,
+                email: rows[index].EMAIL,
+            },
+            comment: rows[index].COMMENT,
+            datetime: rows[index].COMMENT_DATE + 'hs',
+            //date: new Date(rows[index].COMMENT_DATE).toLocaleDateString('Es-ar'),
+            //time: new Date(rows[index].COMMENT_DATE).toLocaleTimeString(),
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo"
+        };
+        results.push(comment);
     }
     return results;
 };
@@ -115,6 +140,7 @@ const normalizeTrips = (rows) => {
             tripId: rows[index].TRIP_ID,
             price: rows[index].PRICE,
             departureDay: rows[index].DEPARTURE_DAY,
+            arrivalDay: rows[index].ARRIVAL_DAY,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             transport: {
                 internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
@@ -127,15 +153,15 @@ const normalizeTrips = (rows) => {
     }
 
     return results;
+};
 
-
-}
 
 module.exports = {
+    normalizeComments,
     normalizeTransports,
     normalizeDrivers,
     normalizePlaces,
-    normalizeProducts,
     normalizeRoutes,
+    normalizeProducts,
     normalizeTrips
 };
