@@ -32,8 +32,12 @@ const Navbar = ({userData}) => {
 
     const frontPageMenu = (
         <div>
-            <NavLink to="/home" className="btn btn-dark mr-2"> Home </NavLink>
             <NavLink to="/comments" className="btn btn-dark mr-2"> Testimonios </NavLink> 
+        </div>
+    )
+    const homePageOption = (
+        <div>
+           <NavLink to="/home" className="btn btn-dark mr-2"> Home </NavLink>
         </div>
     )
     const passengerMenu = (
@@ -72,12 +76,13 @@ const Navbar = ({userData}) => {
         <div className="navbar navbar-dark bg-dark px-5 mb-4">
             <Link to="/" className="navbar-brand"> <img src={logo} alt="Logo" className="logo-navbar"/> </Link>
             <div className="d-flex">
+                {isFront ? frontPageMenu : null}
                 {!userData ? loginRegistrationMenu : null}
                 {!isFront && userData && userData.userRoleId.includes(3) ? passengerMenu : null}
                 {!isFront && userData && userData.userRoleId.includes(2) ? driverMenu : null}
                 {!isFront && userData && userData.userRoleId.includes(1) ? adminMenu : null}
-                {isFront ? frontPageMenu : null}
                 {userData ? logoutOption : null}
+                {userData && isFront ? homePageOption : null}
             </div>
         </div>
     )
