@@ -16,7 +16,7 @@ const Navbar = ({userData}) => {
     const [isFront, setIsFront] = useState(history.location.pathname == '/')
     useEffect(() => {
         setIsFront(history.location.pathname == '/')
-    }, [userData]);
+    }, []);
 
 
     const loginRegistrationMenu = (
