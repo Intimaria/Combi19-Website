@@ -24,7 +24,7 @@ const Landing = () => {
              <Grid>
                 {/* reemplazar con busqueda, es solo un placeholder */}<WelcomeCard />
                 <br/>
-                <Grid container item md={true} sm={8}>
+                <Grid>
                   {/** aca van los comentarios */}
                 </Grid>
               </Grid>  
