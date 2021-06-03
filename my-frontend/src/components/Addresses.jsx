@@ -1,6 +1,7 @@
 import {Route, Switch} from "react-router-dom";
 
-import Home from './views/Home.jsx';
+import Home from '../views/Home.jsx';
+import Landing from '../views/Landing.jsx';
 import Login from './Login.jsx';
 import Navbar from './Navbar.jsx';
 import Places from './Places';
@@ -32,7 +33,7 @@ const Addresses = () => {
             <Switch>
                 <Route path="/" exact>
                     {/*<h1 className="text-light"> Página de inicio </h1> */}
-                    
+                    <Landing />
                 </Route>
                 <Route path="/login" exact>
                     <Login path="login"/>
