@@ -1,6 +1,6 @@
 import {Route, Switch} from "react-router-dom";
 
-import Home from './Home.jsx';
+import Home from './views/Home.jsx';
 import Login from './Login.jsx';
 import Navbar from './Navbar.jsx';
 import Places from './Places';
@@ -15,6 +15,7 @@ import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
 import {useHistory} from "react-router-dom";
 
+
 const Addresses = () => {
     const history = useHistory();
     const [userData, setUserData] = React.useState(JSON.parse(localStorage.getItem("userData")));
@@ -27,7 +28,7 @@ const Addresses = () => {
 
     return (
         <div>
-            <Navbar userData={userData}/>
+            <Navbar userData={userData} />
             <Switch>
                 <Route path="/" exact>
                     {/*<h1 className="text-light"> Página de inicio </h1> */}
