@@ -20,7 +20,6 @@ import {
 } from '../api/Comments';
 
 import CommentIcon from '@material-ui/icons/Comment';
-import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import HelpIcon from '@material-ui/icons/Help';
@@ -28,14 +27,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MaterialTable from '@material-table/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import {Message} from './Message';
+import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
-
-
-
 
 const columns = [
 {title: 'Comentario', field: 'comment',
@@ -85,8 +82,6 @@ function Comments(props) {
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
     const [newData, setNewData] = useState(true);
-    //front y back options
-    const [isFront, setIsFront] = useState(false);
     // errores de los inputs
     const [commentError, setCommentError] = React.useState(null);
     // modals
@@ -132,7 +127,7 @@ function Comments(props) {
         }
         setSuccessMessage(null);
     }
-    //Aca arrancan las validaciones de los datos del chofer
+    //Aca arrancan las validaciones de los datos del comentario
     const validateForm = () => {
         return  validateComment();
     };
@@ -303,8 +298,8 @@ function Comments(props) {
         const fetchData = async () => {
             try { 
                 console.log(userData)
-                let getCommentsResponse = await getComments( userData.userId);
-    
+                let getCommentsResponse;
+                getCommentsResponse = await getComments( userData.userId);
                 if (getCommentsResponse?.status === 200) {
                     let data = getCommentsResponse.data;
                     setData(data);
@@ -438,7 +433,8 @@ function Comments(props) {
                     : null
             }
             <br/>
-            {/* este boton quizas este en el front  */}
+        {/* este boton quizas este en el front  */}
+        {userData && 
             <Button style={{marginLeft: '8px'}}
                     variant="contained"
                     size="large"
@@ -446,12 +442,13 @@ function Comments(props) {
                     id="btnNewComment"
                     startIcon={<CommentIcon/>}
                     onClick={() => openCloseModalCreate()}>NUEVO COMENTARIO</Button>
+        }
             <br/><br/>
             <MaterialTable
-                columns={isFront ? altColumns : columns}
+                columns={columns}
                 data={data}
-                title="Lista de mis comentarios"
-                actions={[
+                title={"Lista de mis comentarios"}
+                actions={ userData && [
                     {
                         icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de comentario',
@@ -480,8 +477,6 @@ function Comments(props) {
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}
             />
-
-
             <Modal
                 open={createModal}
                 onClose={openCloseModalCreate}>
@@ -511,7 +506,7 @@ function Comments(props) {
                 onClose={openCloseModalUnDelete}>
                 {bodyUnDelete}
             </Modal>
-
+       
 
         </div>
     );
