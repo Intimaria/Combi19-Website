@@ -61,7 +61,7 @@ const getAllComments = async (req, res) => {
 };
 
 const getLatestComments = async (req, res) => {
-  const num = 3;
+  const num = 4;
   try {
       const connection = await prepareConnection();
       const sqlSelect = `
