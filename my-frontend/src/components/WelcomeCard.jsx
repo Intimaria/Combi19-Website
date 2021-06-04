@@ -31,7 +31,7 @@ export default function WelcomeCard() {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image="../../public/welcome.jpg"
+          image="https://api.time.com/wp-content/uploads/2018/12/how-to-travel-for-free.jpg"
           title="Tu Lugar Para Viajes"
         />
         <CardContent>
