@@ -38,6 +38,7 @@ class Server {
         this.app.use('/userConfiguration', require('../routes/userConfiguration.js'));
         this.app.use('/getPassangersValues', require('../routes/passangerValues.js'));
         this.app.use('/comments', require('../routes/comments.js'));
+        this.app.use('/my-trips', require('../routes/passenger-trips.js'));
     }
 
     listen() {
