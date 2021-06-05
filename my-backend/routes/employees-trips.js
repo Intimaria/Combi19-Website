@@ -2,6 +2,7 @@ const {Router} = require('express');
 const {
     getTrips,
     getTripById,
+    getTripDependenceById,
     postTrip,
     putTrip,
     deleteTrip
@@ -17,6 +18,9 @@ router.get('/', authenticateAdminRol, getTrips);
 
 // Retrieve a single trip by id
 router.get('/:id', authenticateAdminRol, getTripById);
+
+// Retrieve trip dependence by id
+router.get('/custom/tripDependenceById/:id', authenticateAdminRol, getTripDependenceById);
 
 // Create a new trip
 router.post('/', authenticateAdminRol, postTrip);

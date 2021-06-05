@@ -142,12 +142,18 @@ const normalizeTrips = (rows) => {
             departureDay: rows[index].DEPARTURE_DAY,
             arrivalDay: rows[index].ARRIVAL_DAY,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
+            route: {
+                routeId: rows[index].ROUTE_ID,
+                departureId: rows[index].DEPARTURE_ID,
+                departure: rows[index].DEPARTURE,
+                destinationId: rows[index].DESTINATION_ID,
+                destination: rows[index].DESTINATION
+            },
             transport: {
+                transportId: rows[index].TRANSPORT_ID,
                 internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
                 registrationNumber: rows[index].REGISTRATION_NUMBER,
-            },
-            departure: rows[index].DEPARTURE,
-            destination: rows[index].DESTINATION
+            }
         };
         results.push(trip);
     }

@@ -3,11 +3,10 @@ import {BACKEND_URL} from "../const/config";
 
 import {
     ERROR_MSG_API_DELETE_DRIVER,
-    ERROR_MSG_API_GET_TRANSPORTS,
-    ERROR_MSG_API_GET_ACTIVE_TRANSPORTS,
-    ERROR_MSG_API_POST_TRANSPORT,
-    ERROR_MSG_API_PUT_TRANSPORT,
-    ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_GET_TRIPS,
+    ERROR_MSG_API_POST_TRIP,
+    ERROR_MSG_API_PUT_TRIP,
+    ERROR_MSG_API_VALIDATE_TRIP_TICKET_DEPENDENCE,
     ERROR_MSG_INTERNET
 } from "../const/messages";
 
@@ -30,7 +29,7 @@ export const getTrips = async () => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_GET_TRANSPORTS} ${error}`);
+            console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -45,7 +44,7 @@ export const getTrips = async () => {
 export const getTripDependenceById = async (id) => {
     const token = localStorage.getItem('token');
     try {
-        let response = await axios.get(`${BACKEND_URL}/trips/custom/transportDependenceById/${id}`,
+        let response = await axios.get(`${BACKEND_URL}/trips/custom/tripDependenceById/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -59,7 +58,7 @@ export const getTripDependenceById = async (id) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE} ${error}`);
+            console.log(`${ERROR_MSG_API_VALIDATE_TRIP_TICKET_DEPENDENCE} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -78,7 +77,7 @@ export const postTrip = async (newTrip) => {
         routeId: newTrip.routeId,
         price: newTrip.price.replace(',', '.'),
         departureDay: newTrip.departureDay
-    }
+    };
 
     try {
         let response = await axios.post(`${BACKEND_URL}/trips`,
@@ -96,7 +95,7 @@ export const postTrip = async (newTrip) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_POST_TRANSPORT} ${error}`);
+            console.log(`${ERROR_MSG_API_POST_TRIP} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -108,21 +107,19 @@ export const postTrip = async (newTrip) => {
     }
 };
 
-export const putTrip = async (selectedTransport, typeComfortSelected, driverSelected) => {
+export const putTrip = async (trip) => {
     const token = localStorage.getItem('token');
 
-    const newTransport = {
-        internalIdentification: selectedTransport.internalIdentification.toUpperCase(),
-        registrationNumber: selectedTransport.registrationNumber.toUpperCase(),
-        model: selectedTransport.model,
-        seating: selectedTransport.seating,
-        idTypeComfort: typeComfortSelected,
-        idDriver: driverSelected
+    let formattedTrip = {
+        tripId: trip.tripId,
+        routeId: trip.routeId,
+        price: trip.price.replace(',', '.'),
+        departureDay: trip.departureDay
     };
 
     try {
-        let response = await axios.put(`${BACKEND_URL}/trips/${selectedTransport.transportId}`,
-            newTransport,
+        let response = await axios.put(`${BACKEND_URL}/trips/${formattedTrip.tripId}`,
+            formattedTrip,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -135,7 +132,7 @@ export const putTrip = async (selectedTransport, typeComfortSelected, driverSele
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_PUT_TRANSPORT} ${error}`);
+            console.log(`${ERROR_MSG_API_PUT_TRIP} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;

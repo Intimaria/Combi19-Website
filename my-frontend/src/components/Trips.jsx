@@ -13,7 +13,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../const/componentStyles';
 import {Message} from '../components/Message';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import {KeyboardDatePicker, KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
@@ -43,6 +43,9 @@ import {
     ERROR_MSG_API_TRIP_DATE_OVERLAP,
     ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP,
     ERROR_MSG_API_PUT_TRIP,
+    ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE,
+    ERROR_MSG_API_DELETE_TRIP,
+    ERROR_MSG_API_DELETE_TRIP_TICKET_DEPENDENCE
 
 } from "../const/messages";
 
@@ -53,8 +56,8 @@ import {
 import {formatDecimalNumber} from "../helpers/numbers";
 
 const columns = [
-    {title: 'Origen', field: 'departure'},
-    {title: 'Destino', field: 'destination'},
+    {title: 'Origen', field: 'route.departure'},
+    {title: 'Destino', field: 'route.destination'},
     {title: 'Precio', field: 'price'},
     {title: 'Fecha de salida', field: 'departureDay'},
     {title: 'Fecha de llegada', field: 'arrivalDay'},
@@ -73,10 +76,21 @@ function Trips() {
     };
 
     const formatSelectedTrip = {
-        routeId: "",
         price: "",
         departureDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         active: "",
+        route: {
+            routeId: "",
+            departureId: "",
+            departure: "",
+            destinationId: "",
+            destination: ""
+        },
+        transport: {
+            transportId: "",
+            internalIdentification: "",
+            registrationNumber: ""
+        }
     };
 
     const styles = useStyles();
@@ -132,16 +146,31 @@ function Trips() {
             setDepartureRouteSelectedError(false);
             setDepartureRouteSelected(value);
             setDestinationRouteSelected('');
+
+            console.log('entró');
+
+            setSelectedTrip(prevState => ({
+                ...prevState,
+                route: {
+                    ...prevState.route,
+                    ['routeId']: '',
+                    ['destinationId']: '',
+                    ['destination']: ''
+                }
+            }));
+
             setRouteTransport('Combi de la ruta seleccionada');
         } else if (name === 'destinationRouteSelected') {
             setDestinationRouteSelectedError(false);
             setDestinationRouteSelected(value);
 
             const routeSelected = availableRoutes.filter(route =>
-                route.departureId === departureRouteSelected
+                route.departureId === (departureRouteSelected || selectedTrip.route.departureId)
                 &&
                 route.destinationId === value
             );
+
+            console.log('routeSelected es:', routeSelected)
 
             setSelectedTrip(prevState => ({
                 ...prevState,
@@ -215,7 +244,7 @@ function Trips() {
     };
 
     const validateRouteDeparture = () => {
-        if (departureRouteSelected) {
+        if (departureRouteSelected || selectedTrip.route.departureId) {
             setDepartureRouteSelectedError(null);
             return true;
         } else {
@@ -225,7 +254,7 @@ function Trips() {
     };
 
     const validateRouteDestination = () => {
-        if (destinationRouteSelected) {
+        if (destinationRouteSelected || selectedTrip.route.destinationId) {
             setDestinationRouteSelectedError(null);
             return true;
         } else {
@@ -241,7 +270,7 @@ function Trips() {
         } else if (!REGEX_DATE_YYYY_MM_DD_HH_MM.test(selectedTrip.departureDay)) {
             setDepartureDayError(ERROR_MSG_INVALID_DEPARTURE_DAY);
             return false;
-        }else if (moment(selectedTrip.departureDay) <= moment()) {
+        } else if (moment(selectedTrip.departureDay) <= moment()) {
             setDepartureDayError(ERROR_MSG_INVALID_MIN_VALUE);
             return false;
         }
@@ -334,83 +363,83 @@ function Trips() {
             }
         }
     };
-    /*
-        const requestPutTrip = async () => {
-            if (validateForm()) {
-                setDefaultApiErrorMessages();
 
-                let postResponse = await putTrip(selectedTrip,
-                    departureRouteSelected ? departureRouteSelected : selectedTrip.route.departure,
-                    destinationRouteSelected ? destinationRouteSelected : selectedTrip.route.destination
-                );
+    const requestPutTrip = async () => {
+        if (validateForm()) {
+            setDefaultApiErrorMessages();
 
-                if (postResponse.status === 200) {
-                    setSuccessMessage(postResponse.data);
-                    setOptions({
-                        ...options, open: true, type: 'success',
-                        message: postResponse.data
-                    });
+            let putResponse = await putTrip(selectedTrip,
+                departureRouteSelected ? departureRouteSelected : selectedTrip.route.departure,
+                destinationRouteSelected ? destinationRouteSelected : selectedTrip.route.destination
+            );
 
-                    await openCloseModalUpdate();
-
-                    await fetchData();
-                    return true
-                } else if (postResponse.status === 400) {
-                    setDepartureDayError(postResponse.data.departureDayError);
-                } else if (postResponse.status === 500) {
-                    setSuccessMessage(postResponse.data);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: postResponse.data
-                    });
-
-                    return true
-                } else {
-                    setSuccessMessage(`${ERROR_MSG_API_POST_TRIP} ${postResponse}`);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: `${ERROR_MSG_API_POST_TRIP} ${postResponse}`
-                    });
-                }
-            }
-        };
-
-        const requestDeleteTrip = async () => {
-            let deleteResponse = await deleteTrip(selectedTrip.tripId);
-
-            if (deleteResponse.status === 200) {
-                setSuccessMessage(deleteResponse.data);
+            if (putResponse.status === 200) {
+                setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: deleteResponse.data
+                    message: putResponse.data
                 });
-                openCloseModalDelete();
+
+                await openCloseModalUpdate();
+
                 await fetchData();
-            } else if (deleteResponse?.status === 400 || deleteResponse?.status === 500) {
-                setSuccessMessage(deleteResponse.data);
+                return true
+            } else if (putResponse.status === 400) {
+                setDepartureDayError(putResponse.data.departureDayError);
+            } else if (putResponse.status === 500) {
+                setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: deleteResponse.data
+                    message: putResponse.data
                 });
-                openCloseModalDelete();
+
+                return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_DELETE_TRIP} ${deleteResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_POST_TRIP} ${putResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_DELETE_TRIP} ${deleteResponse}`
+                    message: `${ERROR_MSG_API_POST_TRIP} ${putResponse}`
                 });
             }
-        };
-    */
+        }
+    };
+
+    const requestDeleteTrip = async () => {
+        let deleteResponse = await deleteTrip(selectedTrip.tripId);
+
+        if (deleteResponse.status === 200) {
+            setSuccessMessage(deleteResponse.data);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: deleteResponse.data
+            });
+            openCloseModalDelete();
+            await fetchData();
+        } else if (deleteResponse?.status === 400 || deleteResponse?.status === 500) {
+            setSuccessMessage(deleteResponse.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: deleteResponse.data
+            });
+            openCloseModalDelete();
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_TRIP} ${deleteResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_DELETE_TRIP} ${deleteResponse}`
+            });
+        }
+    };
+
     const selectTrip = async (trip, action) => {
         setSelectedTrip(trip);
         if (action === "Ver") {
             openCloseModalViewDetails()
-        } /*else if (action === "Editar") {
+        } else if (action === "Editar") {
             await openCloseModalUpdate(trip)
         } else {
             await openCloseModalDelete(trip)
-        }*/
+        }
     };
 
     const requestGetAvailableRoutes = async () => {
@@ -421,6 +450,7 @@ function Trips() {
 
             setAvailableRoutes(availableRoutes);
 
+            // Departures locations without duplicates
             let seen = new Set();
 
             const filteredRoutes = availableRoutes.filter(route => {
@@ -463,62 +493,62 @@ function Trips() {
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
     };
-    /*
-        const openCloseModalUpdate = async (trip) => {
-            // If the modal is closed, trip dependence is validate before open the modal
-            if (!updateModal) {
-                let dependenceResponse = await getTripDependenceById(trip.tripId);
 
-                // If the trip is used on a route, the modal will NOT be open
-                if (dependenceResponse.data.tripTicketDependence) {
-                    setSuccessMessage(dependenceResponse.data);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE
-                    });
-                    setDefaultValues();
-                } else {
-                    // If the trip is NOT used on a route, the modal will be open
-                    setUpdateModal(!updateModal);
+    const openCloseModalUpdate = async (trip) => {
+        // If the modal is closed, trip dependence is validate before open the modal
+        if (!updateModal) {
+            let dependenceResponse = await getTripDependenceById(trip.tripId);
 
-                    setDepartureRouteSelected(selectedTrip.route.routeId);
-
-                    // Data are loaded when the modal is open
-                    await requestGetAvailableRoutes();
-                }
+            // If the trip is used on a route, the modal will NOT be open
+            if (dependenceResponse.data.tripTicketDependence) {
+                setSuccessMessage(dependenceResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE
+                });
+                setDefaultValues();
             } else {
-                // The modal is closed
+                // If the trip is NOT used on a route, the modal will be open
                 setUpdateModal(!updateModal);
-                // Data are cleaned when the modal is closed
-                setDefaultValues();
+                // REVISAR CON QUÉ REEMPLAZAR
+                //setDepartureRouteSelected(selectedTrip.route.routeId);
+
+                // Data are loaded when the modal is open
+                await requestGetAvailableRoutes();
             }
-        };
+        } else {
+            // The modal is closed
+            setUpdateModal(!updateModal);
+            // Data are cleaned when the modal is closed
+            setDefaultValues();
+        }
+    };
 
-        const openCloseModalDelete = async (trip) => {
-            // If the modal is closed, trip dependence is validate before open the modal
-            if (!deleteModal) {
-                let dependenceResponse = await getTripDependenceById(trip.tripId);
+    const openCloseModalDelete = async (trip) => {
+        // If the modal is closed, trip dependence is validate before open the modal
+        if (!deleteModal) {
+            let dependenceResponse = await getTripDependenceById(trip.tripId);
 
-                // If the trip is used on a route, the modal will NOT be open
-                if (dependenceResponse.data.tripTicketDependence) {
-                    setSuccessMessage(dependenceResponse.data);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: ERROR_MSG_API_DELETE_TRIP_TICKET_DEPENDENCE
-                    });
-                    setDefaultValues();
-                } else {
-                    // If the trip is NOT used on a route, the modal will be open
-                    setDeleteModal(!deleteModal);
-                }
+            // If the trip is used on a route, the modal will NOT be open
+            if (dependenceResponse.data.tripTicketDependence) {
+                setSuccessMessage(dependenceResponse.data);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: ERROR_MSG_API_DELETE_TRIP_TICKET_DEPENDENCE
+                });
+                setDefaultValues();
             } else {
-                // The modal is closed
+                // If the trip is NOT used on a route, the modal will be open
                 setDeleteModal(!deleteModal);
-                // Data are cleaned when the modal is closed
-                setDefaultValues();
             }
-        };
-    */
+        } else {
+            // The modal is closed
+            setDeleteModal(!deleteModal);
+            // Data are cleaned when the modal is closed
+            setDefaultValues();
+        }
+    };
+
     useEffect(() => {
 
         fetchData();
@@ -661,122 +691,144 @@ function Trips() {
         </div>
     );
 
-    /*
-        const bodyViewDetails = (
-            <div className={styles.modal}>
-                <h3>DETALLE DEL VIAJE</h3>
-                <TextField className={styles.inputMaterial} label="Ruta" name="route"
-                           value={selectedTrip && `${selectedTrip.route.departure} - ${selectedTrip.route.destination}`}/>
-                <br/>
-                <TextField label="Combi" id={"transport"} name="transport"
-                           className={styles.inputMaterial}
-                           value={selectedTrip && `${selectedTrip.transport.internalIdentification} - ${selectedTrip.transport.registrationNumber}`}/>
-                <br/>
-                <TextField label="Fecha y hora de partida" id={"departureDay"} name="departureDay"
-                           className={styles.inputMaterial}
-                           value={selectedTrip && selectedTrip.departureDay}/>
-                <br/>
-                <TextField label="Precio" id={"price"} name="price"
-                           className={styles.inputMaterial}
-                           value={selectedTrip && selectedTrip.price}/>
-                <br/>
-                <TextField className={styles.inputMaterial} label="Estado" name="active"
-                           value={selectedTrip && selectedTrip.active}/>
-                <br/>
 
-                <br/>
-                <div align="right">
-                    <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
-                </div>
+    const bodyViewDetails = (
+        <div className={styles.modal}>
+            <h3>DETALLE DEL VIAJE</h3>
+
+            <TextField className={styles.inputMaterial} label="Estado" name="active"
+                       value={selectedTrip && selectedTrip.active}/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Origen" name="departure"
+                       value={selectedTrip && selectedTrip.departure}/>
+            <br/>
+            <TextField className={styles.inputMaterial} label="Destino" name="destination"
+                       value={selectedTrip && selectedTrip.destination}/>
+            <br/>
+            <TextField label="Combi" id={"transport"} name="transport"
+                       className={styles.inputMaterial}
+                       value={selectedTrip && `${selectedTrip.transport.internalIdentification} - ${selectedTrip.transport.registrationNumber}`}/>
+            <br/>
+            <TextField label="Fecha y hora de partida" id={"departureDay"} name="departureDay"
+                       className={styles.inputMaterial}
+                       value={selectedTrip && selectedTrip.departureDay}/>
+            <br/>
+            <TextField label="Precio" id={"price"} name="price"
+                       className={styles.inputMaterial}
+                       value={selectedTrip && selectedTrip.price}/>
+            <br/><br/>
+            <div align="right">
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
-        );
-        */
-    /*
-        const bodyEdit = (
-            <div className={styles.modal}>
-                <h3>EDITAR COMBI</h3>
-                <Tooltip title="Debe eliminar la combi para cambiar el estado">
-                    <TextField label="Estado" id={"active"} name="active"
-                               className={styles.inputMaterial}
-                               disabled
-                               value={selectedTrip && selectedTrip.active}/>
-                </Tooltip>
-                <br/>
-                {inputsToCreateOrModify}
-                <FormControl className={styles.inputMaterial}
-                             required>
-                    <InputLabel>Tipo de confort</InputLabel>
-                    <Select label="Tipo de comfort" labelId="typeComfortSelected" id="typeComfortSelected"
-                            name="typeComfortSelected"
-                            className={styles.inputMaterial}
-                            value={(routeTransport) ? routeTransport : selectedTrip.comfort.typeComfortId}
-                            onChange={handleChange}
-                            displayEmpty
-                    >
-                        <MenuItem value={0} disabled> Seleccione un tipo de confort </MenuItem>
-                        <MenuItem key={1} value={1}> Cómoda </MenuItem>
-                        <MenuItem key={2} value={2}> Súper-cómoda </MenuItem>
-                    </Select>
-                    <FormHelperText>{(departureRouteSelectedError) ? departureRouteSelectedError : false}</FormHelperText>
-                </FormControl>
-                <FormControl className={styles.inputMaterial}
-                             required>
-                    <InputLabel>Chofer</InputLabel>
-                    <Select label="Chofer" labelId="driverSelected" id="driverSelected" name="driverSelected"
-                            className={styles.inputMaterial}
-                            value={(departureRouteSelected) ? departureRouteSelected : selectedTrip.driver.userId}
-                            onChange={handleChange}
-                            displayEmpty
-                    >
-                        <MenuItem value="" disabled>
-                            Seleccione un chofer
+        </div>
+    );
+
+
+    const bodyEdit = (
+        <div className={styles.modal}>
+            <h3>EDITAR VIAJE</h3>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(departureRouteSelectedError) ? true : false}>
+                <InputLabel>Origen del viaje</InputLabel>
+                <Select label="Origen del viaje" id="departureRouteSelected" labelId={"departureRouteSelected"}
+                        name="departureRouteSelected"
+                        className={styles.inputMaterial}
+                        value={(departureRouteSelected) ? departureRouteSelected : selectedTrip.route.departureId}
+                        displayEmpty
+                        onChange={handleChange}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione el origen del viaje
+                    </MenuItem>
+                    {(filteredRoutes) ?
+                        filteredRoutes.map((route) => (
+                            <MenuItem
+                                key={route.routeId}
+                                value={route.departureId}
+                            >
+                                {route.departure}
+
+                            </MenuItem>
+                        ))
+                        : null
+                    }
+                </Select>
+                <FormHelperText>{(departureRouteSelectedError) ? departureRouteSelectedError : false}</FormHelperText>
+            </FormControl>
+            <Tooltip
+                title="Se considera disponible si la ruta no está dada de baja">
+                <FormHelperText>
+                    <HelpIcon color='primary' fontSize="small"/>
+                    Sólo se visualizan las rutas disponibles
+                </FormHelperText>
+            </Tooltip>
+            <FormControl className={styles.inputMaterial}
+                         required
+                         error={(destinationRouteSelectedError) ? true : false}>
+                <InputLabel>Destino del viaje</InputLabel>
+                <Select label="Destino del viaje" id="destinationRouteSelected" labelId={"destinationRouteSelected"}
+                        name="destinationRouteSelected"
+                        className={styles.inputMaterial}
+                        value={(destinationRouteSelected) ? destinationRouteSelected : selectedTrip.route.destinationId}
+                        displayEmpty
+                        onChange={handleChange}
+                >
+                    <MenuItem value={0} disabled>
+                        Seleccione el destino del viaje
+                    </MenuItem>
+                    {(selectedTrip.route.destinationId) ?
+                        <MenuItem value={selectedTrip.route.destinationId}>
+                            {selectedTrip.route.destination}
                         </MenuItem>
-                        <MenuItem value={selectedTrip.driver.userId}>
-                            {selectedTrip.driver.surname}, {selectedTrip.driver.name}
-                        </MenuItem>
-                        {(availableRoutes) ?
-                            availableRoutes.filter((item) => item.userId !== selectedTrip.driver.userId)
-                                .map((drivers) => (
-                                    <MenuItem
-                                        key={drivers.userId}
-                                        value={drivers.userId}
-                                    >
-                                        {drivers.surname}, {drivers.name}
-                                    </MenuItem>
-                                )) : null
-                        }
-                    </Select>
-                    <Tooltip
-                        title="Se considera disponible si el chofer no está dado de baja ni está asignado a otra combi">
-                        <FormHelperText>
-                            <HelpIcon color='primary' fontSize="small"/>
-                            Sólo se visualizan los choferes disponibles
-                        </FormHelperText>
-                    </Tooltip>
-                </FormControl>
-                <br/>
-                <div align="right">
-                    <Button color="primary" onClick={() => requestPutTrip()}>CONFIRMAR CAMBIOS</Button>
-                    <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
-                </div>
+                        : null
+
+                    }
+                    {(availableRoutes) ?
+                        availableRoutes.filter((route) => route.departureId === (departureRouteSelected || selectedTrip.route.departureId) && route.destinationId !== selectedTrip.route.destinationId)
+                            .map((route) => (
+                                <MenuItem
+                                    key={route.routeId}
+                                    value={route.destinationId}
+                                >
+                                    {route.destination}
+                                </MenuItem>
+                            )) : null
+                    }
+                </Select>
+                <FormHelperText>{(destinationRouteSelectedError) ? destinationRouteSelectedError : false}</FormHelperText>
+            </FormControl>
+            <Tooltip
+                title="Sólo se visualizan los destinos disponibles acorde al origen seleccionado">
+                <FormHelperText>
+                    <HelpIcon color='primary' fontSize="small"/>
+                    Destinos disponibles según el origen seleccionado
+                </FormHelperText>
+            </Tooltip>
+            {inputsToCreateOrModify}
+            <br/> <br/>
+            <div align="right">
+                <Button color="primary" onClick={() => requestPutTrip()}>CONFIRMAR CAMBIOS</Button>
+                <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
-        );
+        </div>
+    );
 
-        const bodyDelete = (
-            <div className={styles.modal}>
-                <p>¿Estás seguro que deseas eliminar la combi con
-                    identificación <b>{selectedTrip && selectedTrip.internalIdentification}</b> y
-                    patente <b>{selectedTrip && selectedTrip.registrationNumber}</b>?
-                </p>
-                <div align="right">
-                    <Button color="secondary" onClick={() => requestDeleteTrip()}>SÍ, ELIMINAR</Button>
-                    <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
-
-                </div>
+    const bodyDelete = (
+        <div className={styles.modal}>
+            <p>¿Estás seguro que deseas eliminar la combi con
+                identificación <b>{selectedTrip && selectedTrip.internalIdentification}</b> y
+                patente <b>{selectedTrip && selectedTrip.registrationNumber}</b>?
+            </p>
+            <div align="right">
+                <Button color="secondary" onClick={() => requestDeleteTrip()}>SÍ, ELIMINAR</Button>
+                <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
 
             </div>
-        );
-    */
+
+        </div>
+    );
+
     return (
         <div className="App">
             {
@@ -827,7 +879,7 @@ function Trips() {
                 onClose={openCloseModalCreate}>
                 {bodyCreate}
             </Modal>
-            {/*
+
             <Modal
                 open={viewModal}
                 onClose={openCloseModalViewDetails}>
@@ -844,7 +896,7 @@ function Trips() {
                 open={deleteModal}
                 onClose={openCloseModalDelete}>
                 {bodyDelete}
-            </Modal>*/}
+            </Modal>
         </div>
     );
 }

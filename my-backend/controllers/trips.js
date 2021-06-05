@@ -15,7 +15,10 @@ const {
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
 
-const {validateTripToCreate} = require("../helpers/validateTripInputs");
+const {
+    validateTripToCreate,
+    validateTripToUpdate
+} = require("../helpers/validateTripInputs");
 
 const getTrips = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
@@ -24,14 +27,14 @@ const getTrips = async (req, res) => {
         const connection = await prepareConnection();
 
         let sqlSelect =
-            `
+                `
             SELECT 
             tri.TRIP_ID, FORMAT(tri.PRICE, 2, 'es_AR') PRICE, tri.ACTIVE,
-            CONCAT(DATE_FORMAT(tri.DEPARTURE_DAY, '%d/%m/%Y %H:%i'), 'hs') DEPARTURE_DAY, 
-            CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
-            CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
+            CONCAT(DATE_FORMAT(tri.DEPARTURE_DAY, '%d/%m/%Y %H:%i'), 'hs') DEPARTURE_DAY, r.ROUTE_ID,
+            c1.CITY_ID DEPARTURE_ID, CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
+            c2.CITY_ID DESTINATION_ID, CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
             CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
-            tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER
+            tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER
             FROM TRIP tri
             INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
             INNER JOIN CITY c1 ON r.ID_DEPARTURE = c1.CITY_ID
@@ -72,6 +75,43 @@ const getTripById = async (req, res) => {
     res.end();
 };
 
+const getTripDependenceById = async (req, res) => {
+    const {id} = req.params;
+
+    console.log('getTripDependenceById backend, id es:', id);
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlSelect =
+            `
+            SELECT
+            tri.TRIP_ID, tic.TICKET_ID, tic.ID_STATUS_TICKET
+            FROM TRIP tri
+            INNER JOIN TICKET tic ON tri.TRIP_ID = tic.ID_TRIP
+            INNER JOIN CART c ON tic.ID_CART = c.CART_ID
+            WHERE tri.TRIP_ID = ${id}
+            AND c.DATE IS NOT NULL
+            AND tic.ID_STATUS_TICKET <> 3;
+            `;
+
+        const [rows] = await connection.execute(sqlSelect);
+
+        console.log('rows es:');
+        console.log(rows);
+
+        connection.end();
+
+        res.json({
+            tripTicketDependence: rows.length >= 1
+        });
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE} ${error}`);
+    }
+    res.end();
+};
+
 const postTrip = async (req, res) => {
     const {routeId, price, departureDay} = req.body;
 
@@ -108,10 +148,9 @@ const postTrip = async (req, res) => {
 const putTrip = async (req, res) => {
     const {id} = req.params;
 
-    const {idRoute, price, departureDay} = req.body;
+    const {routeId, price, departureDay} = req.body;
 
-    //const inputsErrors = await validateTrips(/*COMPLETE WITH THE RIGHT PARAMETERS*/);
-    const inputsErrors = false;
+    const inputsErrors = await validateTripToUpdate(routeId, departureDay, id);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -122,7 +161,7 @@ const putTrip = async (req, res) => {
             let sqlUpdate =
                 `
                 UPDATE TRIP 
-                SET ID_ROUTE = ${idRoute}, 
+                SET ID_ROUTE = ${routeId}, 
                 PRICE = ${price}, 
                 DEPARTURE_DAY = '${departureDay}'
                 WHERE TRIP_ID = ${id};
@@ -168,6 +207,7 @@ const deleteTrip = async (req, res) => {
 module.exports = {
     getTrips,
     getTripById,
+    getTripDependenceById,
     postTrip,
     putTrip,
     deleteTrip

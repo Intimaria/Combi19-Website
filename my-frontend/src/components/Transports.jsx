@@ -309,37 +309,37 @@ function Transports() {
         if (validateForm()) {
             setDefaultApiErrorMessages();
 
-            let postResponse = await putTransport(selectedTransport,
+            let putResponse = await putTransport(selectedTransport,
                 typeComfortSelected ? typeComfortSelected : selectedTransport.comfort.typeComfortId,
                 driverSelected ? driverSelected : selectedTransport.driver.userId);
 
-            if (postResponse.status === 200) {
-                setSuccessMessage(postResponse.data);
+            if (putResponse.status === 200) {
+                setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: postResponse.data
+                    message: putResponse.data
                 });
 
                 await openCloseModalUpdate();
 
                 await fetchData();
                 return true
-            } else if (postResponse.status === 400) {
-                setInternalIdentificationError(postResponse.data.internalIdentificationError);
-                setRegistrationNumberError(postResponse.data.registrationNumberError);
-            } else if (postResponse.status === 500) {
-                setSuccessMessage(postResponse.data);
+            } else if (putResponse.status === 400) {
+                setInternalIdentificationError(putResponse.data.internalIdentificationError);
+                setRegistrationNumberError(putResponse.data.registrationNumberError);
+            } else if (putResponse.status === 500) {
+                setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: postResponse.data
+                    message: putResponse.data
                 });
 
                 return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_POST_TRANSPORT} ${putResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${postResponse}`
+                    message: `${ERROR_MSG_API_POST_TRANSPORT} ${putResponse}`
                 });
             }
         }

@@ -140,6 +140,10 @@ export const ERROR_MSG_API_POST_TRIP = 'Ocurrió un error al crear el viaje:';
 export const ERROR_MSG_API_TRIP_DATE_OVERLAP = '* La combi ya se encuentra en uso para la fecha y hora indicada';
 export const ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP = 'Ocurrió un error al verificar si la combi está en uso:';
 export const ERROR_MSG_API_PUT_TRIP = 'Ocurrió un error al actualizar los datos del viaje:';
+export const ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE = 'No se puede editar, el viaje tiene tickets vendidos';
+export const ERROR_MSG_API_DELETE_TRIP = 'Ocurrió un error al eliminar la combi indicada';
+export const ERROR_MSG_API_DELETE_TRIP_TICKET_DEPENDENCE = 'No se puede eliminar, el viaje tiene tickets vendidos';
+export const ERROR_MSG_API_VALIDATE_TRIP_TICKET_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias del viaje';
 // Comments
 export const ERROR_MSG_API_GET_COMMENT = 'Ocurrió un error al obtener los comentarios: ';
 export const ERROR_MSG_API_GET_COMMENT_BY_ID = 'Ocurrió un error al obtener el comentario indicado: ';

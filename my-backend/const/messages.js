@@ -48,7 +48,7 @@ module.exports = {
     OK_MSG_API_PLACE_PUT: 'Se actualizaron los datos del lugar con éxito',
     ERROR_MSG_API_PUT_PLACE: 'Ocurrió un error al modificar el lugar indicado:',
     OK_MSG_API_DELETE_PLACE: 'Se eliminó el lugar con éxito',
-    ERROR_MSG_API_DELETE_PLACE: 'Ha ocurrido un error al eliminar el lugar indicado:',
+    ERROR_MSG_API_DELETE_PLACE: 'Ocurrió un error al eliminar el lugar indicado:',
     ERROR_MSG_API_DELETE_PLACE_ROUTE_DEPENDENCE: 'No se puede eliminar, el lugar figura entre rutas existentes.',
     ERROR_MSG_API_MODIFY_PLACE_ROUTE_DEPENDENCE: 'No se puede modificar, el lugar figura entre rutas existentes.',
     ERROR_MSG_EMPTY_PROVINCE: '* Ingrese un nombre de provincia',

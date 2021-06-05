@@ -2,12 +2,12 @@ import axios from 'axios';
 import {BACKEND_URL} from "../const/config";
 import {capitalizeString} from "../helpers/strings";
 import {
-    ERROR_MSG_API_DELETE_DRIVER,
     ERROR_MSG_API_GET_TRANSPORTS,
     ERROR_MSG_API_GET_ACTIVE_TRANSPORTS,
     ERROR_MSG_API_POST_TRANSPORT,
     ERROR_MSG_API_PUT_TRANSPORT,
     ERROR_MSG_API_PUT_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE,
+    ERROR_MSG_API_DELETE_TRANSPORT,
     ERROR_MSG_INTERNET
 } from "../const/messages";
 
@@ -196,7 +196,7 @@ export const deleteTransport = async (id) => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${ERROR_MSG_API_DELETE_DRIVER} ${error}`);
+            console.log(`${ERROR_MSG_API_DELETE_TRANSPORT} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
