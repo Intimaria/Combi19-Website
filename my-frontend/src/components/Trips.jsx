@@ -40,8 +40,6 @@ import {
     ERROR_MSG_INVALID_MIN_PRICE,
     ERROR_MSG_INVALID_MAX_PRICE,
     ERROR_MSG_API_POST_TRIP,
-    ERROR_MSG_API_TRIP_DATE_OVERLAP,
-    ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP,
     ERROR_MSG_API_PUT_TRIP,
     ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE,
     ERROR_MSG_API_DELETE_TRIP,
@@ -58,8 +56,14 @@ import {formatDecimalNumber} from "../helpers/numbers";
 const columns = [
     {title: 'Origen', field: 'route.departure'},
     {title: 'Destino', field: 'route.destination'},
-    {title: 'Precio', field: 'price'},
-    {title: 'Fecha de salida', field: 'departureDay'},
+    {
+        title: 'Precio', field: 'price'
+    },
+    {
+        title: 'Fecha de salida',
+        render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
+        customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+    },
     {title: 'Fecha de llegada', field: 'arrivalDay'},
     {
         title: 'Combi',
@@ -147,8 +151,6 @@ function Trips() {
             setDepartureRouteSelected(value);
             setDestinationRouteSelected('');
 
-            console.log('entró');
-
             setSelectedTrip(prevState => ({
                 ...prevState,
                 route: {
@@ -170,11 +172,12 @@ function Trips() {
                 route.destinationId === value
             );
 
-            console.log('routeSelected es:', routeSelected)
-
             setSelectedTrip(prevState => ({
                 ...prevState,
-                ['routeId']: routeSelected[0].routeId
+                route: {
+                    ...prevState.route,
+                    ['routeId']: routeSelected[0].routeId
+                }
             }));
 
             setRouteTransport(routeSelected[0].transport);
@@ -190,19 +193,28 @@ function Trips() {
                     setDepartureDayError(false);
                     break;
                 case 'price':
-                    let priceFormatted = formatDecimalNumber(value, 7, 2);
-
-                    if (priceFormatted[0] > 2) {
-                        setPriceError(ERROR_MSG_INVALID_PRICE)
-                    } else {
+                    if (selectedTrip.price.includes(',') && value.includes(',') && value.includes('.')) {
                         setSelectedTrip(prevState => ({
                             ...prevState,
-                            [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                            [name]: selectedTrip.price
                         }));
+                        break;
+                    } else {
+                        let priceFormatted = formatDecimalNumber(value, 7, 2);
 
-                        setPriceError(false);
+                        if (priceFormatted[0] > 2) {
+                            setPriceError(ERROR_MSG_INVALID_PRICE)
+                        } else {
+                            setSelectedTrip(prevState => ({
+                                ...prevState,
+                                [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                            }));
+
+                            setPriceError(false);
+                        }
+                        break;
                     }
-                    break;
+
                 default:
                     console.log('Es necesario agregar un case más en el switch por el name:', name);
                     break;
@@ -395,10 +407,10 @@ function Trips() {
 
                 return true
             } else {
-                setSuccessMessage(`${ERROR_MSG_API_POST_TRIP} ${putResponse}`);
+                setSuccessMessage(`${ERROR_MSG_API_PUT_TRIP} ${putResponse}`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_POST_TRIP} ${putResponse}`
+                    message: `${ERROR_MSG_API_PUT_TRIP} ${putResponse}`
                 });
             }
         }
@@ -413,7 +425,7 @@ function Trips() {
                 ...options, open: true, type: 'success',
                 message: deleteResponse.data
             });
-            openCloseModalDelete();
+            await openCloseModalDelete();
             await fetchData();
         } else if (deleteResponse?.status === 400 || deleteResponse?.status === 500) {
             setSuccessMessage(deleteResponse.data);
@@ -421,7 +433,7 @@ function Trips() {
                 ...options, open: true, type: 'error',
                 message: deleteResponse.data
             });
-            openCloseModalDelete();
+            await openCloseModalDelete();
         } else {
             setSuccessMessage(`${ERROR_MSG_API_DELETE_TRIP} ${deleteResponse}`);
             setOptions({
@@ -560,7 +572,7 @@ function Trips() {
                 <TextField label="Combi" id={"transport"} name="transport"
                            className={styles.inputMaterial}
                            disabled
-                           value={selectedTrip && routeTransport}/>
+                           value={(selectedTrip && !departureRouteSelected && !destinationRouteSelected) ? `${selectedTrip.transport.internalIdentification} - ${selectedTrip.transport.registrationNumber}` : routeTransport}/>
             </Tooltip>
             {
                 <MuiPickersUtilsProvider
@@ -589,7 +601,7 @@ function Trips() {
                         ampm={false}
                         error={(departureDayError) ? true : false}
                         helperText={(departureDayError) ? departureDayError : false}
-                        value={selectedTrip.departureDay || moment().add(1, 'minutes')}
+                        value={moment(selectedTrip.departureDay)}
                         onChange={handleDepartureDay}
                     />
                 </MuiPickersUtilsProvider>

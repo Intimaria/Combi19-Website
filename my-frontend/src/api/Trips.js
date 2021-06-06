@@ -74,7 +74,7 @@ export const postTrip = async (newTrip) => {
     const token = localStorage.getItem('token');
 
     let formattedTrip = {
-        routeId: newTrip.routeId,
+        routeId: newTrip.route.routeId,
         price: newTrip.price.replace(',', '.'),
         departureDay: newTrip.departureDay
     };
@@ -112,7 +112,7 @@ export const putTrip = async (trip) => {
 
     let formattedTrip = {
         tripId: trip.tripId,
-        routeId: trip.routeId,
+        routeId: trip.route.routeId,
         price: trip.price.replace(',', '.'),
         departureDay: trip.departureDay
     };
