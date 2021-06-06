@@ -46,11 +46,12 @@ const Navbar = ({userData}) => {
         <div>
            <NavLink to="/home" className="btn btn-dark mr-2"> Home </NavLink>
         </div>
-    )
+    );
+
     const passengerMenu = (
         <div>
-            <NavLink to="/userConfiguration" className="btn btn-dark mr-2"> Configuracion </NavLink>
-            <NavLink to="/comments" className="btn btn-dark mr-2"> Mis Comentarios </NavLink>
+            <NavLink to="/userConfiguration" className="btn btn-dark mr-2"> Configuración </NavLink>
+            <NavLink to="/comments" className="btn btn-dark mr-2"> Mis comentarios </NavLink>
         </div>
     );
 
