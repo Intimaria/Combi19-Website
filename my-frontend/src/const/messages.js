@@ -153,3 +153,5 @@ export const ERROR_MSG_API_DELETE_COMMENT = 'Ocurrió un error al eliminar el co
 export const OK_MSG_API_DELETE_COMMENT = 'Se eliminó el comentario con éxito';
 export const ERROR_MSG_API_COMMENT_VALIDATE_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias del comentario';
 export const ERROR_MSG_EMPTY_TEXT_COMMENT = '* Ingrese un texto';
+// Cart
+export const ERROR_MSG_API_PUT_PASSENGER_TRIP = 'Ocurrió un error al finalizar la compra:';

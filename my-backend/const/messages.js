@@ -136,5 +136,8 @@ module.exports = {
     OK_MSG_API_DELETE_COMMENT: 'Se eliminó el comentario con éxito',
     ERROR_MSG_API_COMMENT_VALIDATE_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del comentario',
     ERROR_MSG_EMPTY_TEXT_COMMENT: '* Ingrese un texto',
-    ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER: 'Solo los usuarios con viajes realizados pueden hacer comentrios en el sitio.'
+    ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER: 'Solo los usuarios con viajes realizados pueden hacer comentrios en el sitio.',
+    // Cart
+    OK_MSG_API_PUT_PASSENGER_TRIP: 'La compra finalizó con éxito',
+    ERROR_MSG_API_PUT_PASSENGER_TRIP: 'Ocurrió un error al finalizar la compra:'
 };

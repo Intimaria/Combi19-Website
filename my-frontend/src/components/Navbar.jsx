@@ -14,10 +14,10 @@ const Navbar = ({userData}) => {
         localStorage.clear();
         history.push('/login')
     };
-    const [isFront, setIsFront] = useState(history.location.pathname == '/')
+    const [isFront, setIsFront] = useState(history.location.pathname === '/')
     
     useEffect(() => {
-        if (history.location.pathname == '/')  {
+        if (history.location.pathname === '/')  {
           setIsFront(true)
         }
         else {

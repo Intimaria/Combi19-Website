@@ -78,8 +78,6 @@ const getTripById = async (req, res) => {
 const getTripDependenceById = async (req, res) => {
     const {id} = req.params;
 
-    console.log('getTripDependenceById backend, id es:', id);
-
     try {
         const connection = await prepareConnection();
 
@@ -115,8 +113,6 @@ const getTripDependenceById = async (req, res) => {
 const postTrip = async (req, res) => {
     const {routeId, price, departureDay} = req.body;
 
-    console.log('idRoute, price, departureDay es', routeId, price, departureDay);
-
     const inputsErrors = await validateTripToCreate(routeId, departureDay);
 
     if (inputsErrors) {
@@ -149,8 +145,6 @@ const putTrip = async (req, res) => {
     const {id} = req.params;
 
     const {routeId, price, departureDay} = req.body;
-
-    console.log('id, routeId, price, departureDay', id, routeId, price, departureDay)
 
     const inputsErrors = await validateTripToUpdate(routeId, departureDay, id);
 
@@ -213,4 +207,4 @@ module.exports = {
     postTrip,
     putTrip,
     deleteTrip
-}
+};
