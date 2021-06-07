@@ -25,7 +25,7 @@ export const updateUserDataValues = async () => {
             return false;
         }
         else if (response?.status === 401 || response?.status === 403) {
-            console.log('Usted no posee permiso para realizar tal operacion');
+            console.log('Usted no posee permiso para realizar tal operación');
             return false;
         }
     } catch (error) {
@@ -34,7 +34,7 @@ export const updateUserDataValues = async () => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`Ha ocurrido un error al actualizar los datos del usuario ${error}`);
+            console.log(`Ocurrió un error al actualizar los datos del usuario ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
@@ -73,7 +73,7 @@ export const userConfigurationWithNewPassword = async (userData, id) => {
             }
         }
     }
-}
+};
 
 export const userConfigurationWitoutNewPassword = async (userData, id) => {
     const token = localStorage.getItem('token');
@@ -102,4 +102,4 @@ export const userConfigurationWitoutNewPassword = async (userData, id) => {
             }
         }
     }
-}
+};

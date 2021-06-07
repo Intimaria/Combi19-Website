@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {useHistory} from "react-router-dom";
 
 import {TextField, Button} from '@material-ui/core';
@@ -100,63 +100,65 @@ const Login = ({path}) => {
     };
 
     return (
-        <div className={styles.modal}>
+        <Fragment>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
                              handleClose={options.handleClose}/>
                     : null
             }
-            <h2 align={'center'}>Iniciar sesión</h2>
+            <div className={styles.modal}>
+                <h2 align={'center'}>Iniciar sesión</h2>
 
-            <form onSubmit={mySubmitHandler}>
+                <form onSubmit={mySubmitHandler}>
 
-                <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
-                           onChange={handleEmail}
-                           required
-                           inputProps={{maxLength: 70}}
-                           autoComplete='off'
-                />
-                <br/>
-                <FormControl className={styles.inputMaterial}
-                             required
-                             error={loginError}>
-                    <InputLabel htmlFor="password">Contraseña</InputLabel>
-                    <Input
-                        id="password"
-                        required
-                        inputProps={{maxLength: 100}}
-                        autoComplete='off'
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        onChange={handlePassword}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleShowPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
-                                </IconButton>
-                            </InputAdornment>
-                        }
+                    <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
+                               onChange={handleEmail}
+                               required
+                               inputProps={{maxLength: 70}}
+                               autoComplete='off'
                     />
-                    <FormHelperText>{(loginError) ? loginError : ' '}</FormHelperText>
-                </FormControl>
-                <br/><br/>
+                    <br/>
+                    <FormControl className={styles.inputMaterial}
+                                 required
+                                 error={loginError}>
+                        <InputLabel htmlFor="password">Contraseña</InputLabel>
+                        <Input
+                            id="password"
+                            required
+                            inputProps={{maxLength: 100}}
+                            autoComplete='off'
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            onChange={handlePassword}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                        <FormHelperText>{(loginError) ? loginError : ' '}</FormHelperText>
+                    </FormControl>
+                    <br/><br/>
 
 
-                <Button style={{width: '100%'}}
-                        variant="contained"
-                        size="large"
-                        color="primary"
-                        id="btnLogin"
-                        type="submit"
-                >INICIAR SESIÓN</Button>
-            </form>
-        </div>
+                    <Button style={{width: '100%'}}
+                            variant="contained"
+                            size="large"
+                            color="primary"
+                            id="btnLogin"
+                            type="submit"
+                    >INICIAR SESIÓN</Button>
+                </form>
+            </div>
 
+        </Fragment>
     );
 };
 

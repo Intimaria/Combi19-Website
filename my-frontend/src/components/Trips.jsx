@@ -712,10 +712,10 @@ function Trips() {
                        value={selectedTrip && selectedTrip.active}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Origen" name="departure"
-                       value={selectedTrip && selectedTrip.departure}/>
+                       value={selectedTrip && selectedTrip.route.departure}/>
             <br/>
             <TextField className={styles.inputMaterial} label="Destino" name="destination"
-                       value={selectedTrip && selectedTrip.destination}/>
+                       value={selectedTrip && selectedTrip.route.destination}/>
             <br/>
             <TextField label="Combi" id={"transport"} name="transport"
                        className={styles.inputMaterial}
@@ -828,9 +828,9 @@ function Trips() {
 
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar la combi con
-                identificación <b>{selectedTrip && selectedTrip.internalIdentification}</b> y
-                patente <b>{selectedTrip && selectedTrip.registrationNumber}</b>?
+            <p>¿Estás seguro que deseas eliminar el viaje con
+                origen <b>{selectedTrip && selectedTrip.route.departure}</b>,
+                destino <b>{selectedTrip && selectedTrip.route.destination}</b> y fecha <b>{`${moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}hs`}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDeleteTrip()}>SÍ, ELIMINAR</Button>

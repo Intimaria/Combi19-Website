@@ -39,6 +39,7 @@ class Server {
         this.app.use('/getPassangersValues', require('../routes/passangerValues.js'));
         this.app.use('/comments', require('../routes/comments.js'));
         this.app.use('/my-trips', require('../routes/passenger-trips.js'));
+        this.app.use('/cards', require('../routes/cards.js'));
     }
 
     listen() {

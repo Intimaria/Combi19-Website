@@ -57,7 +57,9 @@ import {
     ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER,
-    ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER
+    ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER,
+    ERROR_MSG_API_REGISTRATION,
+    ERROR_MSG_INTERNET
 } from '../const/messages.js';
 
 
@@ -168,6 +170,29 @@ function Register() {
             })
             .catch((error) => {
                 console.log("There was an error in the submitted entries");
+
+
+                                if (error.response?.status) {
+                    setSuccessMessage(error.response.data);
+                } else {
+                    // In this situation, is NOT an axios handled error
+
+                    console.log(`${ERROR_MSG_API_REGISTRATION} ${error}`);
+
+                    if (error.message === 'Network Error') {
+                        error.message = ERROR_MSG_INTERNET;
+
+                    }
+                    setSuccessMessage(`${ERROR_MSG_API_REGISTRATION} ${error.message}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `${ERROR_MSG_API_REGISTRATION} ${error.message}`
+                    });
+                    return error.message;
+
+                }
+
+
                 setEmailError(error.response.data.emailError);
                 setNamesError(error.response.data.namesError);
                 setSurnameError(error.response.data.surnameError);

@@ -34,6 +34,7 @@ export const ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER = '* Ingrese nombre complet
 export const ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER = '* El titular es incorrecto';
 export const ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER = '* Ingrese documento de la persona titular de la tarjeta';
 export const ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER = '* El número de documento es incorrecto';
+export const ERROR_MSG_API_REGISTRATION = 'Ocurrió un error al crear el usuario:';
 // Passenger API messages
 export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
 export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';
@@ -155,3 +156,5 @@ export const ERROR_MSG_API_COMMENT_VALIDATE_DEPENDENCE = 'Ocurrió un error al c
 export const ERROR_MSG_EMPTY_TEXT_COMMENT = '* Ingrese un texto';
 // Cart
 export const ERROR_MSG_API_PUT_PASSENGER_TRIP = 'Ocurrió un error al finalizar la compra:';
+// Card
+export const ERROR_MSG_API_GET_LAST_CARD = 'Ocurrió un error al obtener los datos de la tarjeta:';

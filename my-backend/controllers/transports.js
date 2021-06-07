@@ -104,7 +104,7 @@ const getTransportById = async (req, res) => {
 
         connection.end();
 
-        const normalizedResults = await normalizeTransport(rows);
+        const normalizedResults = await normalizeTransports(rows);
 
         res.json(normalizedResults);
     } catch (error) {

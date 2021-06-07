@@ -161,6 +161,26 @@ const normalizeTrips = (rows) => {
     return results;
 };
 
+const normalizeCards = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let card = {
+            cardId: rows[index].CARD_ID,
+            cardNetworkId: rows[index].ID_CARD_NETWORK,
+            cardType: rows[index].ID_CARD_TYPE,
+            passengerId: rows[index].ID_PASSENGER,
+            number: rows[index].NUMBER,
+            nameSurname: rows[index].NAME_SURNAME,
+            expirationDate: rows[index].EXPIRATION_DATE,
+            ownerDocumentNumber: rows[index].OWNER_DOCUMENT_NUMBER,
+            active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo'
+        };
+        results.push(card);
+    }
+
+    return results;
+};
 
 module.exports = {
     normalizeComments,
@@ -169,5 +189,6 @@ module.exports = {
     normalizePlaces,
     normalizeRoutes,
     normalizeProducts,
-    normalizeTrips
+    normalizeTrips,
+    normalizeCards
 };

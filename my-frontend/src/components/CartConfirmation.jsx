@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Message} from '../components/Message';
 import {TextField, Button} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";
@@ -36,6 +36,7 @@ import {
 } from '../const/regex';
 
 import {putPassengerTrip} from "../api/CartConfirmation";
+import {getCardsByUser} from "../api/Cards";
 
 
 function CartConfirmation() {
@@ -44,6 +45,11 @@ function CartConfirmation() {
     };
 
     const styles = useStyles();
+
+    const [userData, setUserData] = React.useState('');
+    const [userCart, setUserCart] = React.useState('');
+    const [userCards, setUserCards] = React.useState([]);
+    const [cardSelected, setCardSelected] = React.useState('');
 
     const [typeCardSelected, setTypeCardSelected] = React.useState('');
     const [cardNumber, setCardNumber] = React.useState('');
@@ -70,17 +76,7 @@ function CartConfirmation() {
         event.preventDefault();
 
         if (validateForm()) {
-            // cartId hardcodeado, me debería llegar de la pantalla anterior después de haber presionado "SIGUIENTE"
-            // en la pantalla de selección de cantidad de pasajes y la selección de productos
-            let cartId = 2;
-
-            // Debería recuperarla de la base
-            let cardId = 1;
-
-            // Debería obtenerlo del storage
-            let userId = 34;
-
-            let putResponse = await putPassengerTrip(cartId, cardId, userId);
+            let putResponse = await putPassengerTrip(2, cardSelected, userData.userId);
 
             if (putResponse.status === 200) {
                 setDefaultValues();
@@ -331,6 +327,69 @@ function CartConfirmation() {
         setDocumentNumberCardOwnerError(null);
         return true;
     };
+
+    useEffect(async () => {
+        // cartId hardcodeado, me debería llegar de la pantalla anterior después de haber presionado "SIGUIENTE"
+        // en la pantalla de selección de cantidad de pasajes y la selección de productos
+
+        setUserCart(2);
+
+        const userDataStorage = JSON.parse(localStorage.getItem('userData'));
+        setUserData(userDataStorage);
+
+        const userId = userDataStorage.userId;
+
+        console.log('userId es', userId);
+
+        // Cart con viaje, cantidad de pasajes, y productos
+        //const userCart = JSON.parse(localStorage.getItem('userCart'));
+
+        const requestUserCards = await getCardsByUser(userId);
+
+        if (requestUserCards.data.length > 0) {
+            setUserCards(requestUserCards);
+
+            const lastCard = requestUserCards.data[requestUserCards.data.length - 1];
+
+            setCardSelected(lastCard);
+
+            console.log('requestUserCards.data:', requestUserCards.data);
+
+            console.log('lastCard es:', lastCard);
+
+            setTypeCardSelected(lastCard.cardType);
+            setCardNumber(lastCard.number);
+            setExpirationDate(
+                moment().set({
+                    year: `20${lastCard.expirationDate.substr(3, 2)}`,
+                    month: lastCard.expirationDate.substr(0, 2),
+                    hour: 0,
+                    minute: 0,
+                    second: 0,
+                    millisecond: 0
+                })
+            );
+            /*
+            console.log('lastCard.expirationDate es', lastCard.expirationDate);
+            console.log('moment(lastCard.expirationDate) es', moment(lastCard.expirationDate));
+            console.log('moment(lastCard.expirationDate).format(\'MM/YY\') es', moment(lastCard.expirationDate).format('MM/YY'));
+            console.log(`año es: 20${lastCard.expirationDate.substr(3, 2)}`);
+            console.log('mes es: ' , lastCard.expirationDate.substr(0, 2));
+            console.log('moment con set es',
+                moment().set({
+                    year: `20${lastCard.expirationDate.substr(3, 2)}`,
+                    month: lastCard.expirationDate.substr(0, 2),
+                    hour: 0,
+                    minute: 0,
+                    second: 0,
+                    millisecond: 0
+                }));
+                */
+
+            setNameSurnameCardOwner(lastCard.nameSurname);
+            setDocumentNumberCardOwner(lastCard.ownerDocumentNumber);
+        }
+    }, []);
 
     return (
         <div className={styles.root}>
