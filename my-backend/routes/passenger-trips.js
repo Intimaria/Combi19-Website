@@ -1,4 +1,5 @@
 const {Router} = require('express');
+
 const {
     getPassengerTrips,
 } = require('../controllers/passengerTrips');

@@ -5,7 +5,8 @@ const {
     getTripDependenceById,
     postTrip,
     putTrip,
-    deleteTrip
+    deleteTrip,
+    searchTrip
 } = require('../controllers/trips');
 
 // The administrator role should be validated with a middleware before performing any operation
@@ -30,5 +31,8 @@ router.put('/:id', authenticateAdminRol, putTrip);
 
 // Delete a trip by id
 router.delete('/:id', authenticateAdminRol, deleteTrip);
+
+// Search Trips
+router.post('/custom/searchTrips/', searchTrip);
 
 module.exports = router;

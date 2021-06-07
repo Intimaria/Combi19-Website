@@ -5,6 +5,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/";
+import SearchTrips from "./SearchTrips";
 
 const useStyles = makeStyles({
   root: {
@@ -27,6 +28,7 @@ export default function WelcomeCard() {
   const classes = useStyles();
 
   return (
+    <div>
     <Card className={classes.root}>
       <CardActionArea>
         <CardMedia
@@ -40,10 +42,11 @@ export default function WelcomeCard() {
           </Typography>
           <Typography variant="subtitle1">
             Tu lugar para viajes en Argentina
-            (reemplazar componente)
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
+    <SearchTrips/>
+    </div>
   );
 }

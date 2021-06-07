@@ -26,7 +26,6 @@ export const CustomDatePicker = (props) => {
             .set({hour: 0, minute: 0, second: 0, millisecond: 0}),
         maxDateMessage: ERROR_MSG_INVALID_AGE
     };
-
     return (
         <MuiPickersUtilsProvider
             libInstance={moment}
@@ -34,10 +33,12 @@ export const CustomDatePicker = (props) => {
             locale={"es"}
         >
             <KeyboardDatePicker
-                className={styles.inputMaterial}
-                style={{marginTop: '-1px', marginBottom: '-1px'}}
+                InputProps={{disableUnderline: props.underlineDisabled}}
+                className={props.className || styles.inputMaterial}
+                style={ props.styles || {marginTop: '-1px', marginBottom: '-1px'}}
                 //required
-                disableFuture
+                disableFuture={props.futureDisabled}
+                disablePast={props.pastDisabled}
                 disableToolbar
                 cancelLabel="CANCELAR"
                 okLabel="CONFIRMAR"

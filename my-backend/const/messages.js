@@ -119,6 +119,7 @@ module.exports = {
     ERROR_MSG_API_TRIP_DATE_OVERLAP: '* La combi ya se encuentra en uso para la fecha y hora indicada',
     ERROR_MSG_API_TRIP_VALIDATE_DATE_OVERLAP: 'Ocurrió un error al verificar si la combi está en uso:',
     OK_MSG_API_PUT_TRIP: 'Se actualizaron los datos del viaje con éxito',
+    ERROR_MSG_API_SEARCH_TRIPS: 'Ocurrió un error al buscar los viajes solicitados',
     ERROR_MSG_API_PUT_TRIP: 'Ocurrió un error al actualizar los datos del viaje:',
     //ERROR_MSG_API_PUT_TRIP_ROUTE_DEPENDENCE: 'No se puede editar, el viaje está en curso',
     OK_MSG_API_DELETE_TRIP: 'Se eliminó el viaje con éxito',

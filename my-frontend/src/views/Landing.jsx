@@ -5,7 +5,7 @@ import TestimonialCard from '../components/TestimonialCard'
 import WelcomeCard from '../components/WelcomeCard'
 import { useHistory } from "react-router-dom";
 
-document.title = `Combi-19::Tu lugar para viajes`;
+document.title = `Combi-19: Tu lugar para viajes`;
 
 const Landing = () => {
     const history = useHistory();

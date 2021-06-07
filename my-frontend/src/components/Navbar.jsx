@@ -24,7 +24,6 @@ const Navbar = ({userData}) => {
           setIsFront(false)
         }
     }, [history.location]);
-    console.log(history)
 
     const loginRegistrationMenu = (
         <div>
@@ -77,7 +76,6 @@ const Navbar = ({userData}) => {
             }
         </div>
     );
-    console.log(userData)
 
     return (
         <div className="navbar navbar-dark bg-dark px-5 mb-4">
