@@ -89,7 +89,7 @@ const putPassengerTrip = async (req, res) => {
         res.status(200).send(OK_MSG_API_PUT_PASSENGER_TRIP);
     } catch (error) {
         console.log(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
     }
 
     res.end();
@@ -98,4 +98,4 @@ const putPassengerTrip = async (req, res) => {
 module.exports = {
     getPassengerTrips,
     putPassengerTrip
-}
+};

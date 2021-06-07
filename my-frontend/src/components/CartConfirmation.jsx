@@ -73,10 +73,10 @@ function CartConfirmation() {
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const requestPutPassengerTrip = async (event) => {
-        event.preventDefault();
+        //event.preventDefault();
 
         if (validateForm()) {
-            let putResponse = await putPassengerTrip(2, cardSelected, userData.userId);
+            let putResponse = await putPassengerTrip(2, cardSelected.cardId, userData.userId);
 
             if (putResponse.status === 200) {
                 setDefaultValues();
@@ -393,15 +393,15 @@ function CartConfirmation() {
 
     return (
         <div className={styles.root}>
-            <form className={styles.form} onSubmit={requestPutPassengerTrip} encType="multipart/form-data">
+            {
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                             handleClose={options.handleClose}/>
+                    : null
+            }
+            <div className={styles.form}>
                 <h2 align={'center'}>Confirmación de compra</h2>
                 <div className="row ">
-                    {
-                        successMessage ?
-                            <Message open={options.open} type={options.type} message={options.message}
-                                     handleClose={options.handleClose}/>
-                            : null
-                    }
                     <div>
                         <Grid container>
                             <Grid item xs={6}>
@@ -491,13 +491,33 @@ function CartConfirmation() {
                                         size="large"
                                         color="primary"
                                         id="btnRegister"
-                                        type="submit"
+                                        onClick={() => requestPutPassengerTrip()}
                                 >CONFIRMAR COMPRA</Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="secondary"
+                                        id="btnCancel"
+                                        //onClick={volver atrás}
+                                >CANCELAR COMPRA</Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="secondary"
+                                        id="btnBack"
+                                    //onClick={volver atrás}
+                                >VOLVER</Button>
                             </Grid>
                         </Grid>
                     </div>
                 </div>
-            </form>
+            </div>
             <br/><br/>
         </div>
     );
