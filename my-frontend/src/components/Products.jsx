@@ -1,12 +1,12 @@
 // Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
-import React, { useState, useEffect } from 'react';
-import { Modal, TextField, Button } from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
+import {Modal, TextField, Button} from '@material-ui/core';
 import MaterialTable from '@material-table/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById } from '../api/Products.js';
-import { Message } from "./Message";
+import {getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById} from '../api/Products.js';
+import {Message} from "./Message";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,7 +14,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import {formatDecimalNumber} from "../helpers/numbers";
 //Los estilos de los modals
-import { useStyles } from '../const/componentStyles';
+import {useStyles} from '../const/componentStyles';
 
 // Importo los mensajes de error
 import {
@@ -41,20 +41,20 @@ import {
 } from '../const/regex.js';
 
 // La configuracion en castellano
-import { materialTableConfiguration } from '../const/materialTableConfiguration';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    { title: 'Nombre', field: 'name' },
-    { title: 'Precio', field: 'price' },
-    { title: 'Tipo', field: 'typeProductDescription' },
-    { title: 'Estado', field: 'active' }
+    {title: 'Nombre', field: 'name'},
+    {title: 'Precio', field: 'price'},
+    {title: 'Tipo', field: 'typeProductDescription'},
+    {title: 'Estado', field: 'active'}
 ];
 
 function Products() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
@@ -65,7 +65,7 @@ function Products() {
         typeProductDescription: "",
         typeProductId: "",
         active: ""
-    }
+    };
 
     const styles = useStyles();
     //Aca se guarda los datos al hacer el get
@@ -85,11 +85,11 @@ function Products() {
     const [typeProductSelected, setTypeProductSelected] = useState(null);
     //Elementos para configurar los mensajes
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
-        const { name, value } = textFieldAtributes.target;
+        const {name, value} = textFieldAtributes.target;
         if (name === 'typeProduct') {
             setTypeProductError(false);
             setTypeProductSelected(value);
@@ -97,7 +97,7 @@ function Products() {
             setSelectedProduct(prevState => ({
                 ...prevState,
                 [name]: value
-            }))
+            }));
 
             //Saca el mensaje de error segun el input que se modifico
             switch (name) {
@@ -105,21 +105,28 @@ function Products() {
                     setNameError(null);
                     break;
                 case 'price':
-                    let priceFormatted = formatDecimalNumber(value, 5, 2);
-
-                    if (priceFormatted[0] > 2) {
-                        setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT)
-                    } else {
+                    if (selectedProduct.price.includes(',') && value.includes(',') && value.includes('.')) {
                         setSelectedProduct(prevState => ({
                             ...prevState,
-                            [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                            [name]: selectedProduct.price
                         }));
+                        break;
+                    } else {
+                        let priceFormatted = formatDecimalNumber(value, 5, 2);
 
-                        setPriceError(false);
+                        if (priceFormatted[0] > 2) {
+                            setPriceError(ERROR_MSG_INVALID_PRICE_PRODUCT)
+                        } else {
+                            setSelectedProduct(prevState => ({
+                                ...prevState,
+                                [name]: (priceFormatted[0] === 2) ? `${priceFormatted[1]},${priceFormatted[2]}` : `${priceFormatted[1]}`
+                            }));
+
+                            setPriceError(false);
+                        }
+
+                        break;
                     }
-
-                    setPriceError(null);
-                    break;
                 default:
                     console.log('Es necesario agregar un case más en el switch por el name:', name);
                     break;
@@ -127,7 +134,7 @@ function Products() {
         }
 
         setSuccessMessage(null);
-    }
+    };
 
     //Aca arrancan las validaciones de los datos del producto
     const validateForm = () => {
@@ -150,7 +157,7 @@ function Products() {
         }
         setNameError(null);
         return true;
-    }
+    };
 
     const validatePrice = () => {
         if (!selectedProduct.price) {
@@ -184,17 +191,17 @@ function Products() {
 
         setTypeProductError(null);
         return true;
-    }
+    };
+
     // Aca ingreso un producto nuevo
     const requestPost = async () => {
         if (validateForm()) {
-            console.log("llegoo")
             let postResponse = await postProducts(selectedProduct, typeProductSelected);
             if (postResponse.status === 201) {
-                setSuccessMessage(`Se ha creado el producto correctamente`);
+                setSuccessMessage(postResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: `Se ha creado el producto correctamente`
+                    message: postResponse.data
                 });
                 openCloseModalCreate();
                 fetchData();
@@ -217,7 +224,8 @@ function Products() {
                 });
             }
         }
-    }
+    };
+
     //Aca realizo la actualizacion de los datos del chofer
     const requestPut = async () => {
         if (validateForm()) {
@@ -227,12 +235,12 @@ function Products() {
                 selectedProduct.idProduct
             );
             if (putResponse.status === 201) {
-                setSuccessMessage(`Se ha actualizado el producto correctamente`);
+                setSuccessMessage(putResponse.data);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: `Se ha actualizado el producto correctamente`
+                    message: putResponse.data
                 });
-                openCloseModalUpdate();
+                await openCloseModalUpdate();
                 fetchData();
             } else if (putResponse?.status === 400) {
                 setNameError(putResponse.data.nameError);
@@ -253,17 +261,18 @@ function Products() {
                 });
             }
         }
-    }
+    };
+
     //Aca elimino a un chofer
     const requestDelete = async () => {
         let deleteResponse = await deleteProducts(selectedProduct.idProduct);
 
         if (deleteResponse?.status === 200) {
             openCloseModalDelete();
-            setSuccessMessage(`Se ha eliminado el producto correctamente`);
+            setSuccessMessage(deleteResponse.data);
             setOptions({
                 ...options, open: true, type: 'success',
-                message: `Se ha eliminado el producto correctamente`
+                message: deleteResponse.data
             });
             fetchData();
         } else {
@@ -273,7 +282,7 @@ function Products() {
                 message: `${ERROR_MSG_API_DELETE_PRODUCT} ${deleteResponse}`
             });
         }
-    }
+    };
 
     //Aca dependiendo del boton que se apreto abro el modal correspondiente
     const selectProduct = async (product, action) => {
@@ -285,7 +294,7 @@ function Products() {
         } else {
             openCloseModalDelete()
         }
-    }
+    };
 
     //Metodos para cerrar y abrir modales, pone los valores por defecto cuando los abro
     const openCloseModalCreate = () => {
@@ -295,14 +304,14 @@ function Products() {
             setTypeProductSelected('');
             setDefaultErrorMessages();
         }
-    }
+    };
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
             setSelectedProduct(formatSelectedProduct);
         }
-    }
+    };
 
     const openCloseModalUpdate = async (product) => {
         // If the modal is closed, product dependence is validate before open the modal
@@ -336,7 +345,7 @@ function Products() {
         if (deleteModal) {
             setSelectedProduct(formatSelectedProduct);
         }
-    }
+    };
 
     //Aca busco los datos de los choferes del backend
     const fetchData = async () => {
@@ -366,38 +375,39 @@ function Products() {
     const inputsToCreateOrModify = (
         <div>
             <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                required
-                inputProps={{ maxLength: 45 }}
-                autoComplete='off'
-                error={(nameError) ? true : false}
-                helperText={(nameError) ? nameError : false}
-                onChange={handleChange}
-                value={selectedProduct && selectedProduct.name} />
-            <br />
+                       required
+                       inputProps={{maxLength: 45}}
+                       autoComplete='off'
+                       error={(nameError) ? true : false}
+                       helperText={(nameError) ? nameError : false}
+                       onChange={handleChange}
+                       value={selectedProduct && selectedProduct.name}/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                required
-                inputProps={{ maxLength: 8 }}
-                autoComplete='off'
-                error={(priceError) ? true : false}
-                helperText={(priceError) ? priceError : false}
-                onChange={handleChange}
-                value={selectedProduct && selectedProduct.price} />
-            <br />
+                       required
+                       inputProps={{maxLength: 8}}
+                       autoComplete='off'
+                       error={(priceError) ? true : false}
+                       helperText={(priceError) ? priceError : false}
+                       onChange={handleChange}
+                       value={selectedProduct && selectedProduct.price}/>
+            <br/>
         </div>
-    )
+    );
+
     // Modal de creacion
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO PRODUCTO</h3>
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                required
-                error={(typeProductError) ? true : false}>
+                         required
+                         error={(typeProductError) ? true : false}>
                 <InputLabel>Tipo</InputLabel>
                 <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
-                    className={styles.inputMaterial}
-                    onChange={handleChange}
-                    value={(typeProductSelected) ? typeProductSelected : 0}
+                        className={styles.inputMaterial}
+                        onChange={handleChange}
+                        value={(typeProductSelected) ? typeProductSelected : 0}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
                     <MenuItem key={1} value={1}> Dulce </MenuItem>
@@ -410,45 +420,47 @@ function Products() {
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
+
     // Modal de vizualizacion
     const bodyViewDetails = (
         <div className={styles.modal}>
             <h3>DETALLE DE EL PRODUCTO</h3>
             <TextField className={styles.inputMaterial} label="Estado" name="active"
-                value={selectedProduct && selectedProduct.active} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.active} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                value={selectedProduct && selectedProduct.name} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.name} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                value={selectedProduct && selectedProduct.price} autoComplete="off" />
-            <br />
+                       value={selectedProduct && selectedProduct.price} autoComplete="off"/>
+            <br/>
             <TextField className={styles.inputMaterial} label="Tipo" name="typeProduct"
-                value={selectedProduct && selectedProduct.typeProductId} autoComplete="off" />
-            <br /><br />
+                       value={selectedProduct && selectedProduct.typeProductId} autoComplete="off"/>
+            <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-    )
+    );
+
     // Modal de actualizacion
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR PRODUCTO</h3>
             <Tooltip title="Debe eliminar el producto para cambiar el estado">
                 <TextField className={styles.inputMaterial} label="Estado" name="active"
-                    value={selectedProduct && selectedProduct.active} disabled />
+                           value={selectedProduct && selectedProduct.active} disabled/>
             </Tooltip>
             {inputsToCreateOrModify}
             <FormControl className={styles.inputMaterial}
-                required
-                error={(typeProductError) ? true : false}>
+                         required
+                         error={(typeProductError) ? true : false}>
                 <InputLabel>Tipo</InputLabel>
                 <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
-                    className={styles.inputMaterial}
-                    value={(typeProductSelected) ? typeProductSelected : selectedProduct.typeProductId}
-                    onChange={handleChange}
+                        className={styles.inputMaterial}
+                        value={(typeProductSelected) ? typeProductSelected : selectedProduct.typeProductId}
+                        onChange={handleChange}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
                     <MenuItem key={1} value={1}> Dulce </MenuItem>
@@ -461,7 +473,8 @@ function Products() {
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
             </div>
         </div>
-    )
+    );
+
     //Modal de elimincacion
     const bodyDelete = (
         <div className={styles.modal}>
@@ -473,32 +486,32 @@ function Products() {
                 <Button onClick={() => openCloseModalDelete()}>NO, CANCELAR</Button>
             </div>
         </div>
-    )
+    );
 
     return (
         <div className="App">
             {   // Esto es para que se muestre la ventanita del mensaje
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
-            <br />
-            <Button style={{ marginLeft: '8px' }}
-                variant="contained"
-                size="large"
-                color="primary"
-                id="btnNewDriver"
-                startIcon={<ShoppingCartIcon />}
-                onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
-            <br /><br />
+            <br/>
+            <Button style={{marginLeft: '8px'}}
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                    id="btnNewDriver"
+                    startIcon={<ShoppingCartIcon/>}
+                    onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
+            <br/><br/>
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de productos"
                 actions={[
                     {
-                        icon: () => <VisibilityIcon />,
+                        icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de producto',
                         onClick: (event, rowData) => selectProduct(rowData, "Ver")
                     },

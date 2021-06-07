@@ -361,7 +361,7 @@ function UserConfiguration() {
         }
         setActualPasswordError(null);
         return true;
-    }
+    };
 
     return (
         <div className={styles.root}>
@@ -477,7 +477,7 @@ function UserConfiguration() {
                             <Grid item xs={12}>
                                 <FormControl className={styles.inputMaterial}
                                     error={(actualPasswordError) ? true : false}>
-                                    <InputLabel htmlFor="actualPassword">Contraseña Actual</InputLabel>
+                                    <InputLabel htmlFor="actualPassword">Contraseña actual</InputLabel>
                                     <Input
                                         id="actualPassword"
                                         inputProps={{ maxLength: 100 }}

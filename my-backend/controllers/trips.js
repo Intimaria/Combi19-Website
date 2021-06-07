@@ -31,8 +31,8 @@ const getTrips = async (req, res) => {
         let sqlSelect =
                 `
             SELECT 
-            tri.TRIP_ID, FORMAT(tri.PRICE, 2, 'es_AR') PRICE, tri.ACTIVE,
-            CONCAT(DATE_FORMAT(tri.DEPARTURE_DAY, '%d/%m/%Y %H:%i'), 'hs') DEPARTURE_DAY, r.ROUTE_ID,
+            tri.TRIP_ID, REPLACE(tri.PRICE, '.', ',') PRICE, tri.ACTIVE,
+            DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, r.ROUTE_ID,
             c1.CITY_ID DEPARTURE_ID, CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
             c2.CITY_ID DESTINATION_ID, CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
             CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
@@ -80,8 +80,6 @@ const getTripById = async (req, res) => {
 const getTripDependenceById = async (req, res) => {
     const {id} = req.params;
 
-    console.log('getTripDependenceById backend, id es:', id);
-
     try {
         const connection = await prepareConnection();
 
@@ -116,8 +114,6 @@ const getTripDependenceById = async (req, res) => {
 
 const postTrip = async (req, res) => {
     const {routeId, price, departureDay} = req.body;
-
-    console.log('idRoute, price, departureDay es', routeId, price, departureDay);
 
     const inputsErrors = await validateTripToCreate(routeId, departureDay);
 
@@ -172,7 +168,7 @@ const putTrip = async (req, res) => {
             const [rows] = await connection.execute(sqlUpdate);
 
             connection.end();
-            res.status(201).send(OK_MSG_API_PUT_TRIP);
+            res.status(200).send(OK_MSG_API_PUT_TRIP);
         } catch (error) {
             console.log(`${ERROR_MSG_API_PUT_TRIP} ${error}`);
             res.status(500);

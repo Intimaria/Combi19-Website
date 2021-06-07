@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Message} from '../components/Message';
 import {TextField, Button} from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -8,14 +8,11 @@ import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
 import {Favorite, FavoriteBorder, Visibility, VisibilityOff} from "@material-ui/icons";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import HelpIcon from '@material-ui/icons/Help';
-import Tooltip from '@material-ui/core/Tooltip';
 import {useStyles} from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
 import Link from '@material-ui/core/Link';
 import {green} from '@material-ui/core/colors';
-import {CustomDatePicker} from '../components/CustomDatePicker';
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Card from "@material-ui/core/Card";
@@ -24,11 +21,10 @@ import Divider from "@material-ui/core/Divider";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import moment from "moment";
-import MomentUtils from "@date-io/moment";
+
+import {CustomDatePicker} from '../components/CustomDatePicker';
+import {CardPaymentForm} from '../components/CardPaymentForm';
 
 import {BACKEND_URL} from '../const/config.js';
 
@@ -61,8 +57,7 @@ import {
     ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER,
-    ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER,
-
+    ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER
 } from '../const/messages.js';
 
 
@@ -123,15 +118,6 @@ function Register() {
     const [documentNumberCardOwnerError, setDocumentNumberCardOwnerError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
-
-    const expirationDateConfiguration = {
-        name: "expirationDate",
-        label: "Vencimiento",
-        invalidDateMessage: ERROR_MSG_INVALID_EXPIRATION_DATE,
-        minDate: moment(),
-        minDateMessage: ERROR_MSG_OVERDUE_EXPIRATION_DATE,
-        maxDateMessage: ERROR_MSG_INVALID_AGE
-    };
 
     const handleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
@@ -546,11 +532,6 @@ function Register() {
         }
 
         if (cardNumber === '4444444444444444') {
-            setSecurityCodeError(ERROR_MSG_INVALID_SECURITY_CODE);
-            return false;
-        }
-
-        if (cardNumber === '5555555555555555') {
             setSecurityCodeError(ERROR_MSG_WRONG_SECURITY_CODE);
             return false;
         }
@@ -585,7 +566,7 @@ function Register() {
             return false;
         }
 
-        if (cardNumber === '6666666666666666') {
+        if (cardNumber === '5555555555555555') {
             setNameSurnameCardOwnerError(ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER);
             return false;
         }
@@ -600,7 +581,7 @@ function Register() {
             return false;
         }
 
-        if (cardNumber === '7777777777777777') {
+        if (cardNumber === '6666666666666666') {
             setDocumentNumberCardOwnerError(ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER);
             return false;
         }
@@ -740,155 +721,30 @@ function Register() {
 
                             {
                                 goldCheck ?
-                                    <Fragment>
-                                        <Grid item xs={6}>
-                                            <FormControl className={styles.inputMaterial}
-                                                         style={{paddingRight: '10px'}}
-                                                         error={(typeCardSelectedError) ? true : false}>
-                                                <InputLabel>Tipo de tarjeta *</InputLabel>
-                                                <Select label="Tipo de tarjeta *" id="typeCardSelected"
-                                                        labelId={"typeCardSelected"}
-                                                        name="typeCardSelected"
-                                                        className={styles.selectEmpty}
-                                                        value={typeCardSelected}
-                                                        displayEmpty
-                                                        onChange={newValue => handleTypeCard(newValue)}
-                                                >
-                                                    <MenuItem value={0} disabled> Seleccione un tipo de
-                                                        tarjeta </MenuItem>
-                                                    <MenuItem key={1} value={1}> American Express </MenuItem>
-                                                    <MenuItem key={2} value={2}> MasterCard </MenuItem>
-                                                    <MenuItem key={3} value={3}> Visa </MenuItem>
-                                                </Select>
-                                                <FormHelperText>{(typeCardSelectedError) ? typeCardSelectedError : false}</FormHelperText>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <TextField className={styles.inputMaterial}
-                                                       label="Número de tarjeta *"
-                                                       name="cardNumber"
-                                                       id="cardNumber"
-                                                       inputProps={{maxLength: 16}}
-                                                       style={{paddingRight: '10px', marginLeft: '10px'}}
-                                                       autoComplete='off'
-                                                       error={(cardNumberError) ? true : false}
-                                                       helperText={(cardNumberError) ? cardNumberError : false}
-                                                       value={cardNumber}
-                                                       onChange={newValue => handleCardNumber(newValue)}
-                                            />
-                                        </Grid>
+                                    <CardPaymentForm
+                                        goldCheck={goldCheck}
 
-                                        <Grid container alignItems="flex-start" item xs={6}>
-                                            <Grid container alignItems={(securityCodeError) ? "center" : "flex-end"}
-                                                  item xs={12}>
-                                                <Grid item xs={9}>
-                                                    <TextField className={styles.inputMaterial} label="CCV *"
-                                                               name="securityCode"
-                                                               id="securityCode"
-                                                               inputProps={{maxLength: 4}}
-                                                               autoComplete='off'
-                                                               error={(securityCodeError) ? true : false}
-                                                               helperText={(securityCodeError) ? securityCodeError : false}
-                                                               value={securityCode}
-                                                               onChange={newValue => handleSecurityCode(newValue)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={3} align={'center'}>
-                                                    <Tooltip
-                                                        title="Código de seguridad ubicado en el dorso de la tarjeta">
-                                                        <HelpIcon color='primary' fontSize="small"/>
-                                                    </Tooltip>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
+                                        typeCardSelected={typeCardSelected}
+                                        cardNumber={cardNumber}
+                                        securityCode={securityCode}
+                                        expirationDate={expirationDate}
+                                        nameSurnameCardOwner={nameSurnameCardOwner}
+                                        documentNumberCardOwner={documentNumberCardOwner}
 
-                                        <Grid item xs={6}>
-                                            <MuiPickersUtilsProvider
-                                                libInstance={moment}
-                                                utils={MomentUtils}
-                                                locale={"es"}
-                                            >
-                                                <KeyboardDatePicker
-                                                    className={styles.inputMaterial}
-                                                    style={{
-                                                        paddingRight: '10px',
-                                                        marginLeft: '10px',
-                                                        marginTop: '-1px',
-                                                        marginBottom: '-1px'
-                                                    }}
-                                                    //disablePast
-                                                    disableToolbar
-                                                    cancelLabel="CANCELAR"
-                                                    okLabel="CONFIRMAR"
-                                                    format="MM/YY"
-                                                    margin="normal"
-                                                    views={["year", "month"]}
-                                                    autoComplete='off'
-                                                    id={expirationDateConfiguration.name}
-                                                    name={expirationDateConfiguration.name}
-                                                    label={expirationDateConfiguration.label}
-                                                    invalidDateMessage={expirationDateConfiguration.invalidDateMessage}
-                                                    minDate={expirationDateConfiguration.minDate}
-                                                    minDateMessage={expirationDateConfiguration.minDateMessage}
-                                                    value={(goldCheck) ? expirationDate : ''}
-                                                    onChange={newValue => handleExpirationDate(newValue)}
-                                                    error={(expirationDateError) ? true : false}
-                                                    helperText={(expirationDateError) ? expirationDateError : false}
-                                                />
-                                            </MuiPickersUtilsProvider>
-                                        </Grid>
+                                        handleTypeCard={handleTypeCard}
+                                        handleCardNumber={handleCardNumber}
+                                        handleSecurityCode={handleSecurityCode}
+                                        handleExpirationDate={handleExpirationDate}
+                                        handleNameSurnameCardOwner={handleNameSurnameCardOwner}
+                                        handleDocumentNumberCardOwner={handleDocumentNumberCardOwner}
 
-
-                                        <Grid container alignItems={(nameSurnameCardOwnerError) ? "center" : "flex-end"}
-                                              item xs={12}>
-                                            <Grid item xs={11}>
-                                                <TextField className={styles.inputMaterial} label="Titular *"
-                                                           name="nameSurnameCardOwner"
-                                                           id="nameSurnameCardOwner"
-                                                           inputProps={{
-                                                               maxLength: 20,
-                                                               style: {textTransform: 'uppercase'}
-                                                           }}
-                                                           autoComplete='off'
-                                                           error={(nameSurnameCardOwnerError) ? true : false}
-                                                           helperText={(nameSurnameCardOwnerError) ? nameSurnameCardOwnerError : false}
-                                                           value={nameSurnameCardOwner}
-                                                           onChange={newValue => handleNameSurnameCardOwner(newValue)}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={1} align={'right'}>
-                                                <Tooltip
-                                                    title="Nombre completo ubicado en el frente de la tarjeta">
-                                                    <HelpIcon color='primary' fontSize="small"/>
-                                                </Tooltip>
-                                            </Grid>
-                                        </Grid>
-
-
-                                        <Grid container
-                                              alignItems={(documentNumberCardOwnerError) ? "center" : "flex-end"} item
-                                              xs={12}>
-                                            <Grid item xs={11}>
-                                                <TextField className={styles.inputMaterial} label="Documento *"
-                                                           name="documentNumberCardOwner"
-                                                           id="documentNumberCardOwner"
-                                                           inputProps={{maxLength: 10}}
-                                                           style={{paddingRight: '10px'}}
-                                                           autoComplete='off'
-                                                           error={(documentNumberCardOwnerError) ? true : false}
-                                                           helperText={(documentNumberCardOwnerError) ? documentNumberCardOwnerError : false}
-                                                           value={documentNumberCardOwner}
-                                                           onChange={newValue => handleDocumentNumberCardOwner(newValue)}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={1} align={'right'}>
-                                                <Tooltip
-                                                    title="Número de documento de la persona titular de la tarjeta">
-                                                    <HelpIcon color='primary' fontSize="small"/>
-                                                </Tooltip>
-                                            </Grid>
-                                        </Grid>
-                                    </Fragment>
+                                        typeCardSelectedError={typeCardSelectedError}
+                                        cardNumberError={cardNumberError}
+                                        securityCodeError={securityCodeError}
+                                        expirationDateError={expirationDateError}
+                                        nameSurnameCardOwnerError={nameSurnameCardOwnerError}
+                                        documentNumberCardOwnerError={documentNumberCardOwnerError}
+                                    />
                                     : null
                             }
 

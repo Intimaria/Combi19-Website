@@ -15,6 +15,7 @@ import Products from './Products.jsx';
 import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
 import {useHistory} from "react-router-dom";
+import CartConfirmation from "./CartConfirmation";
 
 
 const Addresses = () => {
@@ -25,7 +26,7 @@ const Addresses = () => {
         return history.listen(() => {
             setUserData(JSON.parse(localStorage.getItem("userData")));
         })
-    }, [history])
+    }, [history]);
 
     return (
         <div>
@@ -71,6 +72,9 @@ const Addresses = () => {
                 <Route path="/comments" exact>
                     <Comments/>
                 </Route>
+                <Route path="/cartConfirmation" exact>
+                    <CartConfirmation/>
+                </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
                         Atlántida &#127965;&#128561;</h1>
@@ -80,6 +84,6 @@ const Addresses = () => {
             </Switch>
         </div>
     )
-}
+};
 
 export default Addresses

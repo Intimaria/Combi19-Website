@@ -2,6 +2,8 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 
 const {
     ERROR_MSG_API_GET_TRIPS,
+    OK_MSG_API_PUT_PASSENGER_TRIP,
+    ERROR_MSG_API_PUT_PASSENGER_TRIP
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
@@ -49,6 +51,51 @@ const getPassengerTrips = async (req, res) => {
     res.end();
 };
 
+
+const putPassengerTrip = async (req, res) => {
+    const {id} = req.params;
+
+    const {cardId} = req.body;
+
+    console.log('entró')
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlUpdate;
+
+        if (cardId) {
+            sqlUpdate =
+                `
+                UPDATE CART 
+                SET 
+                ID_CARD = ${cardId}, 
+                DATE = NOW()
+                WHERE CART_ID = ${id};
+              `;
+        } else {
+            sqlUpdate =
+                `
+                UPDATE CART 
+                SET 
+                DATE = NOW()
+                WHERE CART_ID = ${id};
+              `;
+        }
+
+        const [rows] = await connection.execute(sqlUpdate);
+
+        connection.end();
+        res.status(200).send(OK_MSG_API_PUT_PASSENGER_TRIP);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
+        res.status(500);
+    }
+
+    res.end();
+};
+
 module.exports = {
-    getPassengerTrips
+    getPassengerTrips,
+    putPassengerTrip
 }
