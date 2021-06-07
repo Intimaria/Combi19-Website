@@ -225,7 +225,7 @@ const validateRouteTripsDependence = async (id) =>{
         return rows.length >= 1;
     } catch (error) {
         console.log("Ha ocurrido un error al comprobar la dependencia con viajes", error);
-        return false;
+        return true;
     }
 }
 

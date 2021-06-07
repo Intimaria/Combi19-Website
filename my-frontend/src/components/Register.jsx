@@ -665,10 +665,13 @@ function Register() {
                             </Grid>
                             <Grid item xs={12}>
                                 <CustomDatePicker
+                                    underlineDisabled={false}
                                     label={'Fecha de nacimiento *'}
                                     handleDate={handleBirthday}
                                     invalidDateMessage={birthdayError}
                                     selectedDate={birthday}
+                                    futureDisabled={true}
+                                    pastDisabled={false}
                                 />
                             </Grid>
                             <Grid item xs={12}>

@@ -135,6 +135,7 @@ export const ERROR_MSG_EMPTY_PRICE = '* Ingrese un precio';
 export const ERROR_MSG_INVALID_PRICE = '* El precio ingresado es inválido';
 export const ERROR_MSG_INVALID_MIN_PRICE = '* El precio mínimo es $0,01';
 export const ERROR_MSG_INVALID_MAX_PRICE = '* El precio máximo es $9999999,99';
+export const ERROR_MSG_API_SEARCH_TRIPS = 'Ocurrió un error al buscar los viajes solicitados';
 // Trips API messages
 export const ERROR_MSG_API_GET_TRIPS = 'Ocurrió un error al obtener los viajes:';
 export const ERROR_MSG_API_POST_TRIP = 'Ocurrió un error al crear el viaje:';

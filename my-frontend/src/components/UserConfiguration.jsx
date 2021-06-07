@@ -146,6 +146,13 @@ function UserConfiguration() {
             setNewPassword2Error(putResponse.data.passwordError2);
             setActualPasswordError(putResponse.data.actualPasswordError);
         }
+        if (putResponse?.status === 500) {
+            setSuccessMessage(putResponse.data);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: putResponse.data
+            });
+        }
     };
 
     const setDefaultValues = () => {
@@ -406,6 +413,7 @@ function UserConfiguration() {
                             </Grid>
                             <Grid item xs={12}>
                                 <CustomDatePicker
+                                    underlineDisabled={false}
                                     label={'Fecha de nacimiento *'}
                                     handleDate={handleBirthday}
                                     invalidDateMessage={birthdayError}

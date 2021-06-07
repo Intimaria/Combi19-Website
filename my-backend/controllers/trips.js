@@ -10,14 +10,16 @@ const {
     ERROR_MSG_API_PUT_TRIP,
     OK_MSG_API_DELETE_TRIP,
     ERROR_MSG_API_DELETE_TRIP,
-    ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE
+    ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE,
+    ERROR_MSG_API_SEARCH_TRIPS
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
 
 const {
     validateTripToCreate,
-    validateTripToUpdate
+    validateTripToUpdate,
+    validateDataToSearch
 } = require("../helpers/validateTripInputs");
 
 const getTrips = async (req, res) => {
@@ -200,11 +202,61 @@ const deleteTrip = async (req, res) => {
     res.end();
 };
 
+const searchTrip = async (req, res) => {
+    const {departure, destination, dateFrom, dateTo} = req.body;
+    const inputsErrors = await validateDataToSearch(departure, destination, dateFrom, dateTo);
+    if (inputsErrors) {
+        res.status(400).json(inputsErrors);
+    } else {
+        try {
+            const connection = await prepareConnection();
+            let sqlSelect =
+            `
+            SELECT tra.REGISTRATION_NUMBER AS registrationNumber,
+            depci.CITY_NAME AS departureCityName, depp.PROVINCE_NAME AS departureProvinceName,
+            desci.CITY_NAME AS destinationCityName, desp.PROVINCE_NAME AS destinationProvinceName,
+            tri.DEPARTURE_DAY AS departureDay FROM 
+            trip tri INNER JOIN 
+            Route r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
+            Transport tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN
+            City depci ON (r.ID_DEPARTURE=depci.CITY_ID) INNER JOIN
+            Province depp ON (depci.ID_PROVINCE=depp.PROVINCE_ID) INNER JOIN
+            City desci ON (r.ID_DESTINATION=desci.CITY_ID) INNER JOIN
+            Province desp ON (desci.ID_PROVINCE=desp.PROVINCE_ID)
+            WHERE 
+            (depci.CITY_NAME LIKE '%${departure}%' OR 
+            depp.PROVINCE_NAME LIKE "%${departure}%")  AND
+            (desci.CITY_NAME LIKE "%${destination}%" OR 
+            desp.PROVINCE_NAME LIKE "%${destination}%")
+          `;
+            if (dateFrom && dateTo) {
+                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) >= "${dateFrom}" AND CAST(tri.DEPARTURE_DAY as DATE) <= "${dateTo}")`;
+            }
+            else if (dateFrom && !dateTo) {
+                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) >= "${dateFrom}")`;
+            }
+            else if (!dateFrom && dateTo) {
+                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) <= "${dateTo}")`;
+            }
+
+            const [rows] = await connection.execute(sqlSelect);
+
+            connection.end();
+            console.log(rows);
+            res.status(200).send(rows);
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_SEARCH_TRIPS} ${error}`);
+            res.status(500);
+        }
+    }
+    res.end();
+}
 module.exports = {
     getTrips,
     getTripById,
     getTripDependenceById,
     postTrip,
     putTrip,
-    deleteTrip
-};
+    deleteTrip,
+    searchTrip
+}
