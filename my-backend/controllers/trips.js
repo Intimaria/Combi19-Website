@@ -14,6 +14,10 @@ const {
     ERROR_MSG_API_SEARCH_TRIPS
 } = require("../const/messages");
 
+const {
+    ACTIVE
+} = require("../const/config")
+
 const {normalizeTrips} = require("../helpers/normalizeResult");
 
 const {
@@ -96,9 +100,6 @@ const getTripDependenceById = async (req, res) => {
             `;
 
         const [rows] = await connection.execute(sqlSelect);
-
-        console.log('rows es:');
-        console.log(rows);
 
         connection.end();
 
@@ -212,10 +213,13 @@ const searchTrip = async (req, res) => {
             const connection = await prepareConnection();
             let sqlSelect =
             `
-            SELECT tra.REGISTRATION_NUMBER AS registrationNumber,
-            depci.CITY_NAME AS departureCityName, depp.PROVINCE_NAME AS departureProvinceName,
-            desci.CITY_NAME AS destinationCityName, desp.PROVINCE_NAME AS destinationProvinceName,
-            tri.DEPARTURE_DAY AS departureDay FROM 
+            SELECT tri.TRIP_ID AS tripId,
+            tri.PRICE AS price,
+            tri.ID_ROUTE AS routeId,
+            tra.REGISTRATION_NUMBER AS registrationNumber,
+            CONCAT(depci.CITY_NAME, ', ', depp.PROVINCE_NAME) departure,
+            CONCAT(desci.CITY_NAME, ', ', desp.PROVINCE_NAME) destination,
+            CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') AS departureDay FROM 
             trip tri INNER JOIN 
             Route r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
             Transport tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN
@@ -224,6 +228,7 @@ const searchTrip = async (req, res) => {
             City desci ON (r.ID_DESTINATION=desci.CITY_ID) INNER JOIN
             Province desp ON (desci.ID_PROVINCE=desp.PROVINCE_ID)
             WHERE 
+            tri.ACTIVE = ${ACTIVE} AND
             (depci.CITY_NAME LIKE '%${departure}%' OR 
             depp.PROVINCE_NAME LIKE "%${departure}%")  AND
             (desci.CITY_NAME LIKE "%${destination}%" OR 
@@ -242,7 +247,6 @@ const searchTrip = async (req, res) => {
             const [rows] = await connection.execute(sqlSelect);
 
             connection.end();
-            console.log(rows);
             res.status(200).send(rows);
         } catch (error) {
             console.log(`${ERROR_MSG_API_SEARCH_TRIPS} ${error}`);

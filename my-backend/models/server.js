@@ -25,6 +25,7 @@ class Server {
     }
 
     routes() {
+        this.app.use('/authorization', require('../routes/authorization.js'));
         this.app.use('/drivers', require('../routes/employees-drivers.js'));
         this.app.use('/employee/login', require('../routes/employees-login.js'));
         this.app.use('/products', require('../routes/employees-products.js'));

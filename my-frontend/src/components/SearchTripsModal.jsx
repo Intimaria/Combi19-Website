@@ -1,8 +1,13 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { CustomDatePicker } from '../components/CustomDatePicker';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import "moment/locale/es";
 import {
@@ -20,39 +25,38 @@ import {
 } from "../const/regex.js"
 
 import { searchTrips } from "../api/Trips.js"
-import { Message } from '../components/Message';
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        maxWidth: "45%",
-        marginTop: '1em',
-        backgroundColor: "rgba(102,72,232)",
-        backdropFilter: "blur(40)px",
-        backgroundImage:
-            "linear-gradient(to right bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.6))",
-        boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
-        borderRadius: 10,
-        margin: 'auto',
-        padding: theme.spacing(2, 4, 3),
-    },
-    inputMaterial: {
-        width: '100%',
-        backgroundColor: theme.palette.background.paper,
-        margin: 'auto',
-        float: "center",
-        marginBottom: '1em',
-        paddingTop: '2px',
-        paddingLeft: '10px',
-        borderRadius: 10,
-    }
-}));
+import { Message } from './Message';
 
-function SearchTrips() {
+function SearchTripsModal(props) {
+
+    const useStyles = makeStyles((theme) => ({
+        modal: {
+            ...props.modal,
+            maxWidth: "30%",
+            backgroundColor: "rgba(153,217,234)",
+            backdropFilter: "blur(40)px",
+            boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
+            borderRadius: 10,
+            padding: theme.spacing(2, 4, 3)
+        },
+        inputMaterial: {
+            width: '100%',
+            backgroundColor: theme.palette.background.paper,
+            margin: 'auto',
+            float: "center",
+            paddingTop: '2px',
+            paddingLeft: '10px',
+            borderRadius: 10,
+        }
+    }));
+
+    const styles = useStyles();
+
+    const history = useHistory();
 
     const handleCloseMessage = () => {
         setOptions({ ...options, open: false });
     };
-
-    const styles = useStyles();
 
     const minDate = moment()
         .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
@@ -61,13 +65,14 @@ function SearchTrips() {
         .add(1, "years")
         .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
 
-    const [rowsTrips, setRowsTrips] = React.useState([]);
-    const [selectedDeparture, setSelectedDeparture] = React.useState('');
-    const [selectedDestination, setSelectedDestination] = React.useState('');
+    const searchedData = props.getSearchedData ? props.getSearchedData : null;
+
+    const [selectedDeparture, setSelectedDeparture] = React.useState(searchedData ? searchedData.departure : '');
+    const [selectedDestination, setSelectedDestination] = React.useState(searchedData ? searchedData.destination : '');
     const [departureError, setDepartureError] = React.useState('');
     const [destinationError, setDestinationError] = React.useState('');
-    const [selectedDateFrom, setSelectedDateFrom] = React.useState(minDate.format('YYYY-MM-DD'));
-    const [selectedDateTo, setSelectedDateTo] = React.useState(maxDate.format('YYYY-MM-DD'));
+    const [selectedDateFrom, setSelectedDateFrom] = React.useState(searchedData ? searchedData.dateFrom : minDate.format('YYYY-MM-DD'));
+    const [selectedDateTo, setSelectedDateTo] = React.useState(searchedData ? searchedData.dateTo : maxDate.format('YYYY-MM-DD'));
     const [dateFromError, setDateFromError] = React.useState('');
     const [dateToError, setDateToError] = React.useState('');
 
@@ -100,9 +105,14 @@ function SearchTrips() {
 
         const postResponse = await searchTrips(searchData);
         if (postResponse?.status === 200) {
-
-            setRowsTrips(postResponse.data);
             defaultErrorMessager();
+            props.setSearchResults(postResponse.data);
+
+            if (history.location.pathname !== '/tripsResults') {
+                props.setSearchedData(searchData);
+                history.push("/tripsResults");
+            }
+
         }
         else if (postResponse?.status === 400) {
             setDepartureError(postResponse.data.departureError);
@@ -281,7 +291,7 @@ function SearchTrips() {
     };
 
     return (
-        <div className={styles.modal}>
+        <div className={`${styles.modal} bg-dark`} >
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
@@ -289,58 +299,110 @@ function SearchTrips() {
                     : null
             }
 
-            <h2 align={'center'}> Buscar Viajes </h2>
+            <h2 align={'center'} className="text-light"> Buscar Viajes </h2>
             <form onSubmit={mySubmitHandler}>
                 <TextField className={styles.inputMaterial}
                     InputProps={{ disableUnderline: true }}
                     label="ㅤLugar de Origen"
                     name="departure"
                     onChange={handleDeparture}
+                    defaultValue={searchedData ? searchedData.departure : ''}
                     inputProps={{ maxLength: 70 }}
                     autoComplete='off'
                     error={(departureError) ? true : false}
-                    helperText={(departureError) ? departureError : false}
                 />
+                {
+                    departureError ? <span className="text-danger small">{departureError}</span> :
+                        <span className="text-danger small">&nbsp;</span>
+                }
                 <TextField className={styles.inputMaterial}
                     InputProps={{ disableUnderline: true }}
                     label="ㅤLugar de destino"
                     name="destination"
                     onChange={handleDestination}
+                    defaultValue={searchedData ? searchedData.destination : ''}
                     inputProps={{ maxLength: 70 }}
                     autoComplete='off'
                     error={(destinationError) ? true : false}
-                    helperText={(destinationError) ? destinationError : false}
                 />
-                <h3 align={'center'}> Ingrese rango de fecha de partida </h3>
-                <CustomDatePicker
-                    label={'ㅤFecha inicial (Opcional)'}
-                    handleDate={handleDateFrom}
-                    invalidDateMessage={dateFromError}
-                    selectedDate={selectedDateFrom}
-                    className={styles.inputMaterial}
-                    styles={{}}
-                    underlineDisabled={true}
-                    name="dateFrom"
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    futureDisabled={false}
-                    pastDisabled={true}
-                />
-                <CustomDatePicker
-                    label={'ㅤFecha final (Opcional)'}
-                    handleDate={handleDateTo}
-                    invalidDateMessage={dateToError}
-                    selectedDate={selectedDateTo}
-                    className={styles.inputMaterial}
-                    styles={{}}
-                    underlineDisabled={true}
-                    name="dateTo"
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    futureDisabled={false}
-                    pastDisabled={true}
-                />
-                <Button style={{ width: '100%' }}
+                {
+                    destinationError ? <span className="text-danger small">{destinationError}</span> :
+                        <span className="text-danger small">&nbsp;</span>
+                }
+                <h3 align={'center'} className="text-light"> Ingrese rango de fecha de partida </h3>
+
+                <MuiPickersUtilsProvider
+                    libInstance={moment}
+                    utils={MomentUtils}
+                    locale={"es"}
+                >
+                    <KeyboardDatePicker
+                        InputProps={{ disableUnderline: true }}
+                        className={styles.inputMaterial}
+                        disableFuture={false}
+                        disablePast={true}
+                        disableToolbar
+                        cancelLabel="CANCELAR"
+                        okLabel="CONFIRMAR"
+                        format="DD/MM/yyyy"
+                        margin="normal"
+                        id="dateTo"
+                        name="dateTo"
+                        label={'ㅤFecha final (Opcional)'}
+                        minDate={minDate}
+                        minDateMessage={"error"}
+                        maxDate={maxDate}
+                        maxDateMessage={"error"}
+                        value={selectedDateFrom}
+                        onChange={handleDateFrom}
+                        error={dateFromError}
+                        helperText={null}
+                        KeyboardButtonProps={{
+                            "aria-label": "Calendario"
+                        }}
+                    />
+                </MuiPickersUtilsProvider>
+                {
+                    dateFromError ? <span className="text-danger small">{dateFromError}</span> :
+                        <span className="text-danger small">&nbsp;</span>
+                }
+                <MuiPickersUtilsProvider
+                    libInstance={moment}
+                    utils={MomentUtils}
+                    locale={"es"}
+                >
+                    <KeyboardDatePicker
+                        InputProps={{ disableUnderline: true }}
+                        className={styles.inputMaterial}
+                        disableFuture={false}
+                        disablePast={true}
+                        disableToolbar
+                        cancelLabel="CANCELAR"
+                        okLabel="CONFIRMAR"
+                        format="DD/MM/yyyy"
+                        margin="normal"
+                        id="dateFrom"
+                        name="dateFrom"
+                        label={'ㅤFecha final (Opcional)'}
+                        invalidDateMessage={dateToError}
+                        minDate={minDate}
+                        minDateMessage={ERROR_MSG_INVALID_DATE}
+                        maxDate={maxDate}
+                        maxDateMessage={ERROR_MSG_INVALID_DATE}
+                        value={selectedDateTo}
+                        onChange={handleDateTo}
+                        error={dateToError}
+                        helperText={null}
+                        KeyboardButtonProps={{
+                            "aria-label": "Calendario"
+                        }}
+                    />
+                </MuiPickersUtilsProvider>
+                {
+                    dateToError ? <span className="text-danger small">{dateToError}</span> :
+                        <span className="text-danger small">&nbsp;</span>
+                }
+                <Button style={{ width: '100%', marginTop:"3px" }}
                     variant="contained"
                     size="large"
                     color="primary"
@@ -352,4 +414,4 @@ function SearchTrips() {
     )
 }
 
-export default SearchTrips;
+export default SearchTripsModal;

@@ -5,22 +5,19 @@ import CardMedia from "@material-ui/core/CardMedia";
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/";
-import SearchTrips from "./SearchTrips";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: "95%",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    maxWidth: "48%",
+    marginLeft: "7%",
+    marginTop: "3%",
     backdropFilter: "blur(40)px",
-    backgroundImage:
-      "linear-gradient(to right bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.6))",
     boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
     borderRadius: 10,
-    margin: 'auto',
-    float: "center"
+    float: "left"
   },
   media: {
-    height: 200
+    height: 220
   }
 });
 
@@ -29,7 +26,7 @@ export default function WelcomeCard() {
 
   return (
     <div>
-    <Card className={classes.root}>
+    <Card className={`${classes.root} bg-dark`}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
@@ -37,16 +34,15 @@ export default function WelcomeCard() {
           title="Tu Lugar Para Viajes"
         />
         <CardContent>
-          <Typography gutterBottom variant="h2" component="h3">
+          <Typography className="text-light" gutterBottom variant="h2" component="h3">
             Bienvenido a Combi 19
           </Typography>
-          <Typography variant="subtitle1">
+          <Typography className="text-light" variant="subtitle1">
             Tu lugar para viajes en Argentina
           </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
-    <SearchTrips/>
     </div>
   );
 }

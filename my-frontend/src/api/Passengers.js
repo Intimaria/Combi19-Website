@@ -103,3 +103,83 @@ export const userConfigurationWitoutNewPassword = async (userData, id) => {
         }
     }
 }
+
+export const login = async (email, password, path) => {
+    try {
+        let response = await axios.post(`${BACKEND_URL}/${path}`,
+        {
+            email,
+            password
+        })
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Hubo un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+}
+
+export const register = async (dataToRegister) => {
+    try {
+        let response = await axios.post(`${BACKEND_URL}/register`,
+        dataToRegister
+        )
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Hubo un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+}
+
+export const verifyToken = async() => {
+    const token = localStorage.getItem('token');
+    try {
+    const response = await axios.get(`${BACKEND_URL}/authorization/passangers`,
+        {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if (response?.status === 200) {
+            return true;
+        }
+    } catch (error) {
+        if (error.response?.status) {
+            return false;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Ha ocurrido un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+}

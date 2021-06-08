@@ -1,15 +1,14 @@
 import React from 'react'
-import { useHistory } from "react-router-dom";
 document.title = `Home`;
 
 const Home = () => {
-    const history = useHistory();
+    localStorage.removeItem("tripIdToBuy");
 
-        const userData = JSON.parse(localStorage.getItem('userData'));
+    const userData = JSON.parse(localStorage.getItem('userData'));
 
     return (     
         <div>
-            <h1 className="text-light"> Hola {userData.userName} {userData.userSurname}</h1>
+            <h1 className="text-light text-center"> Bienvenido {userData.userName} {userData.userSurname}</h1>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import {Route, Switch} from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Home from '../views/Home.jsx';
 import Landing from '../views/Landing.jsx';
@@ -14,12 +14,20 @@ import Trips from './Trips.jsx';
 import Products from './Products.jsx';
 import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import CartConfirmation from "./CartConfirmation";
-
+import TripsResults from "./TripsResults.jsx";
+import BuyTrip from "./BuyTrip.jsx";
 
 const Addresses = () => {
     const history = useHistory();
+
+    // Trips search data props
+    const [tripsResultsData, setTripsResultsData] = React.useState([]);
+    const [searchedData, setSearchedData] = React.useState(null);
+    const [redirectPage, setRedirectPage] = React.useState("/home");
+    const [redirectBoolean, setRedirectBoolean] = React.useState(false);
+
     const [userData, setUserData] = React.useState(JSON.parse(localStorage.getItem("userData")));
 
     React.useEffect(() => {
@@ -30,50 +38,73 @@ const Addresses = () => {
 
     return (
         <div>
-            <Navbar userData={userData} />
+            <Navbar 
+            userData={userData}
+            setRedirectBoolean={setRedirectBoolean}
+            setRedirectPage={setRedirectPage} />
             <Switch>
                 <Route path="/" exact>
-                    {/*<h1 className="text-light"> Página de inicio </h1> */}
-                    <Landing />
+                    <Landing
+                        setSearchResults={setTripsResultsData}
+                        setSearchedData={setSearchedData}
+                    />
                 </Route>
                 <Route path="/login" exact>
-                    <Login path="login"/>
+                    <Login
+                        path="login"
+                        redirectPage={redirectPage}
+                        redirectBoolean={redirectBoolean} />
                 </Route>
                 <Route path="/employee/login" exact>
-                    <Login path="employee/login"/>
+                    <Login
+                        path="employee/login"
+                        redirectPage={"/home"}
+                        redirectBoolean={false} />
                 </Route>
                 <Route path="/register" exact>
-                    <Register/>
+                    <Register
+                        redirectPage={redirectPage} />
                 </Route>
                 <Route path="/home" exact>
-                    <Home/>
+                    <Home />
                 </Route>
                 <Route path="/places" exact>
-                    <Places/>
+                    <Places />
                 </Route>
                 <Route path="/transports" exact>
-                    <Transports/>
+                    <Transports />
                 </Route>
                 <Route path="/drivers" exact>
-                    <Drivers/>
+                    <Drivers />
                 </Route>
                 <Route path="/routes" exact>
-                    <Routes/>
+                    <Routes />
                 </Route>
                 <Route path="/trips" exact>
-                    <Trips/>
+                    <Trips />
                 </Route>
                 <Route path="/products" exact>
-                    <Products/>
+                    <Products />
                 </Route>
                 <Route path="/userConfiguration" exact>
-                    <UserConfiguration/>
+                    <UserConfiguration />
                 </Route>
                 <Route path="/comments" exact>
-                    <Comments/>
+                    <Comments />
                 </Route>
                 <Route path="/cartConfirmation" exact>
-                    <CartConfirmation/>
+                    <CartConfirmation />
+                </Route>
+                <Route path="/tripsResults" exact>
+                    <TripsResults
+                        getSearchResults={tripsResultsData}
+                        setSearchResults={setTripsResultsData}
+                        getSearchedData={searchedData}
+                        setRedirectPage={setRedirectPage}
+                        setRedirectBoolean={setRedirectBoolean} />
+                </Route>
+                <Route path="/buyTrip" exact>
+                    <BuyTrip />
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la

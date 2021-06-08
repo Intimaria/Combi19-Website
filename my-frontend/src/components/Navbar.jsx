@@ -7,12 +7,14 @@ import React from 'react'
 import logo from "../images/logo_combi19.png"
 import {useHistory} from 'react-router-dom';
 
-const Navbar = ({userData}) => {
+const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
     const history = useHistory();
 
     const logout = () => {
         localStorage.clear();
-        history.push('/login')
+        setRedirectBoolean(false);
+        setRedirectPage("/home");
+        history.push('/login');
     };
     const [isFront, setIsFront] = useState(history.location.pathname === '/')
     

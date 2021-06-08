@@ -8,6 +8,10 @@ const {
   PASSENGER_ROLE
 } = require('../const/config.js');
 
+const verifyToken = (req, res) => {
+  res.sendStatus(200);
+}
+
 const authenticateToken = (token, res) => {
   if (token == null) return res.sendStatus(401);
   else {
@@ -46,5 +50,6 @@ module.exports = {
   authenticateToken,
   authenticateAdminRol,
   authenticateDriverRol,
-  authenticatePassengerRol
+  authenticatePassengerRol,
+  verifyToken
 }

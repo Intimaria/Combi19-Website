@@ -15,7 +15,7 @@ const {
     ERROR_MSG_INVALID_LOGIN
 } = require('../const/messages');
 
-let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [] };
+let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [], expirationRisk: null };
 
 const verifyAccount = async (req) => {
     const { email, password } = req.body;
@@ -23,7 +23,7 @@ const verifyAccount = async (req) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
+        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY, EXPIRATION_RISK FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
@@ -34,6 +34,7 @@ const verifyAccount = async (req) => {
             userData.userEmail = rows[0].EMAIL;
             userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
             userData.userId = rows[0].USER_ID;
+            userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString().substring(0,10) : '';
             return rows[0].USER_ID;
         }
     } catch (error) {
@@ -64,7 +65,7 @@ const verifyRole = async (verifiableRoles, userId) => {
 }
 
 const Login = async (req, res, verifiableRoles) => {
-    userData = { userName: '', userSurname: '', userEmail: '', userRoleId: [] };
+    userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [], expirationRisk: null };
 
     const userId = await verifyAccount(req);
 
