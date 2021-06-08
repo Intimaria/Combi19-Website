@@ -35,7 +35,7 @@ import {
     REGEX_ONLY_NUMBER
 } from '../const/regex';
 
-import {putPassengerTrip} from "../api/CartConfirmation";
+import {postPassengerTrip} from "../api/CartConfirmation";
 import {getCardsByUser} from "../api/Cards";
 
 
@@ -50,6 +50,11 @@ function CartConfirmation() {
     const [userCart, setUserCart] = React.useState('');
     const [userCards, setUserCards] = React.useState([]);
     const [cardSelected, setCardSelected] = React.useState('');
+
+    const [subtotalTickets, setSubtotalTickets] = React.useState(0);
+    const [subtotalProducts, setSubtotalProducts] = React.useState(0);
+    const [discountTickets, setDiscountTickets] = React.useState(0);
+    const [totalCart, setTotalCart] = React.useState(0);
 
     const [typeCardSelected, setTypeCardSelected] = React.useState('');
     const [cardNumber, setCardNumber] = React.useState('');
@@ -76,7 +81,7 @@ function CartConfirmation() {
         //event.preventDefault();
 
         if (validateForm()) {
-            let putResponse = await putPassengerTrip(2, cardSelected.cardId, userData.userId);
+            let putResponse = await postPassengerTrip(userCart, cardSelected.cardId, userData.userId);
 
             if (putResponse.status === 200) {
                 setDefaultValues();
@@ -328,67 +333,96 @@ function CartConfirmation() {
         return true;
     };
 
-    useEffect(async () => {
-        // cartId hardcodeado, me debería llegar de la pantalla anterior después de haber presionado "SIGUIENTE"
-        // en la pantalla de selección de cantidad de pasajes y la selección de productos
+    useEffect(() => {
+        const fetchData = async () => {
+            const userDataStorage = JSON.parse(localStorage.getItem('userData'));
+            setUserData(userDataStorage);
 
-        setUserCart(2);
+            const userId = userDataStorage.userId;
 
-        const userDataStorage = JSON.parse(localStorage.getItem('userData'));
-        setUserData(userDataStorage);
+            // Cart con viaje, cantidad de pasajes, y productos
+            //const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
-        const userId = userDataStorage.userId;
+            const userCartStorage = {
+                "tripId": 2,
+                "ticket": {
+                    "quantity": 4,
+                    "price": 4104.4
+                },
+                "products": [
+                    {
+                        "productId": 1,
+                        "quantity": 2,
+                        "price": 49.99
+                    },
+                    {
+                        "productId": 2,
+                        "quantity": 1,
+                        "price": 99.50
+                    },
+                    {
+                        "productId": 3,
+                        "quantity": 1,
+                        "price": 100
+                    }
+                ]
+            };
 
-        console.log('userId es', userId);
+            setUserCart(userCartStorage);
 
-        // Cart con viaje, cantidad de pasajes, y productos
-        //const userCart = JSON.parse(localStorage.getItem('userCart'));
+            const resultSubtotalTickets = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
 
-        const requestUserCards = await getCardsByUser(userId);
+            setSubtotalTickets(`${resultSubtotalTickets.toFixed(2).replace('.', ',')}`);
 
-        if (requestUserCards.data.length > 0) {
-            setUserCards(requestUserCards);
+            let resultDiscountTickets = 0;
 
-            const lastCard = requestUserCards.data[requestUserCards.data.length - 1];
+            if (userData.goldMembershipExpiration && moment() <= moment(userData.goldMembershipExpiration)) {
+                resultDiscountTickets = (resultSubtotalTickets * 0.1).toFixed(2);
+                setDiscountTickets(resultDiscountTickets)
+            }
 
-            setCardSelected(lastCard);
+            let resultSubtotalProducts = 0;
 
-            console.log('requestUserCards.data:', requestUserCards.data);
+            for (let product of userCartStorage.products) {
+                resultSubtotalProducts += (product.quantity * product.price);
+            }
 
-            console.log('lastCard es:', lastCard);
+            setSubtotalProducts(resultSubtotalProducts);
 
-            setTypeCardSelected(lastCard.cardType);
-            setCardNumber(lastCard.number);
-            setExpirationDate(
-                moment().set({
-                    year: `20${lastCard.expirationDate.substr(3, 2)}`,
-                    month: lastCard.expirationDate.substr(0, 2),
-                    hour: 0,
-                    minute: 0,
-                    second: 0,
-                    millisecond: 0
-                })
-            );
-            /*
-            console.log('lastCard.expirationDate es', lastCard.expirationDate);
-            console.log('moment(lastCard.expirationDate) es', moment(lastCard.expirationDate));
-            console.log('moment(lastCard.expirationDate).format(\'MM/YY\') es', moment(lastCard.expirationDate).format('MM/YY'));
-            console.log(`año es: 20${lastCard.expirationDate.substr(3, 2)}`);
-            console.log('mes es: ' , lastCard.expirationDate.substr(0, 2));
-            console.log('moment con set es',
-                moment().set({
-                    year: `20${lastCard.expirationDate.substr(3, 2)}`,
-                    month: lastCard.expirationDate.substr(0, 2),
-                    hour: 0,
-                    minute: 0,
-                    second: 0,
-                    millisecond: 0
-                }));
-                */
+            const resultTotalProducts = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
 
-            setNameSurnameCardOwner(lastCard.nameSurname);
-            setDocumentNumberCardOwner(lastCard.ownerDocumentNumber);
-        }
+            setTotalCart(resultTotalProducts);
+
+            setTotalCart(resultSubtotalProducts- resultDiscountTickets + resultTotalProducts);
+
+            const requestUserCards = await getCardsByUser(userId);
+
+            if (requestUserCards.data.length > 0) {
+                setUserCards(requestUserCards);
+
+                const lastCard = requestUserCards.data[requestUserCards.data.length - 1];
+
+                setCardSelected(lastCard);
+
+                setTypeCardSelected(lastCard.cardType);
+                setCardNumber(lastCard.number);
+                setExpirationDate(
+                    moment().set({
+                        year: `20${lastCard.expirationDate.substr(3, 2)}`,
+                        month: lastCard.expirationDate.substr(0, 2),
+                        hour: 0,
+                        minute: 0,
+                        second: 0,
+                        millisecond: 0
+                    })
+                );
+
+                setNameSurnameCardOwner(lastCard.nameSurname);
+                setDocumentNumberCardOwner(lastCard.ownerDocumentNumber);
+            }
+        };
+
+        fetchData();
     }, []);
 
     return (
@@ -410,7 +444,7 @@ function CartConfirmation() {
                                            id="subtotalTickets"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={"12345,67"}
+                                           value={`$ ${subtotalTickets}`}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -419,7 +453,7 @@ function CartConfirmation() {
                                            id="discountTickets"
                                            disabled
                                            style={{paddingRight: '10px', marginLeft: '10px'}}
-                                           value={"1234,56"}
+                                           value={`$ ${discountTickets}`}
                                 />
                             </Grid>
                         </Grid>
@@ -431,7 +465,7 @@ function CartConfirmation() {
                                            id="subtotalProducts"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={"1300,33"}
+                                           value={`$ ${subtotalProducts.toFixed(2).replace('.', ',')}`}
                                 />
                             </Grid>
 
@@ -444,7 +478,7 @@ function CartConfirmation() {
                                                    id="total"
                                                    disabled
                                                    style={{marginLeft: '10px'}}
-                                                   value={"12411,44"}
+                                                   value={`$ ${totalCart.toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
@@ -501,7 +535,7 @@ function CartConfirmation() {
                                         size="large"
                                         color="secondary"
                                         id="btnCancel"
-                                        //onClick={volver atrás}
+                                    //onClick={volver atrás}
                                 >CANCELAR COMPRA</Button>
                             </Grid>
                             <Grid item xs={12}>

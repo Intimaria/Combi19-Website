@@ -71,7 +71,7 @@ const getTripById = async (req, res) => {
         connection.end();
         return res.status(200).send(rows[0]);
     } catch (error) {
-        console.log('Ha ocurrido un error al obtener al viaje indicado: ', error);
+        console.log('Ocurrió un error al obtener al viaje indicado: ', error);
         res.status(500);
     }
     res.end();
@@ -96,9 +96,6 @@ const getTripDependenceById = async (req, res) => {
             `;
 
         const [rows] = await connection.execute(sqlSelect);
-
-        console.log('rows es:');
-        console.log(rows);
 
         connection.end();
 

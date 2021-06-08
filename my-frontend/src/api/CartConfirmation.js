@@ -6,21 +6,18 @@ import {
     ERROR_MSG_INTERNET
 } from "../const/messages";
 
-export const putPassengerTrip = async (cartId, cardId, userId) => {
+export const postPassengerTrip = async (cart, cardId, userId) => {
     const token = localStorage.getItem('token');
 
-    console.log('cartId, cardId, userId es', cartId, cardId, userId)
-    let formattedPassengerTrip = {
-        cartId,
+    let formattedPassengerCart = {
+        cart,
         cardId,
         userId
     };
 
-    console.log('formattedPassengerTrip es:', formattedPassengerTrip)
-
     try {
-        let response = await axios.put(`${BACKEND_URL}/my-trips/custom/cartConfirmation/${formattedPassengerTrip.cartId}`,
-            formattedPassengerTrip,
+        let response = await axios.post(`${BACKEND_URL}/my-trips/custom/cartConfirmation`,
+            formattedPassengerCart,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

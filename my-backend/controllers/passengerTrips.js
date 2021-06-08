@@ -2,8 +2,8 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 
 const {
     ERROR_MSG_API_GET_TRIPS,
-    OK_MSG_API_PUT_PASSENGER_TRIP,
-    ERROR_MSG_API_PUT_PASSENGER_TRIP
+    OK_MSG_API_POST_PASSENGER_TRIP,
+    ERROR_MSG_API_POST_PASSENGER_TRIP
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
@@ -52,42 +52,72 @@ const getPassengerTrips = async (req, res) => {
 };
 
 
-const putPassengerTrip = async (req, res) => {
-    const {id} = req.params;
+const postPassengerTrip = async (req, res) => {
 
-    const {cardId} = req.body;
+    const {cart, cardId, userId} = req.body;
 
     try {
         const connection = await prepareConnection();
 
-        let sqlUpdate;
+        let sqlInsert;
 
-        if (cardId) {
-            sqlUpdate =
+        sqlInsert =
+            `
+            INSERT INTO CART
+            (ID_CARD,
+            ID_USER,
+            DATE)
+            VALUES
+            (${(cardId) ? cardId : NULL},
+            ${userId},
+            NOW());
+            `;
+
+        const [rows] = await connection.execute(sqlInsert);
+
+        const cartId = rows.insertId;
+
+        sqlInsert =
+            `
+            INSERT INTO TICKET
+            (ID_CART,
+            ID_TRIP,
+            ID_STATUS_TICKET,
+            QUANTITY,
+            TICKET_PRICE)
+            VALUES
+            (${cartId},
+            ${cart.tripId},
+            ${1},
+            ${cart.ticket.quantity},
+            ${cart.ticket.price});
+            `;
+
+        await connection.execute(sqlInsert);
+
+        for (let product of cart.products) {
+            sqlInsert =
                 `
-                UPDATE CART 
-                SET 
-                ID_CARD = ${cardId}, 
-                DATE = NOW()
-                WHERE CART_ID = ${id};
-              `;
-        } else {
-            sqlUpdate =
-                `
-                UPDATE CART 
-                SET 
-                DATE = NOW()
-                WHERE CART_ID = ${id};
-              `;
+            INSERT INTO PRODUCT_CART
+            (ID_CART,
+            ID_PRODUCT,
+            QUANTITY,
+            PRODUCT_CART_PRICE)
+            VALUES
+            (${cartId},
+            ${product.productId},
+            ${product.quantity},
+            ${product.price});
+            `;
+
+            await connection.execute(sqlInsert);
         }
 
-        const [rows] = await connection.execute(sqlUpdate);
-
         connection.end();
-        res.status(200).send(OK_MSG_API_PUT_PASSENGER_TRIP);
+        res.status(200).send(OK_MSG_API_POST_PASSENGER_TRIP);
     } catch (error) {
-        console.log(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
-        res.status(500).send(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
+        console.log(`${ERROR_MSG_API_POST_PASSENGER_TRIP} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_POST_PASSENGER_TRIP} ${error}`);
     }
 
     res.end();
@@ -95,5 +125,5 @@ const putPassengerTrip = async (req, res) => {
 
 module.exports = {
     getPassengerTrips,
-    putPassengerTrip
+    postPassengerTrip
 };

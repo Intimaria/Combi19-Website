@@ -20,7 +20,7 @@ const validateTransportRouteDependence = async (id) => {
         return rows.length >= 1;
 
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias de la combi", error);
+        console.log("Ocurrió un error al comprobar las dependencias de la combi", error);
         return false;
     }
 };

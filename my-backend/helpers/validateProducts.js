@@ -54,10 +54,10 @@ const checkProductNameInDbToCreate = async (names) => {
         }
         return true;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar el nombre del producto", error);
+        console.log("Ocurrió un error al comprobar el nombre del producto", error);
         return false;
     }
-}
+};
 
 const checkProductNameInDbToModify = async (names, id) => {
     try {
@@ -72,10 +72,10 @@ const checkProductNameInDbToModify = async (names, id) => {
         }
         return true;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar el nombre del producto", error);
+        console.log("Ocurrió un error al comprobar el nombre del producto", error);
         return false;
     }
-}
+};
 
 const checkProductTypeInDb = async (typeProduct) => {
     try {
@@ -86,7 +86,7 @@ const checkProductTypeInDb = async (typeProduct) => {
 
         return rows.length >= 1
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar el tipo del producto", error);
+        console.log("Ocurrió un error al comprobar el tipo del producto", error);
         return false;
     }
 }

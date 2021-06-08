@@ -8,7 +8,7 @@ const validateDriverTransportDependence = async (id) => {
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias del chofer", error);
+        console.log("Ocurrió un error al comprobar las dependencias del chofer", error);
         return false;
     }
 }
@@ -22,7 +22,7 @@ const validateDriverTripDependence  = async(id) => {
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias del chofer", error);
+        console.log("Ocurrió un error al comprobar las dependencias del chofer", error);
         return false;
     }
 }
