@@ -113,7 +113,7 @@ const postDriver = async (req, res) => {
 };
 
 const putDriver = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
     const { names, surname, email, phoneNumber, password1, password2 } = req.body;
 
     const inputsErrors = await validateDriversToModify(email, names, surname, password1, password2, phoneNumber, id);
