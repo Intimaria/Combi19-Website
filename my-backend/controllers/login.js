@@ -15,7 +15,7 @@ const {
     ERROR_MSG_INVALID_LOGIN
 } = require('../const/messages');
 
-let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [], expirationRisk: null };
+let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', goldMembershipExpiration: '', expirationRisk: '', userRoleId: [] };
 
 const verifyAccount = async (req) => {
     const { email, password } = req.body;
@@ -23,7 +23,7 @@ const verifyAccount = async (req) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY, EXPIRATION_RISK FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
+        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY, GOLD_MEMBERSHIP_EXPIRATION, EXPIRATION_RISK FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
@@ -34,6 +34,7 @@ const verifyAccount = async (req) => {
             userData.userEmail = rows[0].EMAIL;
             userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
             userData.userId = rows[0].USER_ID;
+            userData.goldMembershipExpiration = rows[0].GOLD_MEMBERSHIP_EXPIRATION ? rows[0].GOLD_MEMBERSHIP_EXPIRATION.toISOString().substring(0,10) : '';
             userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString().substring(0,10) : '';
             return rows[0].USER_ID;
         }
@@ -70,7 +71,7 @@ const Login = async (req, res, verifiableRoles) => {
     const userId = await verifyAccount(req);
 
     if (userId && await verifyRole(verifiableRoles, userId)) {
-        const userRoles = userData.userRoleId
+        const userRoles = userData.userRoleId;
         const token = jwt.sign({ userId, userRoles }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: EXPIRY_TIME });
         return res.status(200).send({ token, userData });
     } else {

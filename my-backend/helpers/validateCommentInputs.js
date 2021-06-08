@@ -41,7 +41,7 @@ const validateUserIsCustomer = async (id) => {
         commentError = (ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER)
         return (rows.length >= 1);
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar que el usuario es un consumidor", error);
+        console.log("Ocurrió un error al comprobar que el usuario es un consumidor", error);
         return false;
     }
 };

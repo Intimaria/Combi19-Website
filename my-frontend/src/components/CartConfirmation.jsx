@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Message} from '../components/Message';
 import {TextField, Button} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";
@@ -35,7 +35,8 @@ import {
     REGEX_ONLY_NUMBER
 } from '../const/regex';
 
-import {putPassengerTrip} from "../api/CartConfirmation";
+import {postPassengerTrip} from "../api/CartConfirmation";
+import {getCardsByUser} from "../api/Cards";
 
 
 function CartConfirmation() {
@@ -44,6 +45,16 @@ function CartConfirmation() {
     };
 
     const styles = useStyles();
+
+    const [userData, setUserData] = React.useState('');
+    const [userCart, setUserCart] = React.useState('');
+    const [userCards, setUserCards] = React.useState([]);
+    const [cardSelected, setCardSelected] = React.useState('');
+
+    const [subtotalTickets, setSubtotalTickets] = React.useState(0);
+    const [subtotalProducts, setSubtotalProducts] = React.useState(0);
+    const [discountTickets, setDiscountTickets] = React.useState(0);
+    const [totalCart, setTotalCart] = React.useState(0);
 
     const [typeCardSelected, setTypeCardSelected] = React.useState('');
     const [cardNumber, setCardNumber] = React.useState('');
@@ -67,20 +78,10 @@ function CartConfirmation() {
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const requestPutPassengerTrip = async (event) => {
-        event.preventDefault();
+        //event.preventDefault();
 
         if (validateForm()) {
-            // cartId hardcodeado, me debería llegar de la pantalla anterior después de haber presionado "SIGUIENTE"
-            // en la pantalla de selección de cantidad de pasajes y la selección de productos
-            let cartId = 2;
-
-            // Debería recuperarla de la base
-            let cardId = 1;
-
-            // Debería obtenerlo del storage
-            let userId = 34;
-
-            let putResponse = await putPassengerTrip(cartId, cardId, userId);
+            let putResponse = await postPassengerTrip(userCart, cardSelected.cardId, userData.userId);
 
             if (putResponse.status === 200) {
                 setDefaultValues();
@@ -332,17 +333,109 @@ function CartConfirmation() {
         return true;
     };
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const userDataStorage = JSON.parse(localStorage.getItem('userData'));
+            setUserData(userDataStorage);
+
+            const userId = userDataStorage.userId;
+
+            // Cart con viaje, cantidad de pasajes, y productos
+            //const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
+
+            const userCartStorage = {
+                "tripId": 2,
+                "ticket": {
+                    "quantity": 4,
+                    "price": 4104.4
+                },
+                "products": [
+                    {
+                        "productId": 1,
+                        "quantity": 2,
+                        "price": 49.99
+                    },
+                    {
+                        "productId": 2,
+                        "quantity": 1,
+                        "price": 99.50
+                    },
+                    {
+                        "productId": 3,
+                        "quantity": 1,
+                        "price": 100
+                    }
+                ]
+            };
+
+            setUserCart(userCartStorage);
+
+            const resultSubtotalTickets = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
+
+            setSubtotalTickets(`${resultSubtotalTickets.toFixed(2).replace('.', ',')}`);
+
+            let resultDiscountTickets = 0;
+
+            if (userData.goldMembershipExpiration && moment() <= moment(userData.goldMembershipExpiration)) {
+                resultDiscountTickets = (resultSubtotalTickets * 0.1).toFixed(2);
+                setDiscountTickets(resultDiscountTickets)
+            }
+
+            let resultSubtotalProducts = 0;
+
+            for (let product of userCartStorage.products) {
+                resultSubtotalProducts += (product.quantity * product.price);
+            }
+
+            setSubtotalProducts(resultSubtotalProducts);
+
+            const resultTotalProducts = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
+
+            setTotalCart(resultTotalProducts);
+
+            setTotalCart(resultSubtotalProducts- resultDiscountTickets + resultTotalProducts);
+
+            const requestUserCards = await getCardsByUser(userId);
+
+            if (requestUserCards.data.length > 0) {
+                setUserCards(requestUserCards);
+
+                const lastCard = requestUserCards.data[requestUserCards.data.length - 1];
+
+                setCardSelected(lastCard);
+
+                setTypeCardSelected(lastCard.cardType);
+                setCardNumber(lastCard.number);
+                setExpirationDate(
+                    moment().set({
+                        year: `20${lastCard.expirationDate.substr(3, 2)}`,
+                        month: lastCard.expirationDate.substr(0, 2),
+                        hour: 0,
+                        minute: 0,
+                        second: 0,
+                        millisecond: 0
+                    })
+                );
+
+                setNameSurnameCardOwner(lastCard.nameSurname);
+                setDocumentNumberCardOwner(lastCard.ownerDocumentNumber);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <div className={styles.root}>
-            <form className={styles.form} onSubmit={requestPutPassengerTrip} encType="multipart/form-data">
+            {
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                             handleClose={options.handleClose}/>
+                    : null
+            }
+            <div className={styles.form}>
                 <h2 align={'center'}>Confirmación de compra</h2>
                 <div className="row ">
-                    {
-                        successMessage ?
-                            <Message open={options.open} type={options.type} message={options.message}
-                                     handleClose={options.handleClose}/>
-                            : null
-                    }
                     <div>
                         <Grid container>
                             <Grid item xs={6}>
@@ -351,7 +444,7 @@ function CartConfirmation() {
                                            id="subtotalTickets"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={"12345,67"}
+                                           value={`$ ${subtotalTickets}`}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -360,7 +453,7 @@ function CartConfirmation() {
                                            id="discountTickets"
                                            disabled
                                            style={{paddingRight: '10px', marginLeft: '10px'}}
-                                           value={"1234,56"}
+                                           value={`$ ${discountTickets}`}
                                 />
                             </Grid>
                         </Grid>
@@ -372,7 +465,7 @@ function CartConfirmation() {
                                            id="subtotalProducts"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={"1300,33"}
+                                           value={`$ ${subtotalProducts.toFixed(2).replace('.', ',')}`}
                                 />
                             </Grid>
 
@@ -385,7 +478,7 @@ function CartConfirmation() {
                                                    id="total"
                                                    disabled
                                                    style={{marginLeft: '10px'}}
-                                                   value={"12411,44"}
+                                                   value={`$ ${totalCart.toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
@@ -432,13 +525,33 @@ function CartConfirmation() {
                                         size="large"
                                         color="primary"
                                         id="btnRegister"
-                                        type="submit"
+                                        onClick={() => requestPutPassengerTrip()}
                                 >CONFIRMAR COMPRA</Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="secondary"
+                                        id="btnCancel"
+                                    //onClick={volver atrás}
+                                >CANCELAR COMPRA</Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="secondary"
+                                        id="btnBack"
+                                    //onClick={volver atrás}
+                                >VOLVER</Button>
                             </Grid>
                         </Grid>
                     </div>
                 </div>
-            </form>
+            </div>
             <br/><br/>
         </div>
     );

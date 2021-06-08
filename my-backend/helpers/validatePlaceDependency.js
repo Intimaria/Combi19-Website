@@ -9,7 +9,7 @@ const validatePlaceDependency = async (id) => {
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias del lugar", error);
+        console.log("Ocurrió un error al comprobar las dependencias del lugar", error);
         return false;
     }
 };
@@ -29,7 +29,7 @@ const validatePlaceExistsForDelete = async (id, idProvince) => {
             return false
         }
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar que el lugar existe", error);
+        console.log("Ocurrió un error al comprobar que el lugar existe", error);
         return true;
     }
 };
@@ -48,7 +48,7 @@ const validatePlaceExists = async (cityName, province_id) => {
             return false
         }
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar que el lugar existe", error);
+        console.log("Ocurrió un error al comprobar que el lugar existe", error);
         return true;
     }
 };
@@ -67,7 +67,7 @@ const validatePlaceToUpdate = async (cityName, province_id, id) => {
             return false
         }
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar que el lugar existe", error);
+        console.log("Ocurrió un error al comprobar que el lugar existe", error);
         return true;
     }
 };

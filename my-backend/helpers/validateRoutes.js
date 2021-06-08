@@ -61,7 +61,7 @@ const checkPlaceInDb = async (idPlace) => {
 
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar el lugar", error);
+        console.log("Ocurrió un error al comprobar el lugar", error);
         return false;
     }
 }
@@ -74,7 +74,7 @@ const checkRoutePlacesInDbToCreate = async (idPlaceDeparture, idPlaceDestination
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias de la ruta", error);
+        console.log("Ocurrió un error al comprobar las dependencias de la ruta", error);
         return false;
     }
 }
@@ -87,7 +87,7 @@ const checkRoutePlacesInDbToModify = async (idPlaceDeparture, idPlaceDestination
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar las dependencias de la ruta", error);
+        console.log("Ocurrió un error al comprobar las dependencias de la ruta", error);
         return false;
     }
 }
@@ -101,7 +101,7 @@ const checkTransportInDb = async (idTransport) => {
 
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar el lugar", error);
+        console.log("Ocurrió un error al comprobar el lugar", error);
         return false;
     }
 }
@@ -224,13 +224,13 @@ const validateRouteTripsDependence = async (id) =>{
         connection.end();
         return rows.length >= 1;
     } catch (error) {
-        console.log("Ha ocurrido un error al comprobar la dependencia con viajes", error);
+        console.log("Ocurrió un error al comprobar la dependencia con viajes", error);
         return true;
     }
-}
+};
 
 module.exports = {
     validateRoutesToCreate,
     validateRoutesToModify,
     validateRouteTripsDependence
-}
+};

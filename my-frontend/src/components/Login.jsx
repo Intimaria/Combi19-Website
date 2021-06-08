@@ -1,5 +1,5 @@
-import React from 'react';
-import { useHistory } from "react-router-dom";
+import React, {Fragment} from 'react';
+import {useHistory} from "react-router-dom";
 
 import { TextField, Button } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -16,7 +16,7 @@ import { login } from "../api/Passengers.js";
 
 const axios = require("axios");
 
-const Login = ({ path, redirectPage, redirectBoolean, setRedirectBoolean }) => {
+const Login = ({ path, redirectPage, redirectBoolean }) => {
     const handleCloseMessage = () => {
         setOptions({ ...options, open: false });
     };
@@ -68,54 +68,57 @@ const Login = ({ path, redirectPage, redirectBoolean, setRedirectBoolean }) => {
     }
 
     return (
-        <div className={styles.modal}>
+        <Fragment>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
                         handleClose={options.handleClose} />
                     : null
             }
-
+            <div className={styles.modal}>
             {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesion para continuar</h4> : null}
 
-            <h2 align={'center'}>Iniciar sesión</h2>
+                <h2 align={'center'}>Iniciar sesión</h2>
 
-            <form onSubmit={mySubmitHandler}>
+                <form onSubmit={mySubmitHandler}>
 
-                <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
-                    onChange={handleEmail}
-                    inputProps={{ maxLength: 70 }}
-                    autoComplete='off'
-                    error={loginError}
-                />
-                <br />
-                <FormControl className={styles.inputMaterial}
-                    error={loginError}>
-                    <InputLabel htmlFor="password">Contraseña</InputLabel>
-                    <Input
-                        id="password"
-                        inputProps={{ maxLength: 100 }}
-                        autoComplete='off'
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        onChange={handlePassword}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleShowPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
+                    <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
+                               onChange={handleEmail}
+                               required
+                               inputProps={{maxLength: 70}}
+                               autoComplete='off'
                     />
-                    <FormHelperText>{(loginError) ? loginError : ' '}</FormHelperText>
-                </FormControl>
-                <br /><br />
+                    <br/>
+                    <FormControl className={styles.inputMaterial}
+                                 required
+                                 error={loginError}>
+                        <InputLabel htmlFor="password">Contraseña</InputLabel>
+                        <Input
+                            id="password"
+                            required
+                            inputProps={{maxLength: 100}}
+                            autoComplete='off'
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            onChange={handlePassword}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleShowPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                        <FormHelperText>{(loginError) ? loginError : ' '}</FormHelperText>
+                    </FormControl>
+                    <br/><br/>
 
-                <Button style={{ width: '100%' }}
+
+                    <Button style={{ width: '100%' }}
                     variant="contained"
                     size="large"
                     color="primary"
@@ -134,9 +137,10 @@ const Login = ({ path, redirectPage, redirectBoolean, setRedirectBoolean }) => {
                     type="submit"
                     onClick={() => history.push("/register")}
                 >REGISTRATE</Button>
-            </form>
-        </div>
+                </form>
+            </div>
 
+        </Fragment>
     );
 };
 

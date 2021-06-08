@@ -38,7 +38,7 @@ const getProvinces = async (req, res) => {
         connection.end();
         res.status(200).send(result[0]);
     }).catch(function (err) {
-        console.log('Ha ocurrido un error al obtener las provincias: ', err);
+        console.log('Ocurrió un error al obtener las provincias: ', err);
         res.status(500);
     });
     res.end();

@@ -101,11 +101,6 @@ export const getProvinces = async () => {
   } catch (error) {
       console.log(`${ERROR_MSG_API_GET_PROVINCES} ${error}`);
 
-      console.log('error.constructor.name', error.constructor.name);
-      console.log('error.message', error.message);
-      console.log('error.name', error.name);
-
-
       if (error.message === 'Network Error') {
           error.message = ERROR_MSG_INTERNET;
           return error.message;

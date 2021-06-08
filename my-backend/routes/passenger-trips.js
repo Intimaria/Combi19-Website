@@ -2,7 +2,7 @@ const {Router} = require('express');
 
 const {
     getPassengerTrips,
-    putPassengerTrip
+    postPassengerTrip
 } = require('../controllers/passengerTrips');
 
 // The administrator role should be validated with a middleware before performing any operation
@@ -14,6 +14,6 @@ const router = Router();
 router.get('/custom/user/:id', authenticatePassengerRol, getPassengerTrips);
 
 // Update cart
-router.put('/custom/cartConfirmation/:id', authenticatePassengerRol, putPassengerTrip);
+router.post('/custom/cartConfirmation/', authenticatePassengerRol, postPassengerTrip);
 
 module.exports = router;
