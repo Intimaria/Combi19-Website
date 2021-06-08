@@ -57,8 +57,6 @@ const putPassengerTrip = async (req, res) => {
 
     const {cardId} = req.body;
 
-    console.log('entró')
-
     try {
         const connection = await prepareConnection();
 
