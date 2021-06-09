@@ -32,7 +32,7 @@ const userConfigurationWithNewPassword = async (req, res) => {
         }
     }
     res.end();
-}
+};
 
 const userConfigurationWitoutNewPassword = async (req, res) => {
     const { id } = req.params;
@@ -55,8 +55,9 @@ const userConfigurationWitoutNewPassword = async (req, res) => {
         }
     }
     res.end();
-}
+};
+
 module.exports = {
     userConfigurationWithNewPassword,
     userConfigurationWitoutNewPassword
-}
+};

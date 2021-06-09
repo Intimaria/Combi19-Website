@@ -51,8 +51,8 @@ function CartConfirmation() {
     const [userCards, setUserCards] = React.useState([]);
     const [cardSelected, setCardSelected] = React.useState('');
 
-    const [subtotalTickets, setSubtotalTickets] = React.useState(0);
-    const [subtotalProducts, setSubtotalProducts] = React.useState(0);
+    const [totalTickets, setTotalTickets] = React.useState(0);
+    const [totalProducts, setTotalProducts] = React.useState(0);
     const [discountTickets, setDiscountTickets] = React.useState(0);
     const [totalCart, setTotalCart] = React.useState(0);
 
@@ -370,30 +370,30 @@ function CartConfirmation() {
 
             setUserCart(userCartStorage);
 
-            const resultSubtotalTickets = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
+            const resultTotalTickets = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
 
-            setSubtotalTickets(`${resultSubtotalTickets.toFixed(2).replace('.', ',')}`);
+            setTotalTickets(`${resultTotalTickets.toFixed(2).replace('.', ',')}`);
+
+            let resultTotalProducts = 0;
+
+            for (let product of userCartStorage.products) {
+                resultTotalProducts += (product.quantity * product.price);
+            }
+
+            setTotalProducts(resultTotalProducts);
 
             let resultDiscountTickets = 0;
 
-            if (userData.goldMembershipExpiration && moment() <= moment(userData.goldMembershipExpiration)) {
-                resultDiscountTickets = (resultSubtotalTickets * 0.1).toFixed(2);
+            if (userDataStorage.goldMembershipExpiration && moment() <= moment(userDataStorage.goldMembershipExpiration)) {
+                resultDiscountTickets = ((resultTotalTickets + resultTotalProducts) * 0.1).toFixed(2);
                 setDiscountTickets(resultDiscountTickets)
             }
 
-            let resultSubtotalProducts = 0;
+            const resultTotalCart = resultTotalTickets * resultTotalProducts;
 
-            for (let product of userCartStorage.products) {
-                resultSubtotalProducts += (product.quantity * product.price);
-            }
+            setTotalCart(resultTotalCart);
 
-            setSubtotalProducts(resultSubtotalProducts);
-
-            const resultTotalProducts = userCartStorage.ticket.quantity * userCartStorage.ticket.price;
-
-            setTotalCart(resultTotalProducts);
-
-            setTotalCart(resultSubtotalProducts- resultDiscountTickets + resultTotalProducts);
+            setTotalCart(resultTotalTickets + resultTotalProducts - resultDiscountTickets);
 
             const requestUserCards = await getCardsByUser(userId);
 
@@ -439,36 +439,36 @@ function CartConfirmation() {
                     <div>
                         <Grid container>
                             <Grid item xs={6}>
-                                <TextField className={styles.inputMaterial} label="Subtotal pasajes *"
-                                           name="subtotalTickets"
+                                <TextField className={styles.inputMaterial} label="Total pasajes *"
+                                           name="totalTickets"
                                            id="subtotalTickets"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={`$ ${subtotalTickets}`}
+                                           value={`$ ${totalTickets}`}
                                 />
                             </Grid>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial} label="Total productos *"
+                                           name="totalProducts"
+                                           id="totalProducts"
+                                           disabled
+                                           style={{paddingRight: '10px', marginLeft: '10px'}}
+                                           value={`$ ${totalProducts.toFixed(2).replace('.', ',')}`}
+                                />
+                            </Grid>
+
+                        </Grid>
+
+                        <Grid container>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial} label="Descuento gold *"
                                            name="discountTickets"
                                            id="discountTickets"
                                            disabled
-                                           style={{paddingRight: '10px', marginLeft: '10px'}}
+                                           style={{paddingRight: '10px'}}
                                            value={`$ ${discountTickets}`}
                                 />
                             </Grid>
-                        </Grid>
-
-                        <Grid container>
-                            <Grid item xs={6}>
-                                <TextField className={styles.inputMaterial} label="Subtotal productos *"
-                                           name="subtotalProducts"
-                                           id="subtotalProducts"
-                                           disabled
-                                           style={{paddingRight: '10px'}}
-                                           value={`$ ${subtotalProducts.toFixed(2).replace('.', ',')}`}
-                                />
-                            </Grid>
-
                             <Grid container alignItems="flex-start" item xs={6}>
                                 <Grid container alignItems={"flex-end"}
                                       item xs={12}>
@@ -483,7 +483,7 @@ function CartConfirmation() {
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
                                         <Tooltip
-                                            title="Total = Subtotal pasajes - Descuento gold + Subtotal productos">
+                                            title="Total = Total pasajes + Total productos - Descuento gold">
                                             <HelpIcon color='primary' fontSize="small"/>
                                         </Tooltip>
                                     </Grid>

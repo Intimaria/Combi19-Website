@@ -99,7 +99,7 @@ const verifyDepartureDayOverlapToUpdate = async (routeId, departureDay, tripId) 
             FROM TRIP t
             INNER JOIN ROUTE r ON t.ID_ROUTE = r.ROUTE_ID
             WHERE t.ACTIVE = 1
-            AND t.TRIP_ID = ${tripId}
+            AND t.TRIP_ID <> ${tripId}
             AND r.ID_TRANSPORT = 
             (
               SELECT r2.ID_TRANSPORT
