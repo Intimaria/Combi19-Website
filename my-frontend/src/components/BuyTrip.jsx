@@ -1,5 +1,6 @@
 import React from 'react'
 import { useHistory } from "react-router-dom";
+import { Ticket } from '../components/Ticket';
 
 const BuyTrip = () => {
     const history = useHistory();
@@ -20,8 +21,7 @@ const BuyTrip = () => {
 
     return (
         <div>
-            <h2 className="text-light">{"Selecciono el viaje con origen: " + tripToBuy.departure}</h2>
-            <h2 className="text-light">{"y destino: " + tripToBuy.destination}</h2>
+            <Ticket tripToBuy={tripToBuy}/>
         </div>
     )
 }

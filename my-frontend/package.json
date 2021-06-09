@@ -9,6 +9,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "*",
     "@material-ui/pickers": "^3.2.2",
+    "@mui-treasury/components": "^1.10.1",
+    "@mui-treasury/styles": "^1.13.1",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.1",
