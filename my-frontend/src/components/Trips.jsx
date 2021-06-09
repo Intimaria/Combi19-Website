@@ -562,7 +562,6 @@ function Trips() {
     };
 
     useEffect(() => {
-
         fetchData();
     }, []);
 

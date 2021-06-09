@@ -1,23 +1,31 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useHistory } from "react-router-dom";
+import moment from "moment";
 
 const BuyTrip = () => {
     const history = useHistory();
-
-    // Verify that the user is not risky
-    const expirationRisk = JSON.parse(localStorage.getItem('userData')).expirationRisk;
-    if (expirationRisk && expirationRisk >= new Date().toISOString().substring(0, 10)) {
-        history.push("/tripsResults");
-    }
-
     // Get selected trip id
     const tripToBuy = JSON.parse(localStorage.getItem("tripToBuy"));
 
+    // Verify that the user is not risky
+    const verifyExpirationRisk = () => {
+        const expirationRisk = JSON.parse(localStorage.getItem('userData')).expirationRisk;
+        if (expirationRisk && moment(expirationRisk).isAfter(moment())) {
+            history.push("/tripsResults");
+        }
+    }
     // Redirect in case a trip has not been selected
-    if (!tripToBuy) {
-        history.push("/tripsResults");
+    const verifyTrip = () => {
+        if (!tripToBuy) {
+            history.push("/tripsResults");
+        }
     }
 
+    useEffect(() => {
+        verifyTrip();
+        verifyExpirationRisk();
+    }, [])
+    
     return (
         <div>
             <h2 className="text-light">{"Selecciono el viaje con origen: " + tripToBuy.departure}</h2>

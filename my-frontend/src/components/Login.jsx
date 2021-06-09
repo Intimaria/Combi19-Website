@@ -1,5 +1,5 @@
-import React, {Fragment} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { Fragment } from 'react';
+import { useHistory } from "react-router-dom";
 
 import { TextField, Button } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -11,15 +11,11 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useStyles } from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 
-import { Message } from "./Message";
 import { login } from "../api/Passengers.js";
 
 const axios = require("axios");
 
 const Login = ({ path, redirectPage, redirectBoolean }) => {
-    const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
-    };
 
     const history = useHistory();
     const styles = useStyles();
@@ -27,8 +23,6 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [loginError, setLoginError] = React.useState(null);
-    const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -69,34 +63,28 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
 
     return (
         <Fragment>
-            {
-                successMessage ?
-                    <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
-                    : null
-            }
             <div className={styles.modal}>
-            {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesion para continuar</h4> : null}
+                {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesion para continuar</h4> : null}
 
                 <h2 align={'center'}>Iniciar sesión</h2>
 
                 <form onSubmit={mySubmitHandler}>
 
                     <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
-                               onChange={handleEmail}
-                               required
-                               inputProps={{maxLength: 70}}
-                               autoComplete='off'
+                        onChange={handleEmail}
+                        required
+                        inputProps={{ maxLength: 70 }}
+                        autoComplete='off'
                     />
-                    <br/>
+                    <br />
                     <FormControl className={styles.inputMaterial}
-                                 required
-                                 error={loginError}>
+                        required
+                        error={loginError}>
                         <InputLabel htmlFor="password">Contraseña</InputLabel>
                         <Input
                             id="password"
                             required
-                            inputProps={{maxLength: 100}}
+                            inputProps={{ maxLength: 100 }}
                             autoComplete='off'
                             type={showPassword ? 'text' : 'password'}
                             name="password"
@@ -108,35 +96,40 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
                                         onClick={handleShowPassword}
                                         edge="end"
                                     >
-                                        {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                 </InputAdornment>
                             }
                         />
                         <FormHelperText>{(loginError) ? loginError : ' '}</FormHelperText>
                     </FormControl>
-                    <br/><br/>
+                    <br /><br />
 
 
                     <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnLogin"
-                    type="submit"
-                >INICIAR SESIÓN</Button>
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnLogin"
+                        type="submit"
+                    >INICIAR SESIÓN</Button>
+                    {
+                        path !== "employee/login" ?
+                            <div>
+                                <br />
+                                <h5 align={'center'}>¿No tiene una cuenta? Registrate</h5>
 
-                <br /><br />
-                <h5 align={'center'}>¿No tiene una cuenta? Registrate</h5>
-
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => history.push("/register")}
-                >REGISTRATE</Button>
+                                <Button style={{ width: '100%' }}
+                                    variant="contained"
+                                    size="large"
+                                    color="primary"
+                                    id="btnRegister"
+                                    type="submit"
+                                    onClick={() => history.push("/register")}
+                                >REGISTRATE</Button>
+                            </div>
+                            : null
+                    }
                 </form>
             </div>
 

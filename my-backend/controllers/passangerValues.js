@@ -17,7 +17,7 @@ const getPassangersValues = async(req, res) => {
             userData.userEmail = rows[0].EMAIL;
             userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
             userData.userId = rows[0].USER_ID;
-            userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString().substring(0,10) : '';
+            userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString() : '';
             return res.status(200).send({userData});
         }
         else {

@@ -35,7 +35,7 @@ const verifyAccount = async (req) => {
             userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
             userData.userId = rows[0].USER_ID;
             userData.goldMembershipExpiration = rows[0].GOLD_MEMBERSHIP_EXPIRATION ? rows[0].GOLD_MEMBERSHIP_EXPIRATION.toISOString().substring(0,10) : '';
-            userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString().substring(0,10) : '';
+            userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString() : '';
             return rows[0].USER_ID;
         }
     } catch (error) {

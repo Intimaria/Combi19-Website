@@ -12,15 +12,15 @@ const {
 } = require('../const/messages.js');
 
 const {
-    REGEX_ONLY_ALPHABETICAL,
+    REGEX_ONLY_NUMBER,
     REGEX_DATE_YYYY_MM_DD
 } = require('../const/regex.js');
 
 let departureDayError;
+
 let departureError;
 let destinationError;
-let dateFromError;
-let dateToError;
+let departureDateToSearchError;
 
 const validateTripToCreate = async (routeId, departureDay) => {
     let isDepartureDayValid = await verifyDepartureDayOverlapToCreate(routeId, departureDay);
@@ -137,29 +137,15 @@ const prepareTripResponse = () => {
     }
 };
 
-const validateDataToSearch = async (departure, destination, dateFrom, dateTo) => {
-    dateFromError = null; dateToError = null;
-    let result = validateDeparture(departure) & validateDestination(destination);
-    if (!dateFrom && !dateTo) {
-        return result ? null : searchErrorResponse();
-    }
-    else if (dateFrom && !dateTo) {
-        return result & validateDateFrom(dateFrom) ? null : searchErrorResponse();
-    }
-    else if (!dateFrom && dateTo) {
-        return result & validateDateTo(dateTo) ? null : searchErrorResponse();
-    }
-    else {
-        return result & validateDateFrom(dateFrom) & validateDateTo(dateTo) ? null : searchErrorResponse();
-    }
+const validateDataToSearch = async (departure, destination, departureDateToSearch) => {
+    return validateDeparture(departure) & validateDestination(destination) & validateDepartureDateToSearch(departureDateToSearch) ? null : searchErrorResponse();
 }
 
 const searchErrorResponse = () => {
     return {
         departureError,
         destinationError,
-        dateFromError,
-        dateToError
+        departureDateToSearchError
     }
 }
 
@@ -167,7 +153,7 @@ const validateDeparture = (departure) => {
     if (!departure) {
         departureError = (ERROR_MSG_EMPTY_PLACE_DEPARTURE);
         return false;
-    } else if (REGEX_ONLY_ALPHABETICAL.test(departure)) {
+    } else if (REGEX_ONLY_NUMBER.test(departure)) {
         departureError = (ERROR_MSG_INVALID_PLACE_DEPARTURE);
         return false;
     }
@@ -180,7 +166,7 @@ const validateDestination = (destination) => {
     if (!destination) {
         destinationError = (ERROR_MSG_EMPTY_PLACE_DESTINATION);
         return false;
-    } else if (REGEX_ONLY_ALPHABETICAL.test(destination)) {
+    } else if (REGEX_ONLY_NUMBER.test(destination)) {
         destinationError = (ERROR_MSG_INVALID_PLACE_DESTINATION);
         return false;
     }
@@ -189,14 +175,14 @@ const validateDestination = (destination) => {
     return true;
 }
 
-const validateDateFrom = (dateFrom) => {
+const validateDepartureDateToSearch = (dateFrom) => {
     if (!dateFrom) {
-        dateFromError = (ERROR_MSG_EMPTY_DATE);
+        departureDateToSearchError = (ERROR_MSG_EMPTY_DATE);
         return false;
     }
 
     if (!REGEX_DATE_YYYY_MM_DD.test(dateFrom)) {
-        dateFromError = (ERROR_MSG_INVALID_DATE);
+        departureDateToSearchError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
 
@@ -210,8 +196,8 @@ const validateDateFrom = (dateFrom) => {
     const currentMonth = currentDate.getMonth();
     const currentDay = currentDate.getDate();
 
-    if (new Date(year, month - 1, day) < (new Date(currentYear, currentMonth, currentDay)) || new Date(year, month - 1, day) > new Date(currentYear + 1, currentMonth, currentDay) || month === 0 || month > 12) {
-        dateFromError = (ERROR_MSG_INVALID_DATE);
+    if (new Date(year, month - 1, day) < (new Date(currentYear, currentMonth, currentDay)) || new Date(year, month - 1, day) > new Date(currentYear + 3, currentMonth, currentDay) || month === 0 || month > 12) {
+        departureDateToSearchError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
     const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -220,52 +206,11 @@ const validateDateFrom = (dateFrom) => {
         monthLength[1] = 29;
 
     if (!(day > 0 && day <= monthLength[month - 1])) {
-        dateFromError = (ERROR_MSG_INVALID_DATE);
+        departureDateToSearchError = (ERROR_MSG_INVALID_DATE);
         return false;
     }
 
-    dateFromError = null;
-    return true;
-}
-
-const validateDateTo = (dateTo) => {
-
-    if (!dateTo) {
-        dateToError = (ERROR_MSG_EMPTY_DATE);
-        return false;
-    }
-
-    if (!REGEX_DATE_YYYY_MM_DD.test(dateTo)) {
-        dateToError = (ERROR_MSG_INVALID_DATE);
-        return false;
-    }
-
-    const parts = dateTo.split("-");
-    const day = parseInt(parts[2], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[0], 10);
-
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const currentDay = currentDate.getDate();
-
-    if (new Date(year, month - 1, day) < (new Date(currentYear, currentMonth, currentDay)) || new Date(year, month - 1, day) > new Date(currentYear + 1, currentMonth, currentDay) || month === 0 || month > 12) {
-        dateToError = (ERROR_MSG_INVALID_DATE);
-        return false;
-    }
-
-    const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0))
-        monthLength[1] = 29;
-
-    if (!(day > 0 && day <= monthLength[month - 1])) {
-        dateToError = (ERROR_MSG_INVALID_DATE);
-        return false;
-    }
-
-    dateToError = null;
+    departureDateToSearchError = null;
     return true;
 }
 

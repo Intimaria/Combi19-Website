@@ -204,8 +204,8 @@ const deleteTrip = async (req, res) => {
 };
 
 const searchTrip = async (req, res) => {
-    const {departure, destination, dateFrom, dateTo} = req.body;
-    const inputsErrors = await validateDataToSearch(departure, destination, dateFrom, dateTo);
+    const {departure, destination, departureDate} = req.body;
+    const inputsErrors = await validateDataToSearch(departure, destination, departureDate);
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {
@@ -216,33 +216,24 @@ const searchTrip = async (req, res) => {
             SELECT tri.TRIP_ID AS tripId,
             tri.PRICE AS price,
             tri.ID_ROUTE AS routeId,
+            tra.SEATING as seatings,
             tra.REGISTRATION_NUMBER AS registrationNumber,
             CONCAT(depci.CITY_NAME, ', ', depp.PROVINCE_NAME) departure,
             CONCAT(desci.CITY_NAME, ', ', desp.PROVINCE_NAME) destination,
             CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') AS departureDay FROM 
-            trip tri INNER JOIN 
-            Route r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
-            Transport tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN
-            City depci ON (r.ID_DEPARTURE=depci.CITY_ID) INNER JOIN
-            Province depp ON (depci.ID_PROVINCE=depp.PROVINCE_ID) INNER JOIN
-            City desci ON (r.ID_DESTINATION=desci.CITY_ID) INNER JOIN
-            Province desp ON (desci.ID_PROVINCE=desp.PROVINCE_ID)
+            TRIP tri INNER JOIN 
+            ROUTE r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
+            TRANSPORT tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN
+            CITY depci ON (r.ID_DEPARTURE=depci.CITY_ID) INNER JOIN
+            PROVINCE depp ON (depci.ID_PROVINCE=depp.PROVINCE_ID) INNER JOIN
+            CITY desci ON (r.ID_DESTINATION=desci.CITY_ID) INNER JOIN
+            PROVINCE desp ON (desci.ID_PROVINCE=desp.PROVINCE_ID)
             WHERE 
             tri.ACTIVE = ${ACTIVE} AND
-            (depci.CITY_NAME LIKE '%${departure}%' OR 
-            depp.PROVINCE_NAME LIKE "%${departure}%")  AND
-            (desci.CITY_NAME LIKE "%${destination}%" OR 
-            desp.PROVINCE_NAME LIKE "%${destination}%")
+            depci.CITY_ID = ${departure}  AND
+            desci.CITY_ID = ${destination} AND
+            (CAST(tri.DEPARTURE_DAY as DATE)) = "${departureDate}"
           `;
-            if (dateFrom && dateTo) {
-                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) >= "${dateFrom}" AND CAST(tri.DEPARTURE_DAY as DATE) <= "${dateTo}")`;
-            }
-            else if (dateFrom && !dateTo) {
-                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) >= "${dateFrom}")`;
-            }
-            else if (!dateFrom && dateTo) {
-                sqlSelect += ` AND (CAST(tri.DEPARTURE_DAY as DATE) <= "${dateTo}")`;
-            }
 
             const [rows] = await connection.execute(sqlSelect);
 

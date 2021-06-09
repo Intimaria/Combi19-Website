@@ -27,7 +27,7 @@ router.post('/', authenticateAdminRol, postRoute);
 // Retrieve route dependence by id
 router.get('/custom/routeDependenceById/:id', authenticateAdminRol, getRouteDependenceById);
 
-router.get('/custom/available', authenticateAdminRol, getAvailableRoutes);
+router.get('/custom/available', getAvailableRoutes);
 
 // Update a route by id
 router.put('/:id', authenticateAdminRol, putRoute);
