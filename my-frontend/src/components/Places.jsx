@@ -468,8 +468,6 @@ function Places() {
         </div>
     );
 
-    console.log("LA DATA ES:", data);
-
     return (
         <div className="App">
             {   // Esto es para que se muestre la ventanita del mensaje

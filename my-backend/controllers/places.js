@@ -39,10 +39,10 @@ const getProvinces = async (req, res) => {
         res.status(200).send(result[0]);
     }).catch(function (err) {
         console.log('Ocurrió un error al obtener las provincias: ', err);
-        res.status(500);
+        res.status(500).send('Ocurrió un error al obtener las provincias: ', err);
     });
     res.end();
-}
+};
 
 
 const getPlaces = async (req, res) => {
@@ -53,10 +53,10 @@ const getPlaces = async (req, res) => {
         res.status(200).send(normalizeResults);
     }).catch(function (error) {
         console.log(`${ERROR_MSG_API_GET_PLACES} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_PLACES} ${error}`);
     });
     res.end();
-}
+};
 
 const getActivePlaces = async (req, res) => {
     const connection = await prepareConnection();
@@ -66,10 +66,10 @@ const getActivePlaces = async (req, res) => {
         res.status(200).send(normalizeResults);
     }).catch(function (error) {
         console.log(`${ERROR_MSG_API_GET_ACTIVE_PLACES} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_ACTIVE_PLACES} ${error}`);
     });
     res.end();
-}
+};
 
 
 const getPlaceById = async (req, res) => {
@@ -80,10 +80,10 @@ const getPlaceById = async (req, res) => {
         res.status(200).send(result[0]);
     }).catch(function (error) {
         console.log(`${ERROR_MSG_API_GET_PLACE_BY_ID} ${error}`);
-        res.status(500);
+        res.status(500).send(`${ERROR_MSG_API_GET_PLACE_BY_ID} ${error}`);
     });
     res.end();
-}
+};
 
 const putPlace = async (req, res) => {
     const {cityName, idProvince} = req.body;
@@ -97,7 +97,7 @@ const putPlace = async (req, res) => {
     }
     //const inputsErrors = await validatePlace(city, province);
     else if (await validatePlaceToUpdate(cityName, idProvince, id)) {
-        res.status(409).send("* La ciudad ya existe para esta provincia");
+        res.status(400).send("* La ciudad ya existe para esta provincia");
     } else {
         const connection = await prepareConnection();
         await connection.query(
@@ -110,11 +110,11 @@ const putPlace = async (req, res) => {
             res.status(200).send(OK_MSG_API_PLACE_PUT);
         }).catch(function (error) {
             console.log(`${ERROR_MSG_API_PUT_PLACE} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_PUT_PLACE} ${error}`);
         });
     }
     res.end();
-}
+};
 
 const postPlace = async (req, res) => {
     const {cityName, idProvince} = req.body;
@@ -130,11 +130,11 @@ const postPlace = async (req, res) => {
             res.status(201).send(OK_MSG_API_PLACE_POST);
         }).catch(function (error) {
             console.log(`${ERROR_MSG_API_POST_PLACE} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_DELETE_PLACE} ${error}`);
         })
     }
     res.end();
-}
+};
 
 
 const deletePlace = async (req, res) => {
@@ -160,12 +160,12 @@ const deletePlace = async (req, res) => {
             res.status(200).send(OK_MSG_API_DELETE_PLACE);
         }).catch(function (error) {
             console.log(`${ERROR_MSG_API_DELETE_PLACE} ${error}`);
-            res.status(500);
+            res.status(500).send(`${ERROR_MSG_API_DELETE_PLACE} ${error}`);
         });
   //  }
     res.end();
     }
-}  
+};
 
 const getPlaceDependenceById = async (req, res) => {
     const { id } = req.params;
@@ -190,4 +190,4 @@ module.exports = {
     putPlace,
     deletePlace,
     getPlaceDependenceById
-}
+};

@@ -123,7 +123,7 @@ const TripsResults = (props) => {
                 columns={columns}
                 localization={materialTableConfiguration.localization}
                 data={props.getSearchResults}
-                title="Viajes Obtenidos"
+                title="Viajes obtenidos"
                 actions={[
                     {
                         icon: () => <ShoppingCartIcon />,
