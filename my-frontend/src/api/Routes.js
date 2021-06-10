@@ -169,9 +169,13 @@ export const getRouteDependenceById = async (id) => {
 };
 
 export const getAvailableRoutes = async () => {
+    const token = localStorage.getItem('token');
     try {
         const instance = axios.create({
             baseURL: `${BACKEND_URL}/routes/custom/available`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         });
         const response = await instance.get();
         return response;

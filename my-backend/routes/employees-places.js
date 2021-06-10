@@ -20,7 +20,7 @@ router.post('/', authenticateAdminRol, postPlace);
 router.get('/:id', authenticateAdminRol, getPlaceById);
 
 // Retrieve all actives lugares
-router.get('/custom/actives', authenticateAdminRol, getActivePlaces);
+router.get('/custom/actives', getActivePlaces);
 
 // Retrieve place dependence by id
 router.get('/custom/placeDependencyById/:id', authenticateAdminRol, getPlaceDependenceById);

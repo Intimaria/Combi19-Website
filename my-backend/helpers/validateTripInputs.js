@@ -8,7 +8,8 @@ const {
     ERROR_MSG_EMPTY_PLACE_DESTINATION,
     ERROR_MSG_EMPTY_PLACE_DEPARTURE,
     ERROR_MSG_INVALID_PLACE_DESTINATION,
-    ERROR_MSG_INVALID_PLACE_DEPARTURE
+    ERROR_MSG_INVALID_PLACE_DEPARTURE,
+    ERROR_MSG_REPEAT_PLACES
 } = require('../const/messages.js');
 
 const {
@@ -21,6 +22,7 @@ let departureDayError;
 let departureError;
 let destinationError;
 let departureDateToSearchError;
+let repeatPlaceError;
 
 const validateTripToCreate = async (routeId, departureDay) => {
     let isDepartureDayValid = await verifyDepartureDayOverlapToCreate(routeId, departureDay);
@@ -138,14 +140,15 @@ const prepareTripResponse = () => {
 };
 
 const validateDataToSearch = async (departure, destination, departureDateToSearch) => {
-    return validateDeparture(departure) & validateDestination(destination) & validateDepartureDateToSearch(departureDateToSearch) ? null : searchErrorResponse();
+    return (((validateDeparture(departure) & validateDestination(destination)) && comparesPlaces(departure,destination)) & validateDepartureDateToSearch(departureDateToSearch)) ? null : searchErrorResponse();
 }
 
 const searchErrorResponse = () => {
     return {
         departureError,
         destinationError,
-        departureDateToSearchError
+        departureDateToSearchError,
+        repeatPlaceError
     }
 }
 
@@ -172,6 +175,16 @@ const validateDestination = (destination) => {
     }
 
     destinationError = null;
+    return true;
+}
+
+const comparesPlaces = (departure, destination) => {
+    if (departure === destination) {
+        repeatPlaceError = (ERROR_MSG_REPEAT_PLACES);
+        return false;
+    }
+
+    repeatPlaceError = (null);
     return true;
 }
 

@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import Tooltip from '@material-ui/core/Tooltip';
 import MenuItem from '@material-ui/core/MenuItem';
-import HelpIcon from '@material-ui/icons/Help';
-import { makeStyles } from "@material-ui/core/";
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker
@@ -25,7 +21,7 @@ import {
     ERROR_MSG_EMPTY_DATE,
     ERROR_MSG_INVALID_DATE,
     ERROR_MSG_REPEAT_PLACES,
-    ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE
+    ERROR_MSG_API_GET_PLACES
 } from "../const/messages.js";
 
 import {
@@ -33,7 +29,7 @@ import {
     REGEX_DATE_YYYY_MM_DD
 } from "../const/regex.js"
 
-import { getAvailableRoutes } from "../api/Routes";
+import { getActivePlaces } from "../api/Places";
 import { searchTrips } from "../api/Trips.js"
 import { Message } from './Message';
 
@@ -56,8 +52,7 @@ function SearchTripsModal(props) {
 
     const searchedData = props.getSearchedData ? props.getSearchedData : null;
 
-    const [availableRoutes, setAvailableRoutes] = React.useState([]);
-    const [filteredRoutes, setFilteredRoutes] = React.useState([]);
+    const [availablePlaces, setAvaiablePlaces] = React.useState([]);
     const [selectedDeparture, setSelectedDeparture] = React.useState(searchedData ? searchedData.departure : '');
     const [selectedDestination, setSelectedDestination] = React.useState(searchedData ? searchedData.destination : '');
     const [departureError, setDepartureError] = React.useState('');
@@ -106,6 +101,7 @@ function SearchTripsModal(props) {
             setDepartureError(postResponse.data.departureError);
             setDestinationError(postResponse.data.destinationError);
             setDepartureDateError(postResponse.data.departureDateError);
+            setRepeatPlaceError(postResponse.data.repeatPlaceError)
         }
         else if (postResponse?.status === 500) {
             setSuccessMessage(postResponse.data);
@@ -197,46 +193,29 @@ function SearchTripsModal(props) {
         return true;
     }
 
-    const requestGetAvailableRoutes = async () => {
-        let getAvailableRoutesResponse = await getAvailableRoutes();
-
-        if (getAvailableRoutesResponse.status === 200) {
-            const availableRoutes = await getAvailableRoutesResponse.data;
-
-            setAvailableRoutes(availableRoutes);
-
-            // Departures locations without duplicates
-            let seen = new Set();
-
-            const filteredRoutes = availableRoutes.filter(route => {
-                const duplicate = seen.has(route.departureId);
-                seen.add(route.departureId);
-                return !duplicate;
-            });
-
-            setFilteredRoutes(filteredRoutes);
-
-        } else if (getAvailableRoutesResponse.status === 500) {
-            getAvailableRoutesResponse(getAvailableRoutesResponse.data);
+    const requestGetPlaces = async () => {
+        let getResponse = await getActivePlaces();
+        if (getResponse?.status === 200) {
+            setAvaiablePlaces(getResponse.data);
+        } else if (getResponse?.status === 500) {
+            setSuccessMessage(`${getResponse.data}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: getAvailableRoutesResponse.data
+                message: getResponse.data
             });
-
             return true
         } else {
-            setSuccessMessage(`${ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE} ${getAvailableRoutesResponse}`);
+            setSuccessMessage(`${ERROR_MSG_API_GET_PLACES} ${getResponse}`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_GET_ROUTES_CUSTOM_AVAILABLE} ${getAvailableRoutesResponse}`
+                message: `${ERROR_MSG_API_GET_PLACES} ${getResponse}`
             });
         }
-    };
+    }
 
     const handleDeparture = (newValue) => {
         setSelectedDeparture(newValue.target.value);
         setDepartureError(null);
-        setSelectedDestination('');
         if (repeatPlaceError) {
             setRepeatPlaceError(null);
         }
@@ -265,7 +244,7 @@ function SearchTripsModal(props) {
     };
 
     useEffect(() => {
-        requestGetAvailableRoutes();
+        requestGetPlaces();
     }, [])
 
     return (
@@ -298,13 +277,13 @@ function SearchTripsModal(props) {
                             <MenuItem value={0} disabled>
                                 Seleccione el origen del viaje
                     </MenuItem>
-                            {(filteredRoutes) ?
-                                filteredRoutes.map((route) => (
+                            {(availablePlaces) ?
+                                availablePlaces.map((places) => (
                                     <MenuItem
-                                        key={route.routeId}
-                                        value={route.departureId}
+                                        key={places.id}
+                                        value={places.id}
                                     >
-                                        {route.departure}
+                                        {places.cityName}, {places.provinceName}
 
                                     </MenuItem>
                                 ))
@@ -312,14 +291,6 @@ function SearchTripsModal(props) {
                             }
                         </Select>
                     </FormControl>
-                    <Tooltip
-                        title="Se considera disponible si la ruta no está dada de baja">
-                        <FormHelperText className="text-white">
-                            <HelpIcon fontSize="small" />
-                     Sólo se visualizan las rutas disponibles
-                </FormHelperText>
-                    </Tooltip>
-
                     {
                         !repeatPlaceError && departureError ? <span className="text-danger small">{departureError}</span> :
                             <span className="text-danger small">&nbsp;</span>
@@ -329,7 +300,7 @@ function SearchTripsModal(props) {
                 <div className={styles.div}>
                     <FormControl className={styles.inputMaterial}
                         error={(destinationError || repeatPlaceError) ? true : false} >
-                        <InputLabel>ㅤDestino del viaje</InputLabel>
+                        <InputLabel>ㅤLugar de destino</InputLabel>
                         <Select label="ㅤLugar de destino" id="destination" labelId={"destination"}
                             disableUnderline={true}
                             name="destination"
@@ -342,26 +313,20 @@ function SearchTripsModal(props) {
                             <MenuItem value={0} disabled>
                                 Seleccione el destino del viaje
                     </MenuItem>
-                            {(availableRoutes) ?
-                                availableRoutes.filter((route) => route.departureId === selectedDeparture)
-                                    .map((route) => (
-                                        <MenuItem
-                                            key={route.routeId}
-                                            value={route.destinationId}
-                                        >
-                                            {route.destination}
-                                        </MenuItem>
-                                    )) : null
+                            {(availablePlaces) ?
+                                availablePlaces.map((places) => (
+                                    <MenuItem
+                                        key={places.id}
+                                        value={places.id}
+                                    >
+                                        {places.cityName}, {places.provinceName}
+
+                                    </MenuItem>
+                                ))
+                                : null
                             }
                         </Select>
                     </FormControl>
-                    <Tooltip
-                        title="Sólo se visualizan los destinos disponibles acorde al origen seleccionado">
-                        <FormHelperText className="text-white">
-                            <HelpIcon fontSize="small" />
-                    Destinos disponibles según el origen seleccionado
-                </FormHelperText>
-                    </Tooltip>
                     {
                         !repeatPlaceError && destinationError ? <span className="text-danger small">{destinationError}</span> :
                             <span className="text-danger small">&nbsp;</span>
@@ -385,7 +350,7 @@ function SearchTripsModal(props) {
                         <KeyboardDatePicker
                             InputProps={{ disableUnderline: true }}
                             className={styles.inputMaterial}
-                            style={{ margin: "0",paddingBottom: "2px" }}
+                            style={{ margin: "0", paddingBottom: "2px" }}
                             disableFuture={false}
                             disablePast={true}
                             disableToolbar
@@ -415,8 +380,7 @@ function SearchTripsModal(props) {
                     departureDateError ? <span className="text-danger small"> {departureDateError}</span> :
                         <span className="text-danger small">&nbsp;</span>
                 }
-                <br/> <br/
-                >
+                <br /> <br />
                 <div className={styles.button}>
                     <Button style={{ width: '100%', marginTop: "3px", borderRadius: 10 }}
                         variant="contained"

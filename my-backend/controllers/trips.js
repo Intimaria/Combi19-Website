@@ -220,7 +220,7 @@ const searchTrip = async (req, res) => {
             tra.REGISTRATION_NUMBER AS registrationNumber,
             CONCAT(depci.CITY_NAME, ', ', depp.PROVINCE_NAME) departure,
             CONCAT(desci.CITY_NAME, ', ', desp.PROVINCE_NAME) destination,
-            CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') AS departureDay FROM 
+            DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') AS departureDay FROM 
             TRIP tri INNER JOIN 
             ROUTE r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
             TRANSPORT tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN

@@ -43,14 +43,8 @@ export const getPlaces = async () => {
 };
 
 export const getActivePlaces = async () => {
-    const token = localStorage.getItem('token');
       try {
-          let response = await axios.get(`${BACKEND_URL}/places/custom/actives`,
-              {
-                  headers: {
-                      Authorization: `Bearer ${token}`
-                  }
-              });
+          let response = await axios.get(`${BACKEND_URL}/places/custom/actives`);
           return response;
       } catch (error) {
           if (error.response?.status) {
