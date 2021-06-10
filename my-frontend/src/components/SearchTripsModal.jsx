@@ -266,7 +266,7 @@ function SearchTripsModal(props) {
 
     useEffect(() => {
         requestGetAvailableRoutes();
-    }, [])
+    }, []);
 
     return (
         <div className={`${styles.modal} bg-dark`} >
@@ -276,7 +276,7 @@ function SearchTripsModal(props) {
                         handleClose={options.handleClose} />
                     : null
             }
-            <h2 align={'center'} className="text-light"> Buscar Viajes </h2>
+            <h2 align={'center'} className="text-light"> Buscar viajes </h2>
             <form onSubmit={mySubmitHandler}>
                 <div className={styles.div}>
                     <FormControl
@@ -284,10 +284,10 @@ function SearchTripsModal(props) {
                         style={{ paddingBottom: "2px" }}
                         error={(departureError || repeatPlaceError) ? true : false}
                         InputProps={{ disableUnderline: true }}>
-                        <InputLabel>ㅤLugar de Origen</InputLabel>
+                        <InputLabel>ㅤLugar de origen</InputLabel>
                         <Select
                             disableUnderline={true}
-                            label="ㅤLugar de Origen"
+                            label="ㅤLugar de origen"
                             id="departure"
                             labelId="departure"
                             name="departure"
@@ -312,14 +312,6 @@ function SearchTripsModal(props) {
                             }
                         </Select>
                     </FormControl>
-                    <Tooltip
-                        title="Se considera disponible si la ruta no está dada de baja">
-                        <FormHelperText className="text-white">
-                            <HelpIcon fontSize="small" />
-                     Sólo se visualizan las rutas disponibles
-                </FormHelperText>
-                    </Tooltip>
-
                     {
                         !repeatPlaceError && departureError ? <span className="text-danger small">{departureError}</span> :
                             <span className="text-danger small">&nbsp;</span>
