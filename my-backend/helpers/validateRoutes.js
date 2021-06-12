@@ -215,11 +215,8 @@ const validateRouteTripsDependence = async (id) =>{
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT * FROM TRIP t INNER JOIN TICKET ON(ID_TRIP=TRIP_ID) 
-        WHERE t.ACTIVE = 1 and ID_ROUTE = ${id} AND ID_STATUS_TICKET = 1 
-        UNION
-        SELECT * FROM TRIP t1 INNER JOIN TICKET ON(ID_TRIP=TRIP_ID) 
-        WHERE t1.ACTIVE = 1 and ID_ROUTE = ${id} AND ID_STATUS_TICKET = 2`;
+        SELECT * FROM TRIP t INNER JOIN ROUTE ON(ID_ROUTE=ROUTE_ID) 
+        WHERE ROUTE_ID=${id} AND t.ACTIVE = 1`;
         const [rows] = await connection.execute(sqlSelect, [id]);
         connection.end();
         return rows.length >= 1;
