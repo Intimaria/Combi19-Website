@@ -45,7 +45,6 @@ const columns = [
     {title: 'Ciudad', field: 'cityName'},
     {title: 'Provincia', field: 'provinceName'},
     {title: 'Estado', field: 'active'},
-    {title: 'En Rutas', field: 'inRoute'}
 ];
 
 const Provinces = [
