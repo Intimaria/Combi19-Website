@@ -27,7 +27,7 @@ const {
     validatePlaceToUpdate
 } = require('../helpers/validatePlaceDependency.js');
 
-const {normalizePlaces} = require('../helpers/normalizeResult.js');
+const {normalizePlaces, normalizePlacesWithRouteDependencies} = require('../helpers/normalizeResult.js');
 
 const {NO_ACTIVE, ACTIVE} = require('../const/config.js');
 
@@ -45,6 +45,36 @@ const getProvinces = async (req, res) => {
 };
 
 
+const getPlacesWithDependencies = async (req, res) => {
+    const connection = await prepareConnection();
+    await connection.query(
+        `SELECT DISTINCT C.CITY_ID, C.CITY_NAME, C.ID_PROVINCE,  P.PROVINCE_NAME, C.ACTIVE,        
+        (CASE WHEN (NO_DEPS.ACTIVE IS NULL) THEN 1
+        ELSE 0             
+        END) AS ROUTE
+        FROM CITY C
+        INNER JOIN PROVINCE P ON (C.ID_PROVINCE=P.PROVINCE_ID)
+        LEFT JOIN
+            (SELECT * FROM CITY C1
+            WHERE NOT EXISTS (
+                SELECT CITY_ID FROM (
+                    SELECT R1.ID_DEPARTURE AS CITY_ID, R1.ACTIVE AS ACTIVE
+                    FROM ROUTE R1
+                    UNION
+                    SELECT R2.ID_DESTINATION AS CITY_ID, R2.ACTIVE AS ACTIVE
+                    FROM ROUTE R2 ) C2
+                WHERE C2.CITY_ID=C1.CITY_ID AND C2.ACTIVE=1)
+        ) NO_DEPS ON (NO_DEPS.CITY_ID=C.CITY_ID)`, []).then((result) => {
+        connection.end();
+        const normalizeResults = normalizePlacesWithRouteDependencies(result[0]);
+        res.status(200).send(normalizeResults);
+    }).catch(function (error) {
+        console.log(`${ERROR_MSG_API_GET_PLACES} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_GET_PLACES} ${error}`);
+    });
+    res.end();
+};
+
 const getPlaces = async (req, res) => {
     const connection = await prepareConnection();
     await connection.query("SELECT c.CITY_ID, c.CITY_NAME, c.ACTIVE, c.ID_PROVINCE, p.PROVINCE_NAME FROM CITY as c INNER JOIN PROVINCE as p ON (c.ID_PROVINCE = p.PROVINCE_ID) ORDER BY c.CITY_NAME ASC, p.PROVINCE_NAME ASC", []).then((result) => {
@@ -57,6 +87,7 @@ const getPlaces = async (req, res) => {
     });
     res.end();
 };
+
 
 const getActivePlaces = async (req, res) => {
     const connection = await prepareConnection();
@@ -189,5 +220,6 @@ module.exports = {
     getPlaceById,
     putPlace,
     deletePlace,
-    getPlaceDependenceById
+    getPlaceDependenceById,
+    getPlacesWithDependencies
 };

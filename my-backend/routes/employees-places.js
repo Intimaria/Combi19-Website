@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { getProvinces, getPlaceDependenceById, getActivePlaces, getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
+const { getProvinces, getPlacesWithDependencies, getPlaceDependenceById, getActivePlaces, getPlaces, postPlace, getPlaceById, putPlace, deletePlace } = require("../controllers/places");
 
 const { authenticateAdminRol } = require("../middlewares/authorization.js");
 
@@ -24,6 +24,9 @@ router.get('/custom/actives', getActivePlaces);
 
 // Retrieve place dependence by id
 router.get('/custom/placeDependencyById/:id', authenticateAdminRol, getPlaceDependenceById);
+
+// Retrieve places with dependences column
+router.get('/custom/deps', authenticateAdminRol, getPlacesWithDependencies);
 
 // Update a lugares by id
 router.put('/:id', authenticateAdminRol, putPlace);
