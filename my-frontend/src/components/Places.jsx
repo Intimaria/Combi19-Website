@@ -291,10 +291,10 @@ function Places() {
         } else if (action === "Eliminar" && place.inRoute === 'false'){
             openCloseModalDelete()
         } else {
-            setSuccessMessage("Accion denegada: El lugar figura en rutas activas");
+            setSuccessMessage(`No se puede ${action.toLowerCase()}, el lugar figura en rutas activas`);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: "Accion denegada: El lugar figura en rutas activas"
+                message: `No se puede ${action.toLowerCase()}, el lugar figura en rutas activas`
             });
             setSelectedPlace(formatSelectedPlace);
             setDefaultErrorMessages();

@@ -338,7 +338,8 @@ function Drivers() {
         } else {
             await openCloseModalDelete(driver)
         }
-    }
+    };
+
     //Metodos para cerrar y abrir modales, pone los valores por defecto cuando los abro
     const openCloseModalCreate = () => {
         setCreateModal(!createModal);
@@ -348,7 +349,7 @@ function Drivers() {
             setShowPassword1(false);
             setShowPassword2(false);
         }
-    }
+    };
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
@@ -357,7 +358,8 @@ function Drivers() {
             setShowPassword1(false);
             setShowPassword2(false);
         }
-    }
+    };
+
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
         if (updateModal) {
@@ -366,7 +368,7 @@ function Drivers() {
             setShowPassword1(false);
             setShowPassword2(false);
         }
-    }
+    };
 
     const openCloseModalDelete = async (driver) => {
         if (!deleteModal) {

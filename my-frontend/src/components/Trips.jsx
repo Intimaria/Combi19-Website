@@ -498,12 +498,15 @@ function Trips() {
             await requestGetAvailableRoutes();
         } else {
             setDefaultValues();
-
         }
     };
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
+
+        if (viewModal) {
+            setDefaultValues();
+        }
     };
 
     const openCloseModalUpdate = async (trip) => {
@@ -829,7 +832,8 @@ function Trips() {
         <div className={styles.modal}>
             <p>¿Estás seguro que deseas eliminar el viaje con
                 origen <b>{selectedTrip && selectedTrip.route.departure}</b>,
-                destino <b>{selectedTrip && selectedTrip.route.destination}</b> y fecha <b>{`${moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}hs`}</b>?
+                destino <b>{selectedTrip && selectedTrip.route.destination}</b> y
+                fecha <b>{`${moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}hs`}</b>?
             </p>
             <div align="right">
                 <Button color="secondary" onClick={() => requestDeleteTrip()}>SÍ, ELIMINAR</Button>
