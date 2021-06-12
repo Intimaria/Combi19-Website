@@ -296,6 +296,7 @@ function Places() {
                 ...options, open: true, type: 'error',
                 message: "Accion denegada: El lugar figura en rutas activas"
             });
+            setSelectedPlace(formatSelectedPlace);
             setDefaultErrorMessages();
         }
 
