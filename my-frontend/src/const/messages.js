@@ -9,6 +9,7 @@ export const ERROR_MSG_EMPTY_SURNAME = '* Ingrese un apellido';
 export const ERROR_MSG_INVALID_SURNAME = '* El apellido debe poseer solo caracteres alfabéticos';
 export const ERROR_MSG_EMPTY_DATE = '* Ingrese una fecha';
 export const ERROR_MSG_INVALID_DATE = '* La fecha ingresada es inválida';
+export const ERROR_MSG_DATE_LESS_THAN_CURRENT = '* La fecha debe ser posterior o igual a la actual';
 export const ERROR_MSG_INVALID_AGE = '* Debe ser mayor de 18 años';
 export const ERROR_MSG_EMPTY_PASSWORD = '* Ingrese una contraseña';
 export const ERROR_MSG_EMPTY_ACTUAL_PASSWORD = '* Ingrese la contraseña actual';

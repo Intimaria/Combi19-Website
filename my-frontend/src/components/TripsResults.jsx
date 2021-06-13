@@ -11,9 +11,18 @@ import moment from "moment";
 const columns = [
     { title: 'Origen', field: 'departure' },
     { title: 'Destino', field: 'destination' },
-    { title: 'Fecha de salida', field: 'departureDay' },
+    {
+        title: 'Fecha de salida',
+        render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
+        customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+    },
     { title: 'Combi', field: 'registrationNumber' },
-    { title: 'Precio', field: 'price' }
+    { 
+    title: 'Precio',
+    render: (data) => `${(data.price).replace('.', ',')}`,
+    customFilterAndSearch: (term, data) => (`${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1
+    },
+    { title: 'Asientos disponibles', field: 'availableSeatings' },
 ];
 
 const modalSearchStyles = makeStyles((theme) => ({

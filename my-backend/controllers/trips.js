@@ -213,32 +213,35 @@ const searchTrip = async (req, res) => {
             const connection = await prepareConnection();
             let sqlSelect =
             `
-            SELECT tri.TRIP_ID AS tripId,
-            tri.PRICE AS price,
-            tri.ID_ROUTE AS routeId,
-            tra.SEATING as seatings,
+            SELECT tri1.TRIP_ID AS tripId,
+            tri1.PRICE AS price,
+            tri1.ID_ROUTE AS routeId,
+            tra.SEATING - ( SELECT SUM(t.QUANTITY)
+                FROM TICKET t
+                INNER JOIN TRIP tri2 ON t.ID_TRIP = tri2.TRIP_ID
+                WHERE t.ID_STATUS_TICKET = 1 AND tri1.TRIP_ID = tri2.TRIP_ID) as availableSeatings,
             tra.REGISTRATION_NUMBER AS registrationNumber,
             CONCAT(depci.CITY_NAME, ', ', depp.PROVINCE_NAME) departure,
             CONCAT(desci.CITY_NAME, ', ', desp.PROVINCE_NAME) destination,
-            DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') AS departureDay FROM 
-            TRIP tri INNER JOIN 
-            ROUTE r ON (tri.ID_ROUTE=r.ROUTE_ID) INNER JOIN
+            DATE_FORMAT(tri1.DEPARTURE_DAY, '%Y-%m-%d %H:%i') AS departureDay FROM 
+            TRIP tri1 INNER JOIN 
+            ROUTE r ON (tri1.ID_ROUTE=r.ROUTE_ID) INNER JOIN
             TRANSPORT tra ON (tra.TRANSPORT_ID=r.ID_TRANSPORT) INNER JOIN
             CITY depci ON (r.ID_DEPARTURE=depci.CITY_ID) INNER JOIN
             PROVINCE depp ON (depci.ID_PROVINCE=depp.PROVINCE_ID) INNER JOIN
             CITY desci ON (r.ID_DESTINATION=desci.CITY_ID) INNER JOIN
             PROVINCE desp ON (desci.ID_PROVINCE=desp.PROVINCE_ID)
             WHERE 
-            tri.ACTIVE = ${ACTIVE} AND
+            tri1.ACTIVE = ${ACTIVE} AND
             depci.CITY_ID = ${departure}  AND
             desci.CITY_ID = ${destination} AND
-            (CAST(tri.DEPARTURE_DAY as DATE)) = "${departureDate}"
+            (CAST(tri1.DEPARTURE_DAY as DATE)) = "${departureDate}"
           `;
 
             const [rows] = await connection.execute(sqlSelect);
 
             connection.end();
-            res.status(200).send(rows);
+            res.status(200).send(rows.filter(trip => trip.availableSeatings > 0));
         } catch (error) {
             console.log(`${ERROR_MSG_API_SEARCH_TRIPS} ${error}`);
             res.status(500);
