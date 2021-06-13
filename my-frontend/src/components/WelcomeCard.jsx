@@ -9,15 +9,15 @@ import { makeStyles } from "@material-ui/core/";
 const useStyles = makeStyles({
   root: {
     maxWidth: "48%",
-    marginLeft: "7%",
-    marginTop: "3%",
+    marginLeft: "3%",
+    maxHeight: "100%",
     backdropFilter: "blur(40)px",
     boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
     borderRadius: 10,
     float: "left"
   },
   media: {
-    height: 220
+    height: 245
   }
 });
 

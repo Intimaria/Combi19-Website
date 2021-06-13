@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, CardHeader, Grid, StepContent, Typography } from "@material-ui/core";
+import { Box, Card, CardActionArea, CardContent, CardHeader, Divider, Grid, StepContent, Typography } from "@material-ui/core";
 import React, {useEffect, useState} from 'react';
 import {
     getAllComments,
@@ -18,29 +18,29 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
     margin: 'auto',
     float: "center",
+    borderRadius: 10
   },
   item: {
   },
   header: {
-    backgroundColor: "rgba(51, 156, 165, 1)",
+    backgroundColor: "black",
     maxHeight: 2
   },
   content: {
     overflow: "scroll", 
     whiteSpace: "normal",
     textOverflow: "ellipsis",
-    color: theme.palette.text.secondary,
-    fontFamily: "Garamond",
+    color: "black",
+    fontFamily: "Arial",
     fontSize: "small",
-    fontStyle: "oblique",
+    fontStyle: "none",
     minHeight: 180,
     maxHeight: 180,
     textAlign: "center",
-    borderRadius: 20,
-    padding: 20
+    padding: 10
   },
   footer: {
-    color: "rgba(58, 100, 108, 1)",
+    color: "black",
     fontSize: 12,
     fontFamily: "Arial",
     textTransform: "capitalize",
@@ -49,12 +49,11 @@ const useStyles = makeStyles((theme) => ({
     color: "prussian-blue",
   },
   container: {
-    borderRadius: 10,
-    maxWidth: "97%",
+    maxWidth: "88%",
     float: "center",
     margin: 'auto',
     backdropFilter: "blur(40)px",
-   // backgroundColor: "rgba(255,255,255,0.2)",
+    //backgroundColor: "rgba(255,255,255,0.2)",
   },
 }));
 
@@ -126,28 +125,7 @@ export default function TestimonialCard() {
     }, []);
   return (
     <div className={classes.root}>
-      <br/>
-    {content && 
-      <Box textAlign='center' color="lightgray"> 
-      { !seeAll ?
-        <Button 
-            size="medium" 
-            variant="outlined"
-            color="inherit" 
-            onClick={() => { setSeeAll(true) }}>
-          <ArrowDropDownIcon/> Ver Más Testimonios de Usuarios 
-          </Button>
-          :
-          <Button 
-            size="medium" 
-            color="inherit" 
-            variant="outlined" 
-            onClick={() => { setSeeAll(false)}}>
-          <ArrowDropUpIcon/> Ver Menos Testimonios de Usuarios
-          </Button>
-      } 
-      </Box>
-    }
+     <Divider/>
     <Grid 
         className={classes.container}
         container
@@ -180,7 +158,27 @@ export default function TestimonialCard() {
         </Grid>
      ))}
     </Grid>
-
+    {content && 
+      <Box textAlign='center' color="lightgray"> 
+      { !seeAll ?
+        <Button 
+            size="small" 
+            variant="extended"
+            color="primary" 
+            onClick={() => { setSeeAll(true) }}>
+          <ArrowDropDownIcon/> Ver Más Testimonios de Usuarios 
+          </Button>
+          :
+          <Button 
+            size="small" 
+            color="primary" 
+            variant="extended" 
+            onClick={() => { setSeeAll(false)}}>
+          <ArrowDropUpIcon/> Ver Menos Testimonios de Usuarios
+          </Button>
+      } 
+      </Box>
+    }
 
   </div>
   );
