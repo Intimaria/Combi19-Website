@@ -21,7 +21,8 @@ import {
     ERROR_MSG_EMPTY_DATE,
     ERROR_MSG_INVALID_DATE,
     ERROR_MSG_REPEAT_PLACES,
-    ERROR_MSG_API_GET_PLACES
+    ERROR_MSG_API_GET_PLACES,
+    ERROR_MSG_DATE_LESS_THAN_CURRENT
 } from "../const/messages.js";
 
 import {
@@ -174,7 +175,12 @@ function SearchTripsModal(props) {
         const currentMonth = currentDate.getMonth();
         const currentDay = currentDate.getDate();
 
-        if (new Date(year, month - 1, day) < (new Date(currentYear, currentMonth, currentDay)) || new Date(year, month - 1, day) > new Date(currentYear + 3, currentMonth, currentDay) || month === 0 || month > 12) {
+        if (new Date(year, month - 1, day) < (new Date(currentYear, currentMonth, currentDay))) {
+            setDepartureDateError(ERROR_MSG_DATE_LESS_THAN_CURRENT);
+            return false;
+        }
+
+        if (new Date(year, month - 1, day) > new Date(currentYear + 3, currentMonth, currentDay) || month === 0 || month > 12) {
             setDepartureDateError(ERROR_MSG_INVALID_DATE);
             return false;
         }
