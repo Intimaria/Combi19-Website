@@ -153,13 +153,27 @@ function PassengerTrips() {
                 aria-controls="viaje activo"
                 id="activo"
                 >
-                "Viajes Activos"
+                Viajes Activos
                 </AccordionSummary>
                 <AccordionDetails>
+                <Grid container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                wrap="wrap"
+                alignContent="center"
+                spacing={3}>
                 {activeTrips.map((elem, index) => (
-                <PassengerTicket key={index} tripToBuy={elem}/>
-                ))
+                    <Grid style = {{width: "100%"}}
+                    direction="column"
+                    item
+                    flexGrow={0}
+                    flexShrink={0}>
+                    <PassengerTicket key={index} tripToBuy={elem}/>
+                    </Grid>
+                    ))
                 }
+                </Grid>
                 </AccordionDetails>
             </Accordion>
             <Divider  />
@@ -169,7 +183,7 @@ function PassengerTrips() {
                 aria-controls="viajes pendientes"
                 id="pendiente"
                 >
-                "Viajes Pendientes"
+                Viajes Pendientes
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -180,13 +194,15 @@ function PassengerTrips() {
                 alignContent="center"
                 spacing={3}>
                 {pendingTrips.map((elem, index) => (
-                <Grid 
-                direction="column"
-                item
-                justifyContent="flex-start">
-                <PassengerTicket key={index} tripToBuy={elem}/>
-                </Grid>
-                ))
+                    <Grid style = {{width: "100%"}}
+                    direction="column"
+                    item
+                    flexGrow={0}
+                    flexShrink={0}>
+                    <PassengerTicket 
+                        key={index} tripToBuy={elem}/>
+                    </Grid>
+                    ))
                 }
                 </Grid>
                 </AccordionDetails>
@@ -205,7 +221,7 @@ function PassengerTrips() {
                 aria-controls="viajes finalizados"
                 id="finalizados"
                 >
-                "Viajes Finalizados"
+                Viajes Finalizados
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -215,16 +231,16 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-
                 {pastTrips.map((elem, index) => (
-                <Grid 
-                direction="column"
-                item
-                justifyContent="flex-start">
-                <PassengerTicket 
-                    key={index} tripToBuy={elem}/>
-                </Grid>
-                ))
+                    <Grid style = {{width: "100%"}}
+                    direction="column"
+                    item
+                    flexGrow={0}
+                    flexShrink={0}>
+                    <PassengerTicket 
+                        key={index} tripToBuy={elem}/>
+                    </Grid>
+                    ))
                 }
                 </Grid>
                 {/* <MaterialTable
@@ -240,7 +256,7 @@ function PassengerTrips() {
                 aria-controls="viajes rechazados"
                 id="rechazados"
                 >
-                "Viajes Rechazados"
+                Viajes Dados de Baja
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -251,12 +267,14 @@ function PassengerTrips() {
                 alignContent="center"
                 spacing={3}>
                 {rejectedTrips.map((elem, index) => (
-                <Grid 
-                direction="column"
-                item
-                justifyContent="flex-start">
-                <PassengerTicket key={index} tripToBuy={elem}/>
-                </Grid>
+                    <Grid style = {{width: "100%"}}
+                    direction="column"
+                    item
+                    flexGrow={0}
+                    flexShrink={0}>
+                    <PassengerTicket 
+                        key={index} tripToBuy={elem}/>
+                    </Grid>
                 ))
                 }
                 </Grid>
