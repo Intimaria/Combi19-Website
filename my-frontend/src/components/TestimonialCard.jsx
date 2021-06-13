@@ -166,7 +166,7 @@ export default function TestimonialCard() {
             variant="extended"
             color="primary" 
             onClick={() => { setSeeAll(true) }}>
-          <ArrowDropDownIcon/> Ver Más Testimonios de Usuarios 
+          <ArrowDropDownIcon/> Ver Todos Los Testimonios de Usuarios 
           </Button>
           :
           <Button 
