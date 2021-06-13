@@ -1,20 +1,21 @@
 // Importo de elemntos de material ui, las apis que utilizo y el componente del mensaje
-import React, {useState, useEffect} from 'react';
-import {Modal, TextField, Button} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Modal, TextField, Button } from '@material-ui/core';
 import MaterialTable from '@material-table/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Tooltip from '@material-ui/core/Tooltip';
-import {getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById} from '../api/Products.js';
-import {Message} from "./Message";
+import { getProducts, postProducts, putProducts, deleteProducts, getProductDependenceById } from '../api/Products.js';
+import { Message } from "./Message";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import {formatDecimalNumber} from "../helpers/numbers";
+import { formatDecimalNumber } from "../helpers/numbers";
 //Los estilos de los modals
-import {useStyles} from '../const/componentStyles';
+import { useStyles } from '../const/componentStyles';
+import Alert from '@material-ui/lab/Alert';
 
 // Importo los mensajes de error
 import {
@@ -41,20 +42,20 @@ import {
 } from '../const/regex.js';
 
 // La configuracion en castellano
-import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import { materialTableConfiguration } from '../const/materialTableConfiguration';
 
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
-    {title: 'Nombre', field: 'name'},
-    {title: 'Precio', field: 'price'},
-    {title: 'Tipo', field: 'typeProductDescription'},
-    {title: 'Estado', field: 'active'}
+    { title: 'Nombre', field: 'name' },
+    { title: 'Precio', field: 'price' },
+    { title: 'Tipo', field: 'typeProductDescription' },
+    { title: 'Estado', field: 'active' }
 ];
 
 function Products() {
     //Configuracion del mensaje de exito o error
     const handleCloseMessage = () => {
-        setOptions({...options, open: false});
+        setOptions({ ...options, open: false });
     };
 
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
@@ -71,6 +72,9 @@ function Products() {
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
 
+    // Boolean para controlar la edicion de datos
+    const [disabledEdit, setDisableEdit] = React.useState(false);
+
     //Mensaje de error de los inputs
     const [nameError, setNameError] = React.useState(null);
     const [typeProductError, setTypeProductError] = React.useState(null);
@@ -85,11 +89,11 @@ function Products() {
     const [typeProductSelected, setTypeProductSelected] = useState(null);
     //Elementos para configurar los mensajes
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     //Cuando se actualiza un valor de un input esta funcion actualiza los datos
     const handleChange = (textFieldAtributes) => {
-        const {name, value} = textFieldAtributes.target;
+        const { name, value } = textFieldAtributes.target;
         if (name === 'typeProduct') {
             setTypeProductError(false);
             setTypeProductSelected(value);
@@ -318,22 +322,24 @@ function Products() {
         if (!updateModal) {
             let dependenceResponse = await getProductDependenceById(product.idProduct);
 
-            // If the product was bought by a customer, the modal will NOT be open
-            if (dependenceResponse.data.productClientDependence) {
-                setSuccessMessage(ERROR_MSG_API_MODIFY_PRODUCT_BUY_DEPENDENCE);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: ERROR_MSG_API_MODIFY_PRODUCT_BUY_DEPENDENCE
-                });
-            } else {
-                // If the product was NOT bought by a customer, the modal will be open
+            // If the product was bought by a customer, editing the name and type of the product will not be allowed
+            if (dependenceResponse?.status === 200) {
+                setDisableEdit(dependenceResponse.data.productClientDependence);
                 setTypeProductSelected(selectedProduct.typeProductId);
                 setUpdateModal(!updateModal);
+            }
+            else {
+                setSuccessMessage(`Ocurrio un error al verificar la dependencia de el producto`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `Ocurrio un error al verificar la dependencia de el producto`
+                });
             }
         } else {
             // The modal is closed
             setUpdateModal(!updateModal);
             // Data are cleaned when the modal is closed
+            setDisableEdit(false);
             setSelectedProduct(formatSelectedProduct);
             setTypeProductSelected('');
             setDefaultErrorMessages();
@@ -374,24 +380,27 @@ function Products() {
     //Inputs para 2 diferentes modales
     const inputsToCreateOrModify = (
         <div>
-            <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                       required
-                       inputProps={{maxLength: 45}}
-                       autoComplete='off'
-                       error={(nameError) ? true : false}
-                       helperText={(nameError) ? nameError : false}
-                       onChange={handleChange}
-                       value={selectedProduct && selectedProduct.name}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Precio" name="price"
-                       required
-                       inputProps={{maxLength: 8}}
-                       autoComplete='off'
-                       error={(priceError) ? true : false}
-                       helperText={(priceError) ? priceError : false}
-                       onChange={handleChange}
-                       value={selectedProduct && selectedProduct.price}/>
-            <br/>
+            <Tooltip title={disabledEdit ? "El producto ya fue comprado, no se permite editar el nombre del mismo" : "Nombre del producto"}>
+                <TextField className={styles.inputMaterial} label="Nombre" name="name"
+                    disabled={disabledEdit}
+                    inputProps={{ maxLength: 45 }}
+                    autoComplete='off'
+                    error={(nameError) ? true : false}
+                    helperText={(nameError) ? nameError : false}
+                    onChange={handleChange}
+                    value={selectedProduct && selectedProduct.name} />
+            </Tooltip>
+            <br />
+            <Tooltip title="Precio del producto">
+                <TextField className={styles.inputMaterial} label="Precio" name="price"
+                    inputProps={{ maxLength: 8 }}
+                    autoComplete='off'
+                    error={(priceError) ? true : false}
+                    helperText={(priceError) ? priceError : false}
+                    onChange={handleChange}
+                    value={selectedProduct && selectedProduct.price} />
+            </Tooltip>
+            <br />
         </div>
     );
 
@@ -400,14 +409,14 @@ function Products() {
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO PRODUCTO</h3>
             {inputsToCreateOrModify}
+            <Tooltip title="Tipo del producto">
             <FormControl className={styles.inputMaterial}
-                         required
-                         error={(typeProductError) ? true : false}>
+                error={(typeProductError) ? true : false}>
                 <InputLabel>Tipo</InputLabel>
                 <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
-                        className={styles.inputMaterial}
-                        onChange={handleChange}
-                        value={(typeProductSelected) ? typeProductSelected : 0}
+                    className={styles.inputMaterial}
+                    onChange={handleChange}
+                    value={(typeProductSelected) ? typeProductSelected : 0}
                 >
                     <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
                     <MenuItem key={1} value={1}> Dulce </MenuItem>
@@ -415,6 +424,7 @@ function Products() {
                 </Select>
                 <FormHelperText>{(typeProductError) ? typeProductError : false}</FormHelperText>
             </FormControl>
+            </Tooltip>
             <div align="right">
                 <Button color="primary" onClick={() => requestPost()}>GUARDAR</Button>
                 <Button onClick={() => openCloseModalCreate()}>CANCELAR</Button>
@@ -427,17 +437,17 @@ function Products() {
         <div className={styles.modal}>
             <h3>DETALLE DE EL PRODUCTO</h3>
             <TextField className={styles.inputMaterial} label="Estado" name="active"
-                       value={selectedProduct && selectedProduct.active} autoComplete="off"/>
-            <br/>
+                value={selectedProduct && selectedProduct.active} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Nombre" name="name"
-                       value={selectedProduct && selectedProduct.name} autoComplete="off"/>
-            <br/>
+                value={selectedProduct && selectedProduct.name} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                       value={selectedProduct && selectedProduct.price} autoComplete="off"/>
-            <br/>
+                value={selectedProduct && selectedProduct.price} autoComplete="off" />
+            <br />
             <TextField className={styles.inputMaterial} label="Tipo" name="typeProduct"
-                       value={selectedProduct && selectedProduct.typeProductId} autoComplete="off"/>
-            <br/><br/>
+                value={selectedProduct && selectedProduct.typeProductId} autoComplete="off" />
+            <br /><br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
@@ -448,26 +458,29 @@ function Products() {
     const bodyEdit = (
         <div className={styles.modal}>
             <h3>EDITAR PRODUCTO</h3>
+            {disabledEdit ? <Alert severity="warning">El producto ya fue comprado</Alert> : null}
             <Tooltip title="Debe eliminar el producto para cambiar el estado">
                 <TextField className={styles.inputMaterial} label="Estado" name="active"
-                           value={selectedProduct && selectedProduct.active} disabled/>
+                    value={selectedProduct && selectedProduct.active} disabled />
             </Tooltip>
             {inputsToCreateOrModify}
-            <FormControl className={styles.inputMaterial}
-                         required
-                         error={(typeProductError) ? true : false}>
-                <InputLabel>Tipo</InputLabel>
-                <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
+            <Tooltip title={disabledEdit ? "El producto ya fue comprado, no se permite editar el tipo del mismo" : "Tipo del producto"}>
+                <FormControl className={styles.inputMaterial}
+                    disabled={disabledEdit}
+                    error={(typeProductError) ? true : false}>
+                    <InputLabel>Tipo</InputLabel>
+                    <Select label="Tipo" id="typeProduct" labelId={"typeProduct"} name="typeProduct"
                         className={styles.inputMaterial}
                         value={(typeProductSelected) ? typeProductSelected : selectedProduct.typeProductId}
                         onChange={handleChange}
-                >
-                    <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
-                    <MenuItem key={1} value={1}> Dulce </MenuItem>
-                    <MenuItem key={2} value={2}> Salado </MenuItem>
-                </Select>
-                <FormHelperText>{(typeProductError) ? typeProductError : false}</FormHelperText>
-            </FormControl>
+                    >
+                        <MenuItem value={0} disabled> Seleccione un tipo </MenuItem>
+                        <MenuItem key={1} value={1}> Dulce </MenuItem>
+                        <MenuItem key={2} value={2}> Salado </MenuItem>
+                    </Select>
+                    <FormHelperText>{(typeProductError) ? typeProductError : false}</FormHelperText>
+                </FormControl>
+            </Tooltip>
             <div align="right">
                 <Button color="primary" onClick={() => requestPut()}>CONFIRMAR CAMBIOS</Button>
                 <Button onClick={() => openCloseModalUpdate()}>CANCELAR</Button>
@@ -493,25 +506,25 @@ function Products() {
             {   // Esto es para que se muestre la ventanita del mensaje
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                             handleClose={options.handleClose}/>
+                        handleClose={options.handleClose} />
                     : null
             }
-            <br/>
-            <Button style={{marginLeft: '8px'}}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnNewDriver"
-                    startIcon={<ShoppingCartIcon/>}
-                    onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
-            <br/><br/>
+            <br />
+            <Button style={{ marginLeft: '8px' }}
+                variant="contained"
+                size="large"
+                color="primary"
+                id="btnNewDriver"
+                startIcon={<ShoppingCartIcon />}
+                onClick={() => openCloseModalCreate()}>NUEVO PRODUCTO</Button>
+            <br /><br />
             <MaterialTable
                 columns={columns}
                 data={data}
                 title="Lista de productos"
                 actions={[
                     {
-                        icon: () => <VisibilityIcon/>,
+                        icon: () => <VisibilityIcon />,
                         tooltip: 'Visualización de producto',
                         onClick: (event, rowData) => selectProduct(rowData, "Ver")
                     },
