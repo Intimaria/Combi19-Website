@@ -60,6 +60,23 @@ const normalizePlaces = (rows) => {
     }
     return results;
 };
+
+const normalizePlacesWithRouteDependencies = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let place = {
+            id: rows[index].CITY_ID,
+            cityName: rows[index].CITY_NAME,
+            active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
+            idProvince: rows[index].ID_PROVINCE,
+            provinceName: rows[index].PROVINCE_NAME,
+            inRoute: rows[index].ROUTE === 1 ? "true" : "false"
+        };
+        results.push(place);
+    }
+    return results;
+};
 const normalizeRoutes = (rows) => {
     let results = [];
 
@@ -187,6 +204,7 @@ module.exports = {
     normalizeTransports,
     normalizeDrivers,
     normalizePlaces,
+    normalizePlacesWithRouteDependencies,
     normalizeRoutes,
     normalizeProducts,
     normalizeTrips,

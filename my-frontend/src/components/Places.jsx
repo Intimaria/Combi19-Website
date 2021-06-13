@@ -21,6 +21,7 @@ import React, {useEffect, useState} from 'react';
 import {
     deletePlace,
     getPlaces,
+    getPlacesDeps,
     postPlace,
     putPlace
 } from '../api/Places';
@@ -43,7 +44,7 @@ import {useStyles} from '../const/componentStyles';
 const columns = [
     {title: 'Ciudad', field: 'cityName'},
     {title: 'Provincia', field: 'provinceName'},
-    {title: 'Estado', field: 'active'}
+    {title: 'Estado', field: 'active'},
 ];
 
 const Provinces = [
@@ -82,22 +83,18 @@ function Places() {
     const styles = useStyles();
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
-    //Aca se guarda los datos de la fila seleccionada
-    const [selectedPlace, setSelectedPlace] = useState({
-        id: '',
-        cityName: '',
-        active: '',
-        idProvince: '',
-        provinceName: ''
-    });
+    const [newData, setNewData] = useState(true);
     //Formato que tiene los datos al seleccionarlos para mostrarlos en un modal
     const formatSelectedPlace = {
         id: '',
         cityName: '',
         active: '',
         idProvince: '',
-        provinceName: ''
-    };
+        provinceName: '',
+        inRoute:''
+    };    
+    //Aca se guarda los datos de la fila seleccionada
+    const [selectedPlace, setSelectedPlace] = useState(formatSelectedPlace);
     //Para abrir y cerrar los modales
     const [createModal, setCreateModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
@@ -169,6 +166,20 @@ function Places() {
             return false;
         }
     };
+    // dependencias en rutas 
+    const [dependencies, setDependencies] = useState(null);
+    
+    const validateDependencies = () => {
+        if (selectedPlace) {
+        if (selectedPlace.inRoute === 'true') {
+            setDependencies (true);
+            return true;
+        } else {
+            setDependencies(false);
+            return false
+        }
+        return false }
+    }
 
     const peticionPost = async () => {
         if (validateForm()) {
@@ -179,12 +190,12 @@ function Places() {
                     ...options, open: true, type: 'success',
                     message: postResponse.data
                 });
-                setSelectedPlace(false);
+                setSelectedPlace(formatSelectedPlace);
                 setProvinceSelected(false);
                 setNamesError('');
                 setDefaultErrorMessages(null);
                 openCloseModalCreate();
-                fetchData();
+                setNewData(true);
             } else if (postResponse?.status === 400) {
                 setNamesError(postResponse.data);
             } else if (postResponse?.status === 500) {
@@ -215,12 +226,12 @@ function Places() {
                     ...options, open: true, type: 'success',
                     message: postResponse.data
                 });
-                setSelectedPlace(false);
+                setSelectedPlace(formatSelectedPlace);
                 setProvinceSelected(false);
                 setNamesError('')
                 setDefaultErrorMessages(null);
-                openCloseModalUpdate();
-                fetchData();
+                await openCloseModalUpdate();
+                setNewData(true);
             } else if (postResponse?.status === 400) {
                 setNamesError(postResponse.data);
             } else if (postResponse?.status === 500) {
@@ -248,12 +259,12 @@ function Places() {
                 ...options, open: true, type: 'success',
                 message: deleteResponse.data
             });
-            setSelectedPlace(false);
+            setSelectedPlace(formatSelectedPlace);
             setProvinceSelected(false);
             setNamesError('');
             setDefaultErrorMessages(null);
             openCloseModalDelete();
-            fetchData();
+            setNewData(true);
         } else if ((deleteResponse?.status === 500) || (deleteResponse?.status === 400) || (deleteResponse?.status === 404)) {
             openCloseModalDelete();
             setSuccessMessage(deleteResponse.data);
@@ -275,10 +286,18 @@ function Places() {
         setSelectedPlace(place);
         if (action === "Ver") {
             openCloseModalViewDetails()
-        } else if (action === "Editar") {
+        } else if (action === "Editar" && place.inRoute === 'false') {
             openCloseModalUpdate()
-        } else {
+        } else if (action === "Eliminar" && place.inRoute === 'false'){
             openCloseModalDelete()
+        } else {
+            setSuccessMessage(`No se puede ${action.toLowerCase()}, el lugar figura en rutas activas`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `No se puede ${action.toLowerCase()}, el lugar figura en rutas activas`
+            });
+            setSelectedPlace(formatSelectedPlace);
+            setDefaultErrorMessages();
         }
 
     };
@@ -315,11 +334,10 @@ function Places() {
             setDefaultErrorMessages();
         }
     };
-
     //Aca busco los datos de los choferes del backend
     const fetchData = async () => {
         try {
-            let getPlacesResponse = await getPlaces();
+            let getPlacesResponse = await getPlacesDeps();
             console.log(getPlacesResponse);
             if (getPlacesResponse.status === 200) {
                 let data = getPlacesResponse.data;
@@ -333,8 +351,12 @@ function Places() {
 
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (newData) {
+            fetchData();
+        }
+        return setNewData(false);
+    }, [newData]);
+
 
     const bodyCreate = (
         <div className={styles.modal}>
@@ -498,14 +520,14 @@ function Places() {
                     rowData => ({
                         icon: 'edit',
                         tooltip: (rowData.active === 'Activo') ? 'Editar lugar' : 'No se puede editar un lugar dado de baja',
-                        disabled: rowData.active !== "Activo",
-                        onClick: (event, rowData) => selectPlace(rowData, "Editar")
+                        disabled: rowData.active !== 'Activo',
+                        onClick: (event, rowData) => { selectPlace(rowData, 'Editar')}
                     }),
                     rowData => ({
                         icon: 'delete',
                         tooltip: (rowData.active === 'Activo') ? 'Eliminar lugar' : 'No se puede eliminar un lugar dado de baja',
-                        disabled: rowData.active !== "Activo",
-                        onClick: (event, rowData) => selectPlace(rowData, "Eliminar")
+                        disabled: rowData.active !== 'Activo',
+                        onClick: (event, rowData) => { selectPlace(rowData, 'Eliminar')}
                     })
                 ]}
                 options={materialTableConfiguration.options}
