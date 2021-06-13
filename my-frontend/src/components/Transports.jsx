@@ -404,7 +404,7 @@ function Transports() {
                 message: `${ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE} ${getAvailableDriversResponse}`
             });
         }
-    }
+    };
 
     const openCloseModalCreate = async () => {
         setCreateModal(!createModal);
@@ -419,6 +419,10 @@ function Transports() {
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
+
+        if (viewModal) {
+            setDefaultValues();
+        }
     };
 
     const openCloseModalUpdate = async (transport) => {

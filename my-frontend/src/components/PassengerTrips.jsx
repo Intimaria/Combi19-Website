@@ -1,4 +1,4 @@
-import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Button, Divider, Modal, TextField} from '@material-ui/core';
+import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid, Modal, TextField} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
 import CardTravelIcon from '@material-ui/icons/CardTravel';
@@ -6,14 +6,9 @@ import {
     ERROR_MSG_API_GET_TRIPS
 } from "../const/messages";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import HelpIcon from '@material-ui/icons/Help';
 import MaterialTable from '@material-table/core';
-import MenuItem from '@material-ui/core/MenuItem';
 import {Message} from '../components/Message';
-import MomentUtils from "@date-io/moment";
 import {PassengerTicket} from './PassengerTicket';
-import Tooltip from '@material-ui/core/Tooltip';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import {
     getPassengerTrips
 } from '../api/PassengerTrips';
@@ -34,8 +29,7 @@ const columns = [
         title: 'Combi',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
         customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
-    },
-    {title: 'Estado', field: 'status'}
+    }
 ];
 
 
@@ -73,11 +67,11 @@ function PassengerTrips() {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')))
-    const [tripType, setTripType] = useState(null);
-    const [active, setActiveTrip] = useState(null);
-    const [pastTrips, setPastTrips] = useState(null);
-    const [pendingTrips, setPendingTrips] = useState(null);
-    const [rejectedTrips, setRejectedTrips] = useState(null); 
+    const [tripType, setTripType] = useState([]);
+    const [activeTrips, setActiveTrips] = useState([]);
+    const [pastTrips, setPastTrips] = useState([]);
+    const [pendingTrips, setPendingTrips] = useState([]);
+    const [rejectedTrips, setRejectedTrips] = useState([]); 
     
     const newUser = JSON.parse(localStorage.getItem('userData'))
   
@@ -99,6 +93,16 @@ function PassengerTrips() {
         setDefaultErrorMessages();
     };
 
+      const handleData = (data) => {
+        const pendingTrips = data.filter(d => d.status == 1)
+        const activeTrips = data.filter(d => d.status == 2)
+        const rejectedTrips = data.filter(d => d.status == 3 || d.status == 4)
+        const pastTrips = data.filter(d => d.status == 5)
+        setPendingTrips (pendingTrips)
+        setActiveTrips (activeTrips);
+        setRejectedTrips (rejectedTrips);
+        setPastTrips (pastTrips)
+    };
 
     const fetchData = async () => {
         try {
@@ -106,8 +110,8 @@ function PassengerTrips() {
 
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
-
-                setData(data);
+                setData(data)
+                handleData(data);
             } else if (getTripsResponse.status === 500) {
                 setSuccessMessage(getTripsResponse.data);
                 setOptions({
@@ -136,14 +140,14 @@ function PassengerTrips() {
   }, []);
 
     return (
-        <div className="App">
+        <div className="App" style={{maxWidth: "80%",margin: 'auto',float: "center"}}>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
                              handleClose={options.handleClose}/>
                     : null
             }
-            <Accordion defaultExpanded>
+            <Accordion>
                 <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="viaje activo"
@@ -152,18 +156,111 @@ function PassengerTrips() {
                 "Viajes Activos"
                 </AccordionSummary>
                 <AccordionDetails>
-                <MaterialTable
-                columns={columns}
-                data={data}/>
+                {activeTrips.map((elem, index) => (
+                <PassengerTicket key={index} tripToBuy={elem}/>
+                ))
+                }
+                </AccordionDetails>
+            </Accordion>
+            <Divider  />
+            <Accordion>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="viajes pendientes"
+                id="pendiente"
+                >
+                "Viajes Pendientes"
+                </AccordionSummary>
+                <AccordionDetails>
+                <Grid container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                wrap="wrap"
+                alignContent="center"
+                spacing={3}>
+                {pendingTrips.map((elem, index) => (
+                <Grid 
+                direction="column"
+                item
+                justifyContent="flex-start">
+                <PassengerTicket key={index} tripToBuy={elem}/>
+                </Grid>
+                ))
+                }
+                </Grid>
                 </AccordionDetails>
                 <Divider />
-                <AccordionActions>
+{/*                 <AccordionActions>
                     <Button size="small">Cancel</Button>
                     <Button size="small" color="primary">
                         Save
                     </Button>
-                 </AccordionActions>
-                
+                 </AccordionActions> */}
+            </Accordion>
+            <Divider />
+            <Accordion>
+                <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="viajes finalizados"
+                id="finalizados"
+                >
+                "Viajes Finalizados"
+                </AccordionSummary>
+                <AccordionDetails>
+                <Grid container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                wrap="wrap"
+                alignContent="center"
+                spacing={3}>
+
+                {pastTrips.map((elem, index) => (
+                <Grid 
+                direction="column"
+                item
+                justifyContent="flex-start">
+                <PassengerTicket 
+                    key={index} tripToBuy={elem}/>
+                </Grid>
+                ))
+                }
+                </Grid>
+                {/* <MaterialTable
+                title={null}
+                columns={columns}
+                data={pastTrips}/> */}
+                </AccordionDetails>
+            </Accordion>
+            <Divider />
+            <Accordion>
+                <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="viajes rechazados"
+                id="rechazados"
+                >
+                "Viajes Rechazados"
+                </AccordionSummary>
+                <AccordionDetails>
+                <Grid container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                wrap="wrap"
+                alignContent="center"
+                spacing={3}>
+                {rejectedTrips.map((elem, index) => (
+                <Grid 
+                direction="column"
+                item
+                justifyContent="flex-start">
+                <PassengerTicket key={index} tripToBuy={elem}/>
+                </Grid>
+                ))
+                }
+                </Grid>
+                </AccordionDetails>
             </Accordion>
           
         </div>

@@ -117,7 +117,9 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
   moveRight: {},
 }));
 
-export const Ticket = React.memo(function PlaneTicketCard(props) {
+export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
+  const { tripToBuy} = props
+   console.log("passenger ticket", tripToBuy)
     const styles = useStyles();
     const ripStyles = useVerticalRipStyles({
         size: 24,
@@ -145,21 +147,21 @@ export const Ticket = React.memo(function PlaneTicketCard(props) {
                 <span className={styles.departureDay}>{props.tripToBuy.departureDay}</span>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Origen</h2>
-                    <p className={styles.subheader}>{props.tripToBuy.departure}</p>
+                    <p className={styles.subheader}>{props.tripToBuy.route.departure}</p>
                 </div>
                 <div className={styles.path}>
                     <div className={styles.line}>
                         <AirportShuttleIcon className={styles.plane}/>
                     </div>
-                    <span className={styles.flight}>{props.tripToBuy.registrationNumber}</span>
+                    <span className={styles.flight}>{props.tripToBuy.transport.registrationNumber}</span>
                 </div>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Destino</h2>
-                    <p className={styles.subheader}>{props.tripToBuy.destination}</p>
+                    <p className={styles.subheader}>{props.tripToBuy.route.destination}</p>
                 </div>
             </div>
         </Card>
     );
 });
 
-export default Ticket;
+export default PassengerTicket;

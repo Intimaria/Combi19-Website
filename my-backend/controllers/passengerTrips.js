@@ -8,7 +8,7 @@ const {
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
 
-const getPassengerTrips= async (req, res) => {
+const getPassengerTrips = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
     const {id} = req.params;
     try {
@@ -40,7 +40,7 @@ const getPassengerTrips= async (req, res) => {
         const [rows] = await connection.execute(sqlSelect);
         connection.end();
         const normalizeResults = normalizeTrips(rows);
-        return res.status(200).send(normalizeResults);
+        res.status(200).send(normalizeResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         res.status(500).send(`${ERROR_MSG_API_GET_TRIPS} ${error}`);

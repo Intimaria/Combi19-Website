@@ -437,6 +437,10 @@ function Routes() {
 
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
+
+        if (viewModal) {
+            setDefaultValues();
+        }
     };
 
     const openCloseModalUpdate = async (route) => {
@@ -688,7 +692,7 @@ function Routes() {
                        value={selectedRoute && selectedRoute.km} autoComplete="off"/>
             <br/>
             <div align="right">
-                <Button onClick={() => openCloseModalViewDetails()}>Salir</Button>
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
     );
