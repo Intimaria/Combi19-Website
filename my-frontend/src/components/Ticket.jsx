@@ -127,7 +127,7 @@ export const Ticket = React.memo(function PlaneTicketCard(props) {
         tearColor: mainColor,
     });
     return (
-        <Card className={styles.card} elevation={0}>
+        <Card className={styles.card} elevation={0} style={{width: '90%', margin: '50px'}}>
             <div className={cx(styles.left, styles.moveLeft)}>
                 <CardMedia
                     className={styles.media}
