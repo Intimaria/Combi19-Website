@@ -149,6 +149,7 @@ const normalizeComments = (rows) => {
     return results;
 };
 
+
 const normalizeTrips = (rows) => {
     let results = [];
 
@@ -158,7 +159,9 @@ const normalizeTrips = (rows) => {
             price: rows[index].PRICE,
             departureDay: rows[index].DEPARTURE_DAY,
             arrivalDay: rows[index].ARRIVAL_DAY,
+            duration: rows[index].DURATION,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
+            status: rows[index].STATUS,
             route: {
                 routeId: rows[index].ROUTE_ID,
                 departureId: rows[index].DEPARTURE_ID,
@@ -177,6 +180,7 @@ const normalizeTrips = (rows) => {
 
     return results;
 };
+
 
 const normalizeCards = (rows) => {
     let results = [];
