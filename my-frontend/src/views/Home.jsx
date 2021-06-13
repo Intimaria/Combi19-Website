@@ -1,3 +1,4 @@
+import PassengerTrips from '../components/PassengerTrips';
 import React from 'react'
 document.title = `Home`;
 
@@ -9,6 +10,7 @@ const Home = () => {
     return (     
         <div>
             <h1 className="text-light text-center"> Bienvenido {userData.userName} {userData.userSurname}</h1>
+            {userData.userRoleId.includes(3) && <PassengerTrips />}
         </div>
     )
 }
