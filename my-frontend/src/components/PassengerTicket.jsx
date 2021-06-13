@@ -18,7 +18,7 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
       background: 'none',
       display: 'flex',
       minWidth: 343,
-      minHeight: 150,
+      minHeight: 160,
       filter: 'drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3))',
       '& $moveLeft, $moveRight': {
           transition: '0.3s',
@@ -153,7 +153,7 @@ export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
                     <div className={styles.line}>
                         <AirportShuttleIcon className={styles.plane}/>
                     </div>
-                    <span className={styles.flight}>{props.tripToBuy.transport.registrationNumber}</span>
+                    <span className={styles.flight}>Patente: {props.tripToBuy.transport.registrationNumber}</span>
                 </div>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Destino</h2>

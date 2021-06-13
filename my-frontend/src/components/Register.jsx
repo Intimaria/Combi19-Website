@@ -1,19 +1,19 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
-import { Message } from '../components/Message';
-import { TextField, Button } from '@material-ui/core';
+import {useHistory} from "react-router-dom";
+import {Message} from '../components/Message';
+import {TextField, Button} from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Input from '@material-ui/core/Input';
 import FormControl from '@material-ui/core/FormControl';
-import { Favorite, FavoriteBorder, Visibility, VisibilityOff } from "@material-ui/icons";
+import {Favorite, FavoriteBorder, Visibility, VisibilityOff} from "@material-ui/icons";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { useStyles } from '../const/componentStyles';
+import {useStyles} from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
 import Link from '@material-ui/core/Link';
-import { green } from '@material-ui/core/colors';
+import {green} from '@material-ui/core/colors';
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Card from "@material-ui/core/Card";
@@ -29,10 +29,10 @@ import {
     register
 } from "../api/Passengers.js";
 
-import { CustomDatePicker } from '../components/CustomDatePicker';
-import { CardPaymentForm } from '../components/CardPaymentForm';
+import {CustomDatePicker} from '../components/CustomDatePicker';
+import {CardPaymentForm} from '../components/CardPaymentForm';
 
-import { BACKEND_URL } from '../const/config.js';
+import {BACKEND_URL} from '../const/config.js';
 
 import {
     ERROR_MSG_EMPTY_EMAIL,
@@ -77,7 +77,7 @@ import {
     REGEX_ONLY_NUMBER
 } from '../const/regex';
 
-import { capitalizeString } from "../helpers/strings";
+import {capitalizeString} from "../helpers/strings";
 
 
 const axios = require("axios");
@@ -87,7 +87,7 @@ function Register({redirectPage}) {
     const history = useHistory();
 
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     const styles = useStyles();
@@ -96,7 +96,7 @@ function Register({redirectPage}) {
     const [surname, setSurname] = React.useState('');
     const [birthday, setBirthday] = React.useState(moment()
         .subtract(18, "years")
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
         .format('YYYY-MM-DD')
     );
     const [password1, setPassword1] = React.useState('');
@@ -128,7 +128,7 @@ function Register({redirectPage}) {
     const [nameSurnameCardOwnerError, setNameSurnameCardOwnerError] = React.useState(null);
     const [documentNumberCardOwnerError, setDocumentNumberCardOwnerError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const handleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
@@ -174,18 +174,17 @@ function Register({redirectPage}) {
         if (registerRequest?.status === 201) {
             console.log("The inputs were submitted successfully");
             setDefaultValues();
-            
+
             let loginRequest = await login(DataToRegister.email, DataToRegister.password1, 'login');
             if (loginRequest?.status === 200) {
                 localStorage.setItem('token', loginRequest.data.token);
                 localStorage.setItem('userData', JSON.stringify(loginRequest.data.userData));
                 history.push(redirectPage);
-            }
-            else if (loginRequest?.status === 400) {
+            } else if (loginRequest?.status === 400) {
                 console.log("There was an error in the submitted entries");
-            };
-        }
-        else if (registerRequest?.status === 400) {
+            }
+            ;
+        } else if (registerRequest?.status === 400) {
             console.log("There was an error in the submitted entries");
             setEmailError(registerRequest.data.emailError);
             setNamesError(registerRequest.data.namesError);
@@ -193,8 +192,7 @@ function Register({redirectPage}) {
             setBirthdayError(registerRequest.data.birthdayError);
             setPassword1Error(registerRequest.data.passwordError1);
             setPassword2Error(registerRequest.data.passwordError2);
-        }
-        else if (registerRequest?.status === 500) {
+        } else if (registerRequest?.status === 500) {
             setSuccessMessage(`Ha ocurrido un error ${registerRequest}`);
             setOptions({
                 ...options, open: true, type: 'error',
@@ -209,7 +207,7 @@ function Register({redirectPage}) {
         setSurname('');
         setBirthday(moment()
             .subtract(18, "years")
-            .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            .set({hour: 0, minute: 0, second: 0, millisecond: 0})
             .format('YYYY-MM-DD')
         );
         setPassword1('');
@@ -220,7 +218,7 @@ function Register({redirectPage}) {
         setTypeCardSelected('');
         setCardNumber('');
         setSecurityCode('');
-        setExpirationDate(moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }));
+        setExpirationDate(moment().set({hour: 0, minute: 0, second: 0, millisecond: 0}));
         setNameSurnameCardOwner('');
         setDocumentNumberCardOwner('');
     };
@@ -403,8 +401,8 @@ function Register({redirectPage}) {
             let birthdayDate = new Date(birthday);
             let todayDate = new Date();
 
-            var age = todayDate.getFullYear() - birthdayDate.getFullYear();
-            var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
+            let age = todayDate.getFullYear() - birthdayDate.getFullYear();
+            let differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
             if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate() + 1))))
                 age--;
             return age;
@@ -487,7 +485,7 @@ function Register({redirectPage}) {
         }
 
         if (resultValidateTypeCard & resultValidateCardNumber & resultValidateSecurityCode & resultValidateExpirationDate & resultValidateNameSurnameCardOwner & resultValidateDocumentNumberCardOwner) {
-            return validateTypeCard() & validateCardNumber() & validateSecurityCode() & validateExpirationDate() & validateNameSurnameCardOwner() & validateDocumentNumberCardOwner();
+            return validateTypeCard() & validateCardNumber() & validateSecurityCode() & validateExpirationDate() & validateNameSurnameCardOwner() & validateDocumentNumberCardOwner() & validateBankConnection();
         } else {
             return false;
         }
@@ -572,7 +570,7 @@ function Register({redirectPage}) {
             return false;
         }
 
-        if (expirationDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }) < moment().set({
+        if (expirationDate.set({hour: 0, minute: 0, second: 0, millisecond: 0}) < moment().set({
             hour: 0,
             minute: 0,
             second: 0,
@@ -616,6 +614,19 @@ function Register({redirectPage}) {
         return true;
     };
 
+    const validateBankConnection = () => {
+        if (cardNumber === '7777777777777777') {
+            setSuccessMessage(`Ocurrió un error al verificar el pago. Intente nuevamente.`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `Ocurrió un error al verificar el pago. Intente nuevamente.`
+            });
+            return false;
+        }
+
+        return true;
+    };
+
     return (
         <div className={styles.root}>
             <form className={styles.form} onSubmit={mySubmitHandler} encType="multipart/form-data">
@@ -624,44 +635,44 @@ function Register({redirectPage}) {
                     {
                         successMessage ?
                             <Message open={options.open} type={options.type} message={options.message}
-                                handleClose={options.handleClose} />
+                                     handleClose={options.handleClose}/>
                             : null
                     }
                     <div>
                         <Grid container>
                             <Grid item xs={12}>
                                 <TextField className={styles.inputMaterial} label="Correo electrónico *" name="email"
-                                    id="inpEmail"
-                                    type={"email"}
-                                    inputProps={{ maxLength: 70 }}
-                                    autoComplete='off'
-                                    error={(emailError) ? true : false}
-                                    helperText={(emailError) ? emailError : false}
-                                    value={email}
-                                    onChange={newValue => handleEmail(newValue)}
+                                           id="inpEmail"
+                                           type={"email"}
+                                           inputProps={{maxLength: 70}}
+                                           autoComplete='off'
+                                           error={(emailError) ? true : false}
+                                           helperText={(emailError) ? emailError : false}
+                                           value={email}
+                                           onChange={newValue => handleEmail(newValue)}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial} label="Nombre *" name="names" id={"inpName"}
-                                    inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
-                                    style={{ paddingRight: '10px' }}
-                                    autoComplete='off'
-                                    error={(namesError) ? true : false}
-                                    helperText={(namesError) ? namesError : false}
-                                    value={names}
-                                    onChange={newValue => handleNames(newValue)}
+                                           inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                                           style={{paddingRight: '10px'}}
+                                           autoComplete='off'
+                                           error={(namesError) ? true : false}
+                                           helperText={(namesError) ? namesError : false}
+                                           value={names}
+                                           onChange={newValue => handleNames(newValue)}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial} label="Apellido *" name="surname"
-                                    id="inpSurname"
-                                    inputProps={{ maxLength: 45, style: { textTransform: 'capitalize' } }}
-                                    style={{ paddingRight: '10px', marginLeft: '10px' }}
-                                    autoComplete='off'
-                                    error={(surnameError) ? true : false}
-                                    helperText={(surnameError) ? surnameError : false}
-                                    value={surname}
-                                    onChange={newValue => handleSurname(newValue)}
+                                           id="inpSurname"
+                                           inputProps={{maxLength: 45, style: {textTransform: 'capitalize'}}}
+                                           style={{paddingRight: '10px', marginLeft: '10px'}}
+                                           autoComplete='off'
+                                           error={(surnameError) ? true : false}
+                                           helperText={(surnameError) ? surnameError : false}
+                                           value={surname}
+                                           onChange={newValue => handleSurname(newValue)}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -677,11 +688,11 @@ function Register({redirectPage}) {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl className={styles.inputMaterial}
-                                    error={(password1Error) ? true : false}>
+                                             error={(password1Error) ? true : false}>
                                     <InputLabel htmlFor="password1">Contraseña *</InputLabel>
                                     <Input
                                         id="password1"
-                                        inputProps={{ maxLength: 100 }}
+                                        inputProps={{maxLength: 100}}
                                         autoComplete='off'
                                         type={showPassword1 ? 'text' : 'password'}
                                         name="password1"
@@ -694,7 +705,7 @@ function Register({redirectPage}) {
                                                     onClick={handleShowPassword1}
                                                     edge="end"
                                                 >
-                                                    {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                                                    {showPassword1 ? <Visibility/> : <VisibilityOff/>}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
@@ -704,11 +715,11 @@ function Register({redirectPage}) {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl className={styles.inputMaterial}
-                                    error={(password2Error) ? true : false}>
+                                             error={(password2Error) ? true : false}>
                                     <InputLabel htmlFor="password2">Repita la contraseña *</InputLabel>
                                     <Input
                                         id="password2"
-                                        inputProps={{ maxLength: 100 }}
+                                        inputProps={{maxLength: 100}}
                                         autoComplete='off'
                                         type={showPassword2 ? 'text' : 'password'}
                                         name="password2"
@@ -721,7 +732,7 @@ function Register({redirectPage}) {
                                                     onClick={handleShowPassword2}
                                                     edge="end"
                                                 >
-                                                    {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                                                    {showPassword2 ? <Visibility/> : <VisibilityOff/>}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
@@ -731,12 +742,12 @@ function Register({redirectPage}) {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox icon={<FavoriteBorder />}
-                                        checkedIcon={<Favorite />}
-                                        checked={goldCheck}
-                                        onChange={() => handleGoldCheck()}
-                                        name="goldCheck"
-                                        id={"goldCheck"}
+                                    control={<Checkbox icon={<FavoriteBorder/>}
+                                                       checkedIcon={<Favorite/>}
+                                                       checked={goldCheck}
+                                                       onChange={() => handleGoldCheck()}
+                                                       name="goldCheck"
+                                                       id={"goldCheck"}
                                     />}
                                     label="¡Quiero ser miembro GOLD!"
                                 />
@@ -776,48 +787,48 @@ function Register({redirectPage}) {
 
 
                             <Grid item xs={12}>
-                                <br /><br />
-                                <Button style={{ width: '100%' }}
-                                    variant="contained"
-                                    size="large"
-                                    color="primary"
-                                    id="btnRegister"
-                                    type="submit"
+                                <br/><br/>
+                                <Button style={{width: '100%'}}
+                                        variant="contained"
+                                        size="large"
+                                        color="primary"
+                                        id="btnRegister"
+                                        type="submit"
                                 >REGISTRARSE</Button>
                             </Grid>
                         </Grid>
                     </div>
                 </div>
             </form>
-            <br /><br />
+            <br/><br/>
             <Card id="mas-info" className={styles.cardGold.root}>
-                <CardHeader align="center" title="Membresía GOLD" className={styles.cardGold.header} />
-                <Divider variant="middle" />
+                <CardHeader align="center" title="Membresía GOLD" className={styles.cardGold.header}/>
+                <Divider variant="middle"/>
                 <CardContent>
                     <Typography variant="h4" align="center">
                         $ 250,00
                     </Typography>
                     <Typography align={'center'} fontSize={'small'}>Sólo se aceptan tarjeta de crédito</Typography>
-                    <Divider variant="middle" />
+                    <Divider variant="middle"/>
                     <div className={styles.cardGold.list}>
-                        <Typography><CheckCircleIcon style={{ color: green[500] }} />¡
+                        <Typography><CheckCircleIcon style={{color: green[500]}}/>¡
                             Descuento del 10% en todos tus viajes
                             !</Typography>
-                        <Typography><CheckCircleIcon style={{ color: green[500] }} />
+                        <Typography><CheckCircleIcon style={{color: green[500]}}/>
                             Precarga de datos para que no pierdas el tiempo
                         </Typography>
                     </div>
                 </CardContent>
-                <Divider variant="middle" />
+                <Divider variant="middle"/>
                 <CardActions className={styles.cardGold.action}>
-                    <Link href="#goldCheck" style={{ width: '100%' }}>
+                    <Link href="#goldCheck" style={{width: '100%'}}>
                         <Button className={styles.cardGold.button}
-                            style={{ width: '100%' }}
-                            variant="contained"
-                            size="large"
-                            color="primary"
-                            id="btnGoToCard"
-                            onClick={() => handleBeGold()}
+                                style={{width: '100%'}}
+                                variant="contained"
+                                size="large"
+                                color="primary"
+                                id="btnGoToCard"
+                                onClick={() => handleBeGold()}
                         >¡QUIERO SER GOLD!</Button>
                     </Link>
                 </CardActions>
