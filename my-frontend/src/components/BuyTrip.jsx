@@ -159,43 +159,51 @@ const BuyTrip = () => {
     };
 
     const buyCart = async () => {
-        let productsSelected = [];
+        if (ticketToBuyError) {
+            setSuccessMessage('Verifique la cantidad de pasajes');
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: 'Verifique la cantidad de pasajes'
+            });
+        } else {
+            let productsSelected = [];
 
-        for (let product of data) {
-            let quantitySelected = parseInt(product.quantitySelected);
-            let price = parseFloat(product.price);
+            for (let product of data) {
+                let quantitySelected = parseInt(product.quantitySelected);
+                let price = parseFloat(product.price);
 
-            if (quantitySelected !== 0) {
-                productsSelected.push(
-                    {
-                        productId: product.idProduct,
-                        quantity: product.quantitySelected,
-                        price: price
-                    }
-                );
+                if (quantitySelected !== 0) {
+                    productsSelected.push(
+                        {
+                            productId: product.idProduct,
+                            quantity: product.quantitySelected,
+                            price: price
+                        }
+                    );
+                }
+
             }
 
-        }
+            let userCart = {
+                tripId: tripToBuy.tripId,
+                ticket: {
+                    quantity: ticketToBuy,
+                    price: tripToBuy.price
+                },
+                products: productsSelected
+            };
 
-        let userCart = {
-            tripId: tripToBuy.tripId,
-            ticket: {
-                quantity: ticketToBuy,
-                price: tripToBuy.price
-            },
-            products: productsSelected
-        };
-
-        localStorage.setItem("userCart", JSON.stringify(userCart));
-        /*if (!localStorage.getItem('userData')) {
-            props.setRedirectPage("/cartConfirmation");
-            history.push("/login");
-            props.setRedirectBoolean(true);
-        }
-        else {
+            localStorage.setItem("userCart", JSON.stringify(userCart));
+            /*if (!localStorage.getItem('userData')) {
+                props.setRedirectPage("/cartConfirmation");
+                history.push("/login");
+                props.setRedirectBoolean(true);
+            }
+            else {
+                history.push("/cartConfirmation");
+            }*/
             history.push("/cartConfirmation");
-        }*/
-        history.push("/cartConfirmation");
+        }
     };
 
     useEffect(() => {
