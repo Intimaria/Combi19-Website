@@ -1,4 +1,4 @@
-import {Button, Modal, TextField} from '@material-ui/core';
+import {Button, Modal, TextField, Typography} from '@material-ui/core';
 import {
   ERROR_MSG_API_DELETE_COMMENT,
   ERROR_MSG_API_GET_COMMENT,
@@ -31,8 +31,23 @@ import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import {makeStyles} from '@material-ui/core/styles';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
+
+const modalStyles = makeStyles((theme) => ({
+    paper: {
+      position: 'absolute',
+      width: "60%",
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    },
+  }));
 
 const columns = [
 {title: 'Comentario', field: 'comment',
@@ -79,6 +94,7 @@ function Comments(props) {
         };
 
     const styles = useStyles();
+    const modal = modalStyles();
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
     const [newData, setNewData] = useState(true);
@@ -345,28 +361,38 @@ function Comments(props) {
         </div>
     );
     const bodyViewDetails = (
-        <div className={styles.modal}>
-            <h3>DETALLE DEL COMENTARIO</h3>
-            <TextField className={styles.inputMaterial} label="Estado" name="active"
-                       value={selectedComment && selectedComment.active} autoComplete="off"/>
-            <TextField id="standard-multiline-flexible" multiline
-            className={styles.inputMaterial} label="Comentario" name="comment"
-                       value={selectedComment && selectedComment.comment} autoComplete="off"/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Fecha y Hora" name="date" autoComplete="off"
-                       value={selectedComment && selectedComment.datetime /*+ ' ' + selectedComment.time + 'hs'*/}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Nombre y Apellido" name="user.name"
-                       value={selectedComment && selectedComment.user.name} autoComplete="off"/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Email" name="user.email"
-                       value={selectedComment && selectedComment.user.email} autoComplete="off"/>
-            <br/><br/>           
+        <div className={modal.paper}>
+          <Typography variant="overline" label="Comentario" name="comment" gutterBottom>
+            Comentario:
+          </Typography>
+          <Typography variant="body2" component="p" gutterBottom>{selectedComment.comment}</Typography>
+          <Typography variant="overline" label="Fecha y Hora" name="datetime" gutterBottom>
+            Fecha y hora:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+              {selectedComment && selectedComment.datetime}
+          </Typography>
+          <Typography variant="overline" label="Autor" name="user.name" gutterBottom>
+            Usuario:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedComment && selectedComment.user.name} 
+          </Typography>
+          <Typography variant="overline" label="Email" name="user.email" gutterBottom>
+            Contacto:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedComment && selectedComment.user.email} 
+          </Typography>
+          <Typography variant="overline" label="Activo" name="user.email" gutterBottom>
+            Estado:  {selectedComment && selectedComment.active} 
+          </Typography>
+            <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-    );
+      );
 
     const bodyEdit = (
         <div className={styles.modal}>

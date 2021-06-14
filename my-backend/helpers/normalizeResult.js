@@ -162,6 +162,7 @@ const normalizeTrips = (rows) => {
             duration: rows[index].DURATION,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             status: rows[index].STATUS,
+            quantity:  rows[index].QUANTITY,
             route: {
                 routeId: rows[index].ROUTE_ID,
                 departureId: rows[index].DEPARTURE_ID,

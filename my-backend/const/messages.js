@@ -141,6 +141,8 @@ module.exports = {
     // Cart API messages
     OK_MSG_API_POST_PASSENGER_TRIP: 'La compra finalizó con éxito',
     ERROR_MSG_API_POST_PASSENGER_TRIP: 'Ocurrió un error al finalizar la compra:',
+    ERROR_MSG_API_CANCEL_PASSENGER_TRIP: 'Ocurrió un error al cancelar el viaje:',
+    OK_MSG_API_CANCEL_PASSENGER_TRIP:'El viaje se canceló con éxito',
     // Card API messages
     ERROR_MSG_API_GET_LAST_CARD: 'Ocurrió un error al obtener los datos de la tarjeta:',
 };
