@@ -48,13 +48,8 @@ const Landing = (props) => {
                 <WelcomeCard />
             </Grid>
             <br />
-            <Grid container xs={12} justify="center" alignItems="center" style={{paddingTop:30}}>
-                <Grid item>
-                <Typography variant="h4" gutterBottom style={{color: "rgba(255,255,234)"}} >Testimonios de Usuarios</Typography>
-                </Grid>
-                <Grid item>
-                <TestimonialCard />
-                </Grid>
+            <Grid>
+                <TestimonialCard/>
             </Grid>
         </div>
     )
