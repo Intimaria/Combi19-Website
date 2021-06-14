@@ -22,6 +22,9 @@ import BuyTrip from "./BuyTrip.jsx";
 const Addresses = () => {
     const history = useHistory();
 
+    const [successMessage, setSuccessMessage] = React.useState(null);
+    const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+
     // Trips search data props
     const [tripsResultsData, setTripsResultsData] = React.useState([]);
     const [searchedData, setSearchedData] = React.useState(null);
@@ -66,7 +69,11 @@ const Addresses = () => {
                         redirectPage={redirectPage} />
                 </Route>
                 <Route path="/home" exact>
-                    <Home />
+                    <Home
+                        successMessage={successMessage}
+                        showSuccessMessage={showSuccessMessage}
+                        setShowSuccessMessage={setShowSuccessMessage}
+                    />
                 </Route>
                 <Route path="/places" exact>
                     <Places />
@@ -93,7 +100,10 @@ const Addresses = () => {
                     <Comments />
                 </Route>
                 <Route path="/cartConfirmation" exact>
-                    <CartConfirmation />
+                    <CartConfirmation
+                        setSuccessMessage={setSuccessMessage}
+                        setShowSuccessMessage={setShowSuccessMessage}
+                    />
                 </Route>
                 <Route path="/tripsResults" exact>
                     <TripsResults

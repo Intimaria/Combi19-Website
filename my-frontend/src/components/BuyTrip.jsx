@@ -103,8 +103,6 @@ const BuyTrip = () => {
     const fetchData = async () => {
         const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
-        console.log(userCartStorage?.products)
-
         if (userCartStorage) {
             setTicketToBuy(userCartStorage.ticket.quantity);
 
@@ -134,9 +132,6 @@ const BuyTrip = () => {
                     for (let product of data) {
                         product['quantitySelected'] = 0;
                     }
-
-                    console.log('data es:');
-                    console.log(data);
 
                     setData(data);
                 } else {

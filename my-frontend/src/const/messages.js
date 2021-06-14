@@ -19,6 +19,11 @@ export const ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS = '* La contraseña n
 export const ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE = '* La contraseña no posee letras minúsculas';
 export const ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS = '* La contraseña no posee números';
 export const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
+export const ERROR_MSG_API_REGISTRATION = 'Ocurrió un error al crear el usuario:';
+// Passenger API messages
+export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
+export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';
+// Card form
 export const ERROR_MSG_EMPTY_TYPE_CARD = '* Seleccione un tipo de tarjeta';
 export const ERROR_MSG_EMPTY_CARD_NUMBER = '* Ingrese el número de tarjeta';
 export const ERROR_MSG_INVALID_CARD_NUMBER = '* Tarjeta inválida';
@@ -35,10 +40,7 @@ export const ERROR_MSG_EMPTY_NAME_SURNAME_CARD_OWNER = '* Ingrese nombre complet
 export const ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER = '* El titular es incorrecto';
 export const ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER = '* Ingrese documento de la persona titular de la tarjeta';
 export const ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER = '* El número de documento es incorrecto';
-export const ERROR_MSG_API_REGISTRATION = 'Ocurrió un error al crear el usuario:';
-// Passenger API messages
-export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
-export const ERROR_MSG_API_POST_USER = 'Ocurrió un error al insertar el usuario:';
+export const ERROR_MSG_INVALID_BANK_CONNECTION = 'Ocurrió un error al verificar el pago. Intente nuevamente';
 // Login API messages
 export const ERROR_MSG_API_LOGIN = 'Ocurrió un error al iniciar sesión:';
 // Driver registration form
