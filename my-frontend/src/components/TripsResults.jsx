@@ -109,12 +109,12 @@ const TripsResults = (props) => {
         else {
             history.push("/buyTrip");
         }
-    }
+    };
 
     useEffect(() => {
         verifyExpirationRisk();
         verifyRole();
-    }, [])
+    }, []);
 
     return (
         <div>
@@ -144,6 +144,6 @@ const TripsResults = (props) => {
             />
         </div>
     )
-}
+};
 
 export default TripsResults

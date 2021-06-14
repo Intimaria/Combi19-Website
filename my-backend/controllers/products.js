@@ -24,7 +24,7 @@ const {
     validateProductsToCreate,
     validateProductsToModify,
     validateProductClientDependence
-} = require("../helpers/validateProducts.js")
+} = require("../helpers/validateProducts.js");
 
 const getProducts = async (req, res) => {
     // const {start = 1, limit = 5} = req.query;
@@ -47,7 +47,7 @@ const getProducts = async (req, res) => {
         res.status(500).send(`${ERROR_MSG_API_GET_PRODUCTS}`);
     }
     res.end();
-}
+};
 
 const getAvailableProducts = async (req, res) => {
     try {
@@ -62,7 +62,7 @@ const getAvailableProducts = async (req, res) => {
         res.status(500).send(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE}`);
     }
     res.end();
-}
+};
 
 const getProductById = async (req, res) => {
     try {
@@ -78,7 +78,7 @@ const getProductById = async (req, res) => {
         res.status(500).send(`${ERROR_MSG_API_GET_PRODUCT_BY_ID}`);
     }
     res.end();
-}
+};
 
 const postProduct = async (req, res) => {
     const {name, price, typeProduct} = req.body;
@@ -90,7 +90,7 @@ const postProduct = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlInsert = "INSERT INTO PRODUCT (ID_TYPE_PRODUCT, PRODUCT_NAME, PRICE, ACTIVE) VALUES (?,?,?,?)"
+            let sqlInsert = "INSERT INTO PRODUCT (ID_TYPE_PRODUCT, PRODUCT_NAME, PRICE, ACTIVE) VALUES (?,?,?,?)";
             const [rows] = await connection.execute(sqlInsert, [typeProduct, name, price, ACTIVE]);
             connection.end();
             res.status(201).send(OK_MSG_API_POST_PRODUCT);
@@ -101,7 +101,7 @@ const postProduct = async (req, res) => {
 
     }
     res.end();
-}
+};
 
 const putProduct = async (req, res) => {
     const {id} = req.params;
@@ -123,7 +123,7 @@ const putProduct = async (req, res) => {
         }
     }
     res.end();
-}
+};
 
 const deleteProduct = async (req, res) => {
     const {id} = req.params;
@@ -138,7 +138,7 @@ const deleteProduct = async (req, res) => {
         res.status(500).send(`${ERROR_MSG_API_DELETE_PRODUCT}`);
     }
     res.end();
-}
+};
 
 const getProductDependenceById = async (req, res) => {
     const {id} = req.params;
@@ -167,4 +167,4 @@ module.exports = {
     deleteProduct,
     getAvailableProducts,
     getProductDependenceById
-}
+};

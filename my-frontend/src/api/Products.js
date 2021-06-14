@@ -36,7 +36,7 @@ export const getProducts = async () => {
             }
         }
     }
-}
+};
 
 export const postProducts = async (productData, typeProduct) => {
     const token = localStorage.getItem('token');
@@ -44,7 +44,7 @@ export const postProducts = async (productData, typeProduct) => {
         typeProduct,
         name : productData.name,
         price: productData.price.includes(",") ? productData.price.replace(",",".") : productData.price
-    }
+    };
     try {
         let response = await axios.post(`${BACKEND_URL}/products`,
         newProduct,
@@ -70,7 +70,7 @@ export const postProducts = async (productData, typeProduct) => {
             }
         }
     }
-}
+};
 
 export const putProducts = async (productData, typeProduct ,id) => {
     const token = localStorage.getItem('token');
@@ -104,7 +104,7 @@ export const putProducts = async (productData, typeProduct ,id) => {
             }
         }
     }
-}
+};
 
 export const deleteProducts = async (id) => {
     const token = localStorage.getItem('token');
@@ -132,7 +132,7 @@ export const deleteProducts = async (id) => {
             }
         }
     }
-}
+};
 
 export const getAvailableProducts = async () => {
     const token = localStorage.getItem('token');
@@ -142,14 +142,14 @@ export const getAvailableProducts = async () => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
         const response = await instance.get();
         return response;
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${error}`);
 
         if (error.message === 'Network Error') {
-            error.message = ERROR_MSG_INTERNET
+            error.message = ERROR_MSG_INTERNET;
             return error.message;
         } else {
             return error.message;
@@ -157,7 +157,7 @@ export const getAvailableProducts = async () => {
 
 
     }
-}
+};
 
 export const getProductDependenceById = async (id) => {
     const token = localStorage.getItem('token');
