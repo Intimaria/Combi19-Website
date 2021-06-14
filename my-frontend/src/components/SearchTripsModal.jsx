@@ -91,9 +91,9 @@ function SearchTripsModal(props) {
         if (postResponse?.status === 200) {
             defaultErrorMessager();
             props.setSearchResults(postResponse.data);
+            props.setSearchedData(searchData);
 
             if (history.location.pathname !== '/tripsResults') {
-                props.setSearchedData(searchData);
                 history.push("/tripsResults");
             }
 

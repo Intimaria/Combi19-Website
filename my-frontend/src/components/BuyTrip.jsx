@@ -159,43 +159,51 @@ const BuyTrip = () => {
     };
 
     const buyCart = async () => {
-        let productsSelected = [];
+        if (ticketToBuyError) {
+            setSuccessMessage('Verifique la cantidad de pasajes');
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: 'Verifique la cantidad de pasajes'
+            });
+        } else {
+            let productsSelected = [];
 
-        for (let product of data) {
-            let quantitySelected = parseInt(product.quantitySelected);
-            let price = parseFloat(product.price);
+            for (let product of data) {
+                let quantitySelected = parseInt(product.quantitySelected);
+                let price = parseFloat(product.price);
 
-            if (quantitySelected !== 0) {
-                productsSelected.push(
-                    {
-                        productId: product.idProduct,
-                        quantity: product.quantitySelected,
-                        price: price
-                    }
-                );
+                if (quantitySelected !== 0) {
+                    productsSelected.push(
+                        {
+                            productId: product.idProduct,
+                            quantity: product.quantitySelected,
+                            price: price
+                        }
+                    );
+                }
+
             }
 
-        }
+            let userCart = {
+                tripId: tripToBuy.tripId,
+                ticket: {
+                    quantity: ticketToBuy,
+                    price: tripToBuy.price
+                },
+                products: productsSelected
+            };
 
-        let userCart = {
-            tripId: tripToBuy.tripId,
-            ticket: {
-                quantity: ticketToBuy,
-                price: tripToBuy.price
-            },
-            products: productsSelected
-        };
-
-        localStorage.setItem("userCart", JSON.stringify(userCart));
-        /*if (!localStorage.getItem('userData')) {
-            props.setRedirectPage("/cartConfirmation");
-            history.push("/login");
-            props.setRedirectBoolean(true);
-        }
-        else {
+            localStorage.setItem("userCart", JSON.stringify(userCart));
+            /*if (!localStorage.getItem('userData')) {
+                props.setRedirectPage("/cartConfirmation");
+                history.push("/login");
+                props.setRedirectBoolean(true);
+            }
+            else {
+                history.push("/cartConfirmation");
+            }*/
             history.push("/cartConfirmation");
-        }*/
-        history.push("/cartConfirmation");
+        }
     };
 
     useEffect(() => {
@@ -271,16 +279,12 @@ const BuyTrip = () => {
                                                        id="totalTickets"
                                                        disabled
                                                        style={{marginLeft: '10px'}}
-                                                       value=
-                                                           {(moment() < moment(userData.goldMembershipExpiration))
-                                                               ? `$ ${(tripToBuy.price * ticketToBuy * 0.9).toFixed(2).replace('.', ',')}`
-                                                               : `$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`
-                                                           }
+                                                       value={`$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`}
                                             />
                                         </Grid>
                                         <Grid item xs={3} align={'right'}>
                                             <Tooltip
-                                                title="Total = Cantidad pasajes * Precio del pasaje - Descuento gold">
+                                                title="Total = Cantidad pasajes * Precio del pasaje">
                                                 <HelpIcon color='primary' fontSize="small"/>
                                             </Tooltip>
                                         </Grid>
@@ -315,6 +319,15 @@ const BuyTrip = () => {
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
                                                value={totalProducts}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {(moment() < moment(userData.goldMembershipExpiration))
+                                        ?
+                                        <Typography align="center" style={{padding: '20px 0px 0px 0px'}}>
+                                            El descuento gold se aplicará en el paso siguente
+                                        </Typography>
+                                        : ``
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -67,7 +67,7 @@ const postPassengerTrip = async (req, res) => {
             ID_USER,
             DATE)
             VALUES
-            (${(cardId) ? cardId : NULL},
+            (${(cardId) ? cardId : 'NULL'},
             ${userId},
             NOW());
             `;
