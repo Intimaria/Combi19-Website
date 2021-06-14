@@ -1,4 +1,17 @@
-import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, Divider, Fab, Grid, Modal, StepContent, Typography } from "@material-ui/core";
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Fab,
+  Grid,
+  Modal,
+  TextField,
+  Typography
+} from "@material-ui/core";
 import React, {useEffect, useState} from 'react';
 import {
     getAllComments,
@@ -14,6 +27,21 @@ import {
 import { makeStyles } from "@material-ui/core/";
 import {useStyles} from '../const/componentStyles';
 
+const modalStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: "70%",
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)'
+  },
+}));
+
+
 const uiStyles = makeStyles((theme) => ({
   root: {
     boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
@@ -28,7 +56,7 @@ const uiStyles = makeStyles((theme) => ({
     maxHeight: 2
   },
   content: {
-    overflow: "scroll", 
+    overflow: "auto", 
     whiteSpace: "normal",
     textOverflow: "ellipsis",
     color: "black",
@@ -36,7 +64,7 @@ const uiStyles = makeStyles((theme) => ({
     fontSize: "small",
     fontStyle: "none",
     minHeight: 180,
-    maxHeight: 180,
+    maxHeight: 190,
     textAlign: "center",
     padding: 10
   },
@@ -60,6 +88,7 @@ const uiStyles = makeStyles((theme) => ({
 
 
 export default function TestimonialCard() {
+  const modal = modalStyles();
   const classes = uiStyles();
   const styles = useStyles();
   const handleCloseMessage = () => {
@@ -90,26 +119,41 @@ export default function TestimonialCard() {
  }, [setData, data])
 
  const bodyViewDetails = (
-  <div className={styles.modal}>
-      <h3>DETALLE DEL COMENTARIO</h3>
-    </div>
-  )
-  /*
-      <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
-                 value={selectedComment && selectedComment.cityName}/>
+  <div className={modal.paper}>
+    <Typography variant="overline" label="Comentario" name="comment" gutterBottom>
+      Comentario:
+    </Typography>
+    <Typography variant="body2" gutterBottom>{selectedComment.comment}</Typography>
+    <Typography variant="overline" label="Fecha y Hora" name="datetime" gutterBottom>
+      Fecha y hora:
+    </Typography>
+    <Typography variant="body2" gutterBottom>
+        {selectedComment && selectedComment.datetime}
+    </Typography>
+    <Typography variant="overline" label="Autor" name="user.name" gutterBottom>
+      Usuario:
+    </Typography>
+    <Typography variant="body2" gutterBottom>
+      {selectedComment && selectedComment.user.name} 
+    </Typography>
+    <Typography variant="overline" label="Email" name="user.email" gutterBottom>
+      Contacto:
+    </Typography>
+    <Typography variant="body2" gutterBottom>
+      {selectedComment && selectedComment.user.email} 
+    </Typography>
       <br/>
-      <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
-                 value={selectedPlace && selectedPlace.provinceName}/>
-      <br/>
-      <TextField className={styles.inputMaterial} label="Estado" name="active"
-                 value={selectedPlace && selectedPlace.active}/>
-      <br/><br/>           
+
+{/*       <p label="Comentario" name="comment">{selectedComment && selectedComment.comment}</p>         
+      <p label="Fecha y hora" name="datetime">{selectedComment && selectedComment.datetime}</p>
+      <p label="Nombre y email" name="user.name">{selectedComment && selectedComment.user.name}</p>
+      <p label="Email" name="user.email">{selectedComment && selectedComment.user.email}</p>   */}       
       <div align="right">
           <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
       </div>
   </div>
 );
- */
+
 const selectComment = (elem) => {
   setSelectedComment(elem);
   openCloseModalViewDetails();
@@ -191,11 +235,10 @@ const selectComment = (elem) => {
       <Box textAlign='center'> 
       { 
         <Button
-            size="small" 
-            variant="extended"
+            variant="contained"
             color="primary" 
             onClick={() => { toggleSeeAll() }}>
-           {!seeAll ? "ver mas" : "ver menos"}
+           {!seeAll ? <Box> <ArrowDropDownIcon/>ver más</Box> : <Box> <ArrowDropUpIcon/>ver menos</Box>}
         </Button>
       } 
       </Box>
