@@ -27,6 +27,10 @@ export const materialTableConfiguration = {
             emptyDataSourceMessage: 'Sin registros para mostrar',
             filterRow: {
                 filterTooltip: `Buscar`
+            },
+            editRow: {
+                saveTooltip: 'Guardar',
+                cancelTooltip: 'Cancelar'
             }
         },
         pagination: {
