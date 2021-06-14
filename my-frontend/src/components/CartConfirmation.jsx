@@ -204,7 +204,7 @@ function CartConfirmation() {
         }
 
         if (resultValidateTypeCard & resultValidateCardNumber & resultValidateSecurityCode & resultValidateExpirationDate & resultValidateNameSurnameCardOwner & resultValidateDocumentNumberCardOwner) {
-            return validateTypeCard() & validateCardNumber() & validateSecurityCode() & validateExpirationDate() & validateNameSurnameCardOwner() & validateDocumentNumberCardOwner();
+            return validateTypeCard() & validateCardNumber() & validateSecurityCode() & validateExpirationDate() & validateNameSurnameCardOwner() & validateDocumentNumberCardOwner() & validateBankConnection();
         } else {
             return false;
         }
@@ -330,6 +330,19 @@ function CartConfirmation() {
         }
 
         setDocumentNumberCardOwnerError(null);
+        return true;
+    };
+
+    const validateBankConnection = () => {
+        if (cardNumber === '7777777777777777') {
+            setSuccessMessage(`Ocurrió un error al verificar el pago. Intente nuevamente.`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `Ocurrió un error al verificar el pago. Intente nuevamente.`
+            });
+            return false;
+        }
+
         return true;
     };
 

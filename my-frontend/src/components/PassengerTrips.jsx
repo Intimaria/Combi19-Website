@@ -179,7 +179,7 @@ function PassengerTrips() {
     const [pendingTrips, setPendingTrips] = useState([]);
     const [rejectedTrips, setRejectedTrips] = useState([]); 
     
-    const newUser = JSON.parse(localStorage.getItem('userData'))
+    const newUser = JSON.parse(localStorage.getItem('userData'));
   
     useEffect(() => {
        setUserData(newUser)
@@ -200,11 +200,11 @@ function PassengerTrips() {
     };
 
       const handleData = (data) => {
-        const pendingTrips = data.filter(d => d.status == 1)
-        const activeTrips = data.filter(d => d.status == 2)
-        const rejectedTrips = data.filter(d => d.status == 3 || d.status == 4)
-        const pastTrips = data.filter(d => d.status == 5)
-        setPendingTrips (pendingTrips)
+        const pendingTrips = data.filter(d => d.status === 1);
+        const activeTrips = data.filter(d => d.status === 2);
+        const rejectedTrips = data.filter(d => d.status === 3 || d.status === 4);
+        const pastTrips = data.filter(d => d.status === 5);
+        setPendingTrips (pendingTrips);
         setActiveTrips (activeTrips);
         setRejectedTrips (rejectedTrips);
         setPastTrips (pastTrips)
@@ -216,7 +216,7 @@ function PassengerTrips() {
 
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
-                setData(data)
+                setData(data);
                 handleData(data);
             } else if (getTripsResponse.status === 500) {
                 setSuccessMessage(getTripsResponse.data);
@@ -259,7 +259,7 @@ function PassengerTrips() {
                 aria-controls="viaje activo"
                 id="activo"
                 >
-                Viajes Activos
+                Viajes activos
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -291,7 +291,7 @@ function PassengerTrips() {
                 aria-controls="viajes pendientes"
                 id="pendiente"
                 >
-                Viajes Pendientes
+                Viajes pendientes
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -332,7 +332,7 @@ function PassengerTrips() {
                 aria-controls="viajes finalizados"
                 id="finalizados"
                 >
-                Viajes Finalizados
+                Viajes finalizados
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container
@@ -369,7 +369,7 @@ function PassengerTrips() {
                 aria-controls="viajes rechazados"
                 id="rechazados"
                 >
-                Viajes Dados de Baja
+                Viajes dados de baja
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container

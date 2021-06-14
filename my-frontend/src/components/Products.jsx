@@ -329,10 +329,10 @@ function Products() {
                 setUpdateModal(!updateModal);
             }
             else {
-                setSuccessMessage(`Ocurrio un error al verificar la dependencia de el producto`);
+                setSuccessMessage(`Ocurrió un error al verificar la dependencia de el producto`);
                 setOptions({
                     ...options, open: true, type: 'error',
-                    message: `Ocurrio un error al verificar la dependencia de el producto`
+                    message: `Ocurrió un error al verificar la dependencia de el producto`
                 });
             }
         } else {

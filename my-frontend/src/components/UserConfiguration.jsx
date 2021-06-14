@@ -309,8 +309,8 @@ function UserConfiguration() {
             let birthdayDate = new Date(birthday);
             let todayDate = new Date();
 
-            var age = todayDate.getFullYear() - birthdayDate.getFullYear();
-            var differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
+            let age = todayDate.getFullYear() - birthdayDate.getFullYear();
+            let differenceOfMonths = todayDate.getMonth() - birthdayDate.getMonth();
             if (differenceOfMonths < 0 || (differenceOfMonths === 0 && (todayDate.getDate() < (birthdayDate.getDate() + 1))))
                 age--;
             return age;

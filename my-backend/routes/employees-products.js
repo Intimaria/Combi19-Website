@@ -3,7 +3,7 @@ const {Router} = require('express');
 const {getProducts, postProduct, getProductById, putProduct, deleteProduct, getAvailableProducts, getProductDependenceById} = require("../controllers/products.js");
 
 // The administrator role should be validated with a middleware before performing any operation
-const {authenticateAdminRol} = require("../middlewares/authorization.js");
+const {authenticateAdminRol, authenticatePassengerRol} = require("../middlewares/authorization.js");
 
 const router = Router();
 
@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authenticateAdminRol, getProducts);
 
 // Retrieve all active products
-router.get('/custom/available', authenticateAdminRol, getAvailableProducts);
+router.get('/custom/available', authenticatePassengerRol, getAvailableProducts);
 
 // Retrieve a single product by id
 router.get('/:id', authenticateAdminRol, getProductById);

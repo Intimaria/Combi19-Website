@@ -104,7 +104,7 @@ function Trips() {
     const [filteredRoutes, setFilteredRoutes] = useState([]);
     const [departureRouteSelected, setDepartureRouteSelected] = useState('');
     const [destinationRouteSelected, setDestinationRouteSelected] = useState('');
-    const [routeTransport, setRouteTransport] = useState('Combi de la ruta seleccionada');
+    const [routeTransport, setRouteTransport] = useState(' - ');
     const [departureRouteSelectedError, setDepartureRouteSelectedError] = useState(false);
     const [destinationRouteSelectedError, setDestinationRouteSelectedError] = useState(false);
     const [departureDayError, setDepartureDayError] = useState(false);
@@ -128,7 +128,7 @@ function Trips() {
         setFilteredRoutes([]);
         setDepartureRouteSelected('');
         setDestinationRouteSelected('');
-        setRouteTransport('Combi de la ruta seleccionada');
+        setRouteTransport(' - ');
     };
 
     const setDefaultErrorMessages = () => {
@@ -161,7 +161,7 @@ function Trips() {
                 }
             }));
 
-            setRouteTransport('Combi de la ruta seleccionada');
+            setRouteTransport(' - ');
         } else if (name === 'destinationRouteSelected') {
             setDestinationRouteSelectedError(false);
             setDestinationRouteSelected(value);
@@ -570,7 +570,7 @@ function Trips() {
 
     const inputsToCreateOrModify = (
         <div>
-            <Tooltip title="La combi debe ser modificada desde la sección de RUTAS">
+            <Tooltip title="La combi debe ser modificada desde la sección de 'Rutas'">
                 <TextField label="Combi" id={"transport"} name="transport"
                            className={styles.inputMaterial}
                            disabled

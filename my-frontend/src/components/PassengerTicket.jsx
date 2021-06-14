@@ -43,7 +43,7 @@ export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
                     <div className={styles.line}>
                         <AirportShuttleIcon className={styles.plane}/>
                     </div>
-                    <span className={styles.flight}>{myTicket.transport.registrationNumber}</span>
+                    <span className={styles.flight}>Patente: {props.tripToBuy.transport.registrationNumber}</span>
                 </div>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Destino</h2>

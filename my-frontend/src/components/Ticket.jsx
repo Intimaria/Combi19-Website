@@ -6,6 +6,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import VerticalTicketRip from '@mui-treasury/components/rip/verticalTicket';
 import {useVerticalRipStyles} from '@mui-treasury/styles/rip/vertical';
+import moment from "moment";
 
 import logo from "../images/logo_combi19.png"
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
         background: 'none',
         display: 'flex',
         minWidth: 343,
-        minHeight: 150,
+        minHeight: 160,
         filter: 'drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3))',
         '& $moveLeft, $moveRight': {
             transition: '0.3s',
@@ -126,7 +127,7 @@ export const Ticket = React.memo(function PlaneTicketCard(props) {
         tearColor: mainColor,
     });
     return (
-        <Card className={styles.card} elevation={0}>
+        <Card className={styles.card} elevation={0} style={{width: '90%', margin: '25px 50px 25px 50px'}}>
             <div className={cx(styles.left, styles.moveLeft)}>
                 <CardMedia
                     className={styles.media}
@@ -143,7 +144,7 @@ export const Ticket = React.memo(function PlaneTicketCard(props) {
                 }}
             />
             <div className={cx(styles.right, styles.moveRight)}>
-                <span className={styles.departureDay}>{props.tripToBuy.departureDay}</span>
+                <span className={styles.departureDay}>{moment(props.tripToBuy.departureDay).format('DD/MM/YYYY HH:mm')}hs</span>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Origen</h2>
                     <p className={styles.subheader}>{props.tripToBuy.departure}</p>

@@ -82,7 +82,7 @@ const TripsResults = (props) => {
                 });
             }
         }
-    }
+    };
 
     const verifyRole = () => {
         const userData = JSON.parse(localStorage.getItem('userData'));
@@ -97,7 +97,7 @@ const TripsResults = (props) => {
                 });
             }
         }
-    }
+    };
 
     const buyTrip = async (rowData) => {
         localStorage.setItem("tripToBuy", JSON.stringify(rowData));
@@ -109,12 +109,12 @@ const TripsResults = (props) => {
         else {
             history.push("/buyTrip");
         }
-    }
+    };
 
     useEffect(() => {
         verifyExpirationRisk();
         verifyRole();
-    }, [])
+    }, []);
 
     return (
         <div>
@@ -136,7 +136,7 @@ const TripsResults = (props) => {
                 actions={[
                     {
                         icon: () => <ShoppingCartIcon />,
-                        tooltip: canBuy ? 'Comprar Viaje' : "Usted no puede realizar compras",
+                        tooltip: canBuy ? 'Comprar viaje' : "Usted no puede realizar compras",
                         disabled: !canBuy,
                         onClick: (event, rowData) => buyTrip(rowData)
                     }
@@ -144,6 +144,6 @@ const TripsResults = (props) => {
             />
         </div>
     )
-}
+};
 
 export default TripsResults
