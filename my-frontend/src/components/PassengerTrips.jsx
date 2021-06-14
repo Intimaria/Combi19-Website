@@ -12,9 +12,114 @@ import {PassengerTicket} from './PassengerTicket';
 import {
     getPassengerTrips
 } from '../api/PassengerTrips';
+import {makeStyles} from '@material-ui/core/styles';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import moment from "moment";
 import {useStyles} from '../const/componentStyles';
+
+const mainColor = '#003399';
+const lightColor = '#ecf2ff';
+const borderRadius = 12;
+
+const ticketStyles = makeStyles(({palette, breakpoints}) => ({
+  card: {
+      overflow: 'visible',
+      background: 'none',
+      display: 'flex',
+      minWidth: 343,
+      minHeight: 150,
+      filter: 'drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3))',
+      '& $moveLeft, $moveRight': {
+          transition: '0.3s',
+      },
+      [breakpoints.up('sm')]: {
+          minWidth: 400,
+      },
+  },
+  left: {
+      borderTopLeftRadius: borderRadius,
+      borderBottomLeftRadius: borderRadius,
+      flexBasis: '20%',
+      display: 'flex',
+      backgroundColor: '#fff',
+  },
+  media: {
+      margin: 'auto',
+      width: 80,
+      height: 80,
+      borderRadius: '50%',
+  },
+  right: {
+      borderTopRightRadius: borderRadius,
+      borderBottomRightRadius: borderRadius,
+      flex: 1,
+      padding: 12,
+      display: 'flex',
+      alignItems: 'center',
+      textAlign: 'center',
+      backgroundColor: lightColor,
+  },
+  label: {
+      padding: '0 8px',
+  },
+  heading: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      margin: 0,
+      marginBottom: 4,
+  },
+  subheader: {
+      fontSize: 12,
+      margin: 0,
+      color: palette.text.secondary,
+  },
+  path: {
+      flex: 1,
+      flexBasis: 72,
+      padding: '0 4px',
+  },
+  line: {
+      position: 'relative',
+      margin: '20px 0 16px',
+      borderBottom: '1px dashed rgba(0,0,0,0.38)',
+  },
+  plane: {
+      position: 'absolute',
+      display: 'inline-block',
+      padding: '0 4px',
+      fontSize: 32,
+      backgroundColor: lightColor,
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+  },
+  flight: {
+      fontSize: 14,
+      lineHeight: '24px',
+      minWidth: 48,
+      padding: '0 8px',
+      borderRadius: 40,
+      backgroundColor: '#bed0f5',
+      color: mainColor,
+      display: 'block',
+  },
+  departureDay: {
+      fontSize: 14,
+      lineHeight: '24px',
+      minWidth: 48,
+      padding: '0 8px',
+      borderRadius: 40,
+      backgroundColor: '#bed0f5',
+      color: mainColor,
+      display: 'block',
+      transform: 'rotate(270deg)',
+  },
+  moveLeft: {},
+  moveRight: {},
+}));
+
+
+
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -166,10 +271,12 @@ function PassengerTrips() {
                 {activeTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
-                    <PassengerTicket key={index} tripToBuy={elem}/>
+                    item>
+                    <PassengerTicket 
+                        key={index} myTicket={elem} 
+                        useStyles={ticketStyles}
+                        mainColor={mainColor}
+                        lightColor={lightColor}/>
                     </Grid>
                     ))
                 }
@@ -196,11 +303,12 @@ function PassengerTrips() {
                 {pendingTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        useStyles={ticketStyles}
+                        mainColor={mainColor}
+                        lightColor={lightColor}/>
                     </Grid>
                     ))
                 }
@@ -234,11 +342,13 @@ function PassengerTrips() {
                 {pastTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        useStyles={ticketStyles} 
+                        mainColor={mainColor}
+                        lightColor={lightColor}
+                        />
                     </Grid>
                     ))
                 }
@@ -269,11 +379,12 @@ function PassengerTrips() {
                 {rejectedTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        useStyles={ticketStyles}
+                        mainColor={mainColor}
+                        lightColor={lightColor}/>
                     </Grid>
                 ))
                 }

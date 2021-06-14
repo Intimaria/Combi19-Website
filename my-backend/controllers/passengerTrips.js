@@ -23,7 +23,7 @@ const getPassengerTrips = async (req, res) => {
             CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
             CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
             tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER, tic.ID_STATUS_TICKET as STATUS,
-            r.DURATION
+            tic.QUANTITY, r.DURATION
             FROM USER u
             INNER JOIN CART car ON car.ID_USER=u.USER_ID
             INNER JOIN TICKET tic ON tic.ID_CART=car.CART_ID
