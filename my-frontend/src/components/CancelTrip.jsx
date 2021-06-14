@@ -17,7 +17,7 @@ export const CancelTrip = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
 
   return (
     <div>
@@ -47,7 +47,7 @@ export const CancelTrip = (props) => {
               No estoy de acuerdo. Salir.
            </Button>
           <Button onClick={handleClose} color="primary">
-            Estoy de acuerdo, deseo cancelar.
+            Estoy de acuerdo, deseo cancelar este viaje.
           </Button>
         </DialogActions>
       </Dialog>
