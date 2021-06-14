@@ -31,7 +31,7 @@ const columns = [
     },
     {title: 'Tipo', field: 'typeProductDescription', editable: "never",},
     {
-        title: 'Cantidad a comprar',
+        title: 'Cantidad a comprar (máximo 99 por producto)',
         field: 'quantitySelected',
         render: (rowData) => (
             <TextField
@@ -58,11 +58,13 @@ const BuyTrip = () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
 
     const [totalTickets, setTotalTickets] = React.useState(0);
-    const [totalProducts, setTotalProducts] = React.useState(0);
     const [discountTickets, setDiscountTickets] = React.useState(0);
 
     const [ticketToBuy, setTicketToBuy] = React.useState('1');
     const [ticketToBuyError, setTicketToBuyError] = React.useState('');
+
+    const [quantityProducts, setQuantityProducts] = React.useState(0);
+    const [totalProducts, setTotalProducts] = React.useState(0);
 
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
@@ -131,25 +133,29 @@ const BuyTrip = () => {
     const updateQuantity = (newValue, index) => {
         let newData = [...data];
 
-        console.log('newData es: ', newData);
-        console.log('new value:', newValue);
-        /*
         if (!newValue) {
-            console.log('if 1')
             newData[index].quantitySelected = 0;
-        } else if (!REGEX_ONLY_NUMBER.test(newValue.target.value)) {
-            console.log('if 2')
+        } else if (!REGEX_ONLY_NUMBER.test(newValue)) {
             newData[index].quantitySelected = newData[index].quantitySelected;
+        } else if (newValue > 99) {
+            newData[index].quantitySelected = 99;
         } else {
-            console.log('if 3')
             newData[index].quantitySelected = newValue;
         }
-         */
 
-        newData[index].quantitySelected = newValue;
         setData(newData);
 
-        console.log(data);
+        let productsSelected = 0, totalProducts = 0;
+
+        for (let product of newData){
+            productsSelected += parseInt(product.quantitySelected);
+            totalProducts += (parseFloat(product.quantitySelected) * parseFloat(product.price));
+        }
+
+        totalProducts = totalProducts.toFixed(2).replace('.', ',');
+
+        setQuantityProducts(productsSelected);
+        setTotalProducts(totalProducts);
     };
 
     useEffect(() => {
@@ -257,17 +263,17 @@ const BuyTrip = () => {
                                                id="productsSelected"
                                                disabled
                                                style={{paddingRight: "10px"}}
-                                               value={'10'}
+                                               value={quantityProducts}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField className={styles.inputMaterial}
                                                label="Precio total de los productos *"
-                                               name="ticketPrice"
-                                               id="ticketPrice"
+                                               name="totalProducts"
+                                               id="totalProducts"
                                                disabled
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
-                                               value={`$ 4214,15`}
+                                               value={totalProducts}
                                     />
                                 </Grid>
                             </Grid>
