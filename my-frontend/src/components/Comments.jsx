@@ -1,8 +1,8 @@
-import {Button, Modal, TextField} from '@material-ui/core';
+import {Button, Modal, TextField, Typography} from '@material-ui/core';
 import {
+  ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER,
   ERROR_MSG_API_DELETE_COMMENT,
   ERROR_MSG_API_GET_COMMENT,
-  ERROR_MSG_API_MODIFY_COMMENT_DEPENDENCE,
   ERROR_MSG_API_POST_COMMENT,
   ERROR_MSG_API_PUT_COMMENT,
   ERROR_MSG_EMPTY_TEXT_COMMENT
@@ -10,29 +10,37 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
     deleteComments,
-    getAllComments,
-    getCommentDependenceById,
     getComments,
-    getLatestComments,
     postComments,
     putComments,
-    unDeleteComments
+    unDeleteComments,
 } from '../api/Comments';
 
 import CommentIcon from '@material-ui/icons/Comment';
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from '@material-ui/core/FormHelperText';
-import HelpIcon from '@material-ui/icons/Help';
-import InputLabel from '@material-ui/core/InputLabel';
 import MaterialTable from '@material-table/core';
-import MenuItem from '@material-ui/core/MenuItem';
 import {Message} from './Message';
-import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
-import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import {
+    getPassengerTrips
+} from '../api/PassengerTrips';
+import {makeStyles} from '@material-ui/core/styles';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
+
+const modalStyles = makeStyles((theme) => ({
+    paper: {
+      position: 'absolute',
+      width: "60%",
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    },
+  }));
 
 const columns = [
 {title: 'Comentario', field: 'comment',
@@ -47,15 +55,7 @@ render: rowData => <p style={{width: 30, whiteSpace: "nowrap" }}>{rowData.active
         }
 ];
 
-const altColumns = [
-{title: 'Comentario', field: 'comment',
-render: rowData => <p style={{width: 360, overflow: "hidden", whiteSpace: "nowrap",
-        textOverflow: "ellipsis" }}>{rowData.comment}</p>
-        },
-//{title: 'Email', field: 'user.email'},
-{title: 'Nombre', field: 'user.name'},
-{title: 'Fecha', field: 'datetime'},
-];
+
 
 
 function Comments(props) {
@@ -79,6 +79,7 @@ function Comments(props) {
         };
 
     const styles = useStyles();
+    const modal = modalStyles();
     //Aca se guarda los datos al hacer el get
     const [data, setData] = useState([]);
     const [newData, setNewData] = useState(true);
@@ -97,11 +98,26 @@ function Comments(props) {
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
     
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')))
+    const [hasTrips, setHasTrips] = React.useState(false)
     const newUser = JSON.parse(localStorage.getItem('userData'))
+  
     useEffect(() => {
         setUserData(newUser)
     }, []);
-
+    useEffect (() => {
+        const fetchData = async () => {
+                let getTripsResponse = await getPassengerTrips(newUser.userId);
+                if (getTripsResponse.status === 200) {
+                    let trips = getTripsResponse.data;
+                    console.log("trips", trips)
+                    if (trips.length > 0){
+                        setHasTrips(true)
+                } else setHasTrips(false)
+                } else
+                setHasTrips(false)
+            }     
+    fetchData()    
+}, [])
 
     const updateData = (data) => {
         setData(prevState => ({
@@ -345,28 +361,38 @@ function Comments(props) {
         </div>
     );
     const bodyViewDetails = (
-        <div className={styles.modal}>
-            <h3>DETALLE DEL COMENTARIO</h3>
-            <TextField className={styles.inputMaterial} label="Estado" name="active"
-                       value={selectedComment && selectedComment.active} autoComplete="off"/>
-            <TextField id="standard-multiline-flexible" multiline
-            className={styles.inputMaterial} label="Comentario" name="comment"
-                       value={selectedComment && selectedComment.comment} autoComplete="off"/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Fecha y Hora" name="date" autoComplete="off"
-                       value={selectedComment && selectedComment.datetime /*+ ' ' + selectedComment.time + 'hs'*/}/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Nombre y Apellido" name="user.name"
-                       value={selectedComment && selectedComment.user.name} autoComplete="off"/>
-            <br/>
-            <TextField className={styles.inputMaterial} label="Email" name="user.email"
-                       value={selectedComment && selectedComment.user.email} autoComplete="off"/>
-            <br/><br/>           
+        <div className={modal.paper}>
+          <Typography variant="overline" label="Comentario" name="comment" gutterBottom>
+            Comentario:
+          </Typography>
+          <Typography variant="body2" component="p" gutterBottom>{selectedComment.comment}</Typography>
+          <Typography variant="overline" label="Fecha y Hora" name="datetime" gutterBottom>
+            Fecha y hora:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+              {selectedComment && selectedComment.datetime}
+          </Typography>
+          <Typography variant="overline" label="Autor" name="user.name" gutterBottom>
+            Usuario:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedComment && selectedComment.user.name} 
+          </Typography>
+          <Typography variant="overline" label="Email" name="user.email" gutterBottom>
+            Contacto:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedComment && selectedComment.user.email} 
+          </Typography>
+          <Typography variant="overline" label="Activo" name="active" gutterBottom>
+            Estado:  {selectedComment && selectedComment.active} 
+          </Typography>
+            <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-    );
+      );
 
     const bodyEdit = (
         <div className={styles.modal}>
@@ -434,14 +460,31 @@ function Comments(props) {
             }
             <br/>
         {/* este boton quizas este en el front  */}
-        {userData && 
+        {userData && <div>
+            {hasTrips ? 
             <Button style={{marginLeft: '8px'}}
                     variant="contained"
                     size="large"
                     color="primary"
                     id="btnNewComment"
                     startIcon={<CommentIcon/>}
-                    onClick={() => openCloseModalCreate()}>NUEVO COMENTARIO</Button>
+                    onClick={() =>{openCloseModalCreate()} 
+                    }>NUEVO COMENTARIO</Button>
+                :
+                <Tooltip title={ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER} placement="bottom-start">
+                    <span>
+                        <Button style={{marginLeft: '8px'}}
+                            variant="contained"
+                            size="large"
+                            id="btnNewComment"
+                            startIcon={<CommentIcon/>}
+                            disabled 
+                            >NUEVO COMENTARIO
+                        </Button>
+                    </span>
+                </Tooltip>
+                }
+                    </div>
         }
             <br/><br/>
             <MaterialTable

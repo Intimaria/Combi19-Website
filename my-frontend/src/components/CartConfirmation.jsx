@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {useHistory} from "react-router-dom";
 import {Message} from '../components/Message';
 import {TextField, Button} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";
@@ -39,10 +40,12 @@ import {postPassengerTrip} from "../api/CartConfirmation";
 import {getCardsByUser} from "../api/Cards";
 
 
-function CartConfirmation() {
+const CartConfirmation = () => {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
     };
+
+    const history = useHistory();
 
     const styles = useStyles();
 
@@ -91,6 +94,11 @@ function CartConfirmation() {
                     ...options, open: true, type: 'success',
                     message: putResponse.data
                 });
+
+                history.push("/home");
+
+                localStorage.removeItem("tripToBuy");
+                localStorage.removeItem("userCart");
 
                 return true
             } else if (putResponse.status === 500) {
@@ -346,6 +354,11 @@ function CartConfirmation() {
         return true;
     };
 
+
+    const goBackBuyTrip = async () => {
+        history.push("/buyTrip");
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             const userDataStorage = JSON.parse(localStorage.getItem('userData'));
@@ -354,7 +367,15 @@ function CartConfirmation() {
             const userId = userDataStorage.userId;
 
             // Cart con viaje, cantidad de pasajes, y productos
-            const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
+            let userCartStorage = JSON.parse(localStorage.getItem('userCart'));
+
+            for(let product of userCartStorage.products){
+                console.log('product es:', product)
+                product.quantitySelected = parseInt(product.quantitySelected);
+                product.price = parseFloat(product.price);
+            }
+
+            console.log('userCartStorage.products es:', userCartStorage.products)
 
             setUserCart(userCartStorage);
 
@@ -365,7 +386,7 @@ function CartConfirmation() {
             let resultTotalProducts = 0;
 
             for (let product of userCartStorage.products) {
-                resultTotalProducts += (product.quantity * product.price);
+                resultTotalProducts += (product.quantitySelected * product.price);
             }
 
             setTotalProducts(resultTotalProducts);
@@ -374,7 +395,7 @@ function CartConfirmation() {
 
             if (userDataStorage.goldMembershipExpiration && moment() <= moment(userDataStorage.goldMembershipExpiration)) {
                 resultDiscountTickets = ((resultTotalTickets + resultTotalProducts) * 0.1).toFixed(2);
-                setDiscountTickets(resultDiscountTickets)
+                setDiscountTickets(resultDiscountTickets.replace('.', ','))
             }
 
             const resultTotalCart = resultTotalTickets * resultTotalProducts;
@@ -412,7 +433,13 @@ function CartConfirmation() {
             }
         };
 
-        fetchData();
+        if (!localStorage.getItem('userCart')) {
+            history.push("/home");
+        } else {
+            fetchData();
+        }
+
+
     }, []);
 
     return (
@@ -535,7 +562,7 @@ function CartConfirmation() {
                                         size="large"
                                         color="secondary"
                                         id="btnBack"
-                                    //onClick={volver atrás}
+                                        onClick={() => goBackBuyTrip()}
                                 >VOLVER</Button>
                             </Grid>
                         </Grid>

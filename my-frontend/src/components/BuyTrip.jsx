@@ -25,8 +25,8 @@ const columns = [
     {title: 'Nombre', field: 'name', editable: "never"},
     {
         title: 'Precio',
-        render: (data) => `${(data.price).replace('.', ',')}`,
-        customFilterAndSearch: (term, data) => (`${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1,
+        render: (data) => `$${(data.price).replace('.', ',')}`,
+        customFilterAndSearch: (term, data) => (`$${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1,
         editable: "never"
     },
     {title: 'Tipo', field: 'typeProductDescription', editable: "never",},
@@ -101,29 +101,54 @@ const BuyTrip = () => {
     };
 
     const fetchData = async () => {
-        try {
-            let getProductsResponse = await getAvailableProducts();
+        const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
-            if (getProductsResponse?.status === 200) {
-                let data = getProductsResponse.data;
+        console.log(userCartStorage?.products)
 
-                for (let product of data) {
-                    product['quantitySelected'] = 0;
-                }
+        if (userCartStorage) {
+            setTicketToBuy(userCartStorage.ticket.quantity);
 
-                console.log('data es:');
-                console.log(data);
+            let quantityProducts = 0, totalProducts = 0;
 
-                setData(data);
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`
-                });
+            for (let product of userCartStorage.products) {
+                let quantitySelected = parseInt(product.quantitySelected);
+                let price = parseFloat(product.price);
+
+                quantityProducts += quantitySelected;
+                totalProducts += (quantitySelected * price);
             }
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${error}`);
+
+            totalProducts = totalProducts.toFixed(2).replace('.', ',');
+
+            setQuantityProducts(quantityProducts);
+            setTotalProducts(totalProducts);
+
+            setData(userCartStorage.products);
+        } else {
+            try {
+                let getProductsResponse = await getAvailableProducts();
+
+                if (getProductsResponse?.status === 200) {
+                    let data = getProductsResponse.data;
+
+                    for (let product of data) {
+                        product['quantitySelected'] = 0;
+                    }
+
+                    console.log('data es:');
+                    console.log(data);
+
+                    setData(data);
+                } else {
+                    setSuccessMessage(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`
+                    });
+                }
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${error}`);
+            }
         }
     };
 
@@ -166,31 +191,13 @@ const BuyTrip = () => {
                 message: 'Verifique la cantidad de pasajes'
             });
         } else {
-            let productsSelected = [];
-
-            for (let product of data) {
-                let quantitySelected = parseInt(product.quantitySelected);
-                let price = parseFloat(product.price);
-
-                if (quantitySelected !== 0) {
-                    productsSelected.push(
-                        {
-                            productId: product.idProduct,
-                            quantity: product.quantitySelected,
-                            price: price
-                        }
-                    );
-                }
-
-            }
-
             let userCart = {
                 tripId: tripToBuy.tripId,
                 ticket: {
                     quantity: ticketToBuy,
                     price: tripToBuy.price
                 },
-                products: productsSelected
+                products: data
             };
 
             localStorage.setItem("userCart", JSON.stringify(userCart));
@@ -279,16 +286,12 @@ const BuyTrip = () => {
                                                        id="totalTickets"
                                                        disabled
                                                        style={{marginLeft: '10px'}}
-                                                       value=
-                                                           {(moment() < moment(userData.goldMembershipExpiration))
-                                                               ? `$ ${(tripToBuy.price * ticketToBuy * 0.9).toFixed(2).replace('.', ',')}`
-                                                               : `$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`
-                                                           }
+                                                       value={`$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`}
                                             />
                                         </Grid>
                                         <Grid item xs={3} align={'right'}>
                                             <Tooltip
-                                                title="Total = Cantidad pasajes * Precio del pasaje - Descuento gold">
+                                                title="Total = Cantidad pasajes * Precio del pasaje">
                                                 <HelpIcon color='primary' fontSize="small"/>
                                             </Tooltip>
                                         </Grid>
@@ -323,6 +326,15 @@ const BuyTrip = () => {
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
                                                value={totalProducts}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {(moment() < moment(userData.goldMembershipExpiration))
+                                        ?
+                                        <Typography align="center" style={{padding: '20px 0px 0px 0px'}}>
+                                            El descuento gold se aplicará en el paso siguente
+                                        </Typography>
+                                        : ``
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -1,6 +1,19 @@
-import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid, Modal, TextField} from '@material-ui/core';
+import {
+    Accordion,
+    AccordionActions,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Modal,
+    TextField,
+    Typography
+} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
+import { CancelTrip } from './CancelTrip'
 import CardTravelIcon from '@material-ui/icons/CardTravel';
 import {
     ERROR_MSG_API_GET_TRIPS
@@ -12,9 +25,19 @@ import {PassengerTicket} from './PassengerTicket';
 import {
     getPassengerTrips
 } from '../api/PassengerTrips';
+import {makeStyles} from '@material-ui/core/styles';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import moment from "moment";
 import {useStyles} from '../const/componentStyles';
+
+const mainColor = '#003399';
+const lightColor = '#ecf2ff';
+const borderRadius = 12;
+
+
+
+
+
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -138,6 +161,7 @@ function PassengerTrips() {
     useEffect(() => {
         fetchData()
   }, []);
+  console.log(pendingTrips)
 
     return (
         <div className="App" style={{maxWidth: "80%",margin: 'auto',float: "center"}}>
@@ -163,15 +187,22 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {activeTrips.map((elem, index) => (
+                { activeTrips.length ?
+                 activeTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
-                    <PassengerTicket key={index} tripToBuy={elem}/>
+                    item>
+                    <PassengerTicket 
+                        key={index} myTicket={elem} 
+                        mainColor={"#E65100"}
+                        lightColor={"#FFE0B2"}
+                        insert={"#FFB74D"}/>
                     </Grid>
                     ))
+                    : 
+                    <Typography  variant="subtitle2" gutterBottom>
+                      Usted no posee viajes activos
+                    </Typography>
                 }
                 </Grid>
                 </AccordionDetails>
@@ -193,26 +224,32 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {pendingTrips.map((elem, index) => (
+               {pendingTrips.length ? 
+                pendingTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        mainColor={"#00796B"}
+                        lightColor={"#E0F2F1"}
+                        insert={"#80CBC4"}
+                        onClick={console.log("click")}/>
+                    <br/>
+                    <Box textAlign='right'>
+                        <CancelTrip />
+                    </Box>
                     </Grid>
                     ))
+                    : 
+                        <Typography  variant="subtitle2" gutterBottom>
+                          Usted no posee viajes pendientes
+                        </Typography>
                 }
                 </Grid>
+                
                 </AccordionDetails>
                 <Divider />
-{/*                 <AccordionActions>
-                    <Button size="small">Cancel</Button>
-                    <Button size="small" color="primary">
-                        Save
-                    </Button>
-                 </AccordionActions> */}
             </Accordion>
             <Divider />
             <Accordion>
@@ -224,6 +261,7 @@ function PassengerTrips() {
                 Viajes finalizados
                 </AccordionSummary>
                 <AccordionDetails>
+                        
                 <Grid container
                 direction="row"
                 justifyContent="flex-start"
@@ -231,22 +269,25 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {pastTrips.map((elem, index) => (
+                    { pastTrips.length ? 
+                 pastTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        mainColor={"#003399"}
+                        lightColor={"#ecf2ff"}
+                        insert={"#bed0f5"}
+                        />
                     </Grid>
                     ))
+                    :
+                    <Typography  variant="subtitle2" gutterBottom>
+                        Usted no posee viajes finalizados
+                    </Typography>
                 }
                 </Grid>
-                {/* <MaterialTable
-                title={null}
-                columns={columns}
-                data={pastTrips}/> */}
                 </AccordionDetails>
             </Accordion>
             <Divider />
@@ -266,16 +307,22 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {rejectedTrips.map((elem, index) => (
+                {rejectedTrips.length ?
+                rejectedTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
-                    item
-                    flexGrow={0}
-                    flexShrink={0}>
+                    item>
                     <PassengerTicket 
-                        key={index} tripToBuy={elem}/>
+                        key={index} myTicket={elem} 
+                        mainColor={"#BF360C"}
+                        lightColor={"#FFCCBC"}
+                        insert={"#FF8A65"}/>
                     </Grid>
                 ))
+                : 
+                <Typography  variant="subtitle2" gutterBottom>
+                  Usted no posee viajes dados de baja
+                </Typography>
                 }
                 </Grid>
                 </AccordionDetails>
