@@ -19,8 +19,8 @@ const columns = [
     { title: 'Combi', field: 'registrationNumber' },
     { 
     title: 'Precio',
-    render: (data) => `${(data.price).replace('.', ',')}`,
-    customFilterAndSearch: (term, data) => (`${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1
+    render: (data) => `$${(data.price).replace('.', ',')}`,
+    customFilterAndSearch: (term, data) => (`$${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1
     },
     { title: 'Asientos disponibles', field: 'availableSeatings' },
 ];
