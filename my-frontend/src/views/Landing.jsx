@@ -1,10 +1,10 @@
-import { Grid, makeStyles } from "@material-ui/core/";
+import { Grid, Typography, makeStyles } from "@material-ui/core/";
 
 import React from 'react'
+import SearchTripsModal from "../components/SearchTripsModal";
 import TestimonialCard from '../components/TestimonialCard'
 import WelcomeCard from '../components/WelcomeCard'
 import { useHistory } from "react-router-dom";
-import SearchTripsModal from "../components/SearchTripsModal";
 
 document.title = `Combi-19: Tu lugar para viajes`;
 
@@ -48,9 +48,13 @@ const Landing = (props) => {
                 <WelcomeCard />
             </Grid>
             <br />
-            <Grid>
-                {/** aca van los comentarios */}
+            <Grid container xs={12} justify="center" alignItems="center" style={{paddingTop:30}}>
+                <Grid item>
+                <Typography variant="h4" gutterBottom style={{color: "rgba(255,255,234)"}} >Testimonios de Usuarios</Typography>
+                </Grid>
+                <Grid item>
                 <TestimonialCard />
+                </Grid>
             </Grid>
         </div>
     )
