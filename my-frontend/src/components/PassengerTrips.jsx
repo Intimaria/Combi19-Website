@@ -1,6 +1,7 @@
 import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid, Modal, TextField} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
+import { CancelTrip } from './CancelTrip'
 import CardTravelIcon from '@material-ui/icons/CardTravel';
 import {
     ERROR_MSG_API_GET_TRIPS
@@ -308,19 +309,21 @@ function PassengerTrips() {
                         key={index} myTicket={elem} 
                         useStyles={ticketStyles}
                         mainColor={mainColor}
-                        lightColor={lightColor}/>
+                        lightColor={lightColor}
+                        onClick={console.log("click")}/>
+                    <CancelTrip />
                     </Grid>
                     ))
                 }
                 </Grid>
                 </AccordionDetails>
-                <Divider />
-{/*                 <AccordionActions>
+                {/*                 <AccordionActions>
                     <Button size="small">Cancel</Button>
                     <Button size="small" color="primary">
                         Save
                     </Button>
                  </AccordionActions> */}
+                <Divider />
             </Accordion>
             <Divider />
             <Accordion>
