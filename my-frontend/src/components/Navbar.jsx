@@ -11,11 +11,18 @@ const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
     const history = useHistory();
 
     const logout = () => {
+        const isPassanger = userData && userData.userRoleId.includes(3);
         localStorage.clear();
         setRedirectBoolean(false);
         setRedirectPage("/home");
-        history.push('/login');
+        if (isPassanger) {
+            history.push('/login');
+        }
+        else {
+            history.push('/employee/login');
+        }
     };
+    
     const [isFront, setIsFront] = useState(history.location.pathname === '/')
     
     useEffect(() => {
