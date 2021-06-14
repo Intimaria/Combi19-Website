@@ -100,6 +100,7 @@ const Addresses = () => {
                         getSearchResults={tripsResultsData}
                         setSearchResults={setTripsResultsData}
                         getSearchedData={searchedData}
+                        setSearchedData={setSearchedData}
                         setRedirectPage={setRedirectPage}
                         setRedirectBoolean={setRedirectBoolean} />
                 </Route>

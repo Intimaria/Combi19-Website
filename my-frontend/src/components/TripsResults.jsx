@@ -125,7 +125,7 @@ const TripsResults = (props) => {
                     : null
             }
             <h2 className="text-danger text-center">{riskMessage}</h2>
-            <SearchTripsModal setSearchResults={props.setSearchResults} getSearchedData={props.getSearchedData} useStyles={modalSearchStyles} />
+            <SearchTripsModal setSearchResults={props.setSearchResults} getSearchedData={props.getSearchedData} useStyles={modalSearchStyles} setSearchedData={props.setSearchedData} />
             <br />
             <MaterialTable
                 style={{ maxWidth: "100%", paddingRight: "5px" }}
