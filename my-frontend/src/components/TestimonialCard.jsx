@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, CardHeader, Divider, Fab, Grid, StepContent, Typography } from "@material-ui/core";
+import { Box, Card, CardActionArea, CardActions, CardContent, CardHeader, Divider, Fab, Grid, Modal, StepContent, Typography } from "@material-ui/core";
 import React, {useEffect, useState} from 'react';
 import {
     getAllComments,
@@ -12,8 +12,9 @@ import {
   ERROR_MSG_API_GET_COMMENT,
 } from "../const/messages";
 import { makeStyles } from "@material-ui/core/";
+import {useStyles} from '../const/componentStyles';
 
-const useStyles = makeStyles((theme) => ({
+const uiStyles = makeStyles((theme) => ({
   root: {
     boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
     margin: 'auto',
@@ -59,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function TestimonialCard() {
-  const classes = useStyles();
+  const classes = uiStyles();
+  const styles = useStyles();
   const handleCloseMessage = () => {
             setOptions({...options, open: false});
         };
@@ -77,7 +79,6 @@ export default function TestimonialCard() {
   const [viewModal, setViewModal] = useState(false);
   const [seeAll, setSeeAll] = useState(false);
   const [data, setData] = useState([])
-  const [reducedData, setReducedData] = useState([])
   const [content, setContent] = useState(false)
   const [successMessage, setSuccessMessage] = React.useState(null);
   const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
@@ -88,7 +89,31 @@ export default function TestimonialCard() {
     }
  }, [setData, data])
 
-
+ const bodyViewDetails = (
+  <div className={styles.modal}>
+      <h3>DETALLE DEL COMENTARIO</h3>
+    </div>
+  )
+  /*
+      <TextField className={styles.inputMaterial} label="Ciudad" name="cityName"
+                 value={selectedComment && selectedComment.cityName}/>
+      <br/>
+      <TextField className={styles.inputMaterial} label="Provincia" name="provinceSelected"
+                 value={selectedPlace && selectedPlace.provinceName}/>
+      <br/>
+      <TextField className={styles.inputMaterial} label="Estado" name="active"
+                 value={selectedPlace && selectedPlace.active}/>
+      <br/><br/>           
+      <div align="right">
+          <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
+      </div>
+  </div>
+);
+ */
+const selectComment = (elem) => {
+  setSelectedComment(elem);
+  openCloseModalViewDetails();
+}
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
@@ -143,7 +168,7 @@ export default function TestimonialCard() {
 
      {data.map((elem, index) => (
         <Grid item xs={3} sm={3} lg={'false'} key={data.indexOf(elem)}>
-          <CardActionArea>
+          <CardActionArea onClick={() => selectComment(elem)}>
           <Card>
             <CardContent>
               <Typography className={classes.content} variant="body1" component="p">
@@ -175,6 +200,11 @@ export default function TestimonialCard() {
       } 
       </Box>
     }
+          <Modal
+                open={viewModal}
+                onClose={openCloseModalViewDetails}>
+                {bodyViewDetails}
+            </Modal>
 
   </div>
   );
