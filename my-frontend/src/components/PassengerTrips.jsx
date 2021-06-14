@@ -1,4 +1,16 @@
-import {Accordion, AccordionActions, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid, Modal, TextField} from '@material-ui/core';
+import {
+    Accordion,
+    AccordionActions,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Modal,
+    TextField,
+    Typography
+} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 
 import { CancelTrip } from './CancelTrip'
@@ -22,102 +34,7 @@ const mainColor = '#003399';
 const lightColor = '#ecf2ff';
 const borderRadius = 12;
 
-const ticketStyles = makeStyles(({palette, breakpoints}) => ({
-  card: {
-      overflow: 'visible',
-      background: 'none',
-      display: 'flex',
-      minWidth: 343,
-      minHeight: 150,
-      filter: 'drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3))',
-      '& $moveLeft, $moveRight': {
-          transition: '0.3s',
-      },
-      [breakpoints.up('sm')]: {
-          minWidth: 400,
-      },
-  },
-  left: {
-      borderTopLeftRadius: borderRadius,
-      borderBottomLeftRadius: borderRadius,
-      flexBasis: '20%',
-      display: 'flex',
-      backgroundColor: '#fff',
-  },
-  media: {
-      margin: 'auto',
-      width: 80,
-      height: 80,
-      borderRadius: '50%',
-  },
-  right: {
-      borderTopRightRadius: borderRadius,
-      borderBottomRightRadius: borderRadius,
-      flex: 1,
-      padding: 12,
-      display: 'flex',
-      alignItems: 'center',
-      textAlign: 'center',
-      backgroundColor: lightColor,
-  },
-  label: {
-      padding: '0 8px',
-  },
-  heading: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      margin: 0,
-      marginBottom: 4,
-  },
-  subheader: {
-      fontSize: 12,
-      margin: 0,
-      color: palette.text.secondary,
-  },
-  path: {
-      flex: 1,
-      flexBasis: 72,
-      padding: '0 4px',
-  },
-  line: {
-      position: 'relative',
-      margin: '20px 0 16px',
-      borderBottom: '1px dashed rgba(0,0,0,0.38)',
-  },
-  plane: {
-      position: 'absolute',
-      display: 'inline-block',
-      padding: '0 4px',
-      fontSize: 32,
-      backgroundColor: lightColor,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-  },
-  flight: {
-      fontSize: 14,
-      lineHeight: '24px',
-      minWidth: 48,
-      padding: '0 8px',
-      borderRadius: 40,
-      backgroundColor: '#bed0f5',
-      color: mainColor,
-      display: 'block',
-  },
-  departureDay: {
-      fontSize: 14,
-      lineHeight: '24px',
-      minWidth: 48,
-      padding: '0 8px',
-      borderRadius: 40,
-      backgroundColor: '#bed0f5',
-      color: mainColor,
-      display: 'block',
-      transform: 'rotate(270deg)',
-  },
-  moveLeft: {},
-  moveRight: {},
-}));
+
 
 
 
@@ -244,6 +161,7 @@ function PassengerTrips() {
     useEffect(() => {
         fetchData()
   }, []);
+  console.log(pendingTrips)
 
     return (
         <div className="App" style={{maxWidth: "80%",margin: 'auto',float: "center"}}>
@@ -269,17 +187,22 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {activeTrips.map((elem, index) => (
+                { activeTrips.length ?
+                 activeTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
-                        useStyles={ticketStyles}
-                        mainColor={mainColor}
-                        lightColor={lightColor}/>
+                        mainColor={"#E65100"}
+                        lightColor={"#FFE0B2"}
+                        insert={"#FFB74D"}/>
                     </Grid>
                     ))
+                    : 
+                    <Typography  variant="subtitle2" gutterBottom>
+                      Usted no posee viajes activos
+                    </Typography>
                 }
                 </Grid>
                 </AccordionDetails>
@@ -301,15 +224,16 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {pendingTrips.map((elem, index) => (
+               {pendingTrips.length ? 
+                pendingTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
-                        useStyles={ticketStyles}
-                        mainColor={mainColor}
-                        lightColor={lightColor}
+                        mainColor={"#00796B"}
+                        lightColor={"#E0F2F1"}
+                        insert={"#80CBC4"}
                         onClick={console.log("click")}/>
                     <br/>
                     <Box textAlign='right'>
@@ -317,15 +241,14 @@ function PassengerTrips() {
                     </Box>
                     </Grid>
                     ))
+                    : 
+                        <Typography  variant="subtitle2" gutterBottom>
+                          Usted no posee viajes pendientes
+                        </Typography>
                 }
                 </Grid>
+                
                 </AccordionDetails>
-                {/*                 <AccordionActions>
-                    <Button size="small">Cancel</Button>
-                    <Button size="small" color="primary">
-                        Save
-                    </Button>
-                 </AccordionActions> */}
                 <Divider />
             </Accordion>
             <Divider />
@@ -338,6 +261,7 @@ function PassengerTrips() {
                 Viajes finalizados
                 </AccordionSummary>
                 <AccordionDetails>
+                        
                 <Grid container
                 direction="row"
                 justifyContent="flex-start"
@@ -345,24 +269,25 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {pastTrips.map((elem, index) => (
+                    { pastTrips.length ? 
+                 pastTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
-                        useStyles={ticketStyles} 
-                        mainColor={mainColor}
-                        lightColor={lightColor}
+                        mainColor={"#003399"}
+                        lightColor={"#ecf2ff"}
+                        insert={"#bed0f5"}
                         />
                     </Grid>
                     ))
+                    :
+                    <Typography  variant="subtitle2" gutterBottom>
+                        Usted no posee viajes finalizados
+                    </Typography>
                 }
                 </Grid>
-                {/* <MaterialTable
-                title={null}
-                columns={columns}
-                data={pastTrips}/> */}
                 </AccordionDetails>
             </Accordion>
             <Divider />
@@ -382,17 +307,22 @@ function PassengerTrips() {
                 wrap="wrap"
                 alignContent="center"
                 spacing={3}>
-                {rejectedTrips.map((elem, index) => (
+                {rejectedTrips.length ?
+                rejectedTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
                     direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
-                        useStyles={ticketStyles}
-                        mainColor={mainColor}
-                        lightColor={lightColor}/>
+                        mainColor={"#BF360C"}
+                        lightColor={"#FFCCBC"}
+                        insert={"#FF8A65"}/>
                     </Grid>
                 ))
+                : 
+                <Typography  variant="subtitle2" gutterBottom>
+                  Usted no posee viajes dados de baja
+                </Typography>
                 }
                 </Grid>
                 </AccordionDetails>
