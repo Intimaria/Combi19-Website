@@ -40,7 +40,7 @@ import {postPassengerTrip} from "../api/CartConfirmation";
 import {getCardsByUser} from "../api/Cards";
 
 
-function CartConfirmation() {
+const CartConfirmation = () => {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
     };
@@ -94,6 +94,11 @@ function CartConfirmation() {
                     ...options, open: true, type: 'success',
                     message: putResponse.data
                 });
+
+                history.push("/home");
+
+                localStorage.removeItem("tripToBuy");
+                localStorage.removeItem("userCart");
 
                 return true
             } else if (putResponse.status === 500) {
@@ -428,7 +433,13 @@ function CartConfirmation() {
             }
         };
 
-        fetchData();
+        if (!localStorage.getItem('userCart')) {
+            history.push("/home");
+        } else {
+            fetchData();
+        }
+
+
     }, []);
 
     return (

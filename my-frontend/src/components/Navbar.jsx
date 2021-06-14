@@ -53,7 +53,7 @@ const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
         <div>
             <NavLink to="/userConfiguration" className="btn btn-dark mr-2"> Configuración </NavLink>
             <NavLink to="/comments" className="btn btn-dark mr-2"> Mis comentarios </NavLink>
-            <NavLink to="/home" className="btn btn-dark mr-2"> Mis Viajes </NavLink>
+            <NavLink to="/home" className="btn btn-dark mr-2"> Mis viajes </NavLink>
         </div>
     );
 
