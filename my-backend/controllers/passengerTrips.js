@@ -97,21 +97,23 @@ const postPassengerTrip = async (req, res) => {
         }
 
         for (let product of cart.products) {
-            sqlInsert =
-                `
-            INSERT INTO PRODUCT_CART
-            (ID_CART,
-            ID_PRODUCT,
-            QUANTITY,
-            PRODUCT_CART_PRICE)
-            VALUES
-            (${cartId},
-            ${product.productId},
-            ${product.quantity},
-            ${product.price});
-            `;
+            if (product.quantitySelected !== 0) {
+                sqlInsert =
+                    `
+                    INSERT INTO PRODUCT_CART
+                    (ID_CART,
+                    ID_PRODUCT,
+                    QUANTITY,
+                    PRODUCT_CART_PRICE)
+                    VALUES
+                    (${cartId},
+                    ${product.idProduct},
+                    ${product.quantitySelected},
+                    ${product.price});
+                    `;
 
-            await connection.execute(sqlInsert);
+                await connection.execute(sqlInsert);
+            }
         }
 
         connection.end();

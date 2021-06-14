@@ -25,8 +25,8 @@ const columns = [
     {title: 'Nombre', field: 'name', editable: "never"},
     {
         title: 'Precio',
-        render: (data) => `${(data.price).replace('.', ',')}`,
-        customFilterAndSearch: (term, data) => (`${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1,
+        render: (data) => `$${(data.price).replace('.', ',')}`,
+        customFilterAndSearch: (term, data) => (`$${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1,
         editable: "never"
     },
     {title: 'Tipo', field: 'typeProductDescription', editable: "never",},
@@ -101,29 +101,54 @@ const BuyTrip = () => {
     };
 
     const fetchData = async () => {
-        try {
-            let getProductsResponse = await getAvailableProducts();
+        const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
-            if (getProductsResponse?.status === 200) {
-                let data = getProductsResponse.data;
+        console.log(userCartStorage?.products)
 
-                for (let product of data) {
-                    product['quantitySelected'] = 0;
-                }
+        if (userCartStorage) {
+            setTicketToBuy(userCartStorage.ticket.quantity);
 
-                console.log('data es:');
-                console.log(data);
+            let quantityProducts = 0, totalProducts = 0;
 
-                setData(data);
-            } else {
-                setSuccessMessage(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`
-                });
+            for (let product of userCartStorage.products) {
+                let quantitySelected = parseInt(product.quantitySelected);
+                let price = parseFloat(product.price);
+
+                quantityProducts += quantitySelected;
+                totalProducts += (quantitySelected * price);
             }
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${error}`);
+
+            totalProducts = totalProducts.toFixed(2).replace('.', ',');
+
+            setQuantityProducts(quantityProducts);
+            setTotalProducts(totalProducts);
+
+            setData(userCartStorage.products);
+        } else {
+            try {
+                let getProductsResponse = await getAvailableProducts();
+
+                if (getProductsResponse?.status === 200) {
+                    let data = getProductsResponse.data;
+
+                    for (let product of data) {
+                        product['quantitySelected'] = 0;
+                    }
+
+                    console.log('data es:');
+                    console.log(data);
+
+                    setData(data);
+                } else {
+                    setSuccessMessage(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${getProductsResponse}`
+                    });
+                }
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_GET_PRODUCTS_CUSTOM_AVAILABLE} ${error}`);
+            }
         }
     };
 
@@ -166,31 +191,13 @@ const BuyTrip = () => {
                 message: 'Verifique la cantidad de pasajes'
             });
         } else {
-            let productsSelected = [];
-
-            for (let product of data) {
-                let quantitySelected = parseInt(product.quantitySelected);
-                let price = parseFloat(product.price);
-
-                if (quantitySelected !== 0) {
-                    productsSelected.push(
-                        {
-                            productId: product.idProduct,
-                            quantity: product.quantitySelected,
-                            price: price
-                        }
-                    );
-                }
-
-            }
-
             let userCart = {
                 tripId: tripToBuy.tripId,
                 ticket: {
                     quantity: ticketToBuy,
                     price: tripToBuy.price
                 },
-                products: productsSelected
+                products: data
             };
 
             localStorage.setItem("userCart", JSON.stringify(userCart));
