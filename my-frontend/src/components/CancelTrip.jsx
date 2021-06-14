@@ -4,6 +4,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Fab from '@material-ui/core/Fab';
 import React from 'react';
 
 export const CancelTrip = (props) => {
@@ -17,11 +18,12 @@ export const CancelTrip = (props) => {
     setOpen(false);
   };
 
+
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Fab variant="contained" color="primary" onClick={handleClickOpen}>
         Cancelar Viaje
-      </Button>
+      </Fab>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -31,11 +33,13 @@ export const CancelTrip = (props) => {
         <DialogTitle id="alert-dialog-title">{`¿Estás seguro que deseas cancelar este viaje?`}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Le recordamos las condiciones de cancelacion de viaje adheridas al momento de compra,
-            la cancelació con más de 48hs de antelación tiene el 100% de reembolso del costo del mismo. 
-            La cancelación con menos de 48hs de antelación recibíra el 50% de reembolso del costo, 
-            y fuera de este tiempo no es posible la cancelación. Si usted por cualquier motivo, 
-            no puede presentarse en el momento del viaje, y no ha cancelado con antelación, no hay reembolso.
+            Le recordamos que las condiciones de cancelación de viaje forman parte del contrato 
+            al momento de la compra del mismo. Haciendo la cancelación con más de 48hs de antelación,
+            recibíra el 100% de reembolso del costo del mismo. 
+            Si hace la cancelación con menos de 48hs de antelación, pero anterior al mismo,
+            recibíra el 50% de reembolso del costo. 
+            Fuera de este periodo, no es posible la cancelación. Si usted por cualquier motivo, 
+            no puede presentarse en el momento del viaje, no hay reembolso del costo del viaje.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

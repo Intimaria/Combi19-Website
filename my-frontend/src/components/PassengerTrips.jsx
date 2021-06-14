@@ -311,7 +311,10 @@ function PassengerTrips() {
                         mainColor={mainColor}
                         lightColor={lightColor}
                         onClick={console.log("click")}/>
-                    <CancelTrip />
+                    <br/>
+                    <Box textAlign='right'>
+                        <CancelTrip />
+                    </Box>
                     </Grid>
                     ))
                 }

@@ -3,7 +3,9 @@ const {prepareConnection} = require("../helpers/connectionDB.js");
 const {
     ERROR_MSG_API_GET_TRIPS,
     OK_MSG_API_POST_PASSENGER_TRIP,
-    ERROR_MSG_API_POST_PASSENGER_TRIP
+    ERROR_MSG_API_POST_PASSENGER_TRIP,
+    OK_MSG_API_PUT_PASSENGER_TRIP,
+    ERROR_MSG_API_PUT_PASSENGER_TRIP
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
@@ -120,7 +122,30 @@ const postPassengerTrip = async (req, res) => {
     res.end();
 };
 
+const cancelPassengerTrip = async (req, res) => {
+
+    const {id} = req.params;
+    console.log(req.body, id);
+
+    const connection = await prepareConnection();
+    await connection.query(
+        "UPDATE TICKET SET ID_STATUS_TICKET = 4, WHERE TICKET_ID = ?",
+        [id]).then((result) => {
+        connection.end();
+
+        console.log(result[0], cityName, ':)')
+
+        res.status(200).send(OK_MSG_API_CANCEL_PASSENGER_TRIP);
+    }).catch(function (error) {
+        console.log(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
+    });
+    
+    res.end();
+};
+
 module.exports = {
     getPassengerTrips,
-    postPassengerTrip
+    postPassengerTrip,
+    cancelPassengerTrip
 };
