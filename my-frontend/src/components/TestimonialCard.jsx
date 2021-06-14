@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, CardHeader, Divider, Grid, StepContent, Typography } from "@material-ui/core";
+import { Box, Card, CardActionArea, CardContent, CardHeader, Divider, Fab, Grid, StepContent, Typography } from "@material-ui/core";
 import React, {useEffect, useState} from 'react';
 import {
     getAllComments,
@@ -58,39 +58,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
 export default function TestimonialCard() {
   const classes = useStyles();
   const handleCloseMessage = () => {
             setOptions({...options, open: false});
         };
-  const [seeAll, setSeeAll] = useState(true);
-  useEffect(() => {
-     fetchData()
-  }, [seeAll])
+  const formatSelectedComment = {
+    id: "",
+    comment: "",
+    datetime: "",
+    user: {
+        id: "",
+        name: "",
+        email: ""
+    },
+    active: "",
+    };
   const [viewModal, setViewModal] = useState(false);
+  const [seeAll, setSeeAll] = useState(false);
   const [data, setData] = useState([])
+  const [reducedData, setReducedData] = useState([])
   const [content, setContent] = useState(false)
+  const [successMessage, setSuccessMessage] = React.useState(null);
+  const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
+  const [selectedComment, setSelectedComment] = useState(formatSelectedComment);
   useEffect(() => {
     if (data.length > 4) {
       setContent(true)
     }
  }, [setData, data])
-  const [successMessage, setSuccessMessage] = React.useState(null);
-  const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
-  const formatSelectedComment = {
-        id: "",
-        comment: "",
-        datetime: "",
-        user: {
-            id: "",
-            name: "",
-            email: ""
-        },
-        active: "",
-        };
-      //Aca se guarda los datos de la fila seleccionada
-    const [selectedComment, setSelectedComment] = useState(formatSelectedComment);
+
+
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
@@ -99,16 +97,15 @@ export default function TestimonialCard() {
     }
        const fetchData = async () => {
             try { 
-                let getCommentsResponse;
-                if (seeAll) {
-                  getCommentsResponse = await getAllComments();
-                }
-                else {
-                  getCommentsResponse = await getLatestComments();
-                }
+                let getCommentsResponse = await getAllComments();
                 if (getCommentsResponse?.status === 200) {
                     let data = getCommentsResponse.data;
-                    setData(data)
+                    if (!seeAll){
+                      setData(data.slice(0, 4))
+                    }
+                    else {
+                      setData(data)
+                    };
                 } else {
                     setSuccessMessage(`${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`);
                     setOptions({
@@ -120,9 +117,16 @@ export default function TestimonialCard() {
                 console.log(`${ERROR_MSG_API_GET_COMMENT} ${error}`);
             }
         };
+        
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [seeAll]);
+    
+    const toggleSeeAll = () => {
+      if (seeAll)  {
+        setSeeAll(false)
+      } else { setSeeAll(true)}
+    }
   return (
     <div className={classes.root}>
      <Divider/>
@@ -137,7 +141,7 @@ export default function TestimonialCard() {
         wrap="wrap"
         alignContent="center"> 
 
-     {data.map(elem => (
+     {data.map((elem, index) => (
         <Grid item xs={3} sm={3} lg={'false'} key={data.indexOf(elem)}>
           <CardActionArea>
           <Card>
@@ -158,24 +162,16 @@ export default function TestimonialCard() {
         </Grid>
      ))}
     </Grid>
-    {content && 
-      <Box textAlign='center' color="lightgray"> 
-      { !seeAll ?
-        <Button 
+    {
+      <Box textAlign='center'> 
+      { 
+        <Button
             size="small" 
             variant="extended"
             color="primary" 
-            onClick={() => { setSeeAll(true) }}>
-          <ArrowDropDownIcon/> Ver Todos Los Testimonios de Usuarios 
-          </Button>
-          :
-          <Button 
-            size="small" 
-            color="primary" 
-            variant="extended" 
-            onClick={() => { setSeeAll(false)}}>
-          <ArrowDropUpIcon/> Ver Menos Testimonios de Usuarios
-          </Button>
+            onClick={() => { toggleSeeAll() }}>
+           {!seeAll ? "ver mas" : "ver menos"}
+        </Button>
       } 
       </Box>
     }
