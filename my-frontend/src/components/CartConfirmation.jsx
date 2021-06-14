@@ -374,7 +374,7 @@ function CartConfirmation() {
 
             if (userDataStorage.goldMembershipExpiration && moment() <= moment(userDataStorage.goldMembershipExpiration)) {
                 resultDiscountTickets = ((resultTotalTickets + resultTotalProducts) * 0.1).toFixed(2);
-                setDiscountTickets(resultDiscountTickets)
+                setDiscountTickets(resultDiscountTickets.replace('.', ','))
             }
 
             const resultTotalCart = resultTotalTickets * resultTotalProducts;

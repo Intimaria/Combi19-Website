@@ -279,16 +279,12 @@ const BuyTrip = () => {
                                                        id="totalTickets"
                                                        disabled
                                                        style={{marginLeft: '10px'}}
-                                                       value=
-                                                           {(moment() < moment(userData.goldMembershipExpiration))
-                                                               ? `$ ${(tripToBuy.price * ticketToBuy * 0.9).toFixed(2).replace('.', ',')}`
-                                                               : `$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`
-                                                           }
+                                                       value={`$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`}
                                             />
                                         </Grid>
                                         <Grid item xs={3} align={'right'}>
                                             <Tooltip
-                                                title="Total = Cantidad pasajes * Precio del pasaje - Descuento gold">
+                                                title="Total = Cantidad pasajes * Precio del pasaje">
                                                 <HelpIcon color='primary' fontSize="small"/>
                                             </Tooltip>
                                         </Grid>
@@ -323,6 +319,15 @@ const BuyTrip = () => {
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
                                                value={totalProducts}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {(moment() < moment(userData.goldMembershipExpiration))
+                                        ?
+                                        <Typography align="center" style={{padding: '20px 0px 0px 0px'}}>
+                                            El descuento gold se aplicará en el paso siguente
+                                        </Typography>
+                                        : ``
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>
