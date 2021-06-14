@@ -31,7 +31,7 @@ const columns = [
     },
     {title: 'Tipo', field: 'typeProductDescription', editable: "never",},
     {
-        title: 'Cantidad a comprar',
+        title: 'Cantidad a comprar (máximo 99 por producto)',
         field: 'quantitySelected',
         render: (rowData) => (
             <TextField
@@ -57,12 +57,11 @@ const BuyTrip = () => {
     const tripToBuy = JSON.parse(localStorage.getItem("tripToBuy"));
     const userData = JSON.parse(localStorage.getItem("userData"));
 
-    const [totalTickets, setTotalTickets] = React.useState(0);
-    const [totalProducts, setTotalProducts] = React.useState(0);
-    const [discountTickets, setDiscountTickets] = React.useState(0);
-
     const [ticketToBuy, setTicketToBuy] = React.useState('1');
     const [ticketToBuyError, setTicketToBuyError] = React.useState('');
+
+    const [quantityProducts, setQuantityProducts] = React.useState(0);
+    const [totalProducts, setTotalProducts] = React.useState(0);
 
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
@@ -86,19 +85,19 @@ const BuyTrip = () => {
     const handleTicketToBuy = (newValue) => {
         setTicketToBuy(newValue.target.value);
 
-        console.log('el valor es:', newValue.target.value);
-
         if (!newValue.target.value) {
             setTicketToBuyError('* Debe comprar al menos un pasaje');
         } else if (!REGEX_ONLY_NUMBER.test(newValue.target.value)) {
             setTicketToBuyError('* Sólo se permite valores numéricos');
-        } else if (newValue.target.value === 0) {
+        } else if (parseInt(newValue.target.value) === 0) {
             setTicketToBuyError('* Debe comprar al menos un pasaje');
-        } else if (newValue.target.value <= tripToBuy.availableSeatings) {
-            setTicketToBuyError(null);
-        } else {
+        } else if (parseInt(tripToBuy.availableSeatings) < parseInt(newValue.target.value)) {
             setTicketToBuyError('* Debe ser menor o igual a la cantidad de asientos disponibles');
+        } else {
+            setTicketToBuyError(null);
         }
+
+
     };
 
     const fetchData = async () => {
@@ -131,25 +130,72 @@ const BuyTrip = () => {
     const updateQuantity = (newValue, index) => {
         let newData = [...data];
 
-        console.log('newData es: ', newData);
-        console.log('new value:', newValue);
-        /*
         if (!newValue) {
-            console.log('if 1')
             newData[index].quantitySelected = 0;
-        } else if (!REGEX_ONLY_NUMBER.test(newValue.target.value)) {
-            console.log('if 2')
+        } else if (!REGEX_ONLY_NUMBER.test(newValue)) {
             newData[index].quantitySelected = newData[index].quantitySelected;
+        } else if (newValue > 99) {
+            newData[index].quantitySelected = 99;
         } else {
-            console.log('if 3')
             newData[index].quantitySelected = newValue;
         }
-         */
 
-        newData[index].quantitySelected = newValue;
         setData(newData);
 
-        console.log(data);
+        let quantityProducts = 0, totalProducts = 0;
+
+        for (let product of newData) {
+            let quantitySelected = parseInt(product.quantitySelected);
+            let price = parseFloat(product.price);
+
+            quantityProducts += quantitySelected;
+            totalProducts += (quantitySelected * price);
+        }
+
+        totalProducts = totalProducts.toFixed(2).replace('.', ',');
+
+        setQuantityProducts(quantityProducts);
+        setTotalProducts(totalProducts);
+    };
+
+    const buyCart = async () => {
+        let productsSelected = [];
+
+        for (let product of data) {
+            let quantitySelected = parseInt(product.quantitySelected);
+            let price = parseFloat(product.price);
+
+            if (quantitySelected !== 0) {
+                productsSelected.push(
+                    {
+                        productId: product.idProduct,
+                        quantity: product.quantitySelected,
+                        price: price
+                    }
+                );
+            }
+
+        }
+
+        let userCart = {
+            tripId: tripToBuy.tripId,
+            ticket: {
+                quantity: ticketToBuy,
+                price: tripToBuy.price
+            },
+            products: productsSelected
+        };
+
+        localStorage.setItem("userCart", JSON.stringify(userCart));
+        /*if (!localStorage.getItem('userData')) {
+            props.setRedirectPage("/cartConfirmation");
+            history.push("/login");
+            props.setRedirectBoolean(true);
+        }
+        else {
+            history.push("/cartConfirmation");
+        }*/
+        history.push("/cartConfirmation");
     };
 
     useEffect(() => {
@@ -253,21 +299,21 @@ const BuyTrip = () => {
                                 <Grid item xs={6}>
                                     <TextField className={styles.inputMaterial}
                                                label="Cantidad de productos a comprar *"
-                                               name="productsSelected"
-                                               id="productsSelected"
+                                               name="quantityProducts"
+                                               id="quantityProducts"
                                                disabled
                                                style={{paddingRight: "10px"}}
-                                               value={'10'}
+                                               value={quantityProducts}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <TextField className={styles.inputMaterial}
                                                label="Precio total de los productos *"
-                                               name="ticketPrice"
-                                               id="ticketPrice"
+                                               name="totalProducts"
+                                               id="totalProducts"
                                                disabled
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
-                                               value={`$ 4214,15`}
+                                               value={totalProducts}
                                     />
                                 </Grid>
                             </Grid>
@@ -284,7 +330,7 @@ const BuyTrip = () => {
                     color="primary"
                     id="btnConfirmCart"
                     startIcon={<PaymentIcon/>}
-                    onClick={() => console.log('Agregar a storage userCart. Ver estructura esperada en useEffect de CartConfirmation')}>REALIZAR
+                    onClick={() => buyCart()}>REALIZAR
                 PAGO</Button>
 
             <MaterialTable

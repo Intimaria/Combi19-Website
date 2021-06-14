@@ -354,32 +354,7 @@ function CartConfirmation() {
             const userId = userDataStorage.userId;
 
             // Cart con viaje, cantidad de pasajes, y productos
-            //const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
-
-            const userCartStorage = {
-                "tripId": 2,
-                "ticket": {
-                    "quantity": 4,
-                    "price": 4104.4
-                },
-                "products": [
-                    {
-                        "productId": 1,
-                        "quantity": 2,
-                        "price": 49.99
-                    },
-                    {
-                        "productId": 2,
-                        "quantity": 1,
-                        "price": 99.50
-                    },
-                    {
-                        "productId": 3,
-                        "quantity": 1,
-                        "price": 100
-                    }
-                ]
-            };
+            const userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
             setUserCart(userCartStorage);
 
@@ -410,6 +385,8 @@ function CartConfirmation() {
 
             const requestUserCards = await getCardsByUser(userId);
 
+            console.log('requestUserCards es:', requestUserCards)
+
             if (requestUserCards.data.length > 0) {
                 setUserCards(requestUserCards);
 
@@ -417,7 +394,7 @@ function CartConfirmation() {
 
                 setCardSelected(lastCard);
 
-                setTypeCardSelected(lastCard.cardType);
+                setTypeCardSelected(lastCard.cardNetworkId);
                 setCardNumber(lastCard.number);
                 setExpirationDate(
                     moment().set({

@@ -76,8 +76,9 @@ const postPassengerTrip = async (req, res) => {
 
         const cartId = rows.insertId;
 
-        sqlInsert =
-            `
+        for (let i = 0; i < cart.ticket.quantity; i++) {
+            sqlInsert =
+                `
             INSERT INTO TICKET
             (ID_CART,
             ID_TRIP,
@@ -88,11 +89,12 @@ const postPassengerTrip = async (req, res) => {
             (${cartId},
             ${cart.tripId},
             ${1},
-            ${cart.ticket.quantity},
+            ${1},
             ${cart.ticket.price});
             `;
 
-        await connection.execute(sqlInsert);
+            await connection.execute(sqlInsert);
+        }
 
         for (let product of cart.products) {
             sqlInsert =
