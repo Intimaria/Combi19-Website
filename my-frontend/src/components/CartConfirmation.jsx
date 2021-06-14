@@ -385,6 +385,8 @@ function CartConfirmation() {
 
             const requestUserCards = await getCardsByUser(userId);
 
+            console.log('requestUserCards es:', requestUserCards)
+
             if (requestUserCards.data.length > 0) {
                 setUserCards(requestUserCards);
 
@@ -392,7 +394,7 @@ function CartConfirmation() {
 
                 setCardSelected(lastCard);
 
-                setTypeCardSelected(lastCard.cardType);
+                setTypeCardSelected(lastCard.cardNetworkId);
                 setCardNumber(lastCard.number);
                 setExpirationDate(
                     moment().set({

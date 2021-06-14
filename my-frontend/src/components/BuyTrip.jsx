@@ -89,9 +89,9 @@ const BuyTrip = () => {
             setTicketToBuyError('* Debe comprar al menos un pasaje');
         } else if (!REGEX_ONLY_NUMBER.test(newValue.target.value)) {
             setTicketToBuyError('* Sólo se permite valores numéricos');
-        } else if (newValue.target.value === 0) {
+        } else if (parseInt(newValue.target.value) === 0) {
             setTicketToBuyError('* Debe comprar al menos un pasaje');
-        } else if (tripToBuy.availableSeatings < newValue.target.value) {
+        } else if (parseInt(tripToBuy.availableSeatings) < parseInt(newValue.target.value)) {
             setTicketToBuyError('* Debe ser menor o igual a la cantidad de asientos disponibles');
         } else {
             setTicketToBuyError(null);
@@ -168,7 +168,7 @@ const BuyTrip = () => {
             if (quantitySelected !== 0) {
                 productsSelected.push(
                     {
-                        productId: product.productId,
+                        productId: product.idProduct,
                         quantity: product.quantitySelected,
                         price: price
                     }
