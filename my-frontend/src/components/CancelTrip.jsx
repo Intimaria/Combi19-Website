@@ -1,3 +1,10 @@
+import {
+  CANCELLATION_INFORMATION,
+  OK_MESSAGE_CANCELLATION_0,
+  OK_MESSAGE_CANCELLATION_100,
+  OK_MESSAGE_CANCELLATION_50
+} from '../const/messages'
+
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -6,9 +13,22 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Fab from '@material-ui/core/Fab';
 import React from 'react';
+import {
+  cancelPassengerTrip,
+} from '../api/PassengerTrips';
+import moment from "moment";
 
 export const CancelTrip = (props) => {
   const [open, setOpen] = React.useState(false);
+  const [cancel, setCancel] = React.useState(false);
+  const [selectedTrip, setSelectedTrip] = React.useState(props.trip);
+  const [verificando, setVerificando] = React.useState(false)
+  const [userData, setUserData] = React.useState(JSON.parse(localStorage.getItem('userData')))
+  React.useEffect(() => {
+      setUserData(userData)
+  }, []);
+
+  const [dialogueText, setDialogueText] = React.useState(CANCELLATION_INFORMATION)
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -17,11 +37,113 @@ export const CancelTrip = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-  
 
+  const handleCancel = async() => {
+    setVerificando(true)
+    const ok = validateCancellationDate(props.trip);
+    const token = localStorage.getItem('token');
+    const cancellation = await cancelPassengerTrip(selectedTrip.tripId, token)
+    console.log(cancellation)
+    let n = selectedTrip.price.replace(".","")
+    let number =n.split(",")
+    let newNumber = number[0]+"."+number[1]
+    let finalPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(ok.diferencia * parseFloat(newNumber));
+    if (ok.cancelado & ok.diferencia === 1 ) {
+      setDialogueText(OK_MESSAGE_CANCELLATION_100+finalPrice)
+    } else if (ok.cancelado & ok.diferencia === 0.5 ) {
+      setDialogueText(OK_MESSAGE_CANCELLATION_50+finalPrice) 
+    } else {
+      setDialogueText(OK_MESSAGE_CANCELLATION_0) 
+    }
+    console.log(ok)
+  }
+  
+  const handleDeny = e => {setCancel(false); handleClose()};
+  const handleAgree= e =>  {setCancel(true)};
+
+  React.useEffect(() => {
+    if (props.onChange) {
+      props.onChange(cancel)
+    }
+  }, [cancel])
+
+  React.useEffect(() => {
+    if (cancel) {
+      handleCancel()
+    }
+  }, [cancel])
+
+    const validateCancellationDate =() => {
+        let d = selectedTrip.departureDay.slice(0, 2)
+        let m = selectedTrip.departureDay.slice(3, 5)
+        let y = selectedTrip.departureDay.slice(6, 10)
+        let t = selectedTrip.departureDay.slice(11, 16)
+
+        let departureDate = new Date(y+"/"+m+"/"+d+" "+t) 
+        let todaysDate = new Date()
+        
+        let result = {
+            diferencia: 1,
+            cancelado: true
+        }
+        if (departureDate.getYear() > todaysDate.getYear()) {                 
+                  return result   
+        } else if ((departureDate.getYear() === todaysDate.getYear()) 
+                 && departureDate.getMonth() > todaysDate.getMonth()) {
+                   return result
+        } else if ((departureDate.getMonth() === todaysDate.getMonth()) 
+                 && departureDate.getDate() > todaysDate.getDate()) {
+                   return result
+        } else if (departureDate.getDate() === todaysDate.getDate()) {
+                  // 48 hours is 2880 minutes
+                  let departureMinutes = (departureDate.getHours() * 60) + departureDate.getMinutes();
+                  let todayMinutes =  (todaysDate.getHours() * 60) + todaysDate.getMinutes();
+                  let diff = departureMinutes - todayMinutes
+                  if (diff > 2880) {
+                    return result
+                  } else if (diff > 0 ) {
+                    return {
+                      ...result,
+                      diferencia: 0.5,
+                    }
+                  } else {
+                    return {
+                      diferencia: 0,
+                      cancelado: false
+                    }
+                  }
+        }
+        else { 
+          return {
+            diferencia: 0,
+            cancelado: false
+          }
+    }
+  }
+      /*
+    const requestCancel = async () => {
+        let cancelResponse = await cancelPassengerTrip(selectedTrip.tripId);
+        if (cancelResponse?.status === 200) {
+            openCloseModalCancel();
+            setSuccessMessage(cancelResponse.data);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: cancelResponse.data
+            });
+            fetchData();
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`
+            });
+        }
+    };
+    */
+   console.log(props)
   return (
     <div>
-      <Fab variant="contained" color="primary" onClick={handleClickOpen}>
+      <Fab variant="extended" color="primary" onClick={handleClickOpen}>
         Cancelar Viaje
       </Fab>
       <Dialog
@@ -30,25 +152,30 @@ export const CancelTrip = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
+        { !verificando &&
         <DialogTitle id="alert-dialog-title">{`¿Estás seguro que deseas cancelar este viaje?`}</DialogTitle>
+        }
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Le recordamos que las condiciones de cancelación de viaje forman parte del contrato 
-            al momento de la compra del mismo. Haciendo la cancelación con más de 48hs de antelación,
-            recibíra el 100% de reembolso del costo del mismo. 
-            Si hace la cancelación con menos de 48hs de antelación, pero anterior al mismo,
-            recibíra el 50% de reembolso del costo. 
-            Fuera de este periodo, no es posible la cancelación. Si usted por cualquier motivo, 
-            no puede presentarse en el momento del viaje, no hay reembolso del costo del viaje.
+              {dialogueText}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary" autoFocus>
+         { !verificando &&
+          <Button onClick={handleDeny} color="secondary" autoFocus>
               No estoy de acuerdo. Salir.
            </Button>
-          <Button onClick={handleClose} color="primary">
+          }
+        { !verificando && 
+          <Button onClick={handleAgree} color="primary">
             Estoy de acuerdo, deseo cancelar este viaje.
           </Button>
+          }
+        { verificando &&
+          <Button onClick={handleDeny} color="primary" autoFocus>
+            Cerrar.
+           </Button>
+          }
         </DialogActions>
       </Dialog>
     </div>

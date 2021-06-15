@@ -163,3 +163,17 @@ export const ERROR_MSG_API_GET_LAST_CARD = 'Ocurrió un error al obtener los dat
 // Passenger
 export const ERROR_MSG_API_CANCEL_PASSENGER_TRIP =  'Ocurrió un error al cancelar el viaje indicado:';
 export const ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER = 'Solo los usuarios con viajes realizados pueden hacer comentarios en el sitio.';
+export const OK_MESSAGE_CANCELLATION_100 = `Se ha cancelado el viaje con mas de 48hs de antelación. Se le ha reembolsado 
+el 100% del costo del mismo: `;
+export const OK_MESSAGE_CANCELLATION_50 = `Se ha cancelado el viaje previo a la salida, pero con menos de 48hs de antelación. 
+Se le ha reembolsado el 50% del costo del mismo: `;
+export const OK_MESSAGE_CANCELLATION_0 = `Lo sentimos. No es posible cancelar el viaje, dado que ya  
+ha superado la fecha y hora de ida.`;
+export const CANCELLATION_INFORMATION = `Le recordamos que las condiciones de 
+cancelación de viaje forman parte del contrato 
+al momento de la compra del mismo. Haciendo la cancelación con más de 48hs de antelación,
+recibíra el 100% de reembolso del costo del mismo. 
+Si hace la cancelación con menos de 48hs de antelación, pero anterior al mismo,
+recibíra el 50% de reembolso del costo. 
+Fuera de este periodo, no es posible la cancelación. Si usted por cualquier motivo, 
+no puede presentarse en el momento del viaje, no hay reembolso del costo del viaje.`

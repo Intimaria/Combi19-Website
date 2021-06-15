@@ -15,7 +15,7 @@ const router = Router();
 router.get('/custom/user/:id', authenticatePassengerRol, getPassengerTrips);
 
 // Cancel trip
-router.put('/custom/user/:id', authenticatePassengerRol,cancelPassengerTrip);
+router.put('/custom/trip/:id', authenticatePassengerRol, cancelPassengerTrip);
 
 // Update cart
 router.post('/custom/cartConfirmation/', authenticatePassengerRol, postPassengerTrip);

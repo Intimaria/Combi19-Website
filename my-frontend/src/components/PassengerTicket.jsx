@@ -7,9 +7,6 @@ import cx from 'clsx';
 import logo from "../images/logo_combi19.png"
 import {makeStyles} from '@material-ui/core/styles';
 import {useVerticalRipStyles} from '@mui-treasury/styles/rip/vertical';
-const mainColor = '#003399';
-const lightColor = '#ecf2ff';
-const borderRadius = 12;
 
 const useStyles = makeStyles(({palette, breakpoints}) => ({
     card: {
@@ -27,8 +24,8 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
         },
     },
     left: {
-        borderTopLeftRadius: borderRadius,
-        borderBottomLeftRadius: borderRadius,
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
         flexBasis: '20%',
         display: 'flex',
         backgroundColor: '#fff',
@@ -40,8 +37,8 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
         borderRadius: '50%',
     },
     right: {
-        borderTopRightRadius: borderRadius,
-        borderBottomRightRadius: borderRadius,
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12,
         flex: 1,
         padding: 12,
         display: 'flex',
@@ -110,12 +107,12 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
 
 
 export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
-  const { myTicket, mainColor, lightColor} = props
+  const { myTicket } = props
     const styles = useStyles(props);
     const ripStyles = useVerticalRipStyles({
         size: 24,
-        rightColor: lightColor,
-        tearColor: mainColor,
+        rightColor: props.lightColor,
+        tearColor: props.mainColor,
     });
     return (
         <Card className={styles.card} elevation={0}>

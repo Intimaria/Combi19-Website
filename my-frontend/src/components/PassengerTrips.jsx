@@ -11,33 +11,26 @@ import {
     TextField,
     Typography
 } from '@material-ui/core';
+import {
+    ERROR_MSG_API_CANCEL_PASSENGER_TRIP,
+    ERROR_MSG_API_GET_TRIPS
+} from "../const/messages";
 import React, {useEffect, useState} from 'react';
+import {
+    cancelPassengerTrip,
+    getPassengerTrips
+} from '../api/PassengerTrips';
 
 import { CancelTrip } from './CancelTrip'
 import CardTravelIcon from '@material-ui/icons/CardTravel';
-import {
-    ERROR_MSG_API_GET_TRIPS
-} from "../const/messages";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MaterialTable from '@material-table/core';
 import {Message} from '../components/Message';
 import {PassengerTicket} from './PassengerTicket';
-import {
-    getPassengerTrips
-} from '../api/PassengerTrips';
 import {makeStyles} from '@material-ui/core/styles';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import moment from "moment";
 import {useStyles} from '../const/componentStyles';
-
-const mainColor = '#003399';
-const lightColor = '#ecf2ff';
-const borderRadius = 12;
-
-
-
-
-
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -62,6 +55,7 @@ function PassengerTrips() {
     };
 
     const formatSelectedTrip = {
+        tripId: "",
         price: "",
         departureDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         active: "",
@@ -127,6 +121,27 @@ function PassengerTrips() {
         setPastTrips (pastTrips)
     };
 
+
+    /*
+    const requestCancel = async () => {
+        let cancelResponse = await cancelPassengerTrip(selectedTrip.tripId);
+        if (cancelResponse?.status === 200) {
+            openCloseModalCancel();
+            setSuccessMessage(cancelResponse.data);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: cancelResponse.data
+            });
+            fetchData();
+        } else {
+            setSuccessMessage(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`
+            });
+        }
+    };
+    */
     const fetchData = async () => {
         try {
             let getTripsResponse = await getPassengerTrips(userData.userId);
@@ -156,12 +171,18 @@ function PassengerTrips() {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
-
+    const eventhandler = (cancel) => {
+        if (cancel) {
+            // call view modal
+            // call API cancel trip with id 
+            // show modal with success message
+            // if there's errors, show these instead
+     } 
+    }
 
     useEffect(() => {
         fetchData()
   }, []);
-  console.log(pendingTrips)
 
     return (
         <div className="App" style={{maxWidth: "80%",margin: 'auto',float: "center"}}>
@@ -182,7 +203,7 @@ function PassengerTrips() {
                 <AccordionDetails>
                 <Grid container
                 direction="row"
-                justifyContent="flex-start"
+                justifycontent="flex-start"
                 alignItems="flex-start"
                 wrap="wrap"
                 alignContent="center"
@@ -190,7 +211,6 @@ function PassengerTrips() {
                 { activeTrips.length ?
                  activeTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
-                    direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
@@ -219,7 +239,7 @@ function PassengerTrips() {
                 <AccordionDetails>
                 <Grid container
                 direction="row"
-                justifyContent="flex-start"
+                justifycontent="flex-start"
                 alignItems="flex-start"
                 wrap="wrap"
                 alignContent="center"
@@ -227,7 +247,6 @@ function PassengerTrips() {
                {pendingTrips.length ? 
                 pendingTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
-                    direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
@@ -237,7 +256,7 @@ function PassengerTrips() {
                         onClick={console.log("click")}/>
                     <br/>
                     <Box textAlign='right'>
-                        <CancelTrip />
+                    <CancelTrip onChange={eventhandler} trip={elem}/>
                     </Box>
                     </Grid>
                     ))
@@ -264,7 +283,7 @@ function PassengerTrips() {
                         
                 <Grid container
                 direction="row"
-                justifyContent="flex-start"
+                justifycontent="flex-start"
                 alignItems="flex-start"
                 wrap="wrap"
                 alignContent="center"
@@ -272,7 +291,6 @@ function PassengerTrips() {
                     { pastTrips.length ? 
                  pastTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
-                    direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
@@ -302,7 +320,7 @@ function PassengerTrips() {
                 <AccordionDetails>
                 <Grid container
                 direction="row"
-                justifyContent="flex-start"
+                justifycontent="flex-start"
                 alignItems="flex-start"
                 wrap="wrap"
                 alignContent="center"
@@ -310,7 +328,6 @@ function PassengerTrips() {
                 {rejectedTrips.length ?
                 rejectedTrips.map((elem, index) => (
                     <Grid style = {{width: "100%"}}
-                    direction="column"
                     item>
                     <PassengerTicket 
                         key={index} myTicket={elem} 
