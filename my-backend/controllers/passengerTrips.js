@@ -150,7 +150,7 @@ const validateLastTicket = async (id, cartId) => {
         const [rows] = await connection.execute(sqlSelect, [cartId, id]);
         console.log("validate last", rows)
         connection.end();
-        return rows > 0;
+        return (rows.length === 0);
     } catch (error) {
         console.log(error);
         return false;
@@ -169,21 +169,22 @@ const getProductsPrice = async (cartId) => {
         const [rows] = await connection.execute(sqlSelect, [cartId]);
         console.log("products", rows)
         connection.end();
-        return rows;
+        return rows[0].PRODUCT_CART_PRICE;
     } catch (error) {
-        return false;
+        return 0;
     }
 };
 
 const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
-    const productPrice = 0;
+    let productPrice = 0;
     const {status} = req.body
-    const cartId = await getCart(id)
+     let cartId = await getCart(id)
     console.log("cart", cartId[0].ID_CART)
     const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART)
     console.log("lastcart", isLastTicket)
         if (isLastTicket) {
+            console.log("here")
             productPrice = await getProductsPrice(cartId)
         }
     try {
