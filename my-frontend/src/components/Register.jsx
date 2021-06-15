@@ -570,6 +570,7 @@ function Register({redirectPage}) {
         }
 
         if (expirationDate.set({hour: 0, minute: 0, second: 0, millisecond: 0}) < moment().set({
+            date: 1,
             hour: 0,
             minute: 0,
             second: 0,
