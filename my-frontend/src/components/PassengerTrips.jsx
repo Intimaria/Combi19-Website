@@ -171,14 +171,13 @@ function PassengerTrips() {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
-    const eventhandler = (cancel) => {
+    const eventHandler = async(cancel) => {
         if (cancel) {
-            // call view modal
-            // call API cancel trip with id 
-            // show modal with success message
-            // if there's errors, show these instead
+            setNewData(true)
+            await fetchData()
      } 
     }
+
 
     useEffect(() => {
         fetchData()
@@ -256,7 +255,7 @@ function PassengerTrips() {
                         onClick={console.log("click")}/>
                     <br/>
                     <Box textAlign='right'>
-                    <CancelTrip onChange={eventhandler} trip={elem}/>
+                    <CancelTrip onChange={eventHandler} trip={elem} user={userData}/>
                     </Box>
                     </Grid>
                     ))

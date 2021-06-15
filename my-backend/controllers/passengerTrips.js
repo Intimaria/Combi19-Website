@@ -19,7 +19,7 @@ const getPassengerTrips = async (req, res) => {
         let sqlSelect =
             `
             SELECT 
-            tri.TRIP_ID, FORMAT(tri.PRICE, 2, 'es_AR') PRICE, tri.ACTIVE,
+            tic.TICKET_ID, FORMAT(tri.PRICE, 2, 'es_AR') PRICE, tri.ACTIVE,
             CONCAT(DATE_FORMAT(tri.DEPARTURE_DAY, '%d/%m/%Y %H:%i'), 'hs') DEPARTURE_DAY, 
             CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
             CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
@@ -129,12 +129,13 @@ const postPassengerTrip = async (req, res) => {
 
 const  cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
-    console.log(req.body, id);
+    const {status} = req.body
 
         try {
             const connection = await prepareConnection();
-            let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = 4 WHERE TICKET_ID = ${id}`;
-            const [rows] = await connection.execute(sqlUptate, [id]);
+            let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
+            
+            const [rows] = await connection.execute(sqlUptate, [status, id]);
 
             connection.end();
             res.status(200).send(OK_MSG_API_CANCEL_PASSENGER_TRIP);

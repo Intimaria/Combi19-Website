@@ -155,7 +155,7 @@ const normalizeTrips = (rows) => {
 
     for (let index = 0; index < rows.length; index++) {
         let trip = {
-            tripId: rows[index].TRIP_ID,
+            tripId: rows[index].TICKET_ID,
             price: rows[index].PRICE,
             departureDay: rows[index].DEPARTURE_DAY,
             arrivalDay: rows[index].ARRIVAL_DAY,

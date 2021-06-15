@@ -7,7 +7,8 @@ import {
 import {BACKEND_URL} from "../const/config";
 import axios from 'axios';
 
-export const getPassengerTrips = async (id, token) => {
+export const getPassengerTrips = async (id) => {
+    const token = localStorage.getItem('token');
     try {
         const instance = axios.create({
             baseURL: `${BACKEND_URL}/my-trips/custom/user/${id}`,
@@ -37,9 +38,12 @@ export const getPassengerTrips = async (id, token) => {
 
 export const cancelPassengerTrip = async (id) => {
     const token = localStorage.getItem('token');
-    console.log(token)
+    let newStatus = {
+        status: "4"
+    }
     try {
         let response = await axios.put(`${BACKEND_URL}/my-trips/custom/trip/${id}`,
+            newStatus,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

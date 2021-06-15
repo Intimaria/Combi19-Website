@@ -23,13 +23,8 @@ export const CancelTrip = (props) => {
   const [cancel, setCancel] = React.useState(false);
   const [selectedTrip, setSelectedTrip] = React.useState(props.trip);
   const [verificando, setVerificando] = React.useState(false)
-  const [userData, setUserData] = React.useState(JSON.parse(localStorage.getItem('userData')))
-  React.useEffect(() => {
-      setUserData(userData)
-  }, []);
 
   const [dialogueText, setDialogueText] = React.useState(CANCELLATION_INFORMATION)
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -37,29 +32,38 @@ export const CancelTrip = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleCancel = async() => {
+  const apiCancel = async () => {
+    const cancellation = await cancelPassengerTrip(selectedTrip.tripId);
+    return cancellation
+  }
+  const handleCancel = () => {
     setVerificando(true)
     const ok = validateCancellationDate(props.trip);
-    const token = localStorage.getItem('token');
-    const cancellation = await cancelPassengerTrip(selectedTrip.tripId, token)
-    console.log(cancellation)
-    let n = selectedTrip.price.replace(".","")
-    let number =n.split(",")
-    let newNumber = number[0]+"."+number[1]
-    let finalPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(ok.diferencia * parseFloat(newNumber));
-    if (ok.cancelado & ok.diferencia === 1 ) {
-      setDialogueText(OK_MESSAGE_CANCELLATION_100+finalPrice)
-    } else if (ok.cancelado & ok.diferencia === 0.5 ) {
-      setDialogueText(OK_MESSAGE_CANCELLATION_50+finalPrice) 
-    } else {
+    if (ok.cancelado){
+        let cancelled = apiCancel()
+        let n = selectedTrip.price.replace(".","")
+        let number =n.split(",")
+        let newNumber = number[0]+"."+number[1]
+        let finalPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(ok.diferencia * parseFloat(newNumber));      
+        if (ok.diferencia === 1 ) {
+          setDialogueText(OK_MESSAGE_CANCELLATION_100 + finalPrice)
+        } else if (ok.diferencia === 0.5) {
+          setDialogueText(OK_MESSAGE_CANCELLATION_50 + finalPrice) 
+        } 
+    }else {
       setDialogueText(OK_MESSAGE_CANCELLATION_0) 
     }
-    console.log(ok)
+
   }
   
   const handleDeny = e => {setCancel(false); handleClose()};
   const handleAgree= e =>  {setCancel(true)};
+
+  React.useEffect(() => {
+    if (props.onChange) {
+      props.onChange(cancel)
+    }
+  }, [cancel])
 
   React.useEffect(() => {
     if (props.onChange) {
@@ -120,27 +124,8 @@ export const CancelTrip = (props) => {
           }
     }
   }
-      /*
-    const requestCancel = async () => {
-        let cancelResponse = await cancelPassengerTrip(selectedTrip.tripId);
-        if (cancelResponse?.status === 200) {
-            openCloseModalCancel();
-            setSuccessMessage(cancelResponse.data);
-            setOptions({
-                ...options, open: true, type: 'success',
-                message: cancelResponse.data
-            });
-            fetchData();
-        } else {
-            setSuccessMessage(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`);
-            setOptions({
-                ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`
-            });
-        }
-    };
-    */
-   console.log(props)
+
+
   return (
     <div>
       <Fab variant="extended" color="primary" onClick={handleClickOpen}>
