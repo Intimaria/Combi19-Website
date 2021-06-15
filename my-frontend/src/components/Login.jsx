@@ -64,7 +64,7 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
     return (
         <Fragment>
             <div className={styles.modal}>
-                {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesion para continuar</h4> : null}
+                {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesión para continuar</h4> : null}
 
                 <h2 align={'center'}>Iniciar sesión</h2>
 

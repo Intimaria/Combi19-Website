@@ -344,7 +344,7 @@ function Comments(props) {
             <TextField className={styles.inputMaterial} label="Comentario" name="comment"
                        required
                        id="standard-multiline-flexible"
-                       label="Agregue su comentario aqui:"
+                       label="Agregue su comentario aquí:"
                        multiline
                        rowsMax={8}
                        inputProps={{maxLength: 400}}
@@ -406,7 +406,7 @@ function Comments(props) {
             <TextField className={styles.inputMaterial} label="Comentario" name="comment"
                        required
                        id="standard-multiline-flexible"
-                       label="Edite su comentario aqui:"
+                       label="Edite su comentario aquí:"
                        multiline
                        rowsMax={8}
                        inputProps={{maxLength: 400}}
