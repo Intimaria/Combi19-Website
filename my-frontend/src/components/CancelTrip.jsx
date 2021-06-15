@@ -34,21 +34,21 @@ export const CancelTrip = (props) => {
   };
   const apiCancel = async () => {
     const cancellation = await cancelPassengerTrip(selectedTrip.ticketId);
-    return cancellation
+    return cancellation.data
   }
-  const handleCancel = () => {
+  const handleCancel = async() => {
     setVerificando(true)
     const ok = validateCancellationDate(props.trip);
     if (ok.cancelado){
-        let cancelled = apiCancel()
+        let cancelled = await apiCancel()
         let n = selectedTrip.price.replace(".","")
         let number =n.split(",")
         let newNumber = number[0]+"."+number[1]
         let finalPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(ok.diferencia * parseFloat(newNumber));      
         if (ok.diferencia === 1 ) {
-          setDialogueText(OK_MESSAGE_CANCELLATION_100 + finalPrice)
+          setDialogueText(OK_MESSAGE_CANCELLATION_100 + finalPrice + cancelled )
         } else if (ok.diferencia === 0.5) {
-          setDialogueText(OK_MESSAGE_CANCELLATION_50 + finalPrice) 
+          setDialogueText(OK_MESSAGE_CANCELLATION_50 + finalPrice + cancelled )
         } 
     }else {
       setDialogueText(OK_MESSAGE_CANCELLATION_0) 
