@@ -129,7 +129,7 @@ const getCart = async (id) => {
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
-        SELECT ID_CART FROM TICKET T INNER JOIN CART ON ID_CART=CART=ID WHERE TICKET_ID = ${id}`;
+        SELECT ID_CART FROM TICKET T INNER JOIN CART ON ID_CART=CART_ID WHERE TICKET_ID = ${id}`;
         const [rows] = await connection.execute(sqlSelect, [id]);
         connection.end();
         if (rows)
@@ -150,8 +150,9 @@ const validateLastTicket = async (id, cartId) => {
         const [rows] = await connection.execute(sqlSelect, [cartId, id]);
         console.log("validate last", rows)
         connection.end();
-        return rows >= 1;
+        return rows > 0;
     } catch (error) {
+        console.log(error);
         return false;
     }
 };
@@ -179,12 +180,12 @@ const cancelPassengerTrip = async (req, res) => {
     const productPrice = 0;
     const {status} = req.body
     const cartId = await getCart(id)
-    if (cartId) {
-        const isLastTicket = await validateLastTicket(id, cartId)
+    console.log("cart", cartId[0].ID_CART)
+    const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART)
+    console.log("lastcart", isLastTicket)
         if (isLastTicket) {
             productPrice = await getProductsPrice(cartId)
         }
-    }
     try {
         const connection = await prepareConnection();
         let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
