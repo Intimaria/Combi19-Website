@@ -182,7 +182,7 @@ function Register({redirectPage}) {
             } else if (loginRequest?.status === 400) {
                 console.log("There was an error in the submitted entries");
             }
-            ;
+
         } else if (registerRequest?.status === 400) {
             console.log("There was an error in the submitted entries");
             setEmailError(registerRequest.data.emailError);
