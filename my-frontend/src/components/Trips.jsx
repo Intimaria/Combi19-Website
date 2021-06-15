@@ -510,6 +510,7 @@ function Trips() {
     };
 
     const openCloseModalUpdate = async (trip) => {
+        console.log(trip);
         // If the modal is closed, trip dependence is validate before open the modal
         if (!updateModal) {
             let dependenceResponse = await getTripDependenceById(trip.tripId);

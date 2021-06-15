@@ -52,6 +52,8 @@ const validatePassengersToModifyWihoutNewPassword = async (email, names, surname
 }
 
 const validatePassengersToModifyWithNewPassword = async (email, names, surname, newPassword1, newPassword2, actualPassword ,birthday, id) => {
+    passwordError1 = null;
+    passwordError2 = null;
     return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id) && validatePassword(newPassword1) && comparePasswords(newPassword1,newPassword2) && compareActualPasswordWithNewPassword(actualPassword, newPassword1)) ? null : preparePassengerResponse();
 }
 
