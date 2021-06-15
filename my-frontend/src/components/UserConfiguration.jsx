@@ -366,7 +366,7 @@ function UserConfiguration() {
     return (
         <div className={styles.root}>
             <form className={styles.form} onSubmit={mySubmitHandler} encType="multipart/form-data">
-                <h2 align={'center'}>Editar Datos</h2>
+                <h2 align={'center'}>Editar datos</h2>
                 <div className="row ">
                     {
                         successMessage ?

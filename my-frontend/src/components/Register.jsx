@@ -32,8 +32,6 @@ import {
 import {CustomDatePicker} from '../components/CustomDatePicker';
 import {CardPaymentForm} from '../components/CardPaymentForm';
 
-import {BACKEND_URL} from '../const/config.js';
-
 import {
     ERROR_MSG_EMPTY_EMAIL,
     ERROR_MSG_INVALID_EMAIL,
@@ -64,6 +62,7 @@ import {
     ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER,
     ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER,
+    ERROR_MSG_INVALID_BANK_CONNECTION,
     ERROR_MSG_API_REGISTRATION,
     ERROR_MSG_INTERNET
 } from '../const/messages.js';
@@ -183,7 +182,7 @@ function Register({redirectPage}) {
             } else if (loginRequest?.status === 400) {
                 console.log("There was an error in the submitted entries");
             }
-            ;
+
         } else if (registerRequest?.status === 400) {
             console.log("There was an error in the submitted entries");
             setEmailError(registerRequest.data.emailError);
@@ -616,10 +615,10 @@ function Register({redirectPage}) {
 
     const validateBankConnection = () => {
         if (cardNumber === '7777777777777777') {
-            setSuccessMessage(`Ocurrió un error al verificar el pago. Intente nuevamente.`);
+            setSuccessMessage(ERROR_MSG_INVALID_BANK_CONNECTION);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `Ocurrió un error al verificar el pago. Intente nuevamente.`
+                message: ERROR_MSG_INVALID_BANK_CONNECTION
             });
             return false;
         }

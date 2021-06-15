@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory} from "react-router-dom";
 import {Message} from '../components/Message';
+import {Modal} from '@material-ui/core';
 import {TextField, Button} from '@material-ui/core';
 import Grid from "@material-ui/core/Grid";
 import HelpIcon from '@material-ui/icons/Help';
@@ -26,6 +27,7 @@ import {
     ERROR_MSG_INVALID_NAME_SURNAME_CARD_OWNER,
     ERROR_MSG_EMPTY_DOCUMENT_NUMBER_CARD_OWNER,
     ERROR_MSG_INVALID_DOCUMENT_NUMBER_CARD_OWNER,
+    ERROR_MSG_INVALID_BANK_CONNECTION,
     ERROR_MSG_API_PUT_PASSENGER_TRIP
 } from '../const/messages.js';
 
@@ -38,9 +40,11 @@ import {
 
 import {postPassengerTrip} from "../api/CartConfirmation";
 import {getCardsByUser} from "../api/Cards";
+import {getTransportDependenceById} from "../api/Transports";
+import {ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE} from "../const/messages";
 
 
-const CartConfirmation = () => {
+const CartConfirmation = (props) => {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
     };
@@ -80,6 +84,8 @@ const CartConfirmation = () => {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
+    const [cancelBuyModal, setCancelBuyModal] = useState(false);
+
     const requestPutPassengerTrip = async (event) => {
         //event.preventDefault();
 
@@ -94,6 +100,9 @@ const CartConfirmation = () => {
                     ...options, open: true, type: 'success',
                     message: putResponse.data
                 });
+
+                props.setShowSuccessMessage(true);
+                props.setSuccessMessage(putResponse.data);
 
                 history.push("/home");
 
@@ -343,10 +352,10 @@ const CartConfirmation = () => {
 
     const validateBankConnection = () => {
         if (cardNumber === '7777777777777777') {
-            setSuccessMessage(`Ocurrió un error al verificar el pago. Intente nuevamente.`);
+            setSuccessMessage(ERROR_MSG_INVALID_BANK_CONNECTION);
             setOptions({
                 ...options, open: true, type: 'error',
-                message: `Ocurrió un error al verificar el pago. Intente nuevamente.`
+                message: ERROR_MSG_INVALID_BANK_CONNECTION
             });
             return false;
         }
@@ -354,6 +363,12 @@ const CartConfirmation = () => {
         return true;
     };
 
+    const cancelBuy = async () => {
+        history.push("/");
+
+        localStorage.removeItem("tripToBuy");
+        localStorage.removeItem("userCart");
+    };
 
     const goBackBuyTrip = async () => {
         history.push("/buyTrip");
@@ -369,13 +384,10 @@ const CartConfirmation = () => {
             // Cart con viaje, cantidad de pasajes, y productos
             let userCartStorage = JSON.parse(localStorage.getItem('userCart'));
 
-            for(let product of userCartStorage.products){
-                console.log('product es:', product)
+            for (let product of userCartStorage.products) {
                 product.quantitySelected = parseInt(product.quantitySelected);
                 product.price = parseFloat(product.price);
             }
-
-            console.log('userCartStorage.products es:', userCartStorage.products)
 
             setUserCart(userCartStorage);
 
@@ -405,8 +417,6 @@ const CartConfirmation = () => {
             setTotalCart(resultTotalTickets + resultTotalProducts - resultDiscountTickets);
 
             const requestUserCards = await getCardsByUser(userId);
-
-            console.log('requestUserCards es:', requestUserCards)
 
             if (requestUserCards.data.length > 0) {
                 setUserCards(requestUserCards);
@@ -441,6 +451,23 @@ const CartConfirmation = () => {
 
 
     }, []);
+
+    const openCloseModalCancelBuy = async () => {
+        setCancelBuyModal(!cancelBuyModal);
+    };
+
+    const bodyCancelBuyModal = (
+        <div className={styles.modal}>
+            <p>¿Está seguro que quiere cancelar la compra?
+            </p>
+            <div align="right">
+                <Button color="secondary" onClick={() => cancelBuy()}>SÍ, CANCELAR COMPRA</Button>
+                <Button onClick={() => openCloseModalCancelBuy()}>NO, CONTINUAR CON LA COMPRA</Button>
+
+            </div>
+
+        </div>
+    );
 
     return (
         <div className={styles.root}>
@@ -552,7 +579,7 @@ const CartConfirmation = () => {
                                         size="large"
                                         color="secondary"
                                         id="btnCancel"
-                                    //onClick={volver atrás}
+                                        onClick={() => openCloseModalCancelBuy()}
                                 >CANCELAR COMPRA</Button>
                             </Grid>
                             <Grid item xs={12}>
@@ -570,6 +597,12 @@ const CartConfirmation = () => {
                 </div>
             </div>
             <br/><br/>
+
+            <Modal
+                open={cancelBuyModal}
+                onClose={openCloseModalCancelBuy}>
+                {bodyCancelBuyModal}
+            </Modal>
         </div>
     );
 }

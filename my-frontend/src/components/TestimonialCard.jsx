@@ -119,8 +119,8 @@ export default function TestimonialCard() {
     };
   const [viewModal, setViewModal] = useState(false);
   const [seeAll, setSeeAll] = useState(false);
-  const [data, setData] = useState([])
-  const [content, setContent] = useState(true)
+  const [data, setData] = useState([]);
+  const [content, setContent] = useState(true);
   const [successMessage, setSuccessMessage] = React.useState(null);
   const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
   const [selectedComment, setSelectedComment] = useState(formatSelectedComment);
@@ -159,13 +159,14 @@ export default function TestimonialCard() {
 const selectComment = (elem) => {
   setSelectedComment(elem);
   openCloseModalViewDetails();
-}
+};
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
             setSelectedComment(formatSelectedComment);
         }
-    }
+    };
+
        const fetchData = async () => {
             try { 
                 let getCommentsResponse = await getAllComments();
@@ -180,7 +181,7 @@ const selectComment = (elem) => {
                     }
                     else {
                       setData(data)
-                    };
+                    }
   
                 } else {
                     setSuccessMessage(`${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`);
@@ -202,13 +203,14 @@ const selectComment = (elem) => {
       if (seeAll)  {
         setSeeAll(false)
       } else { setSeeAll(true)}
-    }
+    };
+
   return (
     <div>
      { data.length > 0 && 
      <Grid container xs={12} justify="center" alignItems="center" style={{paddingTop:30}}>
             <Grid item>
-                <Typography variant="h4" gutterBottom style={{color: "rgba(255,255,234)"}} >Testimonios de Usuarios</Typography>
+                <Typography variant="h4" gutterBottom style={{color: "rgba(255,255,234)"}} >Testimonios de usuarios</Typography>
             </Grid>
       </Grid>}
         <div className={classes.root}>
@@ -231,7 +233,7 @@ const selectComment = (elem) => {
                   <Typography className={classes.content} variant="body1" component="p" display="block">
                     "{elem.comment}"
                   </Typography>
-                  <Typography className={classes.footer} variant="body2" component="p">
+                  <Typography className={classes.footer} variant="body2" component="p" align={"center"}>
                     <br/>
                     {elem.user.name}
                     <br/>
