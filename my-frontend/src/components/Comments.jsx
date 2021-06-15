@@ -111,7 +111,9 @@ function Comments(props) {
                     let trips = getTripsResponse.data;
                     console.log("trips", trips)
                     if (trips.length > 0){
-                        setHasTrips(true)
+                    const pastTrips = trips.filter(d => d.status === 5);
+                    if (pastTrips.length > 0) { setHasTrips(true) }
+                    else {  setHasTrips(false) }
                 } else setHasTrips(false)
                 } else
                 setHasTrips(false)
