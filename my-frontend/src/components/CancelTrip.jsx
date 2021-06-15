@@ -45,10 +45,11 @@ export const CancelTrip = (props) => {
         let number =n.split(",")
         let newNumber = number[0]+"."+number[1]
         let finalPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(ok.diferencia * parseFloat(newNumber));      
+        let prod = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits:2 }).format(cancelled); 
         if (ok.diferencia === 1 ) {
-          setDialogueText(OK_MESSAGE_CANCELLATION_100 + finalPrice + " productos: " + cancelled )
+          setDialogueText(OK_MESSAGE_CANCELLATION_100 + finalPrice + " costo de productos: " + prod )
         } else if (ok.diferencia === 0.5) {
-          setDialogueText(OK_MESSAGE_CANCELLATION_50 + finalPrice +  " productos: " + cancelled )
+          setDialogueText(OK_MESSAGE_CANCELLATION_50 + finalPrice +  " costo de productos: " + prod )
         } 
     }else {
       setDialogueText(OK_MESSAGE_CANCELLATION_0) 
