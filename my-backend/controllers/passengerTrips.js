@@ -9,7 +9,6 @@ const {
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
-
 const getPassengerTrips = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
     const {id} = req.params;
@@ -126,25 +125,78 @@ const postPassengerTrip = async (req, res) => {
     res.end();
 };
 
+const getCart = async (id) => {
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = `
+        SELECT ID_CART FROM TICKET T INNER JOIN CART ON ID_CART=CART=ID WHERE TICKET_ID = ${id}`;
+        const [rows] = await connection.execute(sqlSelect, [id]);
+        connection.end();
+        if (rows)
+            return rows;
+    } catch (error) {
+        return error;
+    }
+};
+
+const validateLastTicket = async (id, cartId) => {
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = `
+        SELECT * FROM TICKET tic
+        WHERE tic.ID_CART = ${cartId}
+        AND tic.TICKET_ID <> ${id} 
+        AND tic.ID_STATUS_TICKET IN (1) `;
+        const [rows] = await connection.execute(sqlSelect, [cartId, id]);
+        console.log("validate last", rows)
+        connection.end();
+        return rows >= 1;
+    } catch (error) {
+        return false;
+    }
+};
+
+const getProductsPrice = async (cartId) => {
+    try {
+        const connection = await prepareConnection();
+        const sqlSelect = `
+        SELECT sum(case when pc.PRODUCT_CART_PRICE is null then 0 else pc.PRODUCT_CART_PRICE end) as montoTotal 
+        FROM CART LEFT JOIN
+        PRODUCT_CART PC ON ID_CART=CART_ID
+        WHERE pc.ID_CART = ${cartId}
+        GROUP BY ID_CART`;
+        const [rows] = await connection.execute(sqlSelect, [cartId]);
+        console.log("products", rows)
+        connection.end();
+        return rows;
+    } catch (error) {
+        return false;
+    }
+};
 
 const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
+    const productPrice = 0;
     const {status} = req.body
-
+    const cartId = await getCart(id)
+    if (cartId) {
+        const isLastTicket = await validateLastTicket(id, cartId)
+        if (isLastTicket) {
+            productPrice = await getProductsPrice(cartId)
+        }
+    }
     try {
         const connection = await prepareConnection();
         let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
-
         const [rows] = await connection.execute(sqlUptate, [status, id]);
-
         connection.end();
-        res.status(200).send(OK_MSG_API_CANCEL_PASSENGER_TRIP);
+        res.status(200).send(productPrice.toString());
     } catch (error) {
         console.log(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
         res.status(500).send(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
     }
     res.end();
-}
+};
 
 module.exports = {
     getPassengerTrips,
