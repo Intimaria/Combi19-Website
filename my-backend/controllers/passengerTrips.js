@@ -158,6 +158,7 @@ const validateLastTicket = async (id, cartId) => {
 };
 
 const getProductsPrice = async (cartId) => {
+    console.log("cartid", cartId)
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
@@ -167,9 +168,9 @@ const getProductsPrice = async (cartId) => {
         WHERE pc.ID_CART = ${cartId}
         GROUP BY ID_CART`;
         const [rows] = await connection.execute(sqlSelect, [cartId]);
-        console.log("products", rows)
         connection.end();
-        return rows[0].PRODUCT_CART_PRICE;
+        console.log("products", rows[0].montoTotal)
+        return rows[0].montoTotal;
     } catch (error) {
         return 0;
     }
@@ -185,7 +186,7 @@ const cancelPassengerTrip = async (req, res) => {
     console.log("lastcart", isLastTicket)
         if (isLastTicket) {
             console.log("here")
-            productPrice = await getProductsPrice(cartId)
+            productPrice = await getProductsPrice(cartId[0].ID_CART)
         }
     try {
         const connection = await prepareConnection();
