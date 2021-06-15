@@ -56,6 +56,7 @@ function PassengerTrips() {
 
     const formatSelectedTrip = {
         tripId: "",
+        ticketId: "",
         price: "",
         departureDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         active: "",
@@ -121,27 +122,6 @@ function PassengerTrips() {
         setPastTrips (pastTrips)
     };
 
-
-    /*
-    const requestCancel = async () => {
-        let cancelResponse = await cancelPassengerTrip(selectedTrip.tripId);
-        if (cancelResponse?.status === 200) {
-            openCloseModalCancel();
-            setSuccessMessage(cancelResponse.data);
-            setOptions({
-                ...options, open: true, type: 'success',
-                message: cancelResponse.data
-            });
-            fetchData();
-        } else {
-            setSuccessMessage(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`);
-            setOptions({
-                ...options, open: true, type: 'error',
-                message: `${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${cancelResponse}`
-            });
-        }
-    };
-    */
     const fetchData = async () => {
         try {
             let getTripsResponse = await getPassengerTrips(userData.userId);

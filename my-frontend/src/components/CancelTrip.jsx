@@ -33,7 +33,7 @@ export const CancelTrip = (props) => {
     setOpen(false);
   };
   const apiCancel = async () => {
-    const cancellation = await cancelPassengerTrip(selectedTrip.tripId);
+    const cancellation = await cancelPassengerTrip(selectedTrip.ticketId);
     return cancellation
   }
   const handleCancel = () => {
@@ -77,53 +77,34 @@ export const CancelTrip = (props) => {
     }
   }, [cancel])
 
-    const validateCancellationDate =() => {
-        let d = selectedTrip.departureDay.slice(0, 2)
-        let m = selectedTrip.departureDay.slice(3, 5)
-        let y = selectedTrip.departureDay.slice(6, 10)
-        let t = selectedTrip.departureDay.slice(11, 16)
+  const validateCancellationDate =() => {
+    let d = selectedTrip.departureDay.slice(0, 2)
+    let m = selectedTrip.departureDay.slice(3, 5)
+    let y = selectedTrip.departureDay.slice(6, 10)
+    let t = selectedTrip.departureDay.slice(11, 16)
 
-        let departureDate = new Date(y+"/"+m+"/"+d+" "+t) 
-        let todaysDate = new Date()
-        
-        let result = {
-            diferencia: 1,
-            cancelado: true
-        }
-        if (departureDate.getYear() > todaysDate.getYear()) {                 
-                  return result   
-        } else if ((departureDate.getYear() === todaysDate.getYear()) 
-                 && departureDate.getMonth() > todaysDate.getMonth()) {
-                   return result
-        } else if ((departureDate.getMonth() === todaysDate.getMonth()) 
-                 && departureDate.getDate() > todaysDate.getDate()) {
-                   return result
-        } else if (departureDate.getDate() === todaysDate.getDate()) {
-                  // 48 hours is 2880 minutes
-                  let departureMinutes = (departureDate.getHours() * 60) + departureDate.getMinutes();
-                  let todayMinutes =  (todaysDate.getHours() * 60) + todaysDate.getMinutes();
-                  let diff = departureMinutes - todayMinutes
-                  if (diff > 2880) {
-                    return result
-                  } else if (diff > 0 ) {
-                    return {
-                      ...result,
-                      diferencia: 0.5,
-                    }
-                  } else {
-                    return {
-                      diferencia: 0,
-                      cancelado: false
-                    }
-                  }
-        }
-        else { 
+    let departureDate = moment(y+"/"+m+"/"+d+" "+t) 
+    
+    let result = {
+        diferencia: 1,
+        cancelado: true
+    }
+        let diff = moment(departureDate).diff(moment(), 'minutes')
+        // 48 hours is 2880 minutes
+        if (diff > 2880) {
+          return result
+        } else if (diff > 0 ) {
+          return {
+            ...result,
+            diferencia: 0.5,
+            }
+        } else {
           return {
             diferencia: 0,
             cancelado: false
-          }
-    }
-  }
+            }
+        }
+}
 
 
   return (
