@@ -53,7 +53,7 @@ const getPassengerTrips = async (req, res) => {
 
 const postPassengerTrip = async (req, res) => {
 
-    const {cart, cardId, userId} = req.body;
+    const {cart, cardId, userId, isUserGold} = req.body;
 
     try {
         const connection = await prepareConnection();
@@ -90,7 +90,7 @@ const postPassengerTrip = async (req, res) => {
             ${cart.tripId},
             ${1},
             ${1},
-            ${cart.ticket.price});
+            ${(isUserGold) ? (cart.ticket.price * 0.9) : cart.ticket.price});
             `;
 
             await connection.execute(sqlInsert);
@@ -109,7 +109,7 @@ const postPassengerTrip = async (req, res) => {
                     (${cartId},
                     ${product.idProduct},
                     ${product.quantitySelected},
-                    ${product.price});
+                    ${(isUserGold) ? (product.price * 0.9) : product.price});
                     `;
 
                 await connection.execute(sqlInsert);
@@ -127,23 +127,23 @@ const postPassengerTrip = async (req, res) => {
 };
 
 
-const  cancelPassengerTrip = async (req, res) => {
+const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
     const {status} = req.body
 
-        try {
-            const connection = await prepareConnection();
-            let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
-            
-            const [rows] = await connection.execute(sqlUptate, [status, id]);
+    try {
+        const connection = await prepareConnection();
+        let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
 
-            connection.end();
-            res.status(200).send(OK_MSG_API_CANCEL_PASSENGER_TRIP);
-        } catch (error) {
-            console.log(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
-            res.status(500).send(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
-        }
-        res.end();
+        const [rows] = await connection.execute(sqlUptate, [status, id]);
+
+        connection.end();
+        res.status(200).send(OK_MSG_API_CANCEL_PASSENGER_TRIP);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_CANCEL_PASSENGER_TRIP} ${error}`);
+    }
+    res.end();
 }
 
 module.exports = {

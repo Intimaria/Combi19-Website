@@ -6,13 +6,14 @@ import {
     ERROR_MSG_INTERNET
 } from "../const/messages";
 
-export const postPassengerTrip = async (cart, cardId, userId) => {
+export const postPassengerTrip = async (cart, cardId, userId, isUserGold) => {
     const token = localStorage.getItem('token');
 
     let formattedPassengerCart = {
         cart,
         cardId,
-        userId
+        userId,
+        isUserGold
     };
 
     try {

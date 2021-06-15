@@ -57,6 +57,7 @@ const CartConfirmation = (props) => {
     const [userCart, setUserCart] = React.useState('');
     const [userCards, setUserCards] = React.useState([]);
     const [cardSelected, setCardSelected] = React.useState('');
+    const [isUserGold, setIsUserGold] = React.useState(false);
 
     const [totalTickets, setTotalTickets] = React.useState(0);
     const [totalProducts, setTotalProducts] = React.useState(0);
@@ -90,7 +91,7 @@ const CartConfirmation = (props) => {
         //event.preventDefault();
 
         if (validateForm()) {
-            let putResponse = await postPassengerTrip(userCart, cardSelected.cardId, userData.userId);
+            let putResponse = await postPassengerTrip(userCart, cardSelected.cardId, userData.userId, isUserGold);
 
             if (putResponse.status === 200) {
                 setDefaultValues();
@@ -408,7 +409,8 @@ const CartConfirmation = (props) => {
 
             if (userDataStorage.goldMembershipExpiration && moment() <= moment(userDataStorage.goldMembershipExpiration)) {
                 resultDiscountTickets = ((resultTotalTickets + resultTotalProducts) * 0.1).toFixed(2);
-                setDiscountTickets(resultDiscountTickets.replace('.', ','))
+                setDiscountTickets(resultDiscountTickets.replace('.', ','));
+                setIsUserGold(true);
             }
 
             const resultTotalCart = resultTotalTickets * resultTotalProducts;
