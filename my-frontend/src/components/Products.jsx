@@ -446,7 +446,7 @@ function Products() {
                 value={selectedProduct && selectedProduct.price} autoComplete="off" />
             <br />
             <TextField className={styles.inputMaterial} label="Tipo" name="typeProduct"
-                value={selectedProduct && selectedProduct.typeProductId} autoComplete="off" />
+                value={selectedProduct && selectedProduct.typeProductDescription} autoComplete="off" />
             <br /><br />
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>

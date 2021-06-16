@@ -726,7 +726,7 @@ function Trips() {
             <br/>
             <TextField label="Fecha y hora de partida" id={"departureDay"} name="departureDay"
                        className={styles.inputMaterial}
-                       value={selectedTrip && selectedTrip.departureDay}/>
+                       value={selectedTrip && `${moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}hs`}/>
             <br/>
             <TextField label="Precio" id={"price"} name="price"
                        className={styles.inputMaterial}

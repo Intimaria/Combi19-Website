@@ -97,19 +97,20 @@ function Comments(props) {
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
     
-    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')))
-    const [hasTrips, setHasTrips] = React.useState(false)
-    const newUser = JSON.parse(localStorage.getItem('userData'))
+    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
+    const [hasTrips, setHasTrips] = React.useState(false);
+    const newUser = JSON.parse(localStorage.getItem('userData'));
   
     useEffect(() => {
         setUserData(newUser)
     }, []);
+
     useEffect (() => {
         const fetchData = async () => {
                 let getTripsResponse = await getPassengerTrips(newUser.userId);
                 if (getTripsResponse.status === 200) {
                     let trips = getTripsResponse.data;
-                    console.log("trips", trips)
+
                     if (trips.length > 0){
                     const pastTrips = trips.filter(d => d.status === 5);
                     if (pastTrips.length > 0) { setHasTrips(true) }
@@ -117,16 +118,16 @@ function Comments(props) {
                 } else setHasTrips(false)
                 } else
                 setHasTrips(false)
-            }     
+            };
     fetchData()    
-}, [])
+}, []);
 
     const updateData = (data) => {
         setData(prevState => ({
             ...prevState,
             data
         }));
-    }
+    };
 
     const handleChange = (textFieldAtributes) => {
         const { name, value } = textFieldAtributes.target;
@@ -144,7 +145,8 @@ function Comments(props) {
                 break;
         }
         setSuccessMessage(null);
-    }
+    };
+
     //Aca arrancan las validaciones de los datos del comentario
     const validateForm = () => {
         return  validateComment();
@@ -191,7 +193,8 @@ function Comments(props) {
                 });
             }
         }
-    }
+    };
+
       //Aca realizo la actualizacion de los datos del comentario
       const requestPut = async () => {
         if (validateForm()) {
@@ -222,7 +225,7 @@ function Comments(props) {
                 });
             }
         }
-    }
+    };
 
         //Aca elimino a un chofer
         const requestDelete = async () => {
@@ -261,7 +264,7 @@ function Comments(props) {
                     message: `${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`
                 });
             }
-        }
+        };
 
     //Aca dependiendo del boton que se apreto abro el modal correspondiente
     const selectComment = async (comment, action) => {
@@ -275,7 +278,7 @@ function Comments(props) {
         } else if (action === "Restaurar"){
             await openCloseModalUnDelete(comment)
         }
-    }
+    };
 
     //Metodos para cerrar y abrir modales, pone los valores por defecto cuando los abro
     const openCloseModalCreate = () => {
@@ -284,20 +287,23 @@ function Comments(props) {
             setSelectedComment(formatSelectedComment);
             setDefaultErrorMessages();
         }
-    }
+    };
+
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
             setSelectedComment(formatSelectedComment);
         }
-    }
+    };
+
     const openCloseModalUpdate = () => {
         setUpdateModal(!updateModal);
         if (updateModal) {
             setSelectedComment(formatSelectedComment);
             setDefaultErrorMessages();
         }
-    }
+    };
+
     const openCloseModalDelete = () => {
         setDeleteModal(!deleteModal);
         if (deleteModal) {
@@ -314,8 +320,7 @@ function Comments(props) {
     };
         //Aca busco los datos de los comentarios del backend
         const fetchData = async () => {
-            try { 
-                console.log(userData)
+            try {
                 let getCommentsResponse;
                 getCommentsResponse = await getComments( userData.userId);
                 if (getCommentsResponse?.status === 200) {
@@ -335,15 +340,16 @@ function Comments(props) {
 
     useEffect(() => {
         if (newData) {
-        console.log(newData);
         fetchData();
         }
         return setNewData(false);
     }, [newData]);
+
     const bodyCreate = (
         <div className={styles.modal}>
             <h3>AGREGAR NUEVO COMENTARIO</h3>
-            <TextField className={styles.inputMaterial} label="Comentario" name="comment"
+            <TextField className={styles.inputMaterial}
+                       name="comment"
                        required
                        id="standard-multiline-flexible"
                        label="Agregue su comentario aquí:"
@@ -405,7 +411,8 @@ function Comments(props) {
                 />
             </Tooltip>
             <br/>
-            <TextField className={styles.inputMaterial} label="Comentario" name="comment"
+            <TextField className={styles.inputMaterial}
+                       name="comment"
                        required
                        id="standard-multiline-flexible"
                        label="Edite su comentario aquí:"
