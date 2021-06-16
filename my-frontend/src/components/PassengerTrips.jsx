@@ -8,7 +8,6 @@ import {
     Divider,
     Grid,
     Modal,
-    TextField,
     Typography
 } from '@material-ui/core';
 import {
@@ -21,7 +20,7 @@ import {
     getPassengerTrips
 } from '../api/PassengerTrips';
 
-import { CancelTrip } from './CancelTrip'
+import {CancelTrip} from './CancelTrip'
 import CardTravelIcon from '@material-ui/icons/CardTravel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MaterialTable from '@material-table/core';
@@ -84,17 +83,17 @@ function PassengerTrips() {
     const [selectedTrip, setSelectedTrip] = useState(formatSelectedTrip);
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
-    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')))
+    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
     const [tripType, setTripType] = useState([]);
     const [activeTrips, setActiveTrips] = useState([]);
     const [pastTrips, setPastTrips] = useState([]);
     const [pendingTrips, setPendingTrips] = useState([]);
-    const [rejectedTrips, setRejectedTrips] = useState([]); 
-    
+    const [rejectedTrips, setRejectedTrips] = useState([]);
+
     const newUser = JSON.parse(localStorage.getItem('userData'));
-  
+
     useEffect(() => {
-       setUserData(newUser)
+        setUserData(newUser)
     }, []);
 
 
@@ -111,15 +110,15 @@ function PassengerTrips() {
         setDefaultErrorMessages();
     };
 
-      const handleData = (data) => {
+    const handleData = (data) => {
         const pendingTrips = data.filter(d => d.status === 1);
         const activeTrips = data.filter(d => d.status === 2);
         const rejectedTrips = data.filter(d => d.status === 3 || d.status === 4);
         const pastTrips = data.filter(d => d.status === 5);
-        setPendingTrips (pendingTrips);
-        setActiveTrips (activeTrips);
-        setRejectedTrips (rejectedTrips);
-        setPastTrips (pastTrips)
+        setPendingTrips(pendingTrips);
+        setActiveTrips(activeTrips);
+        setRejectedTrips(rejectedTrips);
+        setPastTrips(pastTrips)
     };
 
     const fetchData = async () => {
@@ -140,7 +139,7 @@ function PassengerTrips() {
                 return true
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`);
-                setOptions({ 
+                setOptions({
                     ...options, open: true, type: 'error',
                     message: `${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`
                 });
@@ -151,20 +150,21 @@ function PassengerTrips() {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
-    const eventHandler = async(cancel) => {
+
+    const eventHandler = async (cancel) => {
         if (cancel) {
-            setNewData(true)
+            setNewData(true);
             await fetchData()
-     } 
-    }
+        }
+    };
 
 
     useEffect(() => {
         fetchData()
-  }, []);
+    }, []);
 
     return (
-        <div className="App" style={{maxWidth: "80%",margin: 'auto',float: "center"}}>
+        <div className="App" style={{maxWidth: "80%", margin: 'auto', float: "center"}}>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
@@ -173,157 +173,157 @@ function PassengerTrips() {
             }
             <Accordion>
                 <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="viaje activo"
-                id="activo"
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="viaje activo"
+                    id="activo"
                 >
-                Viajes activos
+                    Viajes activos
                 </AccordionSummary>
                 <AccordionDetails>
-                <Grid container
-                direction="row"
-                justifycontent="flex-start"
-                alignItems="flex-start"
-                wrap="wrap"
-                alignContent="center"
-                spacing={3}>
-                { activeTrips.length ?
-                 activeTrips.map((elem, index) => (
-                    <Grid style = {{width: "100%"}}
-                    item>
-                    <PassengerTicket 
-                        key={index} myTicket={elem} 
-                        mainColor={"#E65100"}
-                        lightColor={"#FFE0B2"}
-                        insert={"#FFB74D"}/>
+                    <Grid container
+                          direction="row"
+                          justifycontent="flex-start"
+                          alignItems="flex-start"
+                          wrap="wrap"
+                          alignContent="center"
+                          spacing={3}>
+                        {activeTrips.length ?
+                            activeTrips.map((elem, index) => (
+                                <Grid style={{width: "100%"}}
+                                      item>
+                                    <PassengerTicket
+                                        key={index} myTicket={elem}
+                                        mainColor={"#E65100"}
+                                        lightColor={"#FFE0B2"}
+                                        insert={"#FFB74D"}/>
+                                </Grid>
+                            ))
+                            :
+                            <Typography variant="subtitle2" gutterBottom>
+                                Usted no posee viajes activos
+                            </Typography>
+                        }
                     </Grid>
-                    ))
-                    : 
-                    <Typography  variant="subtitle2" gutterBottom>
-                      Usted no posee viajes activos
-                    </Typography>
-                }
-                </Grid>
                 </AccordionDetails>
             </Accordion>
-            <Divider  />
-            <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="viajes pendientes"
-                id="pendiente"
-                >
-                Viajes pendientes
-                </AccordionSummary>
-                <AccordionDetails>
-                <Grid container
-                direction="row"
-                justifycontent="flex-start"
-                alignItems="flex-start"
-                wrap="wrap"
-                alignContent="center"
-                spacing={3}>
-               {pendingTrips.length ? 
-                pendingTrips.map((elem, index) => (
-                    <Grid style = {{width: "100%"}}
-                    item>
-                    <PassengerTicket 
-                        key={index} myTicket={elem} 
-                        mainColor={"#00796B"}
-                        lightColor={"#E0F2F1"}
-                        insert={"#80CBC4"}
-                        onClick={console.log("click")}/>
-                    <br/>
-                    <Box textAlign='right'>
-                    <CancelTrip onChange={eventHandler} trip={elem} user={userData}/>
-                    </Box>
-                    </Grid>
-                    ))
-                    : 
-                        <Typography  variant="subtitle2" gutterBottom>
-                          Usted no posee viajes pendientes
-                        </Typography>
-                }
-                </Grid>
-                
-                </AccordionDetails>
-                <Divider />
-            </Accordion>
-            <Divider />
+            <Divider/>
             <Accordion>
                 <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="viajes finalizados"
-                id="finalizados"
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="viajes pendientes"
+                    id="pendiente"
                 >
-                Viajes finalizados
+                    Viajes pendientes
                 </AccordionSummary>
                 <AccordionDetails>
-                        
-                <Grid container
-                direction="row"
-                justifycontent="flex-start"
-                alignItems="flex-start"
-                wrap="wrap"
-                alignContent="center"
-                spacing={3}>
-                    { pastTrips.length ? 
-                 pastTrips.map((elem, index) => (
-                    <Grid style = {{width: "100%"}}
-                    item>
-                    <PassengerTicket 
-                        key={index} myTicket={elem} 
-                        mainColor={"#003399"}
-                        lightColor={"#ecf2ff"}
-                        insert={"#bed0f5"}
-                        />
+                    <Grid container
+                          direction="row"
+                          justifycontent="flex-start"
+                          alignItems="flex-start"
+                          wrap="wrap"
+                          alignContent="center"
+                          spacing={3}>
+                        {pendingTrips.length ?
+                            pendingTrips.map((elem, index) => (
+                                <Grid style={{width: "100%"}}
+                                      item>
+                                    <PassengerTicket
+                                        key={index} myTicket={elem}
+                                        mainColor={"#00796B"}
+                                        lightColor={"#E0F2F1"}
+                                        insert={"#80CBC4"}
+                                    />
+                                    <br/>
+                                    <Box textAlign='right'>
+                                        <CancelTrip onClick={eventHandler} trip={elem} user={userData}/>
+                                    </Box>
+                                </Grid>
+                            ))
+                            :
+                            <Typography variant="subtitle2" gutterBottom>
+                                Usted no posee viajes pendientes
+                            </Typography>
+                        }
                     </Grid>
-                    ))
-                    :
-                    <Typography  variant="subtitle2" gutterBottom>
-                        Usted no posee viajes finalizados
-                    </Typography>
-                }
-                </Grid>
+
                 </AccordionDetails>
+                <Divider/>
             </Accordion>
-            <Divider />
+            <Divider/>
             <Accordion>
                 <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="viajes rechazados"
-                id="rechazados"
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="viajes finalizados"
+                    id="finalizados"
                 >
-                Viajes dados de baja
+                    Viajes finalizados
                 </AccordionSummary>
                 <AccordionDetails>
-                <Grid container
-                direction="row"
-                justifycontent="flex-start"
-                alignItems="flex-start"
-                wrap="wrap"
-                alignContent="center"
-                spacing={3}>
-                {rejectedTrips.length ?
-                rejectedTrips.map((elem, index) => (
-                    <Grid style = {{width: "100%"}}
-                    item>
-                    <PassengerTicket 
-                        key={index} myTicket={elem} 
-                        mainColor={"#BF360C"}
-                        lightColor={"#FFCCBC"}
-                        insert={"#FF8A65"}/>
+
+                    <Grid container
+                          direction="row"
+                          justifycontent="flex-start"
+                          alignItems="flex-start"
+                          wrap="wrap"
+                          alignContent="center"
+                          spacing={3}>
+                        {pastTrips.length ?
+                            pastTrips.map((elem, index) => (
+                                <Grid style={{width: "100%"}}
+                                      item>
+                                    <PassengerTicket
+                                        key={index} myTicket={elem}
+                                        mainColor={"#003399"}
+                                        lightColor={"#ecf2ff"}
+                                        insert={"#bed0f5"}
+                                    />
+                                </Grid>
+                            ))
+                            :
+                            <Typography variant="subtitle2" gutterBottom>
+                                Usted no posee viajes finalizados
+                            </Typography>
+                        }
                     </Grid>
-                ))
-                : 
-                <Typography  variant="subtitle2" gutterBottom>
-                  Usted no posee viajes dados de baja
-                </Typography>
-                }
-                </Grid>
                 </AccordionDetails>
             </Accordion>
-          
+            <Divider/>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="viajes rechazados"
+                    id="rechazados"
+                >
+                    Viajes dados de baja
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container
+                          direction="row"
+                          justifycontent="flex-start"
+                          alignItems="flex-start"
+                          wrap="wrap"
+                          alignContent="center"
+                          spacing={3}>
+                        {rejectedTrips.length ?
+                            rejectedTrips.map((elem, index) => (
+                                <Grid style={{width: "100%"}}
+                                      item>
+                                    <PassengerTicket
+                                        key={index} myTicket={elem}
+                                        mainColor={"#BF360C"}
+                                        lightColor={"#FFCCBC"}
+                                        insert={"#FF8A65"}/>
+                                </Grid>
+                            ))
+                            :
+                            <Typography variant="subtitle2" gutterBottom>
+                                Usted no posee viajes dados de baja
+                            </Typography>
+                        }
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+
         </div>
     );
 }

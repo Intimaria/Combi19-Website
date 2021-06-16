@@ -9,6 +9,7 @@ const {
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
+
 const getPassengerTrips = async (req, res) => {
     //const {start = 1, limit = 5} = req.query;
     const {id} = req.params;
@@ -130,11 +131,12 @@ const getCart = async (id) => {
         const connection = await prepareConnection();
         const sqlSelect = `
         SELECT ID_CART FROM TICKET T INNER JOIN CART ON ID_CART=CART_ID WHERE TICKET_ID = ${id}`;
-        const [rows] = await connection.execute(sqlSelect, [id]);
+        const [rows] = await connection.execute(sqlSelect);
         connection.end();
         if (rows)
             return rows;
     } catch (error) {
+        console.log(`Ocurrió un error en getCart: ${error}`);
         return error;
     }
 };
@@ -142,36 +144,49 @@ const getCart = async (id) => {
 const validateLastTicket = async (id, cartId) => {
     try {
         const connection = await prepareConnection();
+
         const sqlSelect = `
         SELECT * FROM TICKET tic
         WHERE tic.ID_CART = ${cartId}
         AND tic.TICKET_ID <> ${id} 
-        AND tic.ID_STATUS_TICKET IN (1) `;
-        const [rows] = await connection.execute(sqlSelect, [cartId, id]);
-        console.log("validate last", rows)
+        AND tic.ID_STATUS_TICKET IN (1);`;
+
+        const [rows] = await connection.execute(sqlSelect);
+
         connection.end();
         return (rows.length === 0);
     } catch (error) {
-        console.log(error);
+        console.log(`Ocurrió un error en validateLastTicket: ${error}`);
         return false;
     }
 };
 
 const getProductsPrice = async (cartId) => {
-    console.log("cartid", cartId)
     try {
         const connection = await prepareConnection();
-        const sqlSelect = `
-        SELECT sum(case when pc.PRODUCT_CART_PRICE is null then 0 else pc.PRODUCT_CART_PRICE end) as montoTotal 
-        FROM CART LEFT JOIN
-        PRODUCT_CART PC ON ID_CART=CART_ID
-        WHERE pc.ID_CART = ${cartId}
-        GROUP BY ID_CART`;
-        const [rows] = await connection.execute(sqlSelect, [cartId]);
+        const sqlSelect =
+            `
+                SELECT 
+                SUM(
+                    CASE 
+                    WHEN pc.PRODUCT_CART_PRICE IS NULL THEN 0 
+                    ELSE pc.PRODUCT_CART_PRICE * pc.QUANTITY
+                    END
+                ) 
+                AS montoTotal 
+                FROM CART c
+                LEFT JOIN PRODUCT_CART pc ON pc.ID_CART = c.CART_ID
+                WHERE pc.ID_CART = ${cartId}
+                GROUP BY ID_CART;
+                `;
+
+        const [rows] = await connection.execute(sqlSelect);
+
         connection.end();
-        console.log("products", rows[0].montoTotal)
+
         return rows[0].montoTotal;
     } catch (error) {
+        console.log(`Ocurrió un error en getProductsPrice: ${error}`);
         return 0;
     }
 };
@@ -179,19 +194,22 @@ const getProductsPrice = async (cartId) => {
 const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
     let productPrice = 0;
-    const {status} = req.body
-     let cartId = await getCart(id)
-    console.log("cart", cartId[0].ID_CART)
-    const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART)
-    console.log("lastcart", isLastTicket)
-        if (isLastTicket) {
-            console.log("here")
-            productPrice = await getProductsPrice(cartId[0].ID_CART)
-        }
+    const {status} = req.body;
+
+    let cartId = await getCart(id);
+    const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART);
+
+    if (isLastTicket) {
+        productPrice = await getProductsPrice(cartId[0].ID_CART);
+    }
+
     try {
         const connection = await prepareConnection();
-        let sqlUptate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id}`;
-        const [rows] = await connection.execute(sqlUptate, [status, id]);
+
+        let sqlUpdate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id};`;
+
+        const [rows] = await connection.execute(sqlUpdate);
+
         connection.end();
         res.status(200).send(productPrice.toString());
     } catch (error) {

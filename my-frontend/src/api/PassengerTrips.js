@@ -40,7 +40,8 @@ export const cancelPassengerTrip = async (id) => {
     const token = localStorage.getItem('token');
     let newStatus = {
         status: "4"
-    }
+    };
+
     try {
         let response = await axios.put(`${BACKEND_URL}/my-trips/custom/trip/${id}`,
             newStatus,
@@ -66,4 +67,4 @@ export const cancelPassengerTrip = async (id) => {
             }
         }
     }
-}
+};
