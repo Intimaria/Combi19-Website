@@ -18,12 +18,17 @@ import { useHistory } from "react-router-dom";
 import CartConfirmation from "./CartConfirmation";
 import TripsResults from "./TripsResults.jsx";
 import BuyTrip from "./BuyTrip.jsx";
+import RecoverPassword from "./RecoverPassword.jsx";
 
 const Addresses = () => {
     const history = useHistory();
 
+    // Messages to share beetwen pages
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+
+    // Recover password props
+    const [path, setPath] = React.useState("/login");
 
     // Trips search data props
     const [tripsResultsData, setTripsResultsData] = React.useState([]);
@@ -56,13 +61,21 @@ const Addresses = () => {
                     <Login
                         path="login"
                         redirectPage={redirectPage}
-                        redirectBoolean={redirectBoolean} />
+                        redirectBoolean={redirectBoolean}
+                        successMessage={successMessage}
+                        showSuccessMessage={showSuccessMessage}
+                        setShowSuccessMessage={setShowSuccessMessage}
+                        setPath={setPath} />
                 </Route>
                 <Route path="/employee/login" exact>
                     <Login
                         path="employee/login"
                         redirectPage={"/home"}
-                        redirectBoolean={false} />
+                        redirectBoolean={false}
+                        successMessage={successMessage}
+                        showSuccessMessage={showSuccessMessage}
+                        setShowSuccessMessage={setShowSuccessMessage}
+                        setPath={setPath} />
                 </Route>
                 <Route path="/register" exact>
                     <Register
@@ -116,6 +129,12 @@ const Addresses = () => {
                 </Route>
                 <Route path="/buyTrip" exact>
                     <BuyTrip />
+                </Route>
+                <Route path="/recoverPassword" exact>
+                    <RecoverPassword
+                        setSuccessMessage={setSuccessMessage}
+                        setShowSuccessMessage={setShowSuccessMessage}
+                        path={path}/>
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la

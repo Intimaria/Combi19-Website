@@ -26,6 +26,9 @@ module.exports = {
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
     ERROR_MSG_SAME_NEW_PASSWORD: '* La nueva contraseña debe ser diferente a la anterior',
     ERROR_MSG_INCORRECT_ACTUAL_PASSWORD: '* La contraseña actual es incorrecta',
+    ERROR_MSG_API_GET_EMAIL_USER: 'Ocurrió un error al obtener el email del usuario:',
+    ERROR_MSG_API_POST_RECOVERED_PASSWORD_USER: 'Ocurrió un error al actualizar la nueva contraseña del usuario:',
+    OK_MSG_API_USER_RECOVERED_PASSWORD: 'Se actualizo la contraseña de manera satisfactoria',
     // Drivers API messages
     ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
     ERROR_MSG_API_GET_DRIVER_BY_ID: 'Ocurrió un error al obtener al chofer indicado:',

@@ -183,3 +183,56 @@ export const verifyToken = async() => {
         }
     }
 }
+
+export const getEmailToRecoverPassword = async (email) => {
+    try {
+        let body = {
+            email
+        }
+
+        let response = await axios.post(`${BACKEND_URL}/recoverPassword/getEmail/`, body );
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Hubo un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
+
+export const postNewRecoveredPassword = async (email, passwordRevocered1, passwordRevocered2) => {
+    try {
+        let body = {
+            email,
+            passwordRevocered1,
+            passwordRevocered2
+        }
+        let response = await axios.put(`${BACKEND_URL}/recoverPassword/postNewPassword/`, body );
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Hubo un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
