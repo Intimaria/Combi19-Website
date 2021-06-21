@@ -65,11 +65,11 @@ const Login = (props) => {
             console.log("There was an error in the submitted entries");
             setLoginError(postRequest.data);
         };
-    }
+    };
     const setRecoverPasswordProps = () => {
         props.setPath(history.location.pathname);
         history.push("/recoverPassword");
-    }
+    };
 
     useEffect(() => {
         if (props.successMessage && props.showSuccessMessage) {
@@ -140,7 +140,7 @@ const Login = (props) => {
                         type="submit"
                     >INICIAR SESIÓN</Button>
 
-                    <h6 align={'center'}>¿Olvidaste tu contraseña? Recuperala <h6 onClick={() => setRecoverPasswordProps()} className="text-primary" role='button'> Aqui </h6></h6>
+                    <h6 align={'center'}>¿Olvidaste tu contraseña? Recuperala <h6 onClick={() => setRecoverPasswordProps()} className="text-primary" role='button'> Aquí </h6></h6>
                     {
                         props.path !== "employee/login" ?
                             <div>

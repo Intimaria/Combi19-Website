@@ -113,7 +113,7 @@ function GoldMembership() {
                                         <FormHelperText>
                                             <InfoIcon color='primary' fontSize="small"/>
                                             {` Al no solicitar la renovación, podrá seguir haciendo uso de la membresía
-                                    hasta su fecha de expiración: ${expirationDate}hs, luego
+                                    hasta su fecha de expiración: ${expirationDate}, luego
                                     dejará de tener acceso a sus beneficios`}
                                         </FormHelperText>
                                     </FormControl>
