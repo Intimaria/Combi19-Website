@@ -40,21 +40,21 @@ let birthdayError;
 let phoneNumberError;
 let actualPasswordError;
 
-const validatePassangerEmailToRecoverPassword = (email) => {
+const validatePassengerEmailToRecoverPassword = (email) => {
     return validateEmail(email) ? null : {emailError};
-}
+};
 
-const validatePassangerNewRecoveredPassword = (email,passwordRevocered1, passwordRevocered2) => {
+const validatePassengerNewRecoveredPassword = (email, passwordRevocered1, passwordRevocered2) => {
     passwordError2 = null;
     return (validateEmail(email) & validatePassword(passwordRevocered1)) && comparePasswords(passwordRevocered1, passwordRevocered2)? null : {emailError, passwordError1, passwordError2};
-}
+};
 
 const validatePassengersToCreate = async (email, names, surname, password1, password2, birthday) => {
     actualPasswordError = null;
     return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToCreate(email)) ? null : preparePassengerResponse();
-}
+};
 
-const validatePassengersToModifyWihoutNewPassword = async (email, names, surname, actualPassword, birthday ,id) => {
+const validatePassengersToModifyWithoutNewPassword = async (email, names, surname, actualPassword, birthday , id) => {
     passwordError1 = null;
     passwordError2 = null;
     return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id)) ? null : preparePassengerResponse();
@@ -325,9 +325,9 @@ const compareActualPasswordWithNewPassword = (actualPassword, newPassword) => {
 module.exports = {
     validatePassengersToCreate,
     validatePassengersToModifyWithNewPassword,
-    validatePassengersToModifyWihoutNewPassword,
+    validatePassengersToModifyWithoutNewPassword,
     validateDriversToCreate,
     validateDriversToModify,
-    validatePassangerEmailToRecoverPassword,
-    validatePassangerNewRecoveredPassword
+    validatePassengerEmailToRecoverPassword,
+    validatePassengerNewRecoveredPassword
 }

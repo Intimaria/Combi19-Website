@@ -1,6 +1,6 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
-const getPassangersValues = async(req, res) => {
+const getPassengersValues = async(req, res) => {
     const { id } = req.params;
     let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: '', expirationRisk: '' };
     try {
@@ -27,8 +27,8 @@ const getPassangersValues = async(req, res) => {
         console.log("Ocurrió un error al obtener los datos del usuario:", error);
         res.status(500).send("Ocurrió un error al obtener los datos del usuario:", error);
     }
-}
+};
 
 module.exports = {
-    getPassangersValues
-}
+    getPassengersValues
+};

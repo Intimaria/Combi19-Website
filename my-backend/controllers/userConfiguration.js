@@ -2,7 +2,7 @@ const { prepareConnection } = require("../helpers/connectionDB.js");
 
 const {
     validatePassengersToModifyWithNewPassword,
-    validatePassengersToModifyWihoutNewPassword
+    validatePassengersToModifyWithoutNewPassword
 } = require("../helpers/validateUserInputs.js");
 
 const {
@@ -34,11 +34,11 @@ const userConfigurationWithNewPassword = async (req, res) => {
     res.end();
 };
 
-const userConfigurationWitoutNewPassword = async (req, res) => {
+const userConfigurationWithoutNewPassword = async (req, res) => {
     const { id } = req.params;
     const { names, surname, email, birthday, actualPassword } = req.body;
 
-    const inputsErrors = await validatePassengersToModifyWihoutNewPassword(email, names, surname, actualPassword, birthday, id);
+    const inputsErrors = await validatePassengersToModifyWithoutNewPassword(email, names, surname, actualPassword, birthday, id);
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {
@@ -59,5 +59,5 @@ const userConfigurationWitoutNewPassword = async (req, res) => {
 
 module.exports = {
     userConfigurationWithNewPassword,
-    userConfigurationWitoutNewPassword
+    userConfigurationWithoutNewPassword
 };

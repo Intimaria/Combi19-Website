@@ -37,7 +37,7 @@ class Server {
         this.app.use('/prov', require('../routes/employees-provinces.js'));
         this.app.use('/register', require('../routes/register.js'));
         this.app.use('/userConfiguration', require('../routes/userConfiguration.js'));
-        this.app.use('/getPassangersValues', require('../routes/passangerValues.js'));
+        this.app.use('/getPassengersValues', require('../routes/passengerValues.js'));
         this.app.use('/comments', require('../routes/comments.js'));
         this.app.use('/my-trips', require('../routes/passenger-trips.js'));
         this.app.use('/cards', require('../routes/cards.js'));

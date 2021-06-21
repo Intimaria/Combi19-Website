@@ -1,8 +1,8 @@
 const { prepareConnection } = require("../helpers/connectionDB.js");
 
 const {
-    validatePassangerEmailToRecoverPassword,
-    validatePassangerNewRecoveredPassword
+    validatePassengerEmailToRecoverPassword,
+    validatePassengerNewRecoveredPassword
 } = require("../helpers/validateUserInputs.js");
 const {
     ACTIVE
@@ -16,7 +16,7 @@ const {
 const getEmailToRemindPassword = async (req, res) => {
     const { email } = req.body;
 
-    const inputsErrors = validatePassangerEmailToRecoverPassword(email);
+    const inputsErrors = validatePassengerEmailToRecoverPassword(email);
 
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
@@ -39,7 +39,7 @@ const getEmailToRemindPassword = async (req, res) => {
 const postNewRecoveredPassword = async (req, res) => {
     const { email, passwordRevocered1, passwordRevocered2 } = req.body;
 
-    const inputsErrors = validatePassangerNewRecoveredPassword(email, passwordRevocered1, passwordRevocered2 );
+    const inputsErrors = validatePassengerNewRecoveredPassword(email, passwordRevocered1, passwordRevocered2 );
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {

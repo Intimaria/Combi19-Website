@@ -3,19 +3,19 @@ import "../css/generalStyle.css";
 import {Link, NavLink} from "react-router-dom";
 import  {useEffect, useState} from 'react';
 
-import React from 'react'
-import logo from "../images/logo_combi19.png"
+import React from 'react';
+import logo from "../images/logo_combi19.png";
 import {useHistory} from 'react-router-dom';
 
 const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
     const history = useHistory();
 
     const logout = () => {
-        const isPassanger = userData && userData.userRoleId.includes(3);
+        const isPassenger = userData && userData.userRoleId.includes(3);
         localStorage.clear();
         setRedirectBoolean(false);
         setRedirectPage("/home");
-        if (isPassanger) {
+        if (isPassenger) {
             history.push('/login');
         }
         else {
@@ -23,7 +23,7 @@ const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
         }
     };
     
-    const [isFront, setIsFront] = useState(history.location.pathname === '/')
+    const [isFront, setIsFront] = useState(history.location.pathname === '/');
     
     useEffect(() => {
         if (history.location.pathname === '/')  {

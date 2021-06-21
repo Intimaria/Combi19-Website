@@ -4,6 +4,6 @@ const { verifyToken, authenticatePassengerRol } = require("../middlewares/author
 
 const router = Router();
 
-router.get("/passangers", authenticatePassengerRol, verifyToken);
+router.get("/passengers", authenticatePassengerRol, verifyToken);
 
 module.exports = router;

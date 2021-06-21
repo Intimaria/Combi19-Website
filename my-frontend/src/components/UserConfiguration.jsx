@@ -12,7 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
 import { CustomDatePicker } from '../components/CustomDatePicker';
 import moment from "moment";
-import { updateUserDataValues, userConfigurationWithNewPassword, userConfigurationWitoutNewPassword } from '../api/Passengers.js';
+import { updateUserDataValues, userConfigurationWithNewPassword, userConfigurationWithoutNewPassword } from '../api/Passengers.js';
 
 import {
     ERROR_MSG_EMPTY_EMAIL,
@@ -102,7 +102,7 @@ function UserConfiguration() {
     const postRequest = async () => {
         let putResponse;
         if (!newPassword1 && !newPassword2) {
-            putResponse = await userConfigurationWitoutNewPassword({
+            putResponse = await userConfigurationWithoutNewPassword({
                 names: capitalizeString(names),
                 surname: capitalizeString(surname),
                 email,

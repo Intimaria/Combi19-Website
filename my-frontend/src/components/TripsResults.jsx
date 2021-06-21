@@ -87,9 +87,9 @@ const TripsResults = (props) => {
     const verifyRole = () => {
         const userData = JSON.parse(localStorage.getItem('userData'));
         if (userData) {
-            const isPassanger = userData.userRoleId.includes(3);
-            if (!isPassanger) {
-                setCanBuy(canBuy && isPassanger);
+            const isPassenger = userData.userRoleId.includes(3);
+            if (!isPassenger) {
+                setCanBuy(canBuy && isPassenger);
                 setSuccessMessage(`Usted no posee el rol para realizar compras`);
                 setOptions({
                     ...options, open: true, type: 'error',

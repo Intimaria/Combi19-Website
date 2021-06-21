@@ -9,7 +9,7 @@ export const updateUserDataValues = async () => {
     const token = localStorage.getItem('token');
     const userData = JSON.parse(localStorage.getItem('userData'));
     try {
-        let response = await axios.get(`${BACKEND_URL}/getPassangersValues/${userData.userId}`,
+        let response = await axios.get(`${BACKEND_URL}/getPassengersValues/${userData.userId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -74,10 +74,10 @@ export const userConfigurationWithNewPassword = async (userData, id) => {
     }
 };
 
-export const userConfigurationWitoutNewPassword = async (userData, id) => {
+export const userConfigurationWithoutNewPassword = async (userData, id) => {
     const token = localStorage.getItem('token');
     try {
-        let response = await axios.put(`${BACKEND_URL}/userConfiguration/witoutNewPassword/${id}`,
+        let response = await axios.put(`${BACKEND_URL}/userConfiguration/withoutNewPassword/${id}`,
             userData,
             {
                 headers: {
@@ -157,7 +157,7 @@ export const register = async (dataToRegister) => {
 export const verifyToken = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await axios.get(`${BACKEND_URL}/authorization/passangers`,
+        const response = await axios.get(`${BACKEND_URL}/authorization/passengers`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
