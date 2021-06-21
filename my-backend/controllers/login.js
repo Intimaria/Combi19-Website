@@ -15,7 +15,7 @@ const {
     ERROR_MSG_INVALID_LOGIN
 } = require('../const/messages');
 
-let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', goldMembershipExpiration: '', expirationRisk: '', userRoleId: [] };
+let userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', goldMembershipExpiration: '', expirationRisk: '', automaticDebit: '', userRoleId: [] };
 
 const verifyAccount = async (req) => {
     const { email, password } = req.body;
@@ -23,7 +23,7 @@ const verifyAccount = async (req) => {
     try {
         const connection = await prepareConnection();
 
-        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY, GOLD_MEMBERSHIP_EXPIRATION, EXPIRATION_RISK FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
+        const sqlSelect = `SELECT USER_ID, NAME, SURNAME, EMAIL, BIRTHDAY, GOLD_MEMBERSHIP_EXPIRATION, EXPIRATION_RISK, AUTOMATIC_DEBIT FROM USER WHERE EMAIL = '${email}' AND BINARY PASSWORD = '${password}'`;
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
@@ -34,15 +34,16 @@ const verifyAccount = async (req) => {
             userData.userEmail = rows[0].EMAIL;
             userData.userBirthday = rows[0].BIRTHDAY ? rows[0].BIRTHDAY.toISOString().substring(0,10) : '';
             userData.userId = rows[0].USER_ID;
-            userData.goldMembershipExpiration = rows[0].GOLD_MEMBERSHIP_EXPIRATION ? rows[0].GOLD_MEMBERSHIP_EXPIRATION.toISOString().substring(0,10) : '';
+            userData.goldMembershipExpiration = rows[0].GOLD_MEMBERSHIP_EXPIRATION ? rows[0].GOLD_MEMBERSHIP_EXPIRATION : '';
             userData.expirationRisk = rows[0].EXPIRATION_RISK ? rows[0].EXPIRATION_RISK.toISOString() : '';
+            userData.automaticDebit = rows[0].AUTOMATIC_DEBIT;
             return rows[0].USER_ID;
         }
     } catch (error) {
         console.log("Ocurrió un error al verificar la cuenta:", error);
         return false;
     }
-}
+};
 
 const verifyRole = async (verifiableRoles, userId) => {
     try {
@@ -63,10 +64,10 @@ const verifyRole = async (verifiableRoles, userId) => {
         console.log("Ocurrió un error al verificar el rol:", error);
         return false;
     }
-}
+};
 
 const Login = async (req, res, verifiableRoles) => {
-    userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [], expirationRisk: null };
+    userData = { userName: '', userSurname: '', userBirthday: '', userId: '', userEmail: '', userRoleId: [], expirationRisk: null, automaticDebit: '' };
 
     const userId = await verifyAccount(req);
 
@@ -78,17 +79,17 @@ const Login = async (req, res, verifiableRoles) => {
         res.status(400).send(ERROR_MSG_INVALID_LOGIN);
     }
     res.end();
-}
+};
 
 const LoginPassengers = async (req, res) => {
     Login(req, res, [PASSENGER_ROLE]);
-}
+};
 
 const LoginEmployees = async (req, res) => {
     Login(req, res, [ADMIN_ROLE, DRIVER_ROLE]);
-}
+};
 
 module.exports = {
     LoginPassengers,
     LoginEmployees
-}
+};

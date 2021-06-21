@@ -1,5 +1,5 @@
 import { Route, Switch } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
 import Home from '../views/Home.jsx';
 import Landing from '../views/Landing.jsx';
 import Login from './Login.jsx';
@@ -14,10 +14,10 @@ import Trips from './Trips.jsx';
 import Products from './Products.jsx';
 import Comments from './Comments.jsx';
 import UserConfiguration from './UserConfiguration.jsx';
-import { useHistory } from "react-router-dom";
 import CartConfirmation from "./CartConfirmation";
 import TripsResults from "./TripsResults.jsx";
 import BuyTrip from "./BuyTrip.jsx";
+import GoldMembership from "./GoldMembership.jsx";
 
 const Addresses = () => {
     const history = useHistory();
@@ -95,6 +95,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/userConfiguration" exact>
                     <UserConfiguration />
+                </Route>
+                <Route path="/goldMembership" exact>
+                    <GoldMembership />
                 </Route>
                 <Route path="/comments" exact>
                     <Comments />

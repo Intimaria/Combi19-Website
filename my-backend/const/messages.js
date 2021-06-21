@@ -1,5 +1,5 @@
 module.exports = {
-       // Passengers API messages
+    // Passengers API messages
     OK_MSG_API_USER_POST: 'Se creó el usuario con éxito',
     OK_MSG_API_USER_PUT: 'Se editó los datos del usuario con éxito',
     ERROR_MSG_API_POST_USER: 'Ocurrió un error al insertar el usuario:',
@@ -26,6 +26,8 @@ module.exports = {
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
     ERROR_MSG_SAME_NEW_PASSWORD: '* La nueva contraseña debe ser diferente a la anterior',
     ERROR_MSG_INCORRECT_ACTUAL_PASSWORD: '* La contraseña actual es incorrecta',
+    OK_MSG_API_PUT_GOLD_MEMBERSHIP: 'Se actualizó el cambio de renovación automática con éxito',
+    ERROR_MSG_API_PUT_GOLD_MEMBERSHIP: 'Ocurrió un error al actualizar el cambio de renovación automática:',
     // Drivers API messages
     ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
     ERROR_MSG_API_GET_DRIVER_BY_ID: 'Ocurrió un error al obtener al chofer indicado:',
@@ -142,7 +144,7 @@ module.exports = {
     OK_MSG_API_POST_PASSENGER_TRIP: 'La compra finalizó con éxito',
     ERROR_MSG_API_POST_PASSENGER_TRIP: 'Ocurrió un error al finalizar la compra:',
     ERROR_MSG_API_CANCEL_PASSENGER_TRIP: 'Ocurrió un error al cancelar el viaje:',
-    OK_MSG_API_CANCEL_PASSENGER_TRIP:'El viaje se canceló con éxito',
+    OK_MSG_API_CANCEL_PASSENGER_TRIP: 'El viaje se canceló con éxito',
     // Card API messages
     ERROR_MSG_API_GET_LAST_CARD: 'Ocurrió un error al obtener los datos de la tarjeta:',
 };

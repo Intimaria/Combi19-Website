@@ -59,6 +59,7 @@ const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
     const passengerMenu = (
         <div>
             <NavLink to="/userConfiguration" className="btn btn-dark mr-2"> Configuración </NavLink>
+            <NavLink to="/goldMembership" className="btn btn-dark mr-2"> Membresía GOLD </NavLink>
             <NavLink to="/comments" className="btn btn-dark mr-2"> Mis comentarios </NavLink>
             <NavLink to="/home" className="btn btn-dark mr-2"> Mis viajes </NavLink>
         </div>

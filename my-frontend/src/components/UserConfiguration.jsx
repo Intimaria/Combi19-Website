@@ -14,8 +14,6 @@ import { CustomDatePicker } from '../components/CustomDatePicker';
 import moment from "moment";
 import { updateUserDataValues, userConfigurationWithNewPassword, userConfigurationWitoutNewPassword } from '../api/Passengers.js';
 
-import { BACKEND_URL } from '../const/config.js';
-
 import {
     ERROR_MSG_EMPTY_EMAIL,
     ERROR_MSG_INVALID_EMAIL,
@@ -510,9 +508,9 @@ function UserConfiguration() {
                                     variant="contained"
                                     size="large"
                                     color="primary"
-                                    id="btnRegister"
+                                    id="btnConfirm"
                                     type="submit"
-                                >EDITAR DATOS</Button>
+                                >CONFIRMAR CAMBIOS</Button>
                             </Grid>
                         </Grid>
                     </div>
