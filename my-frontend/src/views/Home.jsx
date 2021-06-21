@@ -14,7 +14,6 @@ const Home = (props) => {
         setOptions({...options, open: false});
     };
 
-    const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     useEffect(() => {

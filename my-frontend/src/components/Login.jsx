@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { useHistory } from "react-router-dom";
+import React, { Fragment, useEffect } from 'react';
+import { useHistory, NavLink } from "react-router-dom";
 
 import { TextField, Button } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -10,12 +10,18 @@ import FormControl from '@material-ui/core/FormControl';
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useStyles } from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
-
+import { Message } from '../components/Message';
 import { login } from "../api/Passengers.js";
 
 const axios = require("axios");
 
-const Login = ({ path, redirectPage, redirectBoolean }) => {
+const Login = (props) => {
+
+    const handleCloseMessage = () => {
+        setOptions({ ...options, open: false });
+    };
+
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     const history = useHistory();
     const styles = useStyles();
@@ -47,24 +53,44 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
     };
 
     const postRequest = async () => {
-        let postRequest = await login(email, password, path);
+        let postRequest = await login(email, password, props.path);
         if (postRequest?.status === 200) {
             console.log("The session was successful");
             setLoginError(null);
             localStorage.setItem('token', postRequest.data.token);
             localStorage.setItem('userData', JSON.stringify(postRequest.data.userData));
-            history.push(redirectPage);
+            history.push(props.redirectPage);
         }
         else if (postRequest?.status === 400) {
             console.log("There was an error in the submitted entries");
             setLoginError(postRequest.data);
         };
     }
+    const setRecoverPasswordProps = () => {
+        props.setPath(history.location.pathname);
+        history.push("/recoverPassword");
+    }
+
+    useEffect(() => {
+        if (props.successMessage && props.showSuccessMessage) {
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: props.successMessage
+            });
+            props.setShowSuccessMessage(false);
+        }
+    }, []);
 
     return (
         <Fragment>
+            {
+                props.successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                        handleClose={options.handleClose} />
+                    : null
+            }
             <div className={styles.modal}>
-                {redirectBoolean ? <h4 align={'center'}>Debes iniciar sesión para continuar</h4> : null}
+                {props.redirectBoolean ? <h4 align={'center'}>Debes iniciar sesión para continuar</h4> : null}
 
                 <h2 align={'center'}>Iniciar sesión</h2>
 
@@ -113,8 +139,10 @@ const Login = ({ path, redirectPage, redirectBoolean }) => {
                         id="btnLogin"
                         type="submit"
                     >INICIAR SESIÓN</Button>
+
+                    <h6 align={'center'}>¿Olvidaste tu contraseña? Recuperala <h6 onClick={() => setRecoverPasswordProps()} className="text-primary" role='button'> Aqui </h6></h6>
                     {
-                        path !== "employee/login" ?
+                        props.path !== "employee/login" ?
                             <div>
                                 <br />
                                 <h5 align={'center'}>¿No tiene una cuenta? Registrate</h5>

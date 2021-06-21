@@ -28,6 +28,9 @@ module.exports = {
     ERROR_MSG_INCORRECT_ACTUAL_PASSWORD: '* La contraseña actual es incorrecta',
     OK_MSG_API_PUT_GOLD_MEMBERSHIP: 'Se actualizó el cambio de renovación automática con éxito',
     ERROR_MSG_API_PUT_GOLD_MEMBERSHIP: 'Ocurrió un error al actualizar el cambio de renovación automática:',
+    ERROR_MSG_API_GET_EMAIL_USER: 'Ocurrió un error al obtener el email del usuario:',
+    ERROR_MSG_API_POST_RECOVERED_PASSWORD_USER: 'Ocurrió un error al actualizar la nueva contraseña del usuario:',
+    OK_MSG_API_USER_RECOVERED_PASSWORD: 'Se actualizo la contraseña de manera satisfactoria',
     // Drivers API messages
     ERROR_MSG_API_GET_DRIVERS: 'Ocurrió un error al obtener los choferes:',
     ERROR_MSG_API_GET_DRIVER_BY_ID: 'Ocurrió un error al obtener al chofer indicado:',

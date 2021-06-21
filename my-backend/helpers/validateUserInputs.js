@@ -40,6 +40,15 @@ let birthdayError;
 let phoneNumberError;
 let actualPasswordError;
 
+const validatePassangerEmailToRecoverPassword = (email) => {
+    return validateEmail(email) ? null : {emailError};
+}
+
+const validatePassangerNewRecoveredPassword = (email,passwordRevocered1, passwordRevocered2) => {
+    passwordError2 = null;
+    return (validateEmail(email) & validatePassword(passwordRevocered1)) && comparePasswords(passwordRevocered1, passwordRevocered2)? null : {emailError, passwordError1, passwordError2};
+}
+
 const validatePassengersToCreate = async (email, names, surname, password1, password2, birthday) => {
     actualPasswordError = null;
     return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToCreate(email)) ? null : preparePassengerResponse();
@@ -318,5 +327,7 @@ module.exports = {
     validatePassengersToModifyWithNewPassword,
     validatePassengersToModifyWihoutNewPassword,
     validateDriversToCreate,
-    validateDriversToModify
+    validateDriversToModify,
+    validatePassangerEmailToRecoverPassword,
+    validatePassangerNewRecoveredPassword
 }
