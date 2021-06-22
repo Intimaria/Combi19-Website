@@ -148,6 +148,9 @@ export const ERROR_MSG_API_PUT_TRIP_TICKET_DEPENDENCE = 'No se puede editar, el 
 export const ERROR_MSG_API_DELETE_TRIP = 'Ocurrió un error al eliminar la combi indicada';
 export const ERROR_MSG_API_DELETE_TRIP_TICKET_DEPENDENCE = 'No se puede eliminar, el viaje tiene tickets vendidos';
 export const ERROR_MSG_API_VALIDATE_TRIP_TICKET_DEPENDENCE = 'Ocurrió un error al comprobar las dependencias del viaje';
+// Trips passengers API messages
+export const ERROR_MSG_API_GET_TRIP_PASSENGERS = 'Ocurrió un error al obtener los pasajeros del viaje:';
+export const ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET = 'Ocurrió un error al actualizar el estado del pasaje:';
 // Comments
 export const ERROR_MSG_API_GET_COMMENT = 'Ocurrió un error al obtener los comentarios: ';
 export const ERROR_MSG_API_GET_COMMENT_BY_ID = 'Ocurrió un error al obtener el comentario indicado: ';
@@ -164,7 +167,7 @@ export const ERROR_MSG_API_PUT_PASSENGER_TRIP = 'Ocurrió un error al finalizar 
 // Card
 export const ERROR_MSG_API_GET_LAST_CARD = 'Ocurrió un error al obtener los datos de la tarjeta:';
 // Passenger
-export const ERROR_MSG_API_CANCEL_PASSENGER_TRIP =  'Ocurrió un error al cancelar el viaje indicado:';
+export const ERROR_MSG_API_CANCEL_PASSENGER_TRIP = 'Ocurrió un error al cancelar el viaje indicado:';
 export const ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER = 'Solo los usuarios con viajes realizados pueden hacer comentarios en el sitio.';
 export const OK_MESSAGE_CANCELLATION_100 = `Se ha cancelado el viaje con mas de 48hs de antelación. Se le ha reembolsado 
 el 100% del costo del mismo: `;

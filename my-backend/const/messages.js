@@ -73,10 +73,8 @@ module.exports = {
     ERROR_MSG_API_TRANSPORT_VALIDATE_EXISTING_REGISTRATION_NUMBER: 'Ocurrió un error al verificar si la patente es única:',
     OK_MSG_API_PUT_TRANSPORT: 'Se actualizaron los datos de la combi con éxito',
     ERROR_MSG_API_PUT_TRANSPORT: 'Ocurrió un error al actualizar los datos de la combi:',
-    //ERROR_MSG_API_PUT_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede editar, la combi está asignada a rutas',
     OK_MSG_API_DELETE_TRANSPORT: 'Se eliminó la combi con éxito',
     ERROR_MSG_API_DELETE_TRANSPORT: 'Ocurrió un error al eliminar la combi indicada',
-    //ERROR_MSG_API_DELETE_TRANSPORT_ROUTE_DEPENDENCE: 'No se puede eliminar, la combi está asignada a rutas',
     ERROR_MSG_API_TRANSPORT_VALIDATE_ROUTE_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias de la combi',
     // Routes API messages
     ERROR_MSG_EMPTY_KM: '* Ingrese una distancia medida en km para la ruta',
@@ -126,11 +124,15 @@ module.exports = {
     OK_MSG_API_PUT_TRIP: 'Se actualizaron los datos del viaje con éxito',
     ERROR_MSG_API_SEARCH_TRIPS: 'Ocurrió un error al buscar los viajes solicitados',
     ERROR_MSG_API_PUT_TRIP: 'Ocurrió un error al actualizar los datos del viaje:',
-    //ERROR_MSG_API_PUT_TRIP_ROUTE_DEPENDENCE: 'No se puede editar, el viaje está en curso',
     OK_MSG_API_DELETE_TRIP: 'Se eliminó el viaje con éxito',
     ERROR_MSG_API_DELETE_TRIP: 'Ocurrió un error al eliminar el viaje indicado',
-    //ERROR_MSG_API_DELETE_TRIP_ROUTE_DEPENDENCE: 'No se puede eliminar, el viaje está en curso',
     ERROR_MSG_API_TRIP_VALIDATE_TICKET_DEPENDENCE: 'Ocurrió un error al comprobar las dependencias del viaje',
+    // Trips passengers API messages
+    ERROR_MSG_API_GET_TRIP_PASSENGERS: 'Ocurrió un error al obtener los pasajeros del viaje:',
+    OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_NOT_RISKY: 'El pasajero puede realizar el viaje',
+    OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY: 'El pasajero es riesgoso, no puede realizar el viaje',
+    OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_ABSENT: 'Los pasajeros pendientes fueron marcados como ausente',
+    ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET: 'Ocurrió un error al actualizar el estado del pasaje:',
     // Comments API messages
     ERROR_MSG_API_GET_COMMENT: 'Ocurrió un error al obtener los comentario: ',
     ERROR_MSG_API_GET_COMMENT_BY_ID: 'Ocurrió un error al obtener el comentario indicado: ',

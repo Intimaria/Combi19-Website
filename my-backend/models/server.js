@@ -43,6 +43,7 @@ class Server {
         this.app.use('/cards', require('../routes/cards.js'));
         this.app.use('/goldMembership', require('../routes/goldMembership.js'));
         this.app.use('/recoverPassword', require('../routes/recoverPassword.js'));
+        this.app.use('/tripPassengers', require('../routes/tripPassengers.js'));
     }
 
     listen() {

@@ -5,7 +5,10 @@ const {
     OK_MSG_API_POST_PASSENGER_TRIP,
     ERROR_MSG_API_POST_PASSENGER_TRIP,
     ERROR_MSG_API_CANCEL_PASSENGER_TRIP,
-    OK_MSG_API_CANCEL_PASSENGER_TRIP
+    OK_MSG_API_CANCEL_PASSENGER_TRIP,
+    OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_NOT_RISKY,
+    OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY,
+    ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET
 } = require("../const/messages");
 
 const {normalizeTrips} = require("../helpers/normalizeResult");
@@ -219,8 +222,57 @@ const cancelPassengerTrip = async (req, res) => {
     res.end();
 };
 
+const confirmPassengerTrip = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const connection = await prepareConnection();
+
+        let sqlUpdate = `UPDATE TICKET SET ID_STATUS_TICKET = 2 WHERE TICKET_ID = ${id};`;
+
+        await connection.execute(sqlUpdate);
+
+        connection.end();
+        res.status(200).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_NOT_RISKY);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET} ${error}`);
+    }
+    res.end();
+};
+
+const rejectPassengerTrip = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const connection = await prepareConnection();
+        // let sqlUpdate =`UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE ID_TRIP = ${id};`;
+
+        //let sqlUpdate =`UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE TICKET_ID = ${id};`;
+
+        let sqlSelect = `SELECT ID_CART FROM TICKET WHERE TICKET_ID = ${id}`;
+
+        const [rows] = await connection.execute(sqlSelect);
+
+        const cartId = rows[0].ID_CART;
+
+        let sqlUpdate = ` UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE ID_CART = ${cartId};`;
+
+        await connection.execute(sqlUpdate);
+
+        connection.end();
+        res.status(200).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY);
+    } catch (error) {
+        console.log(`${ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET} ${error}`);
+        res.status(500).send(`${ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET} ${error}`);
+    }
+    res.end();
+};
+
 module.exports = {
     getPassengerTrips,
     postPassengerTrip,
-    cancelPassengerTrip
+    cancelPassengerTrip,
+    confirmPassengerTrip,
+    rejectPassengerTrip
 };

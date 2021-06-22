@@ -19,6 +19,7 @@ import TripsResults from "./TripsResults.jsx";
 import BuyTrip from "./BuyTrip.jsx";
 import GoldMembership from "./GoldMembership.jsx";
 import RecoverPassword from "./RecoverPassword.jsx";
+import TripPassengers from "./TripPassengers.jsx";
 
 const Addresses = () => {
     const history = useHistory();
@@ -138,6 +139,9 @@ const Addresses = () => {
                         setSuccessMessage={setSuccessMessage}
                         setShowSuccessMessage={setShowSuccessMessage}
                         path={path}/>
+                </Route>
+                <Route path="/tripPassengers" exact>
+                    <TripPassengers />
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
