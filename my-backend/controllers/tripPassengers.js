@@ -48,7 +48,8 @@ const absentPassengersByTrip = async (req, res) => {
         let sqlUpdate =
             `
             UPDATE TICKET SET ID_STATUS_TICKET = 4
-            WHERE ID_TRIP = ${id};
+            WHERE ID_TRIP = ${id}
+            AND ID_STATUS_TICKET = 1;
             `;
 
         await connection.execute(sqlUpdate);

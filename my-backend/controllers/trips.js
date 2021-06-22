@@ -245,6 +245,7 @@ const searchTrip = async (req, res) => {
             depci.CITY_ID = ${departure}  AND
             desci.CITY_ID = ${destination} AND
             (CAST(tri1.DEPARTURE_DAY as DATE)) = "${departureDate}"
+            AND tri1.DEPARTURE_DAY >= NOW();
           `;
 
             const [rows] = await connection.execute(sqlSelect);

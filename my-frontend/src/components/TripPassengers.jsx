@@ -330,7 +330,7 @@ export const TripPassengers = () => {
             <h3 align="center">RESULTADO DE VERIFICACIÓN DE SÍNTOMAS</h3>
             {(riskyPassenger)
                 ? <Typography>El pasajero presenta síntomas compatibles a COVID-19, por lo cual no podrá realizar el
-                    viaje, y tampoco podrá viajar durante los próximos 15 días. Asimismo no se le reintegrará el precio
+                    viaje, y tampoco podrá viajar durante los próximos 15 días. Asimismo no se le reintegrará el monto
                     del pasaje.</Typography>
                 : <Typography>El pasajero NO presenta síntomas compatibles a COVID-19, por lo cual podrá realizar el
                     viaje.</Typography>
