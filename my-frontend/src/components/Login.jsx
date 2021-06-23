@@ -140,10 +140,10 @@ const Login = (props) => {
                         type="submit"
                     >INICIAR SESIÓN</Button>
 
-                    <h6 align={'center'}>¿Olvidaste tu contraseña? Recuperala <h6 onClick={() => setRecoverPasswordProps()} className="text-primary" role='button'> Aquí </h6></h6>
                     {
                         props.path !== "employee/login" ?
                             <div>
+                                <h6 align={'center'}>¿Olvidaste tu contraseña? Recuperala <h6 onClick={() => setRecoverPasswordProps()} className="text-primary" role='button'> Aquí </h6></h6>
                                 <br />
                                 <h5 align={'center'}>¿No tiene una cuenta? Registrate</h5>
 

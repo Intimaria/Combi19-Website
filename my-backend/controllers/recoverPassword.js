@@ -4,9 +4,12 @@ const {
     validatePassengerEmailToRecoverPassword,
     validatePassengerNewRecoveredPassword
 } = require("../helpers/validateUserInputs.js");
+
 const {
-    ACTIVE
+    ACTIVE,
+    PASSENGER_ROLE
 } = require("../const/config.js")
+
 const {
     ERROR_MSG_API_GET_EMAIL_USER,
     ERROR_MSG_API_POST_RECOVERED_PASSWORD_USER,
@@ -23,8 +26,8 @@ const getEmailToRemindPassword = async (req, res) => {
     } else {
         try {
             const connection = await prepareConnection();
-            let sqlSelect = 'SELECT EMAIL FROM USER u INNER JOIN ROLE_USER ru ON (ru.ID_USER = u.USER_ID) WHERE BINARY u.EMAIL = (?) AND ru.ACTIVE = (?)';
-            const [rows] = await connection.execute(sqlSelect, [email, ACTIVE]);
+            let sqlSelect = 'SELECT EMAIL FROM USER u INNER JOIN ROLE_USER ru ON (ru.ID_USER = u.USER_ID) WHERE BINARY u.EMAIL = (?) AND ru.ACTIVE = (?) AND ru.ID_ROLE = (?)';
+            const [rows] = await connection.execute(sqlSelect, [email, ACTIVE, PASSENGER_ROLE]);
 
             connection.end();
             return res.status(200).send(rows.length === 1);

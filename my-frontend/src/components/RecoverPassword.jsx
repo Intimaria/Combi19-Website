@@ -154,19 +154,19 @@ const RecoverPassword = (props) => {
             return false;
         }
         if (!REGEX_ONLY_NUMBER.test(code)) {
-            setCodeError("* Ingrese un formato de código válido");
+            setCodeError("Ingrese un formato de codigo valido");
             return false;
         }
         if (code.length < 6) {
-            setCodeError("* Ingrese un formato de código válido");
+            setCodeError("Ingrese un formato de codigo valido");
             return false;
         }
         if (code === "111111") {
-            setCodeError("* El código ingresado es incorrecto");
+            setCodeError("El codigo ingresado es incorrecto");
             return false;
         }
         if (code === "222222" || codeTime.isBefore(moment())) {
-            setCodeError("* El código expiró, solicite uno nuevo");
+            setCodeError("La vigencia del codigo ha finalizado");
             return false;
         }
 
@@ -177,11 +177,11 @@ const RecoverPassword = (props) => {
     const validateCodeToRecoverPassword = (
         <div className={styles.modal}>
             <form onSubmit={mySubmitCodeHandler}>
-                <h6 align={'center'}> Se le envió un código de 6 dígitos a su email </h6>
-                <h6 align={'center'}> Ingrese el mismo en los próximos 5 minutos </h6>
+                <h6 align={'center'}> Se le ha enviado un codigo de 6 digitos a su email </h6>
+                <h6 align={'center'}> Ingrese el mismo en los proximos 5 minutos </h6>
                 <br />
-                <h5 align={'center'}> Ingrese el código </h5>
-                <TextField className={styles.inputMaterial} label="Código *" name="code"
+                <h5 align={'center'}> Ingrese el codigo </h5>
+                <TextField className={styles.inputMaterial} label="Codigo *" name="code"
                     id="code"
                     type={"text"}
                     inputProps={{ maxLength: 6 }}
@@ -200,7 +200,7 @@ const RecoverPassword = (props) => {
                     type="submit"
                     onClick={() => ""}
                 >Confirmar</Button>
-                <h6 align={'center'}>¿No te llegó el código? Reenvialo <h6 onClick={() => setCodeTime(moment().add(5, "minutes"))} className="text-primary" role='button'> Aquí </h6></h6>
+                <h6 align={'center'}>¿No te ha llegado el codigo? Reenvialo <h6 onClick={() => setCodeTime(moment().add(5, "minutes"))} className="text-primary" role='button'> Aqui </h6></h6>
             </form>
         </div>
     )
@@ -229,7 +229,7 @@ const RecoverPassword = (props) => {
         if (validatePassword(recoveredPassword1) && comparePasswords(recoveredPassword1, recoveredPassword2)) await getPasswordRequest();
 
         return true;
-    };
+    }
 
     const validatePassword = (password1) => {
         if (!password1) {
