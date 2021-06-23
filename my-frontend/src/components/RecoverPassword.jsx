@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { useHistory } from "react-router-dom";
-import { useStyles } from '../const/componentStyles';
-import { TextField, Button } from '@material-ui/core';
-import { Message } from '../components/Message';
+import React, {useState} from 'react'
+import {useHistory} from "react-router-dom";
+import {useStyles} from '../const/componentStyles';
+import {TextField, Button} from '@material-ui/core';
+import {Message} from '../components/Message';
 import moment from "moment";
 import FormControl from '@material-ui/core/FormControl';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -35,7 +35,7 @@ const RecoverPassword = (props) => {
     const styles = useStyles();
 
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     const history = useHistory();
@@ -54,7 +54,7 @@ const RecoverPassword = (props) => {
     const [showPassword1, setShowPassword1] = React.useState(false);
     const [showPassword2, setShowPassword2] = React.useState(false);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const handleEmail = (newValue) => {
         setEmail(newValue.target.value);
@@ -67,7 +67,7 @@ const RecoverPassword = (props) => {
         if (validateEmail(email)) await getEmailRequest();
 
         return true;
-    }
+    };
 
     const validateEmail = (email) => {
         if (!email) {
@@ -89,51 +89,48 @@ const RecoverPassword = (props) => {
             if (getRequest.data) {
                 setValidEmail(true);
                 setCodeTime(moment().add(5, "minutes"));
-            }
-            else {
+            } else {
                 setEmailError("El email ingresado no se encuentra registrado");
             }
-        }
-        else if (getRequest?.status === 400) {
+        } else if (getRequest?.status === 400) {
             setEmailError(getRequest.data.emailError);
-        }
-        else if (getRequest?.status === 500) {
+        } else if (getRequest?.status === 500) {
             setSuccessMessage(getRequest.data);
             setOptions({
                 ...options, open: true, type: 'error',
                 message: getRequest.data
             });
-        };
-    }
+        }
+    };
 
     const validateEmailToRecoverPassword = (
         <div className={styles.modal}>
             <form onSubmit={mySubmitEmailHandler}>
                 <h2 align={'center'}> Recupera tu cuenta </h2>
-                <br />
+                <br/>
                 <h5 align={'center'}> Ingrese su correo electrónico </h5>
                 <TextField className={styles.inputMaterial} label="Correo electrónico *" name="email"
-                    id="email"
-                    type={"email"}
-                    inputProps={{ maxLength: 70 }}
-                    autoComplete='off'
-                    error={(emailError) ? true : false}
-                    helperText={(emailError) ? emailError : false}
-                    value={email}
-                    onChange={newValue => handleEmail(newValue)}
+                           id="email"
+                           type={"email"}
+                           inputProps={{maxLength: 70}}
+                           autoComplete='off'
+                           error={(emailError) ? true : false}
+                           helperText={(emailError) ? emailError : false}
+                           value={email}
+                           onChange={newValue => handleEmail(newValue)}
                 />
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Buscar</Button>
             </form>
         </div>
-    )
+    );
 
     const handleCode = (newValue) => {
         setCode(newValue.target.value);
@@ -146,7 +143,7 @@ const RecoverPassword = (props) => {
         if (validateCode(code)) setValidCode(true);
 
         return true;
-    }
+    };
 
     const validateCode = (code) => {
         if (!code) {
@@ -154,19 +151,19 @@ const RecoverPassword = (props) => {
             return false;
         }
         if (!REGEX_ONLY_NUMBER.test(code)) {
-            setCodeError("Ingrese un formato de codigo valido");
+            setCodeError("* Ingrese un formato de código válido");
             return false;
         }
         if (code.length < 6) {
-            setCodeError("Ingrese un formato de codigo valido");
+            setCodeError("* Ingrese un formato de código válido");
             return false;
         }
         if (code === "111111") {
-            setCodeError("El codigo ingresado es incorrecto");
+            setCodeError("* El código ingresado es incorrecto");
             return false;
         }
         if (code === "222222" || codeTime.isBefore(moment())) {
-            setCodeError("La vigencia del codigo ha finalizado");
+            setCodeError("* El código expiró, solicite uno nuevo");
             return false;
         }
 
@@ -177,34 +174,36 @@ const RecoverPassword = (props) => {
     const validateCodeToRecoverPassword = (
         <div className={styles.modal}>
             <form onSubmit={mySubmitCodeHandler}>
-                <h6 align={'center'}> Se le ha enviado un codigo de 6 digitos a su email </h6>
-                <h6 align={'center'}> Ingrese el mismo en los proximos 5 minutos </h6>
-                <br />
-                <h5 align={'center'}> Ingrese el codigo </h5>
-                <TextField className={styles.inputMaterial} label="Codigo *" name="code"
-                    id="code"
-                    type={"text"}
-                    inputProps={{ maxLength: 6 }}
-                    autoComplete='off'
-                    error={(codeError) ? true : false}
-                    helperText={(codeError) ? codeError : false}
-                    value={code}
-                    onChange={newValue => handleCode(newValue)}
+                <h6 align={'center'}> Se le envió un código de 6 dígitos a su email </h6>
+                <h6 align={'center'}> Ingrese el mismo en los próximos 5 minutos </h6>
+                <br/>
+                <h5 align={'center'}> Ingrese el código </h5>
+                <TextField className={styles.inputMaterial} label="Código *" name="code"
+                           id="code"
+                           type={"text"}
+                           inputProps={{maxLength: 6}}
+                           autoComplete='off'
+                           error={(codeError) ? true : false}
+                           helperText={(codeError) ? codeError : false}
+                           value={code}
+                           onChange={newValue => handleCode(newValue)}
                 />
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Confirmar</Button>
-                <h6 align={'center'}>¿No te ha llegado el codigo? Reenvialo <h6 onClick={() => setCodeTime(moment().add(5, "minutes"))} className="text-primary" role='button'> Aqui </h6></h6>
+                <h6 align={'center'}>¿No te llegó el código? Reenvialo <h6
+                    onClick={() => setCodeTime(moment().add(5, "minutes"))} className="text-primary"
+                    role='button'> Aquí </h6></h6>
             </form>
         </div>
-    )
-    
+    );
+
     const handleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
     };
@@ -229,7 +228,7 @@ const RecoverPassword = (props) => {
         if (validatePassword(recoveredPassword1) && comparePasswords(recoveredPassword1, recoveredPassword2)) await getPasswordRequest();
 
         return true;
-    }
+    };
 
     const validatePassword = (password1) => {
         if (!password1) {
@@ -263,31 +262,29 @@ const RecoverPassword = (props) => {
             props.setSuccessMessage(postRequest.data);
             props.setShowSuccessMessage(true);
             history.push(props.path);
-        }
-        else if (postRequest?.status === 400) {
+        } else if (postRequest?.status === 400) {
             setRecoveredPassword1(postRequest.data.passwordError1);
             setRecoveredPassword2(postRequest.data.passwordError2);
             setEmailError(postRequest.data.emailError);
-        }
-        else if (postRequest?.status === 500) {
+        } else if (postRequest?.status === 500) {
             setSuccessMessage(postRequest.data);
             setOptions({
                 ...options, open: true, type: 'error',
                 message: postRequest.data
             });
-        };
-    }
+        }
+    };
 
     const validatePasswordToRecover = (
         <div className={styles.modal}>
             <form onSubmit={mySubmitRecoveredPasswordHandler}>
                 <h5 align={'center'}> Ingresa una nueva contraseña </h5>
                 <FormControl className={styles.inputMaterial}
-                    error={(recoveredPassword1Error) ? true : false}>
+                             error={(recoveredPassword1Error) ? true : false}>
                     <InputLabel htmlFor="recoveredPassword1">Nueva contraseña *</InputLabel>
                     <Input
                         id="recoveredPassword1"
-                        inputProps={{ maxLength: 100 }}
+                        inputProps={{maxLength: 100}}
                         autoComplete='off'
                         type={showPassword1 ? 'text' : 'password'}
                         name="recoveredPassword1"
@@ -300,7 +297,7 @@ const RecoverPassword = (props) => {
                                     onClick={handleShowPassword1}
                                     edge="end"
                                 >
-                                    {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                                    {showPassword1 ? <Visibility/> : <VisibilityOff/>}
                                 </IconButton>
                             </InputAdornment>
                         }
@@ -308,11 +305,11 @@ const RecoverPassword = (props) => {
                     <FormHelperText>{(recoveredPassword1Error) ? recoveredPassword1Error : false}</FormHelperText>
                 </FormControl>
                 <FormControl className={styles.inputMaterial}
-                    error={(recoveredPassword2Error) ? true : false}>
+                             error={(recoveredPassword2Error) ? true : false}>
                     <InputLabel htmlFor="recoveredPassword2">Repita la nueva contraseña *</InputLabel>
                     <Input
                         id="recoveredPassword2"
-                        inputProps={{ maxLength: 100 }}
+                        inputProps={{maxLength: 100}}
                         autoComplete='off'
                         type={showPassword2 ? 'text' : 'password'}
                         name="recoveredPassword2"
@@ -325,32 +322,32 @@ const RecoverPassword = (props) => {
                                     onClick={handleShowPassword2}
                                     edge="end"
                                 >
-                                    {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                                    {showPassword2 ? <Visibility/> : <VisibilityOff/>}
                                 </IconButton>
                             </InputAdornment>
                         }
                     />
                     <FormHelperText>{(recoveredPassword2Error) ? recoveredPassword2Error : false}</FormHelperText>
                 </FormControl>
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Confirmar</Button>
             </form>
         </div>
-    )
+    );
 
     return (
         <div>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
             {!validEmail ? validateEmailToRecoverPassword : null}
@@ -358,6 +355,6 @@ const RecoverPassword = (props) => {
             {validEmail && validCode ? validatePasswordToRecover : null}
         </div>
     )
-}
+};
 
 export default RecoverPassword
