@@ -250,15 +250,48 @@ const rejectPassengerTrip = async (req, res) => {
 
         //let sqlUpdate =`UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE TICKET_ID = ${id};`;
 
-        let sqlSelect = `SELECT ID_CART FROM TICKET WHERE TICKET_ID = ${id}`;
+        let sqlSelect =
+            `
+            SELECT ca.ID_USER, tri.TRIP_ID
+            FROM TICKET tic
+            INNER JOIN STATUS_TICKET st ON st.STATUS_TICKET_ID = tic.ID_STATUS_TICKET
+            INNER JOIN CART ca ON tic.ID_CART = ca.CART_ID
+            INNER JOIN TRIP tri ON tic.ID_TRIP = tri.TRIP_ID
+            WHERE tic.TICKET_ID = ${id}
+            ORDER BY ca.ID_USER ASC;
+            `;
 
         const [rows] = await connection.execute(sqlSelect);
 
-        const cartId = rows[0].ID_CART;
+        const userId = rows[0].ID_USER;
+        const tripId = rows[0].TRIP_ID;
 
-        let sqlUpdate = ` UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE ID_CART = ${cartId};`;
+        let sqlSafeMode = `SET SQL_SAFE_UPDATES = 0;`;
+
+        await connection.execute(sqlSafeMode);
+
+        let sqlUpdate =
+            `
+            UPDATE TICKET SET ID_STATUS_TICKET = 3 
+            WHERE TICKET_ID IN
+                (SELECT * FROM (
+                    SELECT tic.TICKET_ID
+                    FROM TICKET tic
+                    INNER JOIN STATUS_TICKET st ON st.STATUS_TICKET_ID = tic.ID_STATUS_TICKET
+                    INNER JOIN CART ca ON tic.ID_CART = ca.CART_ID
+                    INNER JOIN TRIP tri ON tic.ID_TRIP = tri.TRIP_ID
+                    WHERE ca.ID_USER = ${userId}
+                    AND tri.TRIP_ID = ${tripId}
+                    ) tmpTable
+                )
+            ;
+            `;
 
         await connection.execute(sqlUpdate);
+
+        sqlSafeMode = `SET SQL_SAFE_UPDATES = 1;`;
+
+        await connection.execute(sqlSafeMode);
 
         connection.end();
         res.status(200).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY);
