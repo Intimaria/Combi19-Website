@@ -37,10 +37,11 @@ export const getPassengerTrips = async (id) => {
     }
 };
 
-export const cancelPassengerTrip = async (id) => {
+export const cancelPassengerTrip = async (id, amount) => {
     const token = localStorage.getItem('token');
     let newStatus = {
-        status: "4"
+        status: "4",
+        percentage: amount === 100 ? 1 : 2
     };
 
     try {
