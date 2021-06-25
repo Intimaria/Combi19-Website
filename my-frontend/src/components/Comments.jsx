@@ -133,7 +133,7 @@ function Comments(props) {
     this allows us to know if the user can post new comments or not */
     useEffect (() => {
         const fetchData = async () => {
-                let getTripsResponse = await gePassengerTrips(newUser.userId);
+                let getTripsResponse = await getPassengerTrips(newUser.userId);
                 if (getTripsResponse.status === 200) {
                     let trips = getTripsResponse.data;
                     // If they have trips 
