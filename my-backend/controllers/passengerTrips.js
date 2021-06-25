@@ -212,9 +212,10 @@ const cancelPassengerTrip = async (req, res) => {
         const connection = await prepareConnection();
 
         let sqlUpdate = `
-                        UPDATE TICKET SET ID_STATUS_TICKET = ${status}, 
-                        ID_REFUND_PERCENTAGE = ${percentage} 
-                        WHERE TICKET.TICKET_ID = ${id};
+                        UPDATE TICKET SET 
+                        ID_STATUS_TICKET = 5
+                        WHERE ID_TRIP = ${id} IN 
+                        (SELECT ID_TRIP FROM TICKET);
                         `;
         const [rows] = await connection.execute(sqlUpdate);
         connection.end();

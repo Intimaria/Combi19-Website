@@ -166,6 +166,8 @@ export const ERROR_MSG_EMPTY_TEXT_COMMENT = '* Ingrese un texto';
 export const ERROR_MSG_API_PUT_PASSENGER_TRIP = 'Ocurrió un error al finalizar la compra:';
 // Card
 export const ERROR_MSG_API_GET_LAST_CARD = 'Ocurrió un error al obtener los datos de la tarjeta:';
+//Driver trip 
+export const ERROR_MSG_API_FINISH_TRIP = 'Ocurrió un error al finalizar el viaje indicado:';
 // Passenger
 export const ERROR_MSG_API_CANCEL_PASSENGER_TRIP = 'Ocurrió un error al cancelar el viaje indicado:';
 export const ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER = 'Solo los usuarios con viajes realizados pueden hacer comentarios en el sitio.';

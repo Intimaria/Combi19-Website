@@ -20,6 +20,8 @@ import BuyTrip from "./BuyTrip.jsx";
 import GoldMembership from "./GoldMembership.jsx";
 import RecoverPassword from "./RecoverPassword.jsx";
 import TripPassengers from "./TripPassengers.jsx";
+import DriverFinishedTrips from "./DriverFinishedTrips.jsx";
+import DriverListTrips from './DriverListTrips';
 
 const Addresses = () => {
     const history = useHistory();
@@ -142,6 +144,12 @@ const Addresses = () => {
                 </Route>
                 <Route path="/tripPassengers" exact>
                     <TripPassengers />
+                </Route>
+                <Route path="/tripsMade" exact>
+                    <DriverFinishedTrips />
+                </Route>
+                <Route path="/pendingTrips"  exact>
+                    <DriverListTrips />
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la

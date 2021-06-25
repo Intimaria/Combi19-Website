@@ -133,6 +133,9 @@ module.exports = {
     OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY: 'El pasajero es riesgoso, no puede realizar el viaje',
     OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_ABSENT: 'Los pasajeros pendientes fueron marcados como ausente',
     ERROR_MSG_API_PUT_TRIP_PASSENGER_TICKET: 'Ocurrió un error al actualizar el estado del pasaje:',
+    // Trips drivers API messages 
+    OK_MSG_API_FINISH_TRIP: 'Se finalizó el viaje con éxito',
+    ERROR_MSG_API_FINISH_TRIP: 'Ocurrió un error al finalizar el viaje:',
     // Comments API messages
     ERROR_MSG_API_GET_COMMENT: 'Ocurrió un error al obtener los comentario: ',
     ERROR_MSG_API_GET_COMMENT_BY_ID: 'Ocurrió un error al obtener el comentario indicado: ',

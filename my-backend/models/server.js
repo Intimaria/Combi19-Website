@@ -44,6 +44,9 @@ class Server {
         this.app.use('/goldMembership', require('../routes/goldMembership.js'));
         this.app.use('/recoverPassword', require('../routes/recoverPassword.js'));
         this.app.use('/tripPassengers', require('../routes/tripPassengers.js'));
+        this.app.use('/tripsMade', require('../routes/driver-trips.js'));
+        this.app.use('/pendingTrips', require('../routes/driver-trips.js'));
+        
     }
 
     listen() {
