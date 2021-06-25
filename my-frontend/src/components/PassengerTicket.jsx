@@ -1,7 +1,7 @@
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
-import React from 'react';
+import React, { useState } from 'react';
 import VerticalTicketRip from '@mui-treasury/components/rip/verticalTicket';
 import cx from 'clsx';
 import logo from "../images/logo_combi19.png"
@@ -109,6 +109,7 @@ const useStyles = makeStyles(({palette, breakpoints}) => ({
 export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
   const { myTicket } = props
     const styles = useStyles(props);
+    const cancelled = myTicket.percentage
     const ripStyles = useVerticalRipStyles({
         size: 24,
         rightColor: props.lightColor,
@@ -132,7 +133,9 @@ export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
                 }}
             />
             <div className={cx(styles.right, styles.moveRight)}>
-            {/* <div><p className={styles.heading}>{myTicket.quantity}</p></div> */}
+             { myTicket.percentage &&
+            <div><p className={styles.heading}>{myTicket.percentage}</p></div>
+            }
                 <span className={styles.departureDay}>{myTicket.departureDay}</span>
                 <div className={styles.label}>
                     <h2 className={styles.heading}>Origen</h2>

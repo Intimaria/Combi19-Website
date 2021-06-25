@@ -8,28 +8,31 @@ import {
     Divider,
     Grid,
     Modal,
-    Typography
+    Typography,
+    MaterialTable
 } from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import CardTravelIcon from '@material-ui/icons/CardTravel';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import React, {useEffect, useState} from 'react';
+import moment from "moment";
+import {useStyles} from '../const/componentStyles';
+
+/* USER IMPORTS */
+import {Message} from '../components/Message';
+import {PassengerTicket} from './PassengerTicket';
+import {CancelTrip} from './CancelTrip'
 import {
     ERROR_MSG_API_CANCEL_PASSENGER_TRIP,
     ERROR_MSG_API_GET_TRIPS
 } from "../const/messages";
-import React, {useEffect, useState} from 'react';
 import {
     cancelPassengerTrip,
     getPassengerTrips
 } from '../api/PassengerTrips';
 
-import {CancelTrip} from './CancelTrip'
-import CardTravelIcon from '@material-ui/icons/CardTravel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MaterialTable from '@material-table/core';
-import {Message} from '../components/Message';
-import {PassengerTicket} from './PassengerTicket';
-import {makeStyles} from '@material-ui/core/styles';
-import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import moment from "moment";
-import {useStyles} from '../const/componentStyles';
+/* FORMATTING & STYLES */ 
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -47,7 +50,6 @@ const columns = [
     }
 ];
 
-
 function PassengerTrips() {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
@@ -60,6 +62,7 @@ function PassengerTrips() {
         departureDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         active: "",
         status: "",
+        percentage: "",
         route: {
             routeId: "",
             departureId: "",
@@ -74,32 +77,44 @@ function PassengerTrips() {
         }
     };
 
+    /* HOOKS SETTINGS */ 
+
+    // styles configuration 
     const styles = useStyles();
 
+    //Saves user data and informs new data has been loaded 
     const [data, setData] = useState([]);
     const [newData, setNewData] = useState(true);
 
+    // Modal settings
     const [viewModal, setViewModal] = useState(false);
-    const [selectedTrip, setSelectedTrip] = useState(formatSelectedTrip);
+
+    // Saves state of error messages for user information
     const [successMessage, setSuccessMessage] = React.useState(null);
     const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
-    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
-    const [tripType, setTripType] = useState([]);
+
+    //Saves the state current ticket selected by the user 
+    const [selectedTrip, setSelectedTrip] = useState(formatSelectedTrip);
+
+    // Saves ticket data in different arrays according to their status
     const [activeTrips, setActiveTrips] = useState([]);
     const [pastTrips, setPastTrips] = useState([]);
     const [pendingTrips, setPendingTrips] = useState([]);
     const [rejectedTrips, setRejectedTrips] = useState([]);
+    const [cancelledTrips, setCancelledTrips] = useState([]);
 
-    const newUser = JSON.parse(localStorage.getItem('userData'));
+    //const newUser = JSON.parse(localStorage.getItem('userData'));
 
+    // Sets information of logged in user on component mount [TODO]
+    const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
     useEffect(() => {
-        setUserData(newUser)
+        setUserData(userData)
     }, []);
 
-
+/* [TODO]
     const setDefaultValues = () => {
         setDefaultObjectsValues();
-        setDefaultErrorMessages();
+        setDefaultErrorMessages("");
     };
 
     const setDefaultObjectsValues = () => {
@@ -107,24 +122,30 @@ function PassengerTrips() {
     };
 
     const setDefaultErrorMessages = () => {
-        setDefaultErrorMessages();
+        setSuccessMessage("");
     };
-
+*/
+    // Called when fetchData API gets user ticket data from Database: divides by status
     const handleData = (data) => {
         const pendingTrips = data.filter(d => d.status === 1);
         const activeTrips = data.filter(d => d.status === 2);
-        const rejectedTrips = data.filter(d => d.status === 3 || d.status === 4);
+        const rejectedTrips = data.filter(d => d.status === 3);
+        const cancelledTrips = data.filter(d => d.status === 4);
         const pastTrips = data.filter(d => d.status === 5);
         setPendingTrips(pendingTrips);
         setActiveTrips(activeTrips);
         setRejectedTrips(rejectedTrips);
         setPastTrips(pastTrips)
+        setCancelledTrips(cancelledTrips)
     };
 
+    /* API CALLS & DATABASE FUNCTIONS*/
+
+    // API: gets all the user trips from the database
     const fetchData = async () => {
         try {
             let getTripsResponse = await getPassengerTrips(userData.userId);
-
+            console.log(getTripsResponse)
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
                 setData(data);
@@ -135,7 +156,6 @@ function PassengerTrips() {
                     ...options, open: true, type: 'error',
                     message: getTripsResponse.data
                 });
-
                 return true
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`);
@@ -144,24 +164,28 @@ function PassengerTrips() {
                     message: `${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`
                 });
             }
-
-
         } catch (error) {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
-
-    const eventHandler = async (cancel) => {
-        if (cancel) {
-            setNewData(true);
-            await fetchData()
-        }
-    };
-
-
+    // This call to fetchData only occurs when the component first mounts (gets trips from DB)
     useEffect(() => {
         fetchData()
     }, []);
+    useEffect(() => {
+        fetchData()
+    }, [newData]);
+
+    /* FUNCTIONALITY - CHILD COMPONENT */ 
+    // Called when a trip is cancelled by the user, will fetch new data from the DB
+    const eventHandler = async (cancel, data, ticket) => {
+        console.log("se llamo eventHandler", cancel, data, ticket)
+        if (cancel) {
+            setNewData(true);
+        }
+    };
+
+        /* JSX COMPONENTS & FORMATTING */
 
     return (
         <div className="App" style={{maxWidth: "80%", margin: 'auto', float: "center"}}>
@@ -190,9 +214,10 @@ function PassengerTrips() {
                         {activeTrips.length ?
                             activeTrips.map((elem, index) => (
                                 <Grid style={{width: "100%"}}
-                                      item>
+                                    key={index} 
+                                    item>
                                     <PassengerTicket
-                                        key={index} myTicket={elem}
+                                        myTicket={elem}
                                         mainColor={"#E65100"}
                                         lightColor={"#FFE0B2"}
                                         insert={"#FFB74D"}/>
@@ -226,16 +251,20 @@ function PassengerTrips() {
                         {pendingTrips.length ?
                             pendingTrips.map((elem, index) => (
                                 <Grid style={{width: "100%"}}
-                                      item>
+                                    key={index}
+                                    item>
                                     <PassengerTicket
-                                        key={index} myTicket={elem}
+                                        myTicket={elem}
                                         mainColor={"#00796B"}
                                         lightColor={"#E0F2F1"}
                                         insert={"#80CBC4"}
                                     />
                                     <br/>
                                     <Box textAlign='right'>
-                                        <CancelTrip onClick={eventHandler} trip={elem} user={userData}/>
+                                        <CancelTrip 
+                                        onClick={eventHandler} 
+                                        trip={elem} 
+                                        user={userData}/>
                                     </Box>
                                 </Grid>
                             ))
@@ -270,9 +299,10 @@ function PassengerTrips() {
                         {pastTrips.length ?
                             pastTrips.map((elem, index) => (
                                 <Grid style={{width: "100%"}}
-                                      item>
+                                    key={index}
+                                    item>
                                     <PassengerTicket
-                                        key={index} myTicket={elem}
+                                         myTicket={elem}
                                         mainColor={"#003399"}
                                         lightColor={"#ecf2ff"}
                                         insert={"#bed0f5"}
@@ -294,7 +324,7 @@ function PassengerTrips() {
                     aria-controls="viajes rechazados"
                     id="rechazados"
                 >
-                    Viajes dados de baja
+                    Viajes rechazados
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container
@@ -307,9 +337,48 @@ function PassengerTrips() {
                         {rejectedTrips.length ?
                             rejectedTrips.map((elem, index) => (
                                 <Grid style={{width: "100%"}}
-                                      item>
+                                    key={index} 
+                                    item>
                                     <PassengerTicket
-                                        key={index} myTicket={elem}
+                                        myTicket={elem}
+                                        mainColor={"#7B1FA2"}
+                                        lightColor={"#F3E5F5"}
+                                        insert={"#CE93D8"}/>
+                                </Grid>
+                            ))
+                            :
+                            <Typography variant="subtitle2" gutterBottom>
+                                Usted no posee viajes rechazados
+                            </Typography>
+                        }
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+            <Divider/>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="viajes cancelados"
+                    id="cancelados"
+                >
+                    Viajes cancelados
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container
+                          direction="row"
+                          justifycontent="flex-start"
+                          alignItems="flex-start"
+                          wrap="wrap"
+                          alignContent="center"
+                          spacing={3}>
+                        {cancelledTrips.length ?
+                            cancelledTrips.map((elem, index) => (
+                                <Grid style={{width: "100%"}}
+                                    key={index} 
+                                    item>
+                                    <PassengerTicket
+                                        myTicket={elem}
+                                        cancelled={true}
                                         mainColor={"#BF360C"}
                                         lightColor={"#FFCCBC"}
                                         insert={"#FF8A65"}/>
@@ -317,13 +386,12 @@ function PassengerTrips() {
                             ))
                             :
                             <Typography variant="subtitle2" gutterBottom>
-                                Usted no posee viajes dados de baja
+                                Usted no posee viajes cancelados
                             </Typography>
                         }
                     </Grid>
                 </AccordionDetails>
             </Accordion>
-
         </div>
     );
 }

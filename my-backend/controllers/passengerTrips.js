@@ -28,7 +28,7 @@ const getPassengerTrips = async (req, res) => {
             CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
             CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
             tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER, tic.ID_STATUS_TICKET as STATUS,
-            tic.QUANTITY, r.DURATION
+            tic.QUANTITY, r.DURATION, rp.PERCENTAGE
             FROM USER u
             INNER JOIN CART car ON car.ID_USER=u.USER_ID
             INNER JOIN TICKET tic ON tic.ID_CART=car.CART_ID
@@ -39,6 +39,7 @@ const getPassengerTrips = async (req, res) => {
             INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
             INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
             INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
+            LEFT JOIN REFUND_PERCENTAGE rp ON tic.ID_REFUND_PERCENTAGE = rp.REFUND_PERCENTAGE_ID
             WHERE u.USER_ID = ${id}
             ORDER BY tri.DEPARTURE_DAY ASC, ARRIVAL_DAY ASC, DEPARTURE ASC, DESTINATION ASC;
             `;
@@ -178,15 +179,15 @@ const getProductsPrice = async (cartId) => {
                 ) 
                 AS montoTotal 
                 FROM CART c
-                LEFT JOIN PRODUCT_CART pc ON pc.ID_CART = c.CART_ID
-                WHERE pc.ID_CART = ${cartId}
+                LEFT JOIN PRODUCT_CART pc ON c.CART_ID = pc.ID_CART
+                WHERE c.CART_ID = ${cartId}
                 GROUP BY ID_CART;
                 `;
 
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
-
+       console.log("rows", rows, "monto", rows[0].montoTotal)
         return rows[0].montoTotal;
     } catch (error) {
         console.log(`Ocurrió un error en getProductsPrice: ${error}`);
@@ -197,22 +198,25 @@ const getProductsPrice = async (cartId) => {
 const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
     let productPrice = 0;
-    const {status} = req.body;
+    const {status, percentage} = req.body;
 
     let cartId = await getCart(id);
+    console.log("cart id", cartId)
     const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART);
-
+    console.log("is last ticket?", isLastTicket)
     if (isLastTicket) {
         productPrice = await getProductsPrice(cartId[0].ID_CART);
+        console.log(productPrice)
     }
-
     try {
         const connection = await prepareConnection();
 
-        let sqlUpdate = `UPDATE TICKET SET ID_STATUS_TICKET = ${status} WHERE TICKET.TICKET_ID = ${id};`;
-
+        let sqlUpdate = `
+                        UPDATE TICKET SET ID_STATUS_TICKET = ${status}, 
+                        ID_REFUND_PERCENTAGE = ${percentage} 
+                        WHERE TICKET.TICKET_ID = ${id};
+                        `;
         const [rows] = await connection.execute(sqlUpdate);
-
         connection.end();
         res.status(200).send(productPrice.toString());
     } catch (error) {
