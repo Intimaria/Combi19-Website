@@ -225,7 +225,7 @@ function DriverFinishedTrips() {
             <MaterialTable
                 columns={columns}
                 data={data}
-                title={"Viajes pendientes"}
+                title={"Viajes finalizados"}
                 actions={[
                     {
                         icon: () => <VisibilityIcon/>,
