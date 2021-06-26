@@ -4,7 +4,6 @@ import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
 import MaterialTable from '@material-table/core';
 import {Message} from './Message';
-import Tooltip from '@material-ui/core/Tooltip';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import PeopleIcon from '@material-ui/icons/People';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -35,6 +34,19 @@ const modalStyles = makeStyles((theme) => ({
     paper: {
             position: 'absolute',
             width: "75%",
+            backgroundColor: theme.palette.background.paper,
+            border: '2px solid #000',
+            boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+            top:'10%',
+            left:'10%',
+            overflow:'scroll',
+            height:'90%',
+            display:'block'
+         },
+    small: {
+            position: 'absolute',
+            width: "60%",
             backgroundColor: theme.palette.background.paper,
             border: '2px solid #000',
             boxShadow: theme.shadows[5],
@@ -100,7 +112,6 @@ function DriverListTrips() {
     /* HOOKS SETTINGS */ 
 
     // styles configuration 
-    const styles = useStyles();
     const modal = modalStyles();
 
     //Saves user data and informs new data has been loaded 
@@ -121,9 +132,6 @@ function DriverListTrips() {
 
     // Sets information of logged in user as default [TODO]
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
-
-    // Gets boolean from props about whether listing is for past or pending 
-    const [status, setStatus] = useState()
     // Saves user information from local storage (from login)
     const newUser = JSON.parse(localStorage.getItem('userData'));
     // Sets state based on the current url 
@@ -243,7 +251,7 @@ function DriverListTrips() {
 
     // The following functions format the CRUD functionality for the user
     const bodyFinishDetails = (
-        <div className={modal.paper}>
+        <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
              Seguro que queres dar por terminado el viaje con id {selectedTrip.tripId}?
           </Typography>
@@ -259,7 +267,7 @@ function DriverListTrips() {
 
       const bodyConfirmPassangers = (
         <div className={modal.paper}>
-          <TripPassengers/>
+          <TripPassengers trip={selectedTrip} />
           <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalList()}>CERRAR</Button>
@@ -267,7 +275,7 @@ function DriverListTrips() {
         </div>
       );
       const bodyViewDetails = (
-        <div className={modal.paper}>
+        <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
              Viaje con id {selectedTrip.tripId}
           </Typography>
