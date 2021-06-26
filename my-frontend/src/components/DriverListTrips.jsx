@@ -34,7 +34,7 @@ import { TripPassengers } from './TripPassengers';
 const modalStyles = makeStyles((theme) => ({
     paper: {
             position: 'absolute',
-            width: "60%",
+            width: "75%",
             backgroundColor: theme.palette.background.paper,
             border: '2px solid #000',
             boxShadow: theme.shadows[5],
@@ -244,10 +244,10 @@ function DriverListTrips() {
     // The following functions format the CRUD functionality for the user
     const bodyFinishDetails = (
         <div className={modal.paper}>
-          <Typography variant="overline" label="ID de viaje" name="tripId" gutterBottom>
+          <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
              Seguro que queres dar por terminado el viaje con id {selectedTrip.tripId}?
           </Typography>
-          <Typography variant="body2" component="p" gutterBottom>{selectedTrip.route.departure} y 
+          <Typography variant="body1" component="p" gutterBottom>{selectedTrip.route.departure} y 
           {selectedTrip.route.destination}</Typography>
             <br/>     
             <div align="right">
@@ -271,19 +271,19 @@ function DriverListTrips() {
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
              Viaje con id {selectedTrip.tripId}
           </Typography>
-          <Typography variant="body2" component="p" gutterBottom>
+          <Typography variant="body1" component="p" gutterBottom>
             origen: {selectedTrip.route.departure}</Typography>
-          <Typography variant="body2" component="p" gutterBottom>
+          <Typography variant="body1" component="p" gutterBottom>
             destino: {selectedTrip.route.destination}</Typography>
-          <Typography variant="body2" component="p" gutterBottom>
+          <Typography variant="body1" component="p" gutterBottom>
             precio: ${selectedTrip.price}</Typography>
-          <Typography variant="body2" component="p" gutterBottom>
+          <Typography variant="body1" component="p" gutterBottom>
             duracion: {selectedTrip.duration}hs</Typography>
-          <Typography variant="body2" component="p" gutterBottom>
+          <Typography variant="body1" component="p" gutterBottom>
             fecha de partida: {selectedTrip.departureDay}</Typography>
-        <Typography variant="body2" component="p" gutterBottom>
+        <Typography variant="body1" component="p" gutterBottom>
             fecha de llegada: {selectedTrip.arrivalDay}</Typography>
-        <Typography variant="body2" component="p" gutterBottom>
+        <Typography variant="body1" component="p" gutterBottom>
             Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
             <br/>     
             <div align="right">
