@@ -130,6 +130,8 @@ function DriverListTrips() {
     const history = useHistory()
     const [url, setUrl] = useState(history.location.pathname.substring(1))
    
+ 
+
     // Sets state of new user whenever component mounts to keep data consistent [TODO]
     useEffect(() => {
         setUserData(newUser)
@@ -146,6 +148,10 @@ function DriverListTrips() {
        A different Modal opens depending on which choice was selected */
     const selectTrip = async (trip, action) => {
         setSelectedTrip(trip);
+        localStorage.setItem('tripId', selectedTrip.tripId);
+        localStorage.setItem('departurePlace', selectedTrip.route.departurePlace);
+        localStorage.setItem('destinationPlace', selectedTrip.route.destinationPlace);
+        localStorage.setItem('departureDay', selectedTrip.route.departureDay);   
         if (action === "Terminar") {
             openCloseModalFinish(trip)
         } else if (action === "Lista") {
