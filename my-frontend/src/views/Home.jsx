@@ -1,6 +1,7 @@
 import PassengerTrips from '../components/PassengerTrips';
 import React, {useEffect} from 'react'
 import {Message} from "../components/Message";
+import Covid19Report from '../components/Covid19Report';
 
 document.title = `Home`;
 
@@ -36,6 +37,7 @@ const Home = (props) => {
             }
             <h1 className="text-light text-center"> Bienvenido {userData.userName} {userData.userSurname}</h1>
             {userData.userRoleId.includes(3) && <PassengerTrips/>}
+            {userData.userRoleId.includes(1) && <Covid19Report/>}
         </div>
     )
 }

@@ -35,12 +35,21 @@ const getTrips = async (req, res) => {
         let sqlSelect =
                 `
             SELECT 
-            tri.TRIP_ID, REPLACE(tri.PRICE, '.', ',') PRICE, tri.ACTIVE,
-            DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, r.ROUTE_ID,
+            tri.TRIP_ID, REPLACE(tri.PRICE, '.', ',') PRICE, tri.ACTIVE, r.ROUTE_ID,
+            DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, 
             c1.CITY_ID DEPARTURE_ID, CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
             c2.CITY_ID DESTINATION_ID, CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
-            CONCAT(DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
-            tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER
+            DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
+            tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER,
+            ti.ID_STATUS_TICKET,
+            (CASE WHEN MIN(ti.ID_STATUS_TICKET) = 1 THEN "Pendiente"
+             	  WHEN MIN(ti.ID_STATUS_TICKET) = 2 THEN "En viaje"
+                  WHEN MAX(ti.ID_STATUS_TICKET) = 5 THEN "Finalizado"
+                  WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and tri.DEPARTURE_DAY > NOW() THEN 'Pendiente'
+                  WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and (tri.DEPARTURE_DAY <= NOW() and ADDTIME(tri.DEPARTURE_DAY, r.DURATION) > NOW()) THEN 'Activo'
+                  WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and tri.DEPARTURE_DAY < NOW() THEN 'Finalizado'
+                  ELSE "-"       
+        	END) AS STATUS
             FROM TRIP tri
             INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
             INNER JOIN CITY c1 ON r.ID_DEPARTURE = c1.CITY_ID
@@ -48,15 +57,16 @@ const getTrips = async (req, res) => {
             INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
             INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
             INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
-            ORDER BY tri.DEPARTURE_DAY ASC, ARRIVAL_DAY ASC, DEPARTURE ASC, DESTINATION ASC;
+            INNER JOIN TICKET TI ON TI.ID_TRIP = TRI.TRIP_ID
+            GROUP BY TRI.TRIP_ID
+            ORDER BY tri.DEPARTURE_DAY ASC, ARRIVAL_DAY ASC, DEPARTURE ASC, DESTINATION ASC
             `;
 
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
-
+        console.log(rows);
         const normalizeResults = normalizeTrips(rows);
-
         return res.status(200).send(normalizeResults);
     } catch (error) {
         console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
