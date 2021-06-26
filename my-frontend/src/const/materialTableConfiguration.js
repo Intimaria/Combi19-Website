@@ -1,9 +1,18 @@
+import { ExportCsv, ExportPdf } from '@material-table/exporters';
+
 export const materialTableConfiguration = {
     options: {
         actionsColumnIndex: -1,
-        exportButton: false,
+        exportButton: true,
         exportAllData: true,
         filtering: true,
+        exportMenu: [{
+            label: 'Exportar PDF',
+            exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte PDF')
+        }, {
+            label: 'Exportar CSV',
+            exportFunc: (cols, datas) => ExportCsv(cols, datas, 'Reporte CSV')
+        }]
         /*
         headerStyle: {
             backgroundColor: '#3f51b5',
