@@ -44,7 +44,7 @@ const getDriverTrips = async (req, res) => {
                         AND T.ACTIVE = 1
                         AND RU.ACTIVE = 1 
                         AND RU.ID_ROLE = 2
-                        AND ID_STATUS_TICKET = ${status}
+                        AND (ID_STATUS_TICKET = ${status})
                         ORDER BY TR.DEPARTURE_DAY ASC`;
       const [rows] = await connection.execute(sqlSelect);
       connection.end();

@@ -156,7 +156,8 @@ function DriverFinishedTrips() {
         const fetchData = async () => {
             try {
                 let getTripsResponse;
-                getTripsResponse = await getDriverTrips(userData.userId, url, 5);
+                let status = '5';
+                getTripsResponse = await getDriverTrips(userData.userId, url, status);
                 if (getTripsResponse?.status === 200) {
                     let data = getTripsResponse.data;
                     setData(data);
