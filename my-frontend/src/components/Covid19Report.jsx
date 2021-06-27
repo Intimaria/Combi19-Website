@@ -229,7 +229,7 @@ function Covid19Report() {
                 className={styles.root}
                 columns={columns}
                 data={data}
-                title={`Pasajeros marcados con sintomas en el último mes`}
+                title={`Fecha hoy: ${new Date().toLocaleDateString(undefined, options)}`}
                 actions={[
                     {
                         icon: () => <VisibilityIcon />,
