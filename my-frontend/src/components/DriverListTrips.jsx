@@ -99,6 +99,7 @@ function DriverListTrips() {
         arrivalDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         duration: "",
         active: "",
+        status: "",
         route: {
             routeId: "",
             departureId: "",
@@ -335,6 +336,7 @@ function DriverListTrips() {
                     {
                         icon: () => <PeopleIcon/>,
                         tooltip: 'Confirmar Pasajeros',
+                        disabled: data.status !== '2',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista") 
                     }
                 ]}
