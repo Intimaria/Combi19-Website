@@ -74,6 +74,7 @@ const Navbar = ({userData, setRedirectBoolean, setRedirectPage}) => {
 
     const adminMenu = (
         <div>
+            <NavLink to="/home" className="btn btn-dark mr-2"> Reporte COVID-19 </NavLink>
             <NavLink to="/trips" className="btn btn-dark mr-2"> Viajes </NavLink>
             <NavLink to="/routes" className="btn btn-dark mr-2"> Rutas </NavLink>
             <NavLink to="/transports" className="btn btn-dark mr-2"> Combis </NavLink>

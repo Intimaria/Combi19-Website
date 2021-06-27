@@ -212,8 +212,7 @@ const normalizePassengers = (rows) => {
     for (let index = 0; index < rows.length; index++) {
         let user = {
             userId: rows[index].USER_ID,
-            userName: rows[index].NAME,
-            userSurname: rows[index].SURNAME,
+            userName: rows[index].NAME + ' ' + rows[index].SURNAME,
             country: rows[index].ID_COUNTRY,
             documentType: rows[index].ID_DOCUMENT_TYPE,
             birthday: rows[index].BIRTHDAY,

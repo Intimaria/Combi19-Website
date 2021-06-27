@@ -17,6 +17,7 @@ import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pick
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
+
 import {
     getTrips,
     getTripDependenceById,
@@ -52,6 +53,10 @@ import {
 } from "../const/regex";
 
 import {formatDecimalNumber} from "../helpers/numbers";
+import { LocalPrintshopSharp } from '@material-ui/icons';
+
+
+
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -67,7 +72,7 @@ const columns = [
     {   
         title: 'Fecha de llegada',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
-        customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+        customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1,
     },
     {
         title: 'Combi',

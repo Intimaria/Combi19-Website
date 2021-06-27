@@ -30,10 +30,30 @@ import {
 
 /* FORMATTING & STYLES */ 
 
+const modalStyles = makeStyles((theme) => ({
+  paper: {
+          position: 'absolute',
+          width: "60%",
+          backgroundColor: theme.palette.background.paper,
+          border: '2px solid #000',
+          boxShadow: theme.shadows[5],
+          padding: theme.spacing(2, 4, 3),
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+       },
+}));
+
 const columns = [
-  { title: 'Nombre', field: 'userName' },
-  { title: 'Apellido', field: 'userSurname' },
-  { title: 'Teléfono', field: 'phone' },
+  { title: 'Id' , field: 'userId'},
+  { title: 'Nombre y apellido', field: 'userName' },
+  {
+    title: 'Fecha de nacimiento',
+    render: (data) => `${moment(data.birthday).format('DD/MM/YYYY')}`,
+    customFilterAndSearch: (term, data) => (`${moment(data.birthday).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
+  },
+  { title: 'Email', field: 'email' },
+  { title: 'Teléfono', field: 'phone' },  
   { title: 'Riesgo hasta', field: 'riskExpires' }
 ];
 
@@ -45,10 +65,9 @@ function Covid19Report() {
   const formatSelectedPassenger = {
     userId: "",
     userName: "",
-    userSurname: "",
     country: "",
     documentType: "",
-    birthday:"",
+    birthday: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
     email: "",
     goldMemberExpires: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
     phone:"",
@@ -61,7 +80,7 @@ function Covid19Report() {
 
   // styles configuration 
   const styles = useStyles();
-
+  const modal = modalStyles();
   //Saves user data and informs new data has been loaded 
   const [data, setData] = useState([]);
   const [newData, setNewData] = useState(true);
@@ -146,31 +165,50 @@ function Covid19Report() {
   // Called when a trip is cancelled by the user, will fetch new data from the DB
 
 
-      /* JSX COMPONENTS & FORMATTING */
+      /* JSX COMPONENTS & FORMATTING 
+    */
     // Modal de vizualizacion
     const bodyViewDetails = (
-      <div className={styles.modal}>
-          <h3>DETALLE DE El PASAJERO</h3>
-          <TextField className={styles.inputMaterial} label="Nombre" name="names"
-              value={selectedPassenger && selectedPassenger.names} autoComplete="off" />
-          <br />
-          <TextField className={styles.inputMaterial} label="Apellido" name="surname"
-              value={selectedPassenger && selectedPassenger.surname} autoComplete="off" />
-          <br />
-          <TextField className={styles.inputMaterial} label="Teléfono" name="phoneNumber"
-              value={selectedPassenger && selectedPassenger.phoneNumber} autoComplete="off" />
-          <br />
-          <TextField className={styles.inputMaterial} label="Correo electrónico" name="email"
-              value={selectedPassenger && selectedPassenger.email} autoComplete="off" />
-          <br />
-          <br /><br />
-          <div align="right">
-              <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
-          </div>
-      </div>
+      <div className={modal.paper}>
+          <Typography variant="h5" label="Detalle de pasajero" name="pasajero" gutterBottom>
+            Detalle de pasajero
+          </Typography>
+          <Typography variant="body2" label="Nombre y Apellido" name="name" gutterBottom>
+          Nombre y Apellido:
+          </Typography>
+          <Typography variant="body2" component="p" gutterBottom>
+            {selectedPassenger && selectedPassenger.userName}
+          </Typography>
+          <Typography variant="overline" label="Fecha de nacimiento" name="birthday" gutterBottom>
+            Fecha de nacimiento:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+              {selectedPassenger &&  moment(selectedPassenger.birthday).format('DD/MM/YYYY')}
+          </Typography>
+          <Typography variant="overline" label="Autor" name="userName" gutterBottom>
+            Usuario Gold:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedPassenger.goldMemberExpires ? "No es gold" : "Sí, hasta:" + selectedPassenger.goldMemberExpires} 
+          </Typography>
+          <Typography variant="overline" label="Email" name="email" gutterBottom>
+            Contacto:
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            {selectedPassenger && selectedPassenger.email} 
+            {selectedPassenger && selectedPassenger.phone} 
+          </Typography>
+          <Typography variant="overline" label="Activo" name="active" gutterBottom>
+            Riesgo hasta:  {selectedPassenger && selectedPassenger.riskExpires} 
+          </Typography>
+            <br/>     
+            <div align="right">
+                <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
+            </div>
+        </div>
   )
   return (
-      <div className="App" style={{maxWidth: "80%", margin: 'auto', float: "center"}}>
+      <div className="App" style={{maxWidth: "100%", margin: 'auto', float: "center"}}>
           {
               successMessage ?
                   <Message open={options.open} type={options.type} message={options.message}
@@ -188,9 +226,10 @@ function Covid19Report() {
               </AccordionSummary>
               <AccordionDetails>
               <MaterialTable
-              columns={columns}
+                className={styles.root}
+                columns={columns}
                 data={data}
-                title={`Fecha hoy: ${new Date().toLocaleDateString(undefined, options)}`}
+                title={`Pasajeros marcados con sintomas en el último mes`}
                 actions={[
                     {
                         icon: () => <VisibilityIcon />,
@@ -201,11 +240,8 @@ function Covid19Report() {
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}
             />
-
-              </AccordionDetails>
-              <Divider/>
-          </Accordion>
-
+            </AccordionDetails>
+            </Accordion>
           <Modal
                 open={viewModal}
                 onClose={openCloseModalViewDetails}>

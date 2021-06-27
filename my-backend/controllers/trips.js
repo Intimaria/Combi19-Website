@@ -65,7 +65,7 @@ const getTrips = async (req, res) => {
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
-        console.log(rows);
+
         const normalizeResults = normalizeTrips(rows);
         return res.status(200).send(normalizeResults);
     } catch (error) {

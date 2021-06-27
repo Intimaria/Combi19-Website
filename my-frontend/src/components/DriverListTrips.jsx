@@ -79,7 +79,11 @@ function DriverListTrips() {
             render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
             customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
         },
-        {title: 'Fecha de llegada', field: 'arrivalDay'},
+        {
+            title: 'Fecha de salida',
+            render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
+            customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+        },
         {
             title: 'Combi',
             render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
@@ -267,7 +271,7 @@ function DriverListTrips() {
 
       const bodyConfirmPassangers = (
         <div className={modal.paper}>
-          <TripPassengers trip={selectedTrip} />
+          <TripPassengers trip={selectedTrip}/>
           <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalList()}>CERRAR</Button>

@@ -22,6 +22,7 @@ import RecoverPassword from "./RecoverPassword.jsx";
 import TripPassengers from "./TripPassengers.jsx";
 import DriverFinishedTrips from "./DriverFinishedTrips.jsx";
 import DriverListTrips from './DriverListTrips';
+import Covid19Report from './Covid19Report';
 
 const Addresses = () => {
     const history = useHistory();
@@ -150,6 +151,9 @@ const Addresses = () => {
                 </Route>
                 <Route path="/pendingTrips"  exact>
                     <DriverListTrips />
+                </Route>
+                <Route path="/reports"  exact>
+                    <Covid19Report />
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
