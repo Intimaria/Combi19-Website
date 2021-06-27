@@ -54,6 +54,7 @@ import {
 
 import {formatDecimalNumber} from "../helpers/numbers";
 import { LocalPrintshopSharp } from '@material-ui/icons';
+import ClearableDateRange from './ClearableDateRange';
 
 
 
@@ -66,13 +67,31 @@ const columns = [
     },
     {
         title: 'Fecha de salida',
+        type: 'date',
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
-        customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+        filterComponent: (props) => <ClearableDateRange {...props} />, 
+        customFilterAndSearch: (term, data) => {
+            let date = moment(data.departureDay)
+            let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day} ${term[0]?.hour}:${term[0]?.minute}`)
+            let end = moment(`${term[1]?.year}-${term[1]?.month.number}-${term[1]?.day} ${term[1]?.hour}:${term[1]?.minute}`)
+            let includes = date.isBetween(start, end)
+            console.log(data.departureDay)
+            console.log("date", date, "start", start,  "end", end, "includes", includes)
+            return includes;
+            }
     },
     {   
         title: 'Fecha de llegada',
+        type: 'date',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
-        customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1,
+        filterComponent: (props) => <ClearableDateRange {...props} />, 
+        customFilterAndSearch: (term, data) => {
+                                let date = moment(data.arrivalDay)
+                                let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day} ${term[0]?.hour}:${term[0]?.minute}`)
+                                let end = moment(`${term[1]?.year}-${term[1]?.month.number}-${term[1]?.day} ${term[1]?.hour}:${term[1]?.minute}`)
+                                let includes = date.isBetween(start, end)
+                                return includes;
+                                }
     },
     {
         title: 'Combi',
@@ -350,8 +369,7 @@ function Trips() {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
-    
-    console.log(data);
+
 
     const requestPostTrip = async () => {
         if (validateForm()) {
