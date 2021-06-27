@@ -251,9 +251,6 @@ const rejectPassengerTrip = async (req, res) => {
 
     try {
         const connection = await prepareConnection();
-        // let sqlUpdate =`UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE ID_TRIP = ${id};`;
-
-        //let sqlUpdate =`UPDATE TICKET SET ID_STATUS_TICKET = 3 WHERE TICKET_ID = ${id};`;
 
         let sqlSelect =
             `
@@ -271,11 +268,15 @@ const rejectPassengerTrip = async (req, res) => {
         const userId = rows[0].ID_USER;
         const tripId = rows[0].TRIP_ID;
 
+        let sqlUpdate = `UPDATE USER SET EXPIRATION_RISK = DATE_ADD(NOW(), INTERVAL 15 DAY) WHERE USER_ID = ${userId}`;
+
+        await connection.execute(sqlUpdate);
+
         let sqlSafeMode = `SET SQL_SAFE_UPDATES = 0;`;
 
         await connection.execute(sqlSafeMode);
 
-        let sqlUpdate =
+        sqlUpdate =
             `
             UPDATE TICKET SET ID_STATUS_TICKET = 3 
             WHERE TICKET_ID IN

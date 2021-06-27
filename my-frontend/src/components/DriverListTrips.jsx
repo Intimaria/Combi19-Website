@@ -253,10 +253,9 @@ function DriverListTrips() {
     const bodyFinishDetails = (
         <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-             Seguro que queres dar por terminado el viaje con id {selectedTrip.tripId}?
+             ¿Estás seguro de dar por terminado el viaje con id {selectedTrip.tripId}?
           </Typography>
-          <Typography variant="body1" component="p" gutterBottom>{selectedTrip.route.departure} y 
-          {selectedTrip.route.destination}</Typography>
+          <Typography variant="body1" component="p" gutterBottom>{selectedTrip.route.departure} y {selectedTrip.route.destination}</Typography>
             <br/>     
             <div align="right">
                 <Button color="secondary" onClick={() =>finishThisTrip()}>SÍ, TERMINAR</Button>
@@ -280,17 +279,17 @@ function DriverListTrips() {
              Viaje con id {selectedTrip.tripId}
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            origen: {selectedTrip.route.departure}</Typography>
+            Origen: {selectedTrip.route.departure}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            destino: {selectedTrip.route.destination}</Typography>
+            Destino: {selectedTrip.route.destination}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            precio: ${selectedTrip.price}</Typography>
+            Precio: ${selectedTrip.price}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            duracion: {selectedTrip.duration}hs</Typography>
+            Duración: {selectedTrip.duration}hs</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            fecha de partida: {selectedTrip.departureDay}</Typography>
+            Fecha de partida: {selectedTrip.departureDay}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
-            fecha de llegada: {selectedTrip.arrivalDay}</Typography>
+            Fecha de llegada: {selectedTrip.arrivalDay}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
             Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
             <br/>     
@@ -329,7 +328,7 @@ function DriverListTrips() {
                     },
                     {
                         icon: () => <PeopleIcon/>,
-                        tooltip: 'Confirmar Pasajeros',
+                        tooltip: 'Confirmar pasajeros',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista") 
                     }
                 ]}
