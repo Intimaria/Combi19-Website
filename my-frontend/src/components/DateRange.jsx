@@ -15,6 +15,13 @@ export default function DateRange(props) {
     
     return (
       <input
+      style={{
+        height: "35px",
+        maxWidth: "160px",
+        borderRadius: "5px",
+        fontSize: "14px",
+        padding: "5px 5px",
+        }}
         onFocus={openCalendar}
         value={value}
         readOnly
@@ -24,7 +31,6 @@ export default function DateRange(props) {
 
   return (
     <DatePicker
-
       position="left-start"
       label="Seleccionar rango"
       inputVariant="outlined"
