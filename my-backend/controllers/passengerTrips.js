@@ -198,7 +198,7 @@ const getProductsPrice = async (cartId) => {
 const cancelPassengerTrip = async (req, res) => {
     const {id} = req.params;
     let productPrice = 0;
-    const {status, percentage} = req.body;
+    const { percentage} = req.body;
 
     let cartId = await getCart(id);
     console.log("cart id", cartId)
@@ -212,10 +212,9 @@ const cancelPassengerTrip = async (req, res) => {
         const connection = await prepareConnection();
 
         let sqlUpdate = `
-                        UPDATE TICKET SET 
-                        ID_STATUS_TICKET = 5
-                        WHERE ID_TRIP = ${id} IN 
-                        (SELECT ID_TRIP FROM TICKET);
+                        UPDATE TICKET SET ID_STATUS_TICKET = 4, 
+                        ID_REFUND_PERCENTAGE = ${percentage} 
+                        WHERE TICKET.TICKET_ID = ${id};
                         `;
         const [rows] = await connection.execute(sqlUpdate);
         connection.end();
