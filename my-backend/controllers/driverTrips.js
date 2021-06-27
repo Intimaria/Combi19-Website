@@ -18,7 +18,7 @@ const getDriverTrips = async (req, res) => {
                         SELECT DISTINCT
                         TRIP_ID, REPLACE(TR.PRICE, '.', ',') PRICE, TR.DEPARTURE_DAY,
                         DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
-                        CONCAT(DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%d/%m/%Y %H:%i'), 'hs') ARRIVAL_DAY,
+                        DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                         CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
                         CV.CITY_ID DESTINATION_ID, CONCAT(CV.CITY_NAME, ', ', PV.PROVINCE_NAME) DESTINATION,
                         T.TRANSPORT_ID, T.INTERNAL_IDENTIFICATION, T.REGISTRATION_NUMBER
