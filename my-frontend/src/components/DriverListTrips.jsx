@@ -331,7 +331,6 @@ function DriverListTrips() {
                     {
                         icon: () => <PeopleIcon/>,
                         tooltip: 'Confirmar pasajeros',
-                        disabled: data.status !== '2',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista") 
                     }
                 ]}
