@@ -68,7 +68,7 @@ function DriverListTrips() {
    
     // Columns for trips list - overflow formatting to keep list simple & neat
     const columns = [
-        {title: 'ID de Viaje', field: 'tripId'},
+        {title: 'ID de viaje', field: 'tripId'},
         {title: 'Origen', field: 'route.departure'},
         {title: 'Destino', field: 'route.destination'},
         {
@@ -80,7 +80,7 @@ function DriverListTrips() {
             customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
         },
         {
-            title: 'Fecha de salida',
+            title: 'Fecha de llegada',
             render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
             customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
         },
@@ -161,10 +161,6 @@ function DriverListTrips() {
        A different Modal opens depending on which choice was selected */
     const selectTrip = async (trip, action) => {
         setSelectedTrip(trip);
-        localStorage.setItem('tripId', selectedTrip.tripId);
-        localStorage.setItem('departurePlace', selectedTrip.route.departurePlace);
-        localStorage.setItem('destinationPlace', selectedTrip.route.destinationPlace);
-        localStorage.setItem('departureDay', selectedTrip.route.departureDay);   
         if (action === "Terminar") {
             openCloseModalFinish(trip)
         } else if (action === "Lista") {

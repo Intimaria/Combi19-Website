@@ -40,7 +40,7 @@ export const TripPassengers = (props) => {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
     };
-    const {trip} = props
+    const {trip} = props;
 
     const formatSelectedPassenger = {
         tripId: "",
@@ -81,11 +81,6 @@ export const TripPassengers = (props) => {
     const fetchData = async () => {
 
         try {
-            //let tripData = JSON.parse(localStorage.getItem('tripData'));
-
-            // Hardcoded until have the tripData
-
-
             let getPassengerTripResponse = await getPassengersByTrip(trip.tripId);
 
             if (getPassengerTripResponse.status === 200) {
@@ -112,10 +107,7 @@ export const TripPassengers = (props) => {
     };
 
     const requestMassiveUpdate = async () => {
-        //let tripData = JSON.parse(localStorage.getItem('tripData'));
-
-        // Hardcoded until have the tripData
-        const tripId = 16;
+        const tripId = trip.tripId;
 
         let putResponse = await absentPassengersByTrip(tripId);
 
