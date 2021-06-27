@@ -4,15 +4,13 @@ import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {useStyles} from '../const/componentStyles';
 import MaterialTable from '@material-table/core';
 import {Message} from './Message';
-import Tooltip from '@material-ui/core/Tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useHistory } from 'react-router-dom';
 import moment from "moment";
 /* USER IMPORTS */
 // All error messages for API requests, verifications, etc
 import {
-    ERROR_MSG_API_GET_TRIPS,
-    ERROR_MSG_API_FINISH_TRIP,
+    ERROR_MSG_API_GET_TRIPS
 } from '../const/messages';
 
 import React, {useEffect, useState} from 'react';
@@ -21,9 +19,7 @@ import React, {useEffect, useState} from 'react';
  adds CRUD functionality (will call backend API functions) */
 import {
     getDriverTrips,
-    finishTrip
 } from '../api/DriverTrips';
-import { TripPassengers } from './TripPassengers';
 
 
 /* FORMATTING & STYLES */ 
@@ -160,7 +156,8 @@ function DriverFinishedTrips() {
         const fetchData = async () => {
             try {
                 let getTripsResponse;
-                getTripsResponse = await getDriverTrips(userData.userId, url, 5);
+                let status = '5';
+                getTripsResponse = await getDriverTrips(userData.userId, url, status);
                 if (getTripsResponse?.status === 200) {
                     let data = getTripsResponse.data;
                     setData(data);

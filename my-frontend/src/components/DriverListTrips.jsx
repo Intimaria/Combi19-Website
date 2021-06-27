@@ -79,7 +79,11 @@ function DriverListTrips() {
             render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
             customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
         },
-        {title: 'Fecha de llegada', field: 'arrivalDay'},
+        {
+            title: 'Fecha de salida',
+            render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
+            customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+        },
         {
             title: 'Combi',
             render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
@@ -95,6 +99,7 @@ function DriverListTrips() {
         arrivalDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         duration: "",
         active: "",
+        status: "",
         route: {
             routeId: "",
             departureId: "",
@@ -220,7 +225,8 @@ function DriverListTrips() {
         const fetchData = async () => {
             try {
                 let getTripsResponse;
-                getTripsResponse = await getDriverTrips(userData.userId, url, 1);
+                let status = '1 OR ID_STATUS_TICKET = 2';
+                getTripsResponse = await getDriverTrips(userData.userId, url, status);
                 if (getTripsResponse?.status === 200) {
                     let data = getTripsResponse.data;
                     setData(data);
@@ -266,7 +272,7 @@ function DriverListTrips() {
 
       const bodyConfirmPassangers = (
         <div className={modal.paper}>
-          <TripPassengers trip={selectedTrip} />
+          <TripPassengers trip={selectedTrip}/>
           <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalList()}>CERRAR</Button>
@@ -329,6 +335,7 @@ function DriverListTrips() {
                     {
                         icon: () => <PeopleIcon/>,
                         tooltip: 'Confirmar pasajeros',
+                        disabled: data.status !== '2',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista") 
                     }
                 ]}

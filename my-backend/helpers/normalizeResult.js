@@ -206,6 +206,29 @@ const normalizeCards = (rows) => {
     return results;
 };
 
+const normalizePassengers = (rows) => {
+    let results = [];
+
+    for (let index = 0; index < rows.length; index++) {
+        let user = {
+            userId: rows[index].USER_ID,
+            userName: rows[index].NAME + ' ' + rows[index].SURNAME,
+            country: rows[index].ID_COUNTRY,
+            documentType: rows[index].ID_DOCUMENT_TYPE,
+            birthday: rows[index].BIRTHDAY,
+            email: rows[index].EMAIL,
+            goldMemberExpires: new Date(rows[index].GOLD_MEMBERSHIP_EXPIRATION).toLocaleDateString('Es-ar'),
+            phone: rows[index].PHONE_NUMBER,
+            documentNum: rows[index].DOCUMENT_NUMBER,
+            riskExpires: new Date(rows[index].EXPIRATION_RISK).toLocaleDateString('Es-ar'),
+            hasDebit: rows[index].AUTOMATIC_DEBIT
+        };
+        results.push(user);
+    }
+
+    return results;
+};
+
 module.exports = {
     normalizeComments,
     normalizeTransports,
@@ -215,5 +238,6 @@ module.exports = {
     normalizeRoutes,
     normalizeProducts,
     normalizeTrips,
-    normalizeCards
+    normalizeCards,
+    normalizePassengers
 };

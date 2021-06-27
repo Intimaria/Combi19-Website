@@ -36,10 +36,11 @@ const columns = [
 ];
 
 
-export const TripPassengers = () => {
+export const TripPassengers = (props) => {
     const handleCloseMessage = () => {
         setOptions({...options, open: false});
     };
+    const {trip} = props
 
     const formatSelectedPassenger = {
         tripId: "",
@@ -78,13 +79,14 @@ export const TripPassengers = () => {
     };
 
     const fetchData = async () => {
+
         try {
             //let tripData = JSON.parse(localStorage.getItem('tripData'));
 
             // Hardcoded until have the tripData
-            const tripId = 16;
 
-            let getPassengerTripResponse = await getPassengersByTrip(tripId);
+
+            let getPassengerTripResponse = await getPassengersByTrip(trip.tripId);
 
             if (getPassengerTripResponse.status === 200) {
                 let data = getPassengerTripResponse.data;

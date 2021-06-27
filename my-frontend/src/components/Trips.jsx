@@ -17,6 +17,7 @@ import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pick
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
 
+
 import {
     getTrips,
     getTripDependenceById,
@@ -52,6 +53,10 @@ import {
 } from "../const/regex";
 
 import {formatDecimalNumber} from "../helpers/numbers";
+import { LocalPrintshopSharp } from '@material-ui/icons';
+
+
+
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
@@ -64,12 +69,17 @@ const columns = [
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
         customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
     },
-    {title: 'Fecha de llegada', field: 'arrivalDay'},
+    {   
+        title: 'Fecha de llegada',
+        render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
+        customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1,
+    },
     {
         title: 'Combi',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
         customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
+    {title: 'Viaje', field: 'status'},
     {title: 'Estado', field: 'active'}
 ];
 
@@ -82,7 +92,9 @@ function Trips() {
     const formatSelectedTrip = {
         price: "",
         departureDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
+        arrivalDay: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         active: "",
+        status: "",
         route: {
             routeId: "",
             departureId: "",
@@ -338,6 +350,8 @@ function Trips() {
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
         }
     };
+    
+    console.log(data);
 
     const requestPostTrip = async () => {
         if (validateForm()) {
