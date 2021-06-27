@@ -7,14 +7,24 @@ import DatePanel from "react-multi-date-picker/plugins/date_panel"
 export default function DateRange(props) {
   const [dates, setDates] = useState([])
   const [allDates, setAllDates] = useState([])
-  React.useEffect(() =>{
-      if (dates == null) {
-        setDates([])
-        setAllDates([])
-      }
-  })
+ 
+  function CustomRangeInput({openCalendar, stringDates}) {
+    let from = stringDates[0] || ""
+    let to = stringDates[1] || ""
+    let value = from && to ? from + "-" + to : from
+    
+    return (
+      <input
+        onFocus={openCalendar}
+        value={value}
+        readOnly
+      />
+    )
+  }
+
   return (
     <DatePicker
+
       position="left-start"
       label="Seleccionar rango"
       inputVariant="outlined"
@@ -29,8 +39,9 @@ export default function DateRange(props) {
       placeholder={'Fechas'}
       autoOk
       range
+      type="custom"
+      render={<CustomRangeInput />}
       allowKeyboardControl
-      style={{ maxWidth: 150, minHeight: 30 }}
       onChange={(event) => {
           setDates(event)
           setAllDates(getAllDatesInRange(event))
