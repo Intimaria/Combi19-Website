@@ -1,7 +1,6 @@
 import PassengerTrips from '../components/PassengerTrips';
 import React, {useEffect} from 'react'
 import {Message} from "../components/Message";
-import Covid19Report from '../components/_Covid19Report';
 
 document.title = `Home`;
 
