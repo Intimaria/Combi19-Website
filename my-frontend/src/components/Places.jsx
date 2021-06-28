@@ -20,7 +20,6 @@ import {
 import React, {useEffect, useState} from 'react';
 import {
     deletePlace,
-    getPlaces,
     getPlacesDeps,
     postPlace,
     putPlace
@@ -166,20 +165,6 @@ function Places() {
             return false;
         }
     };
-    // dependencias en rutas 
-    const [dependencies, setDependencies] = useState(null);
-    
-    const validateDependencies = () => {
-        if (selectedPlace) {
-        if (selectedPlace.inRoute === 'true') {
-            setDependencies (true);
-            return true;
-        } else {
-            setDependencies(false);
-            return false
-        }
-        return false }
-    }
 
     const peticionPost = async () => {
         if (validateForm()) {

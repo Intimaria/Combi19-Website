@@ -1,4 +1,4 @@
-import { Grid, Typography, makeStyles } from "@material-ui/core/";
+import { Grid, makeStyles } from "@material-ui/core/";
 
 import React from 'react'
 import SearchTripsModal from "../components/SearchTripsModal";
@@ -53,6 +53,6 @@ const Landing = (props) => {
             </Grid>
         </div>
     )
-}
+};
 
 export default Landing

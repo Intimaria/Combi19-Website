@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useHistory } from "react-router-dom";
+import React, {useEffect} from 'react';
+import {useHistory} from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -30,9 +30,9 @@ import {
     REGEX_DATE_YYYY_MM_DD
 } from "../const/regex.js"
 
-import { getActivePlaces } from "../api/Places";
-import { searchTrips } from "../api/Trips.js"
-import { Message } from './Message';
+import {getActivePlaces} from "../api/Places";
+import {searchTrips} from "../api/Trips.js"
+import {Message} from './Message';
 
 function SearchTripsModal(props) {
 
@@ -41,15 +41,15 @@ function SearchTripsModal(props) {
     const history = useHistory();
 
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     const minDate = moment()
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0});
 
     const maxDate = moment()
         .add(1, "years")
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0});
 
     const searchedData = props.getSearchedData ? props.getSearchedData : null;
 
@@ -63,7 +63,7 @@ function SearchTripsModal(props) {
     const [departureDateError, setDepartureDateError] = React.useState('');
 
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const mySubmitHandler = async (event) => {
         event.preventDefault();
@@ -78,14 +78,14 @@ function SearchTripsModal(props) {
         setDepartureError(null);
         setDestinationError(null);
         setDepartureDateError(null);
-    }
+    };
 
     const postRequest = async () => {
         const searchData = {
             departure: selectedDeparture,
             destination: selectedDestination,
             departureDate: selectedDepartureDate,
-        }
+        };
 
         const postResponse = await searchTrips(searchData);
         if (postResponse?.status === 200) {
@@ -97,26 +97,24 @@ function SearchTripsModal(props) {
                 history.push("/tripsResults");
             }
 
-        }
-        else if (postResponse?.status === 400) {
+        } else if (postResponse?.status === 400) {
             setDepartureError(postResponse.data.departureError);
             setDestinationError(postResponse.data.destinationError);
             setDepartureDateError(postResponse.data.departureDateError);
             setRepeatPlaceError(postResponse.data.repeatPlaceError)
-        }
-        else if (postResponse?.status === 500) {
+        } else if (postResponse?.status === 500) {
             setSuccessMessage(postResponse.data);
             setOptions({
                 ...options, open: true, type: 'error',
                 message: postResponse.data
             });
         }
-    }
+    };
 
     const validateSearch = () => {
         return ((validateDeparture(selectedDeparture) & validateDestination(selectedDestination)) && comparesPlaces(selectedDeparture, selectedDestination)) & validateDepartureDate(selectedDepartureDate);
 
-    }
+    };
 
     const validateDeparture = (departure) => {
         if (!departure) {
@@ -129,7 +127,7 @@ function SearchTripsModal(props) {
 
         setDepartureError(null);
         return true;
-    }
+    };
 
     const validateDestination = (destination) => {
         if (!destination) {
@@ -142,7 +140,7 @@ function SearchTripsModal(props) {
 
         setDestinationError(null);
         return true;
-    }
+    };
 
     const comparesPlaces = (departure, destination) => {
         if (departure === destination) {
@@ -152,7 +150,7 @@ function SearchTripsModal(props) {
 
         setRepeatPlaceError(null);
         return true;
-    }
+    };
 
     const validateDepartureDate = (departureDate) => {
         if (!departureDate) {
@@ -197,7 +195,7 @@ function SearchTripsModal(props) {
 
         setDepartureDateError(null);
         return true;
-    }
+    };
 
     const requestGetPlaces = async () => {
         let getResponse = await getActivePlaces();
@@ -217,7 +215,7 @@ function SearchTripsModal(props) {
                 message: `${ERROR_MSG_API_GET_PLACES} ${getResponse}`
             });
         }
-    }
+    };
 
     const handleDeparture = (newValue) => {
         setSelectedDeparture(newValue.target.value);
@@ -254,11 +252,11 @@ function SearchTripsModal(props) {
     }, []);
 
     return (
-        <div className={`${styles.modal} bg-dark`} >
+        <div className={`${styles.modal} bg-dark`}>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
             <h2 align={'center'} className="text-light"> Buscar viajes </h2>
@@ -266,9 +264,9 @@ function SearchTripsModal(props) {
                 <div className={styles.div}>
                     <FormControl
                         className={styles.inputMaterial}
-                        style={{ paddingBottom: "2px" }}
+                        style={{paddingBottom: "2px"}}
                         error={(departureError || repeatPlaceError) ? true : false}
-                        InputProps={{ disableUnderline: true }}>
+                        InputProps={{disableUnderline: true}}>
                         <InputLabel>ㅤLugar de origen</InputLabel>
                         <Select
                             disableUnderline={true}
@@ -282,7 +280,7 @@ function SearchTripsModal(props) {
                         >
                             <MenuItem value={0} disabled>
                                 Seleccione el origen del viaje
-                    </MenuItem>
+                            </MenuItem>
                             {(availablePlaces) ?
                                 availablePlaces.map((places) => (
                                     <MenuItem
@@ -298,27 +296,28 @@ function SearchTripsModal(props) {
                         </Select>
                     </FormControl>
                     {
-                        !repeatPlaceError && departureError ? <span className="text-danger small">{departureError}</span> :
+                        !repeatPlaceError && departureError ?
+                            <span className="text-danger small">{departureError}</span> :
                             <span className="text-danger small">&nbsp;</span>
                     }
-                    <br /><br />
+                    <br/><br/>
                 </div>
                 <div className={styles.div}>
                     <FormControl className={styles.inputMaterial}
-                        error={(destinationError || repeatPlaceError) ? true : false} >
+                                 error={(destinationError || repeatPlaceError) ? true : false}>
                         <InputLabel>ㅤLugar de destino</InputLabel>
                         <Select label="ㅤLugar de destino" id="destination" labelId={"destination"}
-                            disableUnderline={true}
-                            name="destination"
-                            className={styles.inputMaterial}
-                            value={(selectedDestination) ? selectedDestination : 0}
-                            disabled={(!selectedDeparture)}
-                            displayEmpty
-                            onChange={handleDestination}
+                                disableUnderline={true}
+                                name="destination"
+                                className={styles.inputMaterial}
+                                value={(selectedDestination) ? selectedDestination : 0}
+                                disabled={(!selectedDeparture)}
+                                displayEmpty
+                                onChange={handleDestination}
                         >
                             <MenuItem value={0} disabled>
                                 Seleccione el destino del viaje
-                    </MenuItem>
+                            </MenuItem>
                             {(availablePlaces) ?
                                 availablePlaces.map((places) => (
                                     <MenuItem
@@ -334,14 +333,15 @@ function SearchTripsModal(props) {
                         </Select>
                     </FormControl>
                     {
-                        !repeatPlaceError && destinationError ? <span className="text-danger small">{destinationError}</span> :
+                        !repeatPlaceError && destinationError ?
+                            <span className="text-danger small">{destinationError}</span> :
                             <span className="text-danger small">&nbsp;</span>
                     }
                     {
                         repeatPlaceError ? <span className="text-danger small">{repeatPlaceError}</span> :
                             <span className="text-danger small">&nbsp;</span>
                     }
-                    <br /><br />
+                    <br/><br/>
                 </div>
 
                 {styles.div ? null : <h3 align={'center'} className="text-light"> Ingrese fecha de partida </h3>}
@@ -351,12 +351,12 @@ function SearchTripsModal(props) {
                         libInstance={moment}
                         utils={MomentUtils}
                         locale={"es"}
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{disableUnderline: true}}
                     >
                         <KeyboardDatePicker
-                            InputProps={{ disableUnderline: true }}
+                            InputProps={{disableUnderline: true}}
                             className={styles.inputMaterial}
-                            style={{ margin: "0", paddingBottom: "2px" }}
+                            style={{margin: "0", paddingBottom: "2px"}}
                             disableFuture={false}
                             disablePast={true}
                             disableToolbar
@@ -386,14 +386,14 @@ function SearchTripsModal(props) {
                     departureDateError ? <span className="text-danger small"> {departureDateError}</span> :
                         <span className="text-danger small">&nbsp;</span>
                 }
-                <br /> <br />
+                <br/> <br/>
                 <div className={styles.button}>
-                    <Button style={{ width: '100%', marginTop: "3px", borderRadius: 10 }}
-                        variant="contained"
-                        size="large"
-                        color="primary"
-                        id="btnLogin"
-                        type="submit"
+                    <Button style={{width: '100%', marginTop: "3px", borderRadius: 10}}
+                            variant="contained"
+                            size="large"
+                            color="primary"
+                            id="btnLogin"
+                            type="submit"
                     >BUSCAR VIAJE </Button>
                 </div>
             </form>

@@ -145,7 +145,7 @@ function PassengerTrips() {
     const fetchData = async () => {
         try {
             let getTripsResponse = await getPassengerTrips(userData.userId);
-            console.log(getTripsResponse)
+
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
                 setData(data);
@@ -179,7 +179,6 @@ function PassengerTrips() {
     /* FUNCTIONALITY - CHILD COMPONENT */ 
     // Called when a trip is cancelled by the user, will fetch new data from the DB
     const eventHandler = async (cancel, data, ticket) => {
-        console.log("se llamo eventHandler", cancel, data, ticket)
         if (cancel) {
             setNewData(true);
         }

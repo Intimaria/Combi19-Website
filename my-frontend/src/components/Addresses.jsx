@@ -157,9 +157,9 @@ const Addresses = () => {
                 </Route>
                 <Route>
                     <h1 className="text-light text-center">¡Ups! La página a la que intentás acceder se perdió en la
-                        Atlántida &#127965;&#128561;</h1>
+                        Atlántida <span role="img" aria-label="isla">&#127965;</span><span role="img" aria-label="caraSorprendida">&#128561;</span></h1>
                     <h2 className="text-light text-center">Podés volver a flote haciendo clic <a
-                        href="/">acá</a> &#127946;</h2>
+                        href="/">acá</a><span role="img" aria-label="nadador">&#127946;</span></h2>
                 </Route>
             </Switch>
         </div>

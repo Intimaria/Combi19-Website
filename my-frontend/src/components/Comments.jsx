@@ -12,12 +12,12 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // All error messages for API requests, verifications, etc
 import {
-  ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER,
-  ERROR_MSG_API_DELETE_COMMENT,
-  ERROR_MSG_API_GET_COMMENT,
-  ERROR_MSG_API_POST_COMMENT,
-  ERROR_MSG_API_PUT_COMMENT,
-  ERROR_MSG_EMPTY_TEXT_COMMENT
+    ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER,
+    ERROR_MSG_API_DELETE_COMMENT,
+    ERROR_MSG_API_GET_COMMENT,
+    ERROR_MSG_API_POST_COMMENT,
+    ERROR_MSG_API_PUT_COMMENT,
+    ERROR_MSG_EMPTY_TEXT_COMMENT
 } from "../const/messages";
 import React, {useEffect, useState} from 'react';
 /* Import all API request async functions,
@@ -39,35 +39,40 @@ import {
 } from '../api/PassengerTrips';
 
 
-/* FORMATTING & STYLES */ 
+/* FORMATTING & STYLES */
 
 // Styles for comments modal
 const modalStyles = makeStyles((theme) => ({
     paper: {
-            position: 'absolute',
-            width: "60%",
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-         },
-  }));
+        position: 'absolute',
+        width: "60%",
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    },
+}));
 
 // Columns for comments list - overflow formatting to keep list simple & neat
 const columns = [
-{title: 'Comentario', field: 'comment',
-render: rowData => <p style={{width: 560, overflow: "hidden", whiteSpace: "nowrap",
-        textOverflow: "ellipsis" }}>{rowData.comment}</p>
-        },
-{title: 'Fecha', field: 'datetime', 
-render: rowData => <p style={{width: 140, whiteSpace: "nowrap" }}>{rowData.datetime}</p>
-        },
-{title: 'Estado', field: 'active',
-render: rowData => <p style={{width: 30, whiteSpace: "nowrap" }}>{rowData.active}</p>
-        }
+    {
+        title: 'Comentario', field: 'comment',
+        render: rowData => <p style={{
+            width: 560, overflow: "hidden", whiteSpace: "nowrap",
+            textOverflow: "ellipsis"
+        }}>{rowData.comment}</p>
+    },
+    {
+        title: 'Fecha', field: 'datetime',
+        render: rowData => <p style={{width: 140, whiteSpace: "nowrap"}}>{rowData.datetime}</p>
+    },
+    {
+        title: 'Estado', field: 'active',
+        render: rowData => <p style={{width: 30, whiteSpace: "nowrap"}}>{rowData.active}</p>
+    }
 ];
 
 
@@ -90,7 +95,7 @@ function Comments(props) {
         active: "",
     };
 
-    /* HOOKS SETTINGS */ 
+    /* HOOKS SETTINGS */
 
     // styles configuration 
     const styles = useStyles();
@@ -114,7 +119,7 @@ function Comments(props) {
 
     //Saves the state current comment selected by the user 
     const [selectedComment, setSelectedComment] = useState(formatSelectedComment);
-    
+
     // Sets information of logged in user as default [TODO]
     const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
     /* True or false based on whether the user has any trips. Defaults to false for consistency,
@@ -123,44 +128,35 @@ function Comments(props) {
 
     // Saves user information from local storage (from login)
     const newUser = JSON.parse(localStorage.getItem('userData'));
-   
-    // Sets state of new user whenever component mounts to keep data consistent [TODO]
-    useEffect(() => {
-        setUserData(newUser)
-    }, []);
 
     /* Calls function to see if user has trips on component did mount 
     this allows us to know if the user can post new comments or not */
-    useEffect (() => {
+    useEffect(() => {
         const fetchData = async () => {
-                let getTripsResponse = await getPassengerTrips(newUser.userId);
-                if (getTripsResponse.status === 200) {
-                    let trips = getTripsResponse.data;
-                    // If they have trips 
-                    if (trips.length > 0){
+            let getTripsResponse = await getPassengerTrips(newUser.userId);
+            if (getTripsResponse.status === 200) {
+                let trips = getTripsResponse.data;
+                // If they have trips
+                if (trips.length > 0) {
                     // Find out if any of them are finalized (status 5)
                     const pastTrips = trips.filter(d => d.status === 5);
                     // If they have finalized trips, set has Trips to true 
-                    if (pastTrips.length > 0) { setHasTrips(true) }
-                    else {  setHasTrips(false) }
+                    if (pastTrips.length > 0) {
+                        setHasTrips(true)
+                    } else {
+                        setHasTrips(false)
+                    }
                 } else setHasTrips(false)
-                } else
+            } else
                 setHasTrips(false)
-            };
-    fetchData()    
+        };
+        fetchData()
     }, []);
 
-    // This function is used to update data whilst maintaining previous data intact [TODO]
-    const updateData = (data) => {
-            setData(prevState => ({
-                ...prevState,
-                data
-            }));
-    };
     /* Will set new inputted data whilst keeping any unchanged 
     fields intact - called from Create Comment and from Edit Comment*/
     const handleChange = (textFieldAtributes) => {
-        const { name, value } = textFieldAtributes.target;
+        const {name, value} = textFieldAtributes.target;
         setSelectedComment(prevState => ({
             ...prevState,
             [name]: value
@@ -246,76 +242,76 @@ function Comments(props) {
     const requestDelete = async () => {
         let deleteResponse = await deleteComments(selectedComment.id);
         if (deleteResponse?.status === 200) {
-                openCloseModalDelete();
-                setSuccessMessage(`Se ha eliminado el comentario correctamente`);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: `Se ha eliminado el comentario correctamente`
-                });
-                setNewData(true);
+            openCloseModalDelete();
+            setSuccessMessage(`Se ha eliminado el comentario correctamente`);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: `Se ha eliminado el comentario correctamente`
+            });
+            setNewData(true);
         } else {
-                setSuccessMessage(`${ERROR_MSG_API_DELETE_COMMENT} ${deleteResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_DELETE_COMMENT} ${deleteResponse}`
-                });
+            setSuccessMessage(`${ERROR_MSG_API_DELETE_COMMENT} ${deleteResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_DELETE_COMMENT} ${deleteResponse}`
+            });
         }
-    }
+    };
 
     // API function to restore a Comment in the database (sets active to 1) - sets "newData"
     const requestUnDelete = async () => {
         let undeleteResponse = await unDeleteComments(selectedComment.id);
+
         if (undeleteResponse?.status === 200) {
-                openCloseModalUnDelete();
-                setSuccessMessage(`Se ha restaurado el comentario correctamente`);
-                setOptions({
-                    ...options, open: true, type: 'success',
-                    message: `Se ha restaurado el comentario correctamente`
-                });
-                setNewData(true);
-                console.log(undeleteResponse);
+            openCloseModalUnDelete();
+            setSuccessMessage(`Se ha restaurado el comentario correctamente`);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: `Se ha restaurado el comentario correctamente`
+            });
+            setNewData(true);
         } else {
-                setSuccessMessage(`${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`);
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: `${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`
-                });
+            setSuccessMessage(`${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: `${ERROR_MSG_API_PUT_COMMENT} ${undeleteResponse}`
+            });
         }
     };
 
     /* API: Get all comments by user in the database - called by useEffect Hook
     This function is called on component mount and if there are any data changes ("newData") */
     const fetchData = async () => {
-            try {
-                let getCommentsResponse;
-                getCommentsResponse = await getComments( userData.userId);
-                if (getCommentsResponse?.status === 200) {
-                    let data = getCommentsResponse.data;
-                    setData(data);
-                } else {
-                    setSuccessMessage(`${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`);
-                    setOptions({
-                        ...options, open: true, type: 'error',
-                        message: `${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`
-                    });
-                }
-            } catch (error) {
-                console.log(`${ERROR_MSG_API_GET_COMMENT} ${error}`);
+        try {
+            let getCommentsResponse;
+            getCommentsResponse = await getComments(userData.userId);
+            if (getCommentsResponse?.status === 200) {
+                let data = getCommentsResponse.data;
+                setData(data);
+            } else {
+                setSuccessMessage(`${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`);
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: `${ERROR_MSG_API_GET_COMMENT} ${getCommentsResponse}`
+                });
             }
-        };
+        } catch (error) {
+            console.log(`${ERROR_MSG_API_GET_COMMENT} ${error}`);
+        }
+    };
 
     useEffect(() => {
         if (newData) {
-        fetchData();
+            fetchData();
         }
         return setNewData(false);
     }, [newData]);
 
-    /* FUNCTIONALITY - VALIDATION & MODALS*/ 
+    /* FUNCTIONALITY - VALIDATION & MODALS*/
 
     //Here we validate that the input data is correct according to requirements
     const validateForm = () => {
-        return  validateComment();
+        return validateComment();
     };
     //Error messages default to none 
     const setDefaultErrorMessages = () => {
@@ -326,7 +322,7 @@ function Comments(props) {
         if (!selectedComment.comment) {
             setCommentError(ERROR_MSG_EMPTY_TEXT_COMMENT);
             return false;
-        } 
+        }
         setCommentError(null);
         return true;
     };
@@ -341,7 +337,7 @@ function Comments(props) {
             openCloseModalUpdate()
         } else if (action === "Eliminar") {
             await openCloseModalDelete(comment)
-        } else if (action === "Restaurar"){
+        } else if (action === "Restaurar") {
             await openCloseModalUnDelete(comment)
         }
     };
@@ -410,37 +406,37 @@ function Comments(props) {
     );
     const bodyViewDetails = (
         <div className={modal.paper}>
-          <Typography variant="overline" label="Comentario" name="comment" gutterBottom>
-            Comentario:
-          </Typography>
-          <Typography variant="body2" component="p" gutterBottom>{selectedComment.comment}</Typography>
-          <Typography variant="overline" label="Fecha y Hora" name="datetime" gutterBottom>
-            Fecha y hora:
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-              {selectedComment && selectedComment.datetime}
-          </Typography>
-          <Typography variant="overline" label="Autor" name="user.name" gutterBottom>
-            Usuario:
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            {selectedComment && selectedComment.user.name} 
-          </Typography>
-          <Typography variant="overline" label="Email" name="user.email" gutterBottom>
-            Contacto:
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            {selectedComment && selectedComment.user.email} 
-          </Typography>
-          <Typography variant="overline" label="Activo" name="active" gutterBottom>
-            Estado:  {selectedComment && selectedComment.active} 
-          </Typography>
-            <br/>     
+            <Typography variant="overline" label="Comentario" name="comment" gutterBottom>
+                Comentario:
+            </Typography>
+            <Typography variant="body2" component="p" gutterBottom>{selectedComment.comment}</Typography>
+            <Typography variant="overline" label="Fecha y Hora" name="datetime" gutterBottom>
+                Fecha y hora:
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+                {selectedComment && selectedComment.datetime}
+            </Typography>
+            <Typography variant="overline" label="Autor" name="user.name" gutterBottom>
+                Usuario:
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+                {selectedComment && selectedComment.user.name}
+            </Typography>
+            <Typography variant="overline" label="Email" name="user.email" gutterBottom>
+                Contacto:
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+                {selectedComment && selectedComment.user.email}
+            </Typography>
+            <Typography variant="overline" label="Activo" name="active" gutterBottom>
+                Estado: {selectedComment && selectedComment.active}
+            </Typography>
+            <br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-      );
+    );
 
     const bodyEdit = (
         <div className={styles.modal}>
@@ -475,7 +471,8 @@ function Comments(props) {
 
     const bodyDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas eliminar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
+            <p>¿Estás seguro que deseas eliminar el
+                comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
                 fecha <b>{selectedComment && selectedComment.datetime}</b>?
             </p>
             <div align="right">
@@ -488,7 +485,8 @@ function Comments(props) {
     );
     const bodyUnDelete = (
         <div className={styles.modal}>
-            <p>¿Estás seguro que deseas restaurar el comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
+            <p>¿Estás seguro que deseas restaurar el
+                comentario <b>{selectedComment && selectedComment.comment.slice(0, 30) + '...'}</b> de
                 fecha <b>{selectedComment && selectedComment.datetime}</b>?
             </p>
             <div align="right">
@@ -506,38 +504,40 @@ function Comments(props) {
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                            handleClose={options.handleClose}/>
+                             handleClose={options.handleClose}/>
                     : null
             }
             <br/>
             {/* Shows button for creating a new Comment, optional formatting for when 
                 the user cannot comment because they have no trips */}
-            {userData && 
-                <div>
-                    {hasTrips ? 
-                        <Button style={{marginLeft: '8px'}}
-                                variant="contained"
-                                size="large"
-                                color="primary"
-                                id="btnNewComment"
-                                startIcon={<CommentIcon/>}
-                                onClick={() =>{openCloseModalCreate()} 
-                                }>NUEVO COMENTARIO</Button>
-                            :
-                            <Tooltip title={ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER} placement="bottom-start">
+            {userData &&
+            <div>
+                {hasTrips ?
+                    <Button style={{marginLeft: '8px'}}
+                            variant="contained"
+                            size="large"
+                            color="primary"
+                            id="btnNewComment"
+                            startIcon={<CommentIcon/>}
+                            onClick={() => {
+                                openCloseModalCreate()
+                            }
+                            }>NUEVO COMENTARIO</Button>
+                    :
+                    <Tooltip title={ERROR_MSG_API_COMMENT_USER_NOT_CONSUMER} placement="bottom-start">
                                 <span>
                                     <Button style={{marginLeft: '8px'}}
-                                        variant="contained"
-                                        size="large"
-                                        id="btnNewComment"
-                                        startIcon={<CommentIcon/>}
-                                        disabled 
-                                        >NUEVO COMENTARIO
+                                            variant="contained"
+                                            size="large"
+                                            id="btnNewComment"
+                                            startIcon={<CommentIcon/>}
+                                            disabled
+                                    >NUEVO COMENTARIO
                                     </Button>
                                 </span>
-                            </Tooltip>
-                    }
-                </div>
+                    </Tooltip>
+                }
+            </div>
             }
             <br/><br/>
             {/* Lists all of the comments and gives user option to view, edit or delete */}
@@ -545,7 +545,7 @@ function Comments(props) {
                 columns={columns}
                 data={data}
                 title={"Lista de mis comentarios"}
-                actions={ userData && [
+                actions={userData && [
                     {
                         icon: () => <VisibilityIcon/>,
                         tooltip: 'Visualización de comentario',
@@ -558,18 +558,19 @@ function Comments(props) {
                         onClick: (event, rowData) => selectComment(rowData, "Editar")
                     }),
                     rowData => {
-                        return rowData.active === 'Activo' ? 
-                        {
-                        icon: 'delete',
-                        tooltip: 'Eliminar comentario',
-                        onClick: (event, rowData) => selectComment(rowData, "Eliminar") 
-                        }
-                        : 
-                        {
-                        icon: 'restore',
-                        tooltip: 'Clickear para restaurar el comentario',
-                        onClick: (event, rowData) => selectComment(rowData, "Restaurar") 
-                    }}
+                        return rowData.active === 'Activo' ?
+                            {
+                                icon: 'delete',
+                                tooltip: 'Eliminar comentario',
+                                onClick: (event, rowData) => selectComment(rowData, "Eliminar")
+                            }
+                            :
+                            {
+                                icon: 'restore',
+                                tooltip: 'Clickear para restaurar el comentario',
+                                onClick: (event, rowData) => selectComment(rowData, "Restaurar")
+                            }
+                    }
                 ]}
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}

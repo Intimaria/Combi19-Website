@@ -19,6 +19,7 @@
     "moment": "^2.29.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-multi-date-picker": "^2.10.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "web-vitals": "^1.1.0"
