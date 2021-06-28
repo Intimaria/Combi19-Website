@@ -20,6 +20,7 @@ export const ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE = '* La contraseña no pos
 export const ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS = '* La contraseña no posee números';
 export const ERROR_MSG_PASSWORD_NO_MATCH = '* Las contraseñas no coinciden';
 export const ERROR_MSG_API_REGISTRATION = 'Ocurrió un error al crear el usuario:';
+export const ERROR_MSG_API_POST_GOLD_MEMBERSHIP = 'Ocurrió un error al solicitar la membresía GOLD::';
 export const ERROR_MSG_API_PUT_GOLD_MEMBERSHIP = 'Ocurrió un error al actualizar el cambio de renovación automática:';
 // Passenger API messages
 export const OK_MSG_API_USER_POST = 'Se creó el usuario con éxito';
