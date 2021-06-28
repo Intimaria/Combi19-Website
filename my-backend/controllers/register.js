@@ -37,7 +37,7 @@ const Register = async (req, res) => {
                     `
                     INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) 
                     VALUES ('${names}', '${surname}', '${birthday}', '${email}', '${password1}', NULL, DATE_ADD(NOW(), INTERVAL 1 MONTH));
-                    `
+                    `;
 
                 const [rows] = await connection.execute(sqlInsert);
 

@@ -10,4 +10,4 @@ module.exports = {
     TICKET_REJECT_STATUS: 3,
     TICKET_ABSENT_STATUS: 4,
     TICKET_FINISH_STATUS: 5
-}
+};

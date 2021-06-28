@@ -26,6 +26,8 @@ module.exports = {
     ERROR_MSG_PASSWORD_NO_MATCH: '* Las contraseñas no coinciden',
     ERROR_MSG_SAME_NEW_PASSWORD: '* La nueva contraseña debe ser diferente a la anterior',
     ERROR_MSG_INCORRECT_ACTUAL_PASSWORD: '* La contraseña actual es incorrecta',
+    OK_MSG_API_POST_GOLD_MEMBERSHIP: 'Se solicitó la membresía GOLD con éxito',
+    ERROR_MSG_API_POST_GOLD_MEMBERSHIP: 'Ocurrió un error al solicitar la membresía GOLD:',
     OK_MSG_API_PUT_GOLD_MEMBERSHIP: 'Se actualizó el cambio de renovación automática con éxito',
     ERROR_MSG_API_PUT_GOLD_MEMBERSHIP: 'Ocurrió un error al actualizar el cambio de renovación automática:',
     ERROR_MSG_API_GET_EMAIL_USER: 'Ocurrió un error al obtener el email del usuario:',
