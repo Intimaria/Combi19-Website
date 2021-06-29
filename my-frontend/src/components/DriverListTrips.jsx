@@ -134,6 +134,8 @@ function DriverListTrips() {
     const [finishModal, setFinishModal] = useState(false);
     const [listModal, setListModal] = useState(false);
     const [viewModal, setViewModal] = useState(false);
+    const [problemModal, setProblemModal] = useState(false);
+    const [sellModal, setSellModal] = useState(false);
     //Saves the state current comment selected by the user 
     const [selectedTrip, setSelectedTrip] = useState(formatSelectedTrip);
 
@@ -169,7 +171,11 @@ function DriverListTrips() {
             openCloseModalList(trip)
         } else if (action === "Ver") {
             openCloseModalViewDetails()
-        }    
+        } else if (action === "Imprevisto") {
+            openCloseModalProblem(trip)
+        } else if (action === "Vender") {
+            openCloseModalSell(trip)
+        }   
     };
     // The following functions are used to open Modal dialogues for API functionality
     const openCloseModalFinish = () => {
@@ -182,6 +188,20 @@ function DriverListTrips() {
     const openCloseModalList = () => {
         setListModal(!listModal);
         if (listModal) {
+            setSelectedTrip(formatSelectedTrip);;
+            setDefaultErrorMessages();
+        }
+    };
+    const openCloseModalProblem = () => {
+        setProblemModal(!problemModal);
+        if (problemModal) {
+            setSelectedTrip(formatSelectedTrip);;
+            setDefaultErrorMessages();
+        }
+    };
+    const openCloseModalSell = () => {
+        setSellModal(!sellModal);
+        if (sellModal) {
             setSelectedTrip(formatSelectedTrip);;
             setDefaultErrorMessages();
         }
@@ -277,6 +297,24 @@ function DriverListTrips() {
             </div>
         </div>
       );
+      const bodyProblem = (
+        <div className={modal.small}>
+          notificar problema
+          <br/>     
+            <div align="right">
+                <Button onClick={() => openCloseModalProblem()}>CERRAR</Button>
+            </div>
+        </div>
+      );
+      const bodySellTicket = (
+        <div className={modal.small}>
+          vender ticket
+          <br/>     
+            <div align="right">
+                <Button onClick={() => openCloseModalSell()}>CERRAR</Button>
+            </div>
+        </div>
+      );
       const bodyViewDetails = (
         <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
@@ -365,6 +403,16 @@ function DriverListTrips() {
                 open={viewModal}
                 onClose={openCloseModalViewDetails}>
                 {bodyViewDetails}
+            </Modal>
+            <Modal
+                open={problemModal}
+                onClose={openCloseModalProblem}>
+                {bodyProblem}
+            </Modal>
+            <Modal
+                open={sellModal}
+                onClose={openCloseModalSell}>
+                {bodySellTicket}
             </Modal>
 
 
