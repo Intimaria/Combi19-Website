@@ -69,10 +69,10 @@ export const CancelTrip = (props) => {
    React.useEffect(() => {
     if (cancel && props.onClick) {
         const ok = validateCancellationDate(props.trip);
-        console.log("ok:", ok)
+        setVerificando(true);
         if (ok){
             handleCancel(ok)
-        }
+        } 
         props.onClick(cancel, ok, props.trip)
     }
    }, [cancel]);
@@ -122,7 +122,6 @@ export const CancelTrip = (props) => {
     and set the dialogue text for the user */
     const handleCancel = async (ok) => {
         // const ok = validateCancellationDate(props.trip);
-        console.log("aca", ok);
         if (ok.cancelado) {
             let cancelledProds = await apiCancel(ok);
             let ticketPrice = selectedTrip.price.replace(".", "");

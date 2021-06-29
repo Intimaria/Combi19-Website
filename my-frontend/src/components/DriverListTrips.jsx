@@ -5,6 +5,8 @@ import {useStyles} from '../const/componentStyles';
 import MaterialTable from '@material-table/core';
 import {Message} from './Message';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import PeopleIcon from '@material-ui/icons/People';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { useHistory } from 'react-router-dom';
@@ -324,14 +326,24 @@ function DriverListTrips() {
                         onClick: (event, rowData) => selectTrip(rowData, "Ver")
                     },
                     {
-                        icon: () => <CheckCircleIcon/>,
-                        tooltip: 'Terminar viaje',
-                        onClick: (event, rowData) => selectTrip(rowData, "Terminar")
+                        icon: () => <ReportProblemIcon/>,
+                        tooltip: 'Notificar Imprevisto',
+                        onClick: (event, rowData) => selectTrip(rowData, "Imprevisto") 
+                    },
+                    {
+                        icon: () => <MonetizationOnIcon/>,
+                        tooltip: 'Vender pasaje',
+                        onClick: (event, rowData) => selectTrip(rowData, "Vender") 
                     },
                     {
                         icon: () => <PeopleIcon/>,
                         tooltip: 'Confirmar pasajeros',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista") 
+                    },
+                    {
+                        icon: () => <CheckCircleIcon/>,
+                        tooltip: 'Terminar viaje',
+                        onClick: (event, rowData) => selectTrip(rowData, "Terminar")
                     }
                 ]}
                 options={materialTableConfiguration.options}

@@ -133,7 +133,7 @@ export const PassengerTicket = React.memo(function PlaneTicketCard(props) {
                 }}
             />
             <div className={cx(styles.right, styles.moveRight)}>
-             { myTicket.cancelled &&
+             { props.cancelled &&
             <div><p className={styles.heading}>{myTicket.percentage}</p></div>
              }
                 <span className={styles.departureDay}>{myTicket.departureDay}</span>
