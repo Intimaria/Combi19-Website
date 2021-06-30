@@ -32,6 +32,10 @@ const getTrips = async (req, res) => {
     try {
         const connection = await prepareConnection();
 
+        let sqlMode = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`;
+
+        await connection.execute(sqlMode);
+
         let sqlSelect =
                 `
             SELECT 
@@ -57,12 +61,16 @@ const getTrips = async (req, res) => {
             INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
             INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
             INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
-            INNER JOIN TICKET TI ON TI.ID_TRIP = TRI.TRIP_ID
-            GROUP BY TRI.TRIP_ID
+            INNER JOIN TICKET ti ON ti.ID_TRIP = tri.TRIP_ID
+            GROUP BY tri.TRIP_ID
             ORDER BY tri.DEPARTURE_DAY ASC, ARRIVAL_DAY ASC, DEPARTURE ASC, DESTINATION ASC
             `;
 
         const [rows] = await connection.execute(sqlSelect);
+
+        sqlMode = `SET GLOBAL sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';`;
+
+        await connection.execute(sqlMode);
 
         connection.end();
 
