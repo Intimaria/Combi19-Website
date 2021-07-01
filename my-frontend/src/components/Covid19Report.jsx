@@ -27,7 +27,7 @@ import {useStyles} from '../const/componentStyles';
 import {
   getRiskyPassengers
 } from '../api/PassengerReports.js';
-
+import TripsReport from './TripsReport'
 /* FORMATTING & STYLES */ 
 
 const modalStyles = makeStyles((theme) => ({
@@ -127,6 +127,8 @@ function Covid19Report() {
        setSelectedPassenger(formatSelectedPassenger);
     }
 };
+
+
   /* API CALLS & DATABASE FUNCTIONS*/
 
   // API: gets all the user trips from the database
@@ -137,7 +139,6 @@ function Covid19Report() {
           if (getPassengerResponse.status === 200) {
               let data = getPassengerResponse.data;
               setData(data);
-              console.log(data);
           } else if (getPassengerResponse.status === 500) {
               setSuccessMessage(getPassengerResponse.data);
               setOptions({
@@ -240,6 +241,19 @@ function Covid19Report() {
                 options={materialTableConfiguration.options}
                 localization={materialTableConfiguration.localization}
             />
+            </AccordionDetails>
+            </Accordion>
+            <Divider/>
+          <Accordion>
+              <AccordionSummary
+                  expandIcon={<ExpandMoreIcon/>}
+                  aria-controls="Historial de Viajes"
+                  id="viajes"
+              >
+                  Informe de viajes 
+              </AccordionSummary>
+              <AccordionDetails>
+              <TripsReport />
             </AccordionDetails>
             </Accordion>
           <Modal

@@ -165,6 +165,7 @@ const normalizeTrips = (rows) => {
             status: rows[index].STATUS,
             quantity:  rows[index].QUANTITY,
             percentage: rows[index].PERCENTAGE,
+            driver: rows[index].DRIVER,
             route: {
                 routeId: rows[index].ROUTE_ID,
                 departureId: rows[index].DEPARTURE_ID,

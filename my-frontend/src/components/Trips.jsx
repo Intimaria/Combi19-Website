@@ -67,36 +67,19 @@ const columns = [
     },
     {
         title: 'Fecha de salida',
-        type: 'date',
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
-        filterComponent: (props) => <ClearableDateRange {...props} />, 
-        customFilterAndSearch: (term, data) => {
-            let date = moment(data.departureDay)
-            let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day} 00:00`).add(-1, 'minutes')
-            let end = moment(`${term[1]?.year}-${term[1]?.month.number}-${term[1]?.day} 23:59`)
-            let includes = date.isBetween(start, end)
-            return includes;
-            }
+        customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
     },
     {   
         title: 'Fecha de llegada',
-        type: 'date',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
-        filterComponent: (props) => <ClearableDateRange {...props} />, 
-        customFilterAndSearch: (term, data) => {
-                                let date = moment(data.arrivalDay)
-                                let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day} ${term[0]?.hour}:${term[0]?.minute}`)
-                                let end = moment(`${term[1]?.year}-${term[1]?.month.number}-${term[1]?.day} ${term[1]?.hour}:${term[1]?.minute}`)
-                                let includes = date.isBetween(start, end)
-                                return includes;
-                                }
+        customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
     },
     {
         title: 'Combi',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
         customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
-    {title: 'Viaje', field: 'status'},
     {title: 'Estado', field: 'active'}
 ];
 
