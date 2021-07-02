@@ -21,7 +21,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, {useEffect, useState} from 'react';
 import moment from "moment";
 import {useStyles} from '../const/componentStyles';
-
+import { ExportPdf } from '@material-table/exporters';
 /* USER IMPORTS */
 
 import {
@@ -41,11 +41,10 @@ const modalStyles = makeStyles((theme) => ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)'
-       },
+       }
 }));
 
 const columns = [
-  { title: 'Id' , field: 'userId'},
   { title: 'Nombre y apellido', field: 'userName' },
   {
     title: 'Fecha de nacimiento',
@@ -54,7 +53,9 @@ const columns = [
   },
   { title: 'Email', field: 'email' },
   { title: 'Teléfono', field: 'phone' },  
-  { title: 'Riesgo hasta', field: 'riskExpires' }
+  { title: 'Miembro Gold hasta', field: 'goldMemberExpires'}, 
+  { title: 'Riesgo hasta', field: 'riskExpires'},
+  { title: 'Debito Automatico', field: 'hasDebit'}
 ];
 
 function Covid19Report() {
@@ -190,13 +191,14 @@ function Covid19Report() {
             Usuario Gold:
           </Typography>
           <Typography variant="body2" gutterBottom>
-            {selectedPassenger.goldMemberExpires ? "No es gold" : "Sí, hasta:" + selectedPassenger.goldMemberExpires} 
+            {moment(selectedPassenger.goldMemberExpires).isBefore(new Date()) ? "No es gold" : "Es Gold hasta: " + selectedPassenger.goldMemberExpires} 
           </Typography>
           <Typography variant="overline" label="Email" name="email" gutterBottom>
             Contacto:
           </Typography>
           <Typography variant="body2" gutterBottom>
             {selectedPassenger && selectedPassenger.email} 
+            <br />
             {selectedPassenger && selectedPassenger.phone} 
           </Typography>
           <Typography variant="overline" label="Activo" name="active" gutterBottom>
@@ -238,7 +240,17 @@ function Covid19Report() {
                         onClick: (event, rowData) => selectPassenger(rowData, "Ver")
                     },
                 ]}
-                options={materialTableConfiguration.options}
+                options={{
+                  search: false,
+                  actionsColumnIndex: -1,
+                  exportButton: true,
+                  exportAllData: true,
+                  filtering: true,
+                  exportMenu: [{
+                      label: 'Exportar PDF',
+                      exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte PDF')
+                  }]
+              }}
                 localization={materialTableConfiguration.localization}
             />
             </AccordionDetails>

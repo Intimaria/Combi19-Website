@@ -222,7 +222,7 @@ const normalizePassengers = (rows) => {
             phone: rows[index].PHONE_NUMBER,
             documentNum: rows[index].DOCUMENT_NUMBER,
             riskExpires: new Date(rows[index].EXPIRATION_RISK).toLocaleDateString('Es-ar'),
-            hasDebit: rows[index].AUTOMATIC_DEBIT
+            hasDebit: (rows[index].AUTOMATIC_DEBIT  === 0) ? 'No' : 'Sí'
         };
         results.push(user);
     }

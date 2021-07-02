@@ -16,7 +16,7 @@ import {materialTableConfiguration} from '../const/materialTableConfiguration';
 import {KeyboardDateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
-
+import { ExportPdf } from '@material-table/exporters';
 
 import {
     getTrips,
@@ -215,7 +215,17 @@ function TripsReport() {
                 columns={columns}
                 data={data}
                 title="Buscar viajes"
-                options={materialTableConfiguration.options}
+                options={{
+                  search: false,
+                  actionsColumnIndex: -1,
+                  exportButton: true,
+                  exportAllData: true,
+                  filtering: true,
+                  exportMenu: [{
+                      label: 'Exportar PDF',
+                      exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte PDF')
+                  }]
+              }}
                 localization={materialTableConfiguration.localization}
             />
 
