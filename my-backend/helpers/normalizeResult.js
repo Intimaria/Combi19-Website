@@ -216,7 +216,7 @@ const normalizePassengers = (rows) => {
             userName: rows[index].NAME + ' ' + rows[index].SURNAME,
             country: rows[index].ID_COUNTRY,
             documentType: rows[index].ID_DOCUMENT_TYPE,
-            birthday: rows[index].BIRTHDAY,
+            birthday: new Date(rows[index].BIRTHDAY).toLocaleDateString('Es-ar'),
             email: rows[index].EMAIL,
             goldMemberExpires: new Date(rows[index].GOLD_MEMBERSHIP_EXPIRATION).toLocaleDateString('Es-ar'),
             phone: rows[index].PHONE_NUMBER,

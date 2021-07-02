@@ -48,6 +48,7 @@ const columns = [
   { title: 'Nombre y apellido', field: 'userName' },
   {
     title: 'Fecha de nacimiento',
+    field: 'birthday',
     render: (data) => `${moment(data.birthday).format('DD/MM/YYYY')}`,
     customFilterAndSearch: (term, data) => (`${moment(data.birthday).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
   },
@@ -248,7 +249,7 @@ function Covid19Report() {
                   filtering: true,
                   exportMenu: [{
                       label: 'Exportar PDF',
-                      exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte PDF')
+                      exportFunc: (cols, datas) => ExportPdf(cols, datas, `Reporte de Pasajeros Riesgosos en la fecha: ${new Date().toLocaleDateString(undefined, options)}`)
                   }]
               }}
                 localization={materialTableConfiguration.localization}

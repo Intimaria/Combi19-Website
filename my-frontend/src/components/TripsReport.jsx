@@ -68,6 +68,7 @@ const columns = [
     {
         title: 'Fecha de salida',
         type: 'date',
+        field: 'departureDay',
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
         filterComponent: (props) => <ClearableDateRange {...props} />, 
         customFilterAndSearch: (term, data) => {
@@ -81,6 +82,7 @@ const columns = [
     {   
         title: 'Fecha de llegada',
         type: 'date',
+        field: 'arrivalDay',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
         filterComponent: (props) => <ClearableDateRange {...props} />, 
         customFilterAndSearch: (term, data) => {
@@ -93,11 +95,11 @@ const columns = [
     },
     {
         title: 'Combi',
-        render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
-        customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
+        field: 'transport.registrationNumber',
+        render: (data) => `${data.transport.registrationNumber}`,
+        customFilterAndSearch: (term, data) => (`${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
-    {title: 'Chofer', field: 'driver'},
-    {title: 'Estado', field: 'status'},
+    {title: 'Chofer', field: 'driver'}
 ];
 
 
@@ -223,9 +225,11 @@ function TripsReport() {
                   exportAllData: true,
                   filtering: true,
                   exportMenu: [{
-                      label: 'Exportar PDF',
-                      exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte PDF')
-                  }]
+                    label: 'Exportar a PDF',
+                    exportFunc: (cols, datas) => {
+                        return ExportPdf(cols, datas, 'Historial de viajes')
+                    }
+                }]
               }}
                 localization={materialTableConfiguration.localization}
             />
