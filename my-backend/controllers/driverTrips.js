@@ -66,8 +66,8 @@ const finishTrip = async (req, res) => {
                         UPDATE TICKET SET 
                         ID_STATUS_TICKET = 5
                         WHERE ID_TRIP IN 
-                        (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP = ${id}
-                        AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2));
+                        (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP = ${id})
+                        AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2);
                         `;
       const [rows] = await connection.execute(sqlSelect);
       connection.end();
@@ -79,8 +79,36 @@ const finishTrip = async (req, res) => {
   res.end();
 };
 
+const validatePassengers = async (id) => {
+  try {
+      const connection = await prepareConnection();
+      const sqlSelect = `
+      SELECT * FROM TRIP INNER JOIN TICKET WHERE TRIP_ID=${id} AND TICKET.ID_STATUS_TICKET=1 
+      `;
+      const [rows] = await connection.execute(sqlSelect);
+      connection.end();
+      return rows.length >= 1;
+  } catch (error) {
+      console.log("Ocurrió un error al verificar los pasajeros pendientes", error);
+      return false;
+  }
+}
+
+const getPassangerStatus = async (req, res) => {
+  const { id } = req.params;
+  try {
+      res.json({
+        passengersNotConfirmed: await validatePassengers(id)
+      });
+  } catch (error) {
+      console.log(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE} ${error}`);
+      res.status(500).send(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE}`);
+  }
+  res.end();
+};
 
 module.exports = {
+  getPassangerStatus,
   getDriverTrips,
   finishTrip
 }

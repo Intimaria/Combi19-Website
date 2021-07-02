@@ -24,7 +24,8 @@ import React, {useEffect, useState} from 'react';
  adds CRUD functionality (will call backend API functions) */
 import {
     getDriverTrips,
-    finishTrip
+    finishTrip,
+    getPassangerStatus
 } from '../api/DriverTrips';
 import { TripPassengers } from './TripPassengers';
 
@@ -178,13 +179,36 @@ function DriverListTrips() {
         }   
     };
     // The following functions are used to open Modal dialogues for API functionality
-    const openCloseModalFinish = () => {
+   /* const openCloseModalFinish = () => {
         setFinishModal(!finishModal);
         if (finishModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
+*/
+    const openCloseModalFinish = async (trip) => {
+        if (!finishModal) {
+            let dependenceResponse = await getPassangerStatus(trip.tripId, url);
+
+            if (dependenceResponse.data.passengersNotConfirmed) {
+                setSuccessMessage("No se puede finalizar, hay pasajeros no chequeados.");
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: "No se puede finalizar, hay pasajeros no chequeados."
+                });
+                setSelectedTrip(formatSelectedTrip);
+            } else {
+                setFinishModal(!finishModal);
+            }
+        } else {
+            setFinishModal(!finishModal);
+            setSelectedTrip(formatSelectedTrip);
+        }
+    }
+
+
+
     const openCloseModalList = () => {
         setListModal(!listModal);
         if (listModal) {

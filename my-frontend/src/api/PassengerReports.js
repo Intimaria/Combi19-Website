@@ -16,7 +16,6 @@ export const getRiskyPassengers = async () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log(response)
         return response;
     } catch (error) {
         if (error.response?.status) {
@@ -24,7 +23,7 @@ export const getRiskyPassengers = async () => {
         } else {
             // In this situation, is NOT an axios handled error
 
-            console.log(`${""} ${error}`);
+            console.log(`${"Ocurrió un error al obtener los pasajeros de riesgo "} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
