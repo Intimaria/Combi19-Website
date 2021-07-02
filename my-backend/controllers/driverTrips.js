@@ -66,7 +66,8 @@ const finishTrip = async (req, res) => {
                         UPDATE TICKET SET 
                         ID_STATUS_TICKET = 5
                         WHERE ID_TRIP IN 
-                        (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP = ${id});
+                        (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP = ${id}
+                        AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2));
                         `;
       const [rows] = await connection.execute(sqlSelect);
       connection.end();
