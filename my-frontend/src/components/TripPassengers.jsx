@@ -234,7 +234,7 @@ export const TripPassengers = (props) => {
     const bodyQuestionnaireModal = (
         <div className={styles.modal}>
             <h3 align="center">VERIFICACIÓN DE SÍNTOMAS</h3>
-            <FormGroup>
+            <FormGroup> 
                 <Typography style={{fontWeight: 600}}>¿La temperatura del pasajero es mayor o igual a 38°C?</Typography>
                 <Typography component="div">
                     <Grid component="label" container alignItems="center" spacing={1}>
@@ -320,10 +320,11 @@ export const TripPassengers = (props) => {
     );
 
     const bodyQuestionnaireResultModal = (
-        <div className={styles.modal}>
+        <div className={riskyPassenger? styles.warning : styles.ok}>
             <h3 align="center">RESULTADO DE VERIFICACIÓN DE SÍNTOMAS</h3>
             {(riskyPassenger)
-                ? <Typography>El pasajero presenta síntomas compatibles a COVID-19, por lo cual no podrá realizar el
+                ? <Typography>
+                    El pasajero presenta síntomas compatibles a COVID-19, por lo cual no podrá realizar el
                     viaje, y tampoco podrá viajar durante los próximos 15 días. Asimismo no se le reintegrará el monto
                     del pasaje.</Typography>
                 : <Typography>El pasajero NO presenta síntomas compatibles a COVID-19, por lo cual podrá realizar el

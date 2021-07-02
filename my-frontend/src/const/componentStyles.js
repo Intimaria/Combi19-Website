@@ -66,5 +66,29 @@ export const useStyles = makeStyles((theme) => ({
             display: 'flex',
             justifyContent: 'space-around',
         }
+    },
+    warning: {
+        position: 'absolute',
+        width: 460,
+        backgroundColor: '#fce4ec',
+        color: '#e53935',
+        border: '2px solid #e53935',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    },
+    ok:{
+        position: 'absolute',
+        width: 460,
+        backgroundColor: '#e8f5e9',
+        color: '#00c853',
+        border: '2px solid #00c853',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
     }
 }));
