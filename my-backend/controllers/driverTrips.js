@@ -79,6 +79,26 @@ const finishTrip = async (req, res) => {
   res.end();
 };
 
+const cancelTrip = async (req, res) => {
+  const { id } = req.params;
+  try {
+      const connection = await prepareConnection();
+      const sqlSelect = `UPDATE TICKET SET ID_STATUS_TICKET = 4, 
+                         ID_REFUND_PERCENTAGE = 1 
+                         WHERE ID_TRIP IN 
+                         (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP =${id}
+                          AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2));
+                        `
+      const [rows] = await connection.execute(sqlSelect);
+      connection.end();
+      return res.status(200).send('Se ha cancelado el viaje correctamente');
+  } catch (error) {
+      console.log(`Ocurrió un error al cancelar el viaje: ${error}`);
+      res.status(500).send(`Ocurrió un error al cancelar el viaje: ${error}`);
+  }
+  res.end();
+};
+
 const validatePassengers = async (id) => {
   try {
       const connection = await prepareConnection();
@@ -101,8 +121,8 @@ const getPassangerStatus = async (req, res) => {
         passengersNotConfirmed: await validatePassengers(id)
       });
   } catch (error) {
-      console.log(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE} ${error}`);
-      res.status(500).send(`${ERROR_MSG_API_DRIVER_VALIDATE_TRANSPORT_DEPENDENCE}`);
+      console.log(`Ocurrió un error al verificar los pasajeros pendientes: ${error}`);
+      res.status(500).send(`Ocurrió un error al verificar los pasajeros pendientes`);
   }
   res.end();
 };
@@ -110,5 +130,6 @@ const getPassangerStatus = async (req, res) => {
 module.exports = {
   getPassangerStatus,
   getDriverTrips,
-  finishTrip
+  finishTrip,
+  cancelTrip
 }

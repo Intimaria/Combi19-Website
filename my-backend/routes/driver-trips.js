@@ -3,6 +3,7 @@ const {Router} = require('express');
 const {
     getDriverTrips,
     finishTrip,
+    cancelTrip,
     getPassangerStatus
 } = require('../controllers/driverTrips');
 
@@ -20,5 +21,7 @@ router.get('/custom/passenger/:id', authenticateDriverRol, getPassangerStatus);
 // Finish trip
 router.put('/custom/trip/:id', authenticateDriverRol, finishTrip);
 
+// Cancel trip
+router.put('/custom/canceltrip/:id', authenticateDriverRol, cancelTrip);
 
 module.exports = router;

@@ -25,6 +25,7 @@ import React, {useEffect, useState} from 'react';
 import {
     getDriverTrips,
     finishTrip,
+    cancelTrip,
     getPassangerStatus
 } from '../api/DriverTrips';
 import { TripPassengers } from './TripPassengers';
@@ -263,6 +264,29 @@ function DriverListTrips() {
             console.log(`${ERROR_MSG_API_FINISH_TRIP} ${error}`);
         }
     };
+        // API: sets all the passenger tickets in this trip to status 5
+        const cancelThisTrip = async () => {
+            try {
+                let getTripsResponse = await cancelTrip(selectedTrip.tripId);
+                if (getTripsResponse?.status === 200) {
+                    openCloseModalProblem();
+                    setSuccessMessage(`Se ha cancelado el viaje correctamente`);
+                     setOptions({
+                    ...options, open: true, type: 'success',
+                    message: `Se ha cancelado el viaje correctamente`
+                });
+                setNewData(true);
+                } else {
+                    setSuccessMessage(`Ocurrió un error al cancelar el viaje: ${getTripsResponse}`);
+                    setOptions({
+                        ...options, open: true, type: 'error',
+                        message: `Ocurrió un error al cancelar el viaje: ${getTripsResponse}`
+                    });
+                }
+            } catch (error) {
+                console.log(`${ERROR_MSG_API_FINISH_TRIP} ${error}`);
+            }
+        };
     //API: gets driver trips according to url and refreshes on ("newData")
         const fetchData = async () => {
             try {
@@ -323,9 +347,15 @@ function DriverListTrips() {
       );
       const bodyProblem = (
         <div className={modal.small}>
-          notificar problema
+            <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
+           ¿Estás seguro de notificar imprevisto y cancelar el viaje con id {selectedTrip.tripId}?
+          </Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+          Esta opción cancelará todos los pasajes y hará la devolución del costo de los mismos.
+          </Typography>
           <br/>     
             <div align="right">
+            <Button color="secondary" onClick={() =>cancelThisTrip()}>SÍ, NOTIFICAR</Button>
                 <Button onClick={() => openCloseModalProblem()}>CERRAR</Button>
             </div>
         </div>
