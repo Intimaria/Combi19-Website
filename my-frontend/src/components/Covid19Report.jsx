@@ -23,6 +23,7 @@ import {
     getRiskyPassengers
 } from '../api/PassengerReports.js';
 import TripsReport from './TripsReport'
+import Grid from "@material-ui/core/Grid";
 /* FORMATTING & STYLES */
 
 const modalStyles = makeStyles((theme) => ({
@@ -232,32 +233,37 @@ function Covid19Report() {
                 >
                     Ver todos los pasajeros de riesgo en el último mes
                 </AccordionSummary>
-                <AccordionDetails>
-                    <MaterialTable
-                        className={styles.root}
-                        columns={columns}
-                        data={data}
-                        title={`Fecha actual: ${moment().format('DD [de] MMMM [de] YYYY')}`}
-                        actions={[
-                            {
-                                icon: () => <VisibilityIcon/>,
-                                tooltip: 'Visualizar pasajero',
-                                onClick: (event, rowData) => selectPassenger(rowData, "Ver")
-                            },
-                        ]}
-                        options={{
-                            search: false,
-                            actionsColumnIndex: -1,
-                            exportButton: true,
-                            exportAllData: true,
-                            filtering: true,
-                            exportMenu: [{
-                                label: 'Exportar PDF',
-                                exportFunc: (cols, datas) => ExportPdf(cols, datas, `Reporte de pasajeros riesgosos en el último mes. Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
-                            }]
-                        }}
-                        localization={materialTableConfiguration.localization}
-                    />
+                <AccordionDetails style={{maxWidth: "100%", width: '100%'}}>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <MaterialTable
+                                className={styles.root}
+                                columns={columns}
+                                data={data}
+                                title={`Fecha actual: ${moment().format('DD [de] MMMM [de] YYYY')}`}
+                                actions={[
+                                    {
+                                        icon: () => <VisibilityIcon/>,
+                                        tooltip: 'Visualizar pasajero',
+                                        onClick: (event, rowData) => selectPassenger(rowData, "Ver")
+                                    },
+                                ]}
+                                options={{
+                                    search: false,
+                                    actionsColumnIndex: -1,
+                                    exportButton: true,
+                                    exportAllData: true,
+                                    filtering: true,
+                                    exportMenu: [{
+                                        label: 'Exportar PDF',
+                                        exportFunc: (cols, datas) => ExportPdf(cols, datas, `Reporte de pasajeros riesgosos en el último mes. Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
+                                    }]
+                                }}
+                                localization={materialTableConfiguration.localization}
+                            />
+                        </Grid>
+                    </Grid>
+
                 </AccordionDetails>
             </Accordion>
             <Divider/>
@@ -270,7 +276,11 @@ function Covid19Report() {
                     Informe de viajes
                 </AccordionSummary>
                 <AccordionDetails>
-                    <TripsReport/>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <TripsReport/>
+                        </Grid>
+                    </Grid>
                 </AccordionDetails>
             </Accordion>
             <Modal
