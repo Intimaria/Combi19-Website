@@ -436,7 +436,7 @@ function GoldMembership() {
                             color="primary"
                             id="btnRegister"
                             onClick={() => requestPostNewGoldMembership()}
-                    >CONFIRMAR COMPRA</Button>
+                    >CONFIRMAR SOLICITUD</Button>
                 </Grid>
                 <Grid item xs={12}>
                     <br/>

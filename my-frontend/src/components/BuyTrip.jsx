@@ -25,6 +25,7 @@ const columns = [
     {title: 'Nombre', field: 'name', editable: "never"},
     {
         title: 'Precio',
+        field: 'report.price',
         render: (data) => `$${(data.price).replace('.', ',')}`,
         customFilterAndSearch: (term, data) => (`$${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1,
         editable: "never"
@@ -319,7 +320,7 @@ const BuyTrip = () => {
                                                id="totalProducts"
                                                disabled
                                                style={{paddingRight: "10px", marginLeft: "10px"}}
-                                               value={totalProducts}
+                                               value={`$ ${totalProducts}`}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

@@ -47,7 +47,12 @@ import { materialTableConfiguration } from '../const/materialTableConfiguration'
 //Nombre de las columnas de los datos a mostrar y la aclaracion de que campo representan
 const columns = [
     { title: 'Nombre', field: 'name' },
-    { title: 'Precio', field: 'price' },
+    {
+        title: 'Precio',
+        field: 'report.price',
+        render: (data) => `$${(data.price).replace('.', ',')}`,
+        customFilterAndSearch: (term, data) => (`$${data.price.replace('.', ',')}`).indexOf(term.toLowerCase()) !== -1
+    },
     { title: 'Tipo', field: 'typeProductDescription' },
     { title: 'Estado', field: 'active' }
 ];
