@@ -323,7 +323,6 @@ function Places() {
     const fetchData = async () => {
         try {
             let getPlacesResponse = await getPlacesDeps();
-            console.log(getPlacesResponse);
             if (getPlacesResponse.status === 200) {
                 let data = getPlacesResponse.data;
                 setData(data);

@@ -191,8 +191,8 @@ const normalizeTrips = (rows) => {
             },
             report: {
                 price: `$${rows[index].PRICE}`,
-                departureDay: `${moment(rows[index].DEPARTURE_DAY).format('DD/MM/YYYY HH:mm')}hs`,
-                arrivalDay: `${moment(rows[index].ARRIVAL_DAY).format('DD/MM/YYYY HH:mm')}hs`,
+                departureDay: `${moment(rows[index].DEPARTURE_DAY_ORIGINAL).format('DD/MM/YYYY HH:mm')}hs`,
+                arrivalDay: `${moment(rows[index].ARRIVAL_DAY_ORIGINAL).format('DD/MM/YYYY HH:mm')}hs`,
                 transport: `${rows[index].INTERNAL_IDENTIFICATION} - ${rows[index].REGISTRATION_NUMBER}`
             }
         };

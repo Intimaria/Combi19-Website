@@ -228,7 +228,7 @@ function Covid19Report() {
                 className={styles.root}
                 columns={columns}
                 data={data}
-                title={`Fecha actual: ${new Date().toLocaleDateString(undefined, options)}`}
+                title={`Fecha actual: ${moment().format('DD [de] MMMM [de] YYYY')}`}
                 actions={[
                     {
                         icon: () => <VisibilityIcon />,

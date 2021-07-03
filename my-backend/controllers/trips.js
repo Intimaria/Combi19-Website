@@ -41,9 +41,11 @@ const getTrips = async (req, res) => {
                 SELECT 
                 tri.TRIP_ID, REPLACE(tri.PRICE, '.', ',') PRICE, tri.ACTIVE, r.ROUTE_ID,
                 DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, 
+                tri.DEPARTURE_DAY DEPARTURE_DAY_ORIGINAL,
                 c1.CITY_ID DEPARTURE_ID, CONCAT(c1.CITY_NAME, ', ', p1.PROVINCE_NAME) DEPARTURE, 
                 c2.CITY_ID DESTINATION_ID, CONCAT(c2.CITY_NAME, ', ', p2.PROVINCE_NAME) DESTINATION,
                 DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
+                ADDTIME(tri.DEPARTURE_DAY, r.DURATION) ARRIVAL_DAY_ORIGINAL,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER, 
                 CONCAT(u.SURNAME, ', ', u.NAME) DRIVER,
                 ti.ID_STATUS_TICKET,
@@ -66,7 +68,8 @@ const getTrips = async (req, res) => {
                 INNER JOIN USER u ON u.USER_ID=tra.ID_DRIVER
                 GROUP BY tri.TRIP_ID, tri.PRICE, tri.ACTIVE, tri.DEPARTURE_DAY, r.ROUTE_ID,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER,
-                ti.ID_STATUS_TICKET, c1.CITY_ID, c2.CITY_ID, c2.CITY_NAME, c1.CITY_NAME, p2.PROVINCE_NAME, p1.PROVINCE_NAME, r.DURATION, u.SURNAME, u.NAME
+                ti.ID_STATUS_TICKET, c1.CITY_ID, c2.CITY_ID, c2.CITY_NAME, c1.CITY_NAME, 
+                p2.PROVINCE_NAME, p1.PROVINCE_NAME, r.DURATION, u.SURNAME, u.NAME
                 ORDER BY tri.DEPARTURE_DAY ASC
             `;
 
