@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Modal, TextField, Button} from '@material-ui/core';
+import {Modal, Button} from '@material-ui/core';
 import FormGroup from "@material-ui/core/FormGroup";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -234,7 +234,7 @@ export const TripPassengers = (props) => {
     const bodyQuestionnaireModal = (
         <div className={styles.modal}>
             <h3 align="center">VERIFICACIÓN DE SÍNTOMAS</h3>
-            <FormGroup> 
+            <FormGroup>
                 <Typography style={{fontWeight: 600}}>¿La temperatura del pasajero es mayor o igual a 38°C?</Typography>
                 <Typography component="div">
                     <Grid component="label" container alignItems="center" spacing={1}>
@@ -320,7 +320,7 @@ export const TripPassengers = (props) => {
     );
 
     const bodyQuestionnaireResultModal = (
-        <div className={riskyPassenger? styles.warning : styles.ok}>
+        <div className={riskyPassenger ? styles.warning : styles.ok}>
             <h3 align="center">RESULTADO DE VERIFICACIÓN DE SÍNTOMAS</h3>
             {(riskyPassenger)
                 ? <Typography>

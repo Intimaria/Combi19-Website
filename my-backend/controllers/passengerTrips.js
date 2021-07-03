@@ -286,7 +286,8 @@ const rejectPassengerTrip = async (req, res) => {
                     INNER JOIN CART ca ON tic.ID_CART = ca.CART_ID
                     INNER JOIN TRIP tri ON tic.ID_TRIP = tri.TRIP_ID
                     WHERE ca.ID_USER = ${userId}
-                    AND tri.TRIP_ID = ${tripId}
+                    AND tri.DEPARTURE_DAY >= NOW()
+                    AND tri.DEPARTURE_DAY < DATE_ADD(NOW(), INTERVAL 15 DAY)
                     ) tmpTable
                 )
             ;

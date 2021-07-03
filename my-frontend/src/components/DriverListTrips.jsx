@@ -72,7 +72,7 @@ function DriverListTrips() {
    
     // Columns for trips list - overflow formatting to keep list simple & neat
     const columns = [
-        {title: 'ID de viaje', field: 'tripId'},
+        {title: 'N° de viaje', field: 'tripId'},
         {title: 'Origen', field: 'route.departure'},
         {title: 'Destino', field: 'route.destination'},
         {
@@ -325,7 +325,7 @@ function DriverListTrips() {
     const bodyFinishDetails = (
         <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-             ¿Estás seguro de dar por terminado el viaje con id {selectedTrip.tripId}?
+             ¿Estás seguro de dar por terminado el viaje n°{selectedTrip.tripId}?
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>{selectedTrip.route.departure} y {selectedTrip.route.destination}</Typography>
             <br/>     
@@ -348,7 +348,7 @@ function DriverListTrips() {
       const bodyProblem = (
         <div className={modal.small}>
             <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-           ¿Estás seguro de notificar imprevisto y cancelar el viaje con id {selectedTrip.tripId}?
+           ¿Estás seguro de notificar imprevisto y cancelar el viaje n°{selectedTrip.tripId}?
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
           Esta opción cancelará todos los pasajes y hará la devolución del costo de los mismos.
@@ -372,7 +372,7 @@ function DriverListTrips() {
       const bodyViewDetails = (
         <div className={modal.small}>
           <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-             Viaje con id {selectedTrip.tripId}
+             Viaje n°{selectedTrip.tripId}
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
             Origen: {selectedTrip.route.departure}</Typography>
@@ -419,7 +419,7 @@ function DriverListTrips() {
                     },
                     {
                         icon: () => <ReportProblemIcon/>,
-                        tooltip: 'Notificar Imprevisto',
+                        tooltip: 'Notificar imprevisto',
                         onClick: (event, rowData) => selectTrip(rowData, "Imprevisto") 
                     },
                     {
