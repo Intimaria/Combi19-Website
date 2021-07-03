@@ -193,17 +193,20 @@ const emptyList = async (id) => {
 // Validate inputs format and account (if exists, if is risky, if is gold)
 const createUserToSellTrip = async (req, res) => {
   const { email, birthday } = req.body;
+
   let userInformation = {
     id: "",
     isGold: ""
   }
+
   const inputsErrors = validatePassengerEmailBirthdayToSellTrip(email, birthday);
+
   // The inputs are wrong
   if (inputsErrors) {
     res.status(400).json(inputsErrors);
   }
   else {
-    const userId = await validateUserExistence();
+    const userId = await validateUserExistence(email);
     //The user not exists
     if (!userId) {
       const connection = await prepareConnection();
@@ -219,22 +222,24 @@ const createUserToSellTrip = async (req, res) => {
       connection.execute(sqlInsert);
 
       userInformation.id = id;
-      userInformacion.isGold = false;
+      userInformation.isGold = false;
 
       res.status(201).json(userInformation)
     }
     else {
-      const isRiskyUser = await validateUserRiskiness();
+      const isRiskyUser = await validateUserRiskiness(email);
       // The user exists and is risky
       if (isRiskyUser) {
         res.status(401).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY);
       }
       //The user exists and is not risky
       else {
-        const isGold = validateUserGoldCondition();
-        userInformation.id = id;
-        userInformacion.isGold = isGold;
-        res.status(201).json(userInformation)
+        const isGold = await validateUserGoldCondition(email);
+
+        userInformation.id = userId;
+        userInformation.isGold = isGold;
+
+        res.status(200).json(userInformation)
       }
     }
   }

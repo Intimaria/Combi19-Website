@@ -81,9 +81,8 @@ const validateUserGoldCondition = async (email) => {
     try {
         const connection = await prepareConnection();
 
-        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?) AND GOLD_MEMBERSHIP_EXPIRATION IS NOT NULL AND EXPIRATION_RISK >= NOW()';
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?) AND GOLD_MEMBERSHIP_EXPIRATION IS NOT NULL AND GOLD_MEMBERSHIP_EXPIRATION >= NOW()';
         const [rows] = await connection.execute(selectSql, [email]);
-
         connection.end();
 
         return rows.length >= 1;
