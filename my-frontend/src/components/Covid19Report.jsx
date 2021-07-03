@@ -1,22 +1,17 @@
 import {
   Accordion,
-  AccordionActions,
   AccordionDetails,
   AccordionSummary,
-  Box,
   Button,
   Divider,
-  Grid,
   Modal,
-  Typography,
-  TextField
+  Typography
 } from '@material-ui/core';
 import MaterialTable from '@material-table/core';
 import {makeStyles} from '@material-ui/core/styles';
 import { Message } from "./Message";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import CardTravelIcon from '@material-ui/icons/CardTravel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, {useEffect, useState} from 'react';
 import moment from "moment";
@@ -137,7 +132,7 @@ function Covid19Report() {
   const fetchData = async () => {
       try {
           let getPassengerResponse = await getRiskyPassengers();
-          console.log(getPassengerResponse)
+          console.log(getPassengerResponse);
           if (getPassengerResponse.status === 200) {
               let data = getPassengerResponse.data;
               setData(data);
@@ -233,7 +228,7 @@ function Covid19Report() {
                 className={styles.root}
                 columns={columns}
                 data={data}
-                title={`Fecha hoy: ${new Date().toLocaleDateString(undefined, options)}`}
+                title={`Fecha actual: ${new Date().toLocaleDateString(undefined, options)}`}
                 actions={[
                     {
                         icon: () => <VisibilityIcon />,

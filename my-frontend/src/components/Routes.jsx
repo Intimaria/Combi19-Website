@@ -67,8 +67,13 @@ const columns = [
     {title: 'Provincia de origen', field: 'departure.provinceName'},
     {title: 'Ciudad de destino', field: 'destination.cityName'},
     {title: 'Provincia de destino', field: 'destination.provinceName'},
-    {title: 'Combi', field: 'transport.internalIdentification'},
-    {title: 'Duración (HH:MM)', field: 'duration'},
+    {
+        title: 'Combi',
+        field: 'report.transport',
+        render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
+        customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
+    },
+    {title: 'Duración', field: 'duration'},
     {title: 'Distancia en km', field: 'km'},
     {title: 'Estado', field: 'active'}
 ];

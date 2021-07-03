@@ -53,30 +53,29 @@ import {
 } from "../const/regex";
 
 import {formatDecimalNumber} from "../helpers/numbers";
-import { LocalPrintshopSharp } from '@material-ui/icons';
-import ClearableDateRange from './ClearableDateRange';
-
-
 
 
 const columns = [
     {title: 'Origen', field: 'route.departure'},
     {title: 'Destino', field: 'route.destination'},
     {
-        title: 'Precio', field: 'price'
+        title: 'Precio', field: 'report.price'
     },
     {
         title: 'Fecha de salida',
+        field: 'report.departureDay',
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
         customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
     },
     {   
         title: 'Fecha de llegada',
+        field: 'report.arrivalDay',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
         customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
     },
     {
         title: 'Combi',
+        field: 'report.transport',
         render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
         customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },

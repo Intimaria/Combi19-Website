@@ -53,6 +53,7 @@ const columns = [
     {title: 'Tipo de confort', field: 'comfort.typeComfortName'},
     {
         title: 'Chofer', render: (data) => `${data.driver.surname}, ${data.driver.name}`,
+        field: 'report.driver',
         customFilterAndSearch: (term, data) => (`${data.driver.surname.toLowerCase()}, ${data.driver.name.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
     {title: 'Estado', field: 'active'}

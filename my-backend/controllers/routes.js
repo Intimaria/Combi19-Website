@@ -30,8 +30,8 @@ const getRoutes = async (req, res) => {
         const sqlSelect =
                 `
                 SELECT r.ROUTE_ID, 
-                substring(DURATION, 1, 5) as DURATION, 
-                r.KM, t.INTERNAL_IDENTIFICATION, t.TRANSPORT_ID, r.ACTIVE,
+                concat(cast(substring(DURATION, 1, 2) AS UNSIGNED), IF(substring(DURATION, 1, 2) = "01", ' hora y ', ' horas y ') , substring(DURATION, 4, 2) , ' minutos') as DURATION, 
+                r.KM, t.INTERNAL_IDENTIFICATION, t.REGISTRATION_NUMBER, t.TRANSPORT_ID, r.ACTIVE,
                 c.CITY_NAME as Departure_City_Name, p.PROVINCE_NAME as Departure_Province_Name, c.CITY_ID as Departure_City_Id,
                 c1.CITY_NAME as Destination_City_Name, p1.PROVINCE_NAME as Destination_Province_Name, c1.CITY_ID as Destination_City_Id
                 FROM TRANSPORT t

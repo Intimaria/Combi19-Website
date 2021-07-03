@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const normalizeTransports = (rows) => {
     let results = [];
 
@@ -19,6 +21,9 @@ const normalizeTransports = (rows) => {
                 surname: rows[index].SURNAME,
                 email: rows[index].EMAIL,
                 phoneNumber: rows[index].PHONE_NUMBER
+            },
+            report: {
+                driver: `${rows[index].SURNAME}, ${rows[index].NAME}`
             }
         };
         results.push(transport);
@@ -89,6 +94,7 @@ const normalizeRoutes = (rows) => {
             transport: {
                 transportId: rows[index].TRANSPORT_ID,
                 internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
+                registrationNumber: rows[index].REGISTRATION_NUMBER
             },
             departure: {
                 cityId: rows[index].Departure_City_Id,
@@ -100,6 +106,9 @@ const normalizeRoutes = (rows) => {
                 cityName: rows[index].Destination_City_Name,
                 provinceName: rows[index].Destination_Province_Name
             },
+            report: {
+                transport: `${rows[index].INTERNAL_IDENTIFICATION} - ${rows[index].REGISTRATION_NUMBER}`
+            }
         };
         results.push(route);
     }
@@ -115,7 +124,7 @@ const normalizeProducts = (rows) => {
             typeProductId: rows[index].TYPE_PRODUCT_ID,
             typeProductDescription: rows[index].TYPE_PRODUCT_DESCRIPTION,
             name: rows[index].PRODUCT_NAME,
-            price: rows[index].PRICE,
+            price: `$${rows[index].PRICE}`,
             active: rows[index].ACTIVE === 1 ? "Activo" : "Inactivo",
         };
         results.push(product);
@@ -125,11 +134,13 @@ const normalizeProducts = (rows) => {
 
 const normalizeComments = (rows) => {
     let results = [];
+
     function makeDateTime(date) {
         const newDate = new Date(date).toLocaleDateString('Es-ar');
         const newTime = new Date(date).toLocaleTimeString();
         return newDate + ' ' + newTime + 'hs'
     }
+
     for (let index = 0; index < rows.length; index++) {
         let comment = {
             id: rows[index].COMMENT_ID,
@@ -163,7 +174,7 @@ const normalizeTrips = (rows) => {
             duration: rows[index].DURATION,
             active: (rows[index].ACTIVE === 0) ? 'Inactivo' : 'Activo',
             status: rows[index].STATUS,
-            quantity:  rows[index].QUANTITY,
+            quantity: rows[index].QUANTITY,
             percentage: rows[index].PERCENTAGE,
             driver: rows[index].DRIVER,
             route: {
@@ -176,7 +187,13 @@ const normalizeTrips = (rows) => {
             transport: {
                 transportId: rows[index].TRANSPORT_ID,
                 internalIdentification: rows[index].INTERNAL_IDENTIFICATION,
-                registrationNumber: rows[index].REGISTRATION_NUMBER,
+                registrationNumber: rows[index].REGISTRATION_NUMBER
+            },
+            report: {
+                price: `$${rows[index].PRICE}`,
+                departureDay: `${moment(rows[index].DEPARTURE_DAY).format('DD/MM/YYYY HH:mm')}hs`,
+                arrivalDay: `${moment(rows[index].ARRIVAL_DAY).format('DD/MM/YYYY HH:mm')}hs`,
+                transport: `${rows[index].INTERNAL_IDENTIFICATION} - ${rows[index].REGISTRATION_NUMBER}`
             }
         };
         results.push(trip);
@@ -222,7 +239,7 @@ const normalizePassengers = (rows) => {
             phone: rows[index].PHONE_NUMBER,
             documentNum: rows[index].DOCUMENT_NUMBER,
             riskExpires: new Date(rows[index].EXPIRATION_RISK).toLocaleDateString('Es-ar'),
-            hasDebit: (rows[index].AUTOMATIC_DEBIT  === 0) ? 'No' : 'Sí'
+            hasDebit: (rows[index].AUTOMATIC_DEBIT === 0) ? 'No' : 'Sí'
         };
         results.push(user);
     }
