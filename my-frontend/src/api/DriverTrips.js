@@ -9,7 +9,6 @@ import axios from 'axios';
 
 
 export const getPassangerStatus = async (id, url) => {
-    console.log("checking passanger status")
     const token = localStorage.getItem('token');
     try {
         const instance = axios.create({

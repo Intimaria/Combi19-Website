@@ -157,7 +157,6 @@ function DriverListTrips() {
     useEffect(() => {
         setUserData(newUser)
     }, []);
-    console.log("user", newUser)
 
     /* FUNCTIONALITY - VALIDATION & MODALS*/ 
 
@@ -185,13 +184,19 @@ function DriverListTrips() {
     const openCloseModalFinish = async (trip) => {
         if (!finishModal) {
             let dependenceResponse = await getPassangerStatus(trip.tripId, url);
-
-            if (dependenceResponse.data.passengersNotConfirmed) {
+            if (dependenceResponse.data.noPassengers) {
+                setSuccessMessage("Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo.");
+                setOptions({
+                    ...options, open: true, type: 'error',
+                    message: "Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo."
+                });
+            setSelectedTrip(formatSelectedTrip);
+        } else if (dependenceResponse.data.passengersNotConfirmed) {
                 setSuccessMessage("No se puede finalizar, hay pasajeros no chequeados.");
                 setOptions({
                     ...options, open: true, type: 'error',
                     message: "No se puede finalizar, hay pasajeros no chequeados."
-                });
+                })
                 setSelectedTrip(formatSelectedTrip);
             } else {
                 setFinishModal(!finishModal);

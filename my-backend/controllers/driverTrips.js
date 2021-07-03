@@ -152,22 +152,42 @@ const cancelTrip = async (req, res) => {
 const validatePassengers = async (id) => {
   try {
       const connection = await prepareConnection();
-      const sqlSelect = `
-      SELECT * FROM TRIP INNER JOIN TICKET WHERE TRIP_ID=${id} AND TICKET.ID_STATUS_TICKET=1 
-      `;
-      const [rows] = await connection.execute(sqlSelect);
-      connection.end();
-      return rows.length >= 1;
+        sqlSelect = `
+        SELECT * FROM TRIP INNER JOIN TICKET WHERE TRIP_ID=${id} AND TICKET.ID_STATUS_TICKET = 1 
+        `;
+        let [rows] = await connection.execute(sqlSelect);
+        connection.end();
+        return rows.length >= 1;
   } catch (error) {
       console.log("Ocurrió un error al verificar los pasajeros pendientes", error);
       return false;
   }
 }
 
+const emptyList = async (id) => {
+  try {
+      const connection = await prepareConnection();
+      let sqlSelect = `
+        SELECT * FROM TRIP INNER JOIN TICKET ON TRIP.TRIP_ID=TICKET.ID_TRIP WHERE TRIP_ID = ${id} 
+        `;
+        let [rows] = await connection.execute(sqlSelect);
+        connection.end();
+        return rows.length === 0;
+  } catch (error) {
+      console.log("Ocurrió un error al verificar los pasajeros pendientes", error);
+      return false;
+  }
+}
+
+
+
+
+
 const getPassangerStatus = async (req, res) => {
   const { id } = req.params;
   try {
       res.json({
+        noPassengers: await emptyList(id),
         passengersNotConfirmed: await validatePassengers(id)
       });
   } catch (error) {
