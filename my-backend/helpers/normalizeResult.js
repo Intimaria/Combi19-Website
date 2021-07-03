@@ -233,13 +233,18 @@ const normalizePassengers = (rows) => {
             userName: rows[index].NAME + ' ' + rows[index].SURNAME,
             country: rows[index].ID_COUNTRY,
             documentType: rows[index].ID_DOCUMENT_TYPE,
-            birthday: new Date(rows[index].BIRTHDAY).toLocaleDateString('Es-ar'),
+            birthday: rows[index].BIRTHDAY,
             email: rows[index].EMAIL,
-            goldMemberExpires: new Date(rows[index].GOLD_MEMBERSHIP_EXPIRATION).toLocaleDateString('Es-ar'),
+            goldMemberExpires: rows[index].GOLD_MEMBERSHIP_EXPIRATION,
             phone: rows[index].PHONE_NUMBER,
             documentNum: rows[index].DOCUMENT_NUMBER,
-            riskExpires: new Date(rows[index].EXPIRATION_RISK).toLocaleDateString('Es-ar'),
-            hasDebit: (rows[index].AUTOMATIC_DEBIT === 0) ? 'No' : 'Sí'
+            riskExpires: rows[index].EXPIRATION_RISK,
+            hasDebit: (rows[index].AUTOMATIC_DEBIT === 0) ? 'No' : 'Sí',
+            report: {
+                birthday: `${moment(rows[index].BIRTHDAY).format('DD/MM/YYYY')}`,
+                goldMemberExpires: (rows[index].GOLD_MEMBERSHIP_EXPIRATION) ? `${moment(rows[index].GOLD_MEMBERSHIP_EXPIRATION).format('DD/MM/YYYY')}` : '',
+                riskExpires: `${moment(rows[index].EXPIRATION_RISK).format('DD/MM/YYYY HH:mm')}hs`
+            }
         };
         results.push(user);
     }

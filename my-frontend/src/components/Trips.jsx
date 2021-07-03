@@ -76,7 +76,7 @@ const columns = [
     {
         title: 'Combi',
         field: 'report.transport',
-        render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
+        render: (data) => `${data.transport.internalIdentification} - ${data.transport.registrationNumber}`,
         customFilterAndSearch: (term, data) => (`${data.transport.internalIdentification.toLowerCase()}, ${data.transport.registrationNumber.toLowerCase()}`).indexOf(term.toLowerCase()) !== -1
     },
     {title: 'Estado', field: 'active'}
