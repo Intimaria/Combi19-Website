@@ -205,8 +205,6 @@ function Covid19Report() {
             </Typography>
             <Typography variant="body2" gutterBottom>
                 {selectedPassenger && selectedPassenger.email}
-                <br/>
-                {selectedPassenger && selectedPassenger.phone}
             </Typography>
             <Typography variant="overline" label="Activo" name="active" gutterBottom>
                 Riesgo hasta: {selectedPassenger && selectedPassenger.riskExpires}
