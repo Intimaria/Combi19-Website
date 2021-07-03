@@ -54,8 +54,9 @@ const getTrips = async (req, res) => {
                       WHEN MAX(ti.ID_STATUS_TICKET) = 5 THEN "Finalizado"
                       WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and tri.DEPARTURE_DAY > NOW() THEN 'Pendiente'
                       WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and (tri.DEPARTURE_DAY <= NOW() and ADDTIME(tri.DEPARTURE_DAY, r.DURATION) > NOW()) THEN 'Activo'
-                      WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and tri.DEPARTURE_DAY < NOW() THEN 'Finalizado'
-                      ELSE "-"       
+                      WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and ADDTIME(tri.DEPARTURE_DAY, r.DURATION) < NOW() THEN 'Finalizado'
+                      WHEN (ti.ID_STATUS_TICKET IS NULL) and (ADDTIME(tri.DEPARTURE_DAY, r.DURATION) < NOW()) THEN 'Finalizado'
+                      ELSE "-"        
                 END) AS STATUS
                 FROM TRIP tri
                 INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
@@ -64,7 +65,7 @@ const getTrips = async (req, res) => {
                 INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
                 INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
                 INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
-                INNER JOIN TICKET ti ON ti.ID_TRIP = tri.TRIP_ID
+                LEFT JOIN TICKET ti ON ti.ID_TRIP = tri.TRIP_ID
                 INNER JOIN USER u ON u.USER_ID=tra.ID_DRIVER
                 GROUP BY tri.TRIP_ID, tri.PRICE, tri.ACTIVE, tri.DEPARTURE_DAY, r.ROUTE_ID,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER,
@@ -80,7 +81,6 @@ const getTrips = async (req, res) => {
         await connection.execute(sqlMode);
 
         connection.end();
-
         const normalizeResults = normalizeTrips(rows);
         return res.status(200).send(normalizeResults);
     } catch (error) {
@@ -89,6 +89,9 @@ const getTrips = async (req, res) => {
     }
     res.end();
 };
+
+
+
 
 const getTripById = async (req, res) => {
     try {
@@ -142,7 +145,6 @@ const postTrip = async (req, res) => {
     const {routeId, price, departureDay} = req.body;
 
     const inputsErrors = await validateTripToCreate(routeId, departureDay);
-
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {
@@ -156,8 +158,7 @@ const postTrip = async (req, res) => {
                 VALUES (${routeId}, ${price}, '${departureDay}', 1);
                 `;
 
-            await connection.execute(sqlInsert);
-
+            const [rows] = await connection.execute(sqlInsert);
             connection.end();
             res.status(201).send(OK_MSG_API_TRIP_POST);
         } catch (error) {
