@@ -198,8 +198,10 @@ function Covid19Report() {
             </Typography>
             <Typography variant="body2" gutterBottom>
             {(
-                moment(selectedPassenger.goldMemberExpires).isAfter(new Date())) ? "Es Gold hasta: " + selectedPassenger.goldMemberExpires :
-                "No es Gold"}            </Typography>
+                moment(selectedPassenger.goldMemberExpires).isAfter(new Date())) ? 
+                "Es Gold hasta: " + moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY') :
+                "No es Gold"}            
+            </Typography>
             <Typography variant="overline" label="Email" name="email" gutterBottom>
                 Contacto:
             </Typography>
