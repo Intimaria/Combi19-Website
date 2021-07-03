@@ -42,10 +42,55 @@ const getDriverTrips = async (req, res) => {
                         AND U.USER_ID = ${id}
                         AND R.ACTIVE = 1
                         AND T.ACTIVE = 1
+                        AND TR.ACTIVE = 1
                         AND RU.ACTIVE = 1 
                         AND RU.ID_ROLE = 2
                         AND (ID_STATUS_TICKET = ${status})
                         ORDER BY TR.DEPARTURE_DAY ASC`;
+      const [rows] = await connection.execute(sqlSelect);
+      connection.end();
+      const normalizedResults = normalizeTrips(rows);
+      return res.status(200).send(normalizedResults);
+  } catch (error) {
+      console.log(`${ ERROR_MSG_API_GET_TRIPS} ${error}`);
+      res.status(500).send(`${ ERROR_MSG_API_GET_TRIPS} ${error}`);
+  }
+  res.end();
+};
+
+const getUnsoldDriverTrips = async (req, res) => {
+  const { id } = req.params;
+  try {
+      const connection = await prepareConnection();
+      const sqlSelect = `
+                        SELECT DISTINCT 
+                        TR.TRIP_ID, REPLACE(TR.PRICE, '.', ',') PRICE, TR.DEPARTURE_DAY,
+                        DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
+                        DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
+                        CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
+                        CV.CITY_ID DESTINATION_ID, CONCAT(CV.CITY_NAME, ', ', PV.PROVINCE_NAME) DESTINATION,
+                        T.TRANSPORT_ID, T.INTERNAL_IDENTIFICATION, T.REGISTRATION_NUMBER, TI.ID_STATUS_TICKET 
+                        FROM TRIP TR
+                        INNER JOIN ROUTE R ON
+                        (TR.ID_ROUTE = R.ROUTE_ID)
+                        INNER JOIN TRANSPORT T ON 
+                        (T.TRANSPORT_ID=R.ID_TRANSPORT)
+                        INNER JOIN CITY CI ON R.ID_DEPARTURE = CI.CITY_ID
+                        INNER JOIN PROVINCE PI ON CI.ID_PROVINCE = PI.PROVINCE_ID
+                        INNER JOIN CITY CV ON R.ID_DESTINATION = CV.CITY_ID
+                        INNER JOIN PROVINCE PV ON CV.ID_PROVINCE = PV.PROVINCE_ID 
+                        LEFT JOIN TICKET TI ON (TI.ID_TRIP=TR.TRIP_ID)
+                        WHERE DATEDIFF(TR.DEPARTURE_DAY, DATE_ADD(NOW(), INTERVAL -1 DAY) ) > -1
+                        AND T.ID_DRIVER = ${id}
+                        AND R.ACTIVE = 1
+                        AND T.ACTIVE = 1
+                        AND TR.ACTIVE = 1
+                        AND TI.TICKET_ID IS NULL
+                        GROUP BY TR.TRIP_ID, TR.DEPARTURE_DAY, TR.PRICE, R.DURATION,
+                        CI.CITY_ID, CI.CITY_NAME, PI.PROVINCE_NAME,
+                        CV.CITY_ID , CV.CITY_NAME, PV.PROVINCE_NAME,
+                        T.TRANSPORT_ID, T.INTERNAL_IDENTIFICATION, T.REGISTRATION_NUMBER, TI.ID_STATUS_TICKET
+                        ORDER BY DEPARTURE_DAY ASC`;
       const [rows] = await connection.execute(sqlSelect);
       connection.end();
       const normalizedResults = normalizeTrips(rows);
@@ -83,13 +128,18 @@ const cancelTrip = async (req, res) => {
   const { id } = req.params;
   try {
       const connection = await prepareConnection();
-      const sqlSelect = `UPDATE TICKET SET ID_STATUS_TICKET = 4, 
-                         ID_REFUND_PERCENTAGE = 1 
-                         WHERE ID_TRIP IN 
-                         (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP =${id}
-                          AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2));
+      let sqlSelect = ` UPDATE TICKET SET ID_STATUS_TICKET = 4, 
+                        ID_REFUND_PERCENTAGE = 1 
+                        WHERE ID_TRIP IN 
+                        (SELECT ID_TRIP FROM TICKET WHERE ID_TRIP =${id}
+                        AND (ID_STATUS_TICKET = 1 OR ID_STATUS_TICKET = 2))
                         `
-      const [rows] = await connection.execute(sqlSelect);
+      let [rows] = await connection.execute(sqlSelect);                
+      sqlSelect =  `
+                        UPDATE TRIP SET ACTIVE = 0
+                        WHERE TRIP_ID = ${id}
+                   `
+      await connection.execute(sqlSelect)
       connection.end();
       return res.status(200).send('Se ha cancelado el viaje correctamente');
   } catch (error) {
@@ -130,6 +180,7 @@ const getPassangerStatus = async (req, res) => {
 module.exports = {
   getPassangerStatus,
   getDriverTrips,
+  getUnsoldDriverTrips,
   finishTrip,
   cancelTrip
 }

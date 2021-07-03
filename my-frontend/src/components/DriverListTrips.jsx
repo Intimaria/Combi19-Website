@@ -26,7 +26,8 @@ import {
     getDriverTrips,
     finishTrip,
     cancelTrip,
-    getPassangerStatus
+    getPassangerStatus,
+    getDriverUnsoldTrips
 } from '../api/DriverTrips';
 import { TripPassengers } from './TripPassengers';
 
@@ -138,6 +139,7 @@ function DriverListTrips() {
     const [viewModal, setViewModal] = useState(false);
     const [problemModal, setProblemModal] = useState(false);
     const [sellModal, setSellModal] = useState(false);
+    const [notificationModal, setNotificationModal] = useState(false);
     //Saves the state current comment selected by the user 
     const [selectedTrip, setSelectedTrip] = useState(formatSelectedTrip);
 
@@ -180,14 +182,6 @@ function DriverListTrips() {
         }   
     };
     // The following functions are used to open Modal dialogues for API functionality
-   /* const openCloseModalFinish = () => {
-        setFinishModal(!finishModal);
-        if (finishModal) {
-            setSelectedTrip(formatSelectedTrip);
-            setDefaultErrorMessages();
-        }
-    };
-*/
     const openCloseModalFinish = async (trip) => {
         if (!finishModal) {
             let dependenceResponse = await getPassangerStatus(trip.tripId, url);
@@ -238,7 +232,13 @@ function DriverListTrips() {
             setDefaultErrorMessages();
         }
     };
-
+    const openCloseModalNotification = () => {
+        setNotificationModal(!notificationModal);
+        if (notificationModal) {
+            setSelectedTrip(formatSelectedTrip);;
+            setDefaultErrorMessages();
+        }
+    };
     /* API CALLS & DATABASE FUNCTIONS*/
 
     // API: sets all the passenger tickets in this trip to status 5
@@ -246,13 +246,12 @@ function DriverListTrips() {
         try {
             let getTripsResponse = await finishTrip(selectedTrip.tripId);
             if (getTripsResponse?.status === 200) {
-                openCloseModalFinish();
                 setSuccessMessage(`Se ha terminado el viaje correctamente`);
                  setOptions({
                 ...options, open: true, type: 'success',
                 message: `Se ha terminado el viaje correctamente`
             });
-            setNewData(true);
+            setNewData(true)
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_FINISH_TRIP} ${getTripsResponse}`);
                 setOptions({
@@ -269,7 +268,8 @@ function DriverListTrips() {
             try {
                 let getTripsResponse = await cancelTrip(selectedTrip.tripId);
                 if (getTripsResponse?.status === 200) {
-                    openCloseModalProblem();
+                    openCloseModalProblem()
+                    openCloseModalNotification()
                     setSuccessMessage(`Se ha cancelado el viaje correctamente`);
                      setOptions({
                     ...options, open: true, type: 'success',
@@ -290,12 +290,13 @@ function DriverListTrips() {
     //API: gets driver trips according to url and refreshes on ("newData")
         const fetchData = async () => {
             try {
-                let getTripsResponse;
                 let status = '1 OR ID_STATUS_TICKET = 2';
-                getTripsResponse = await getDriverTrips(userData.userId, url, status);
-                if (getTripsResponse?.status === 200) {
-                    let data = getTripsResponse.data;
-                    setData(data);
+                let getTripsResponse = await getDriverTrips(userData.userId, url, status);
+                let getUnsoldTripsResponse = await getDriverUnsoldTrips(userData.userId, url);
+                if (getTripsResponse?.status === 200 && getUnsoldTripsResponse?.status === 200) {
+                    let data = getTripsResponse.data.concat(getUnsoldTripsResponse.data);
+                    const result = data.filter((item, idx) => data.indexOf(item) === idx)
+                    setData(result);
                 } else {
                     setSuccessMessage(`${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`);
                     setOptions({
@@ -345,6 +346,17 @@ function DriverListTrips() {
             </div>
         </div>
       );
+
+      const bodyNotification = (
+          <div className={modal.small}>
+                <Typography variant="body1" component="p" gutterBottom>
+                    Se ha notificado a todos los pasajeros con pasajes pendientes 
+                    y se ha hecho la devolución al 100%
+                    del costo de los mismos y productos correspondientes.
+                </Typography>
+                <Button onClick={() => openCloseModalNotification()}>CERRAR</Button>
+          </div>
+      )
       const bodyProblem = (
         <div className={modal.small}>
             <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
@@ -355,7 +367,7 @@ function DriverListTrips() {
           </Typography>
           <br/>     
             <div align="right">
-            <Button color="secondary" onClick={() =>cancelThisTrip()}>SÍ, NOTIFICAR</Button>
+                <Button color="secondary" onClick={() =>cancelThisTrip()}>SÍ, NOTIFICAR</Button>
                 <Button onClick={() => openCloseModalProblem()}>CERRAR</Button>
             </div>
         </div>
@@ -467,6 +479,11 @@ function DriverListTrips() {
                 open={sellModal}
                 onClose={openCloseModalSell}>
                 {bodySellTicket}
+            </Modal>
+            <Modal
+                open={notificationModal}
+                onClose={openCloseModalNotification}>
+                {bodyNotification}
             </Modal>
 
 

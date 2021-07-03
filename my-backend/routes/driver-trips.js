@@ -4,7 +4,8 @@ const {
     getDriverTrips,
     finishTrip,
     cancelTrip,
-    getPassangerStatus
+    getPassangerStatus,
+    getUnsoldDriverTrips
 } = require('../controllers/driverTrips');
 
 // The administrator role should be validated with a middleware before performing any operation
@@ -14,6 +15,8 @@ const router = Router();
 
 // Get trips
 router.get('/custom/user/:id/:status', authenticateDriverRol, getDriverTrips);
+// Get unsold trips
+router.get('/custom/user/:id', authenticateDriverRol, getUnsoldDriverTrips);
 
 // Get passenger status 
 router.get('/custom/passenger/:id', authenticateDriverRol, getPassangerStatus);
