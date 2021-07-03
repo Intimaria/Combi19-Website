@@ -12,6 +12,7 @@ import { useStyles } from '../const/componentStyles';
 import IconButton from "@material-ui/core/IconButton";
 import { Message } from '../components/Message';
 import { login } from "../api/Passengers.js";
+import moment from 'moment';
 
 const axios = require("axios");
 
@@ -59,6 +60,7 @@ const Login = (props) => {
             setLoginError(null);
             localStorage.setItem('token', postRequest.data.token);
             localStorage.setItem('userData', JSON.stringify(postRequest.data.userData));
+            localStorage.setItem('expirationRisk', postRequest.data.userData.expirationRisk);
             history.push(props.redirectPage);
         }
         else if (postRequest?.status === 400) {
