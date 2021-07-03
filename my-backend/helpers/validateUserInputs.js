@@ -14,12 +14,12 @@ const {
     ERROR_MSG_INVALID_PASSWORD_NO_CAPITAL_LETTERS,
     ERROR_MSG_INVALID_PASSWORD_NO_LOWER_CASE,
     ERROR_MSG_INVALID_PASSWORD_NO_NUMBERS,
-    ERROR_MSG_INVALID_SURNAME, 
-    ERROR_MSG_EMPTY_DATE, 
-    ERROR_MSG_INVALID_DATE, 
+    ERROR_MSG_INVALID_SURNAME,
+    ERROR_MSG_EMPTY_DATE,
+    ERROR_MSG_INVALID_DATE,
     ERROR_MSG_INVALID_AGE,
     ERROR_MSG_SAME_NEW_PASSWORD,
-    ERROR_MSG_INCORRECT_ACTUAL_PASSWORD 
+    ERROR_MSG_INCORRECT_ACTUAL_PASSWORD
 } = require('../const/messages.js');
 
 const {
@@ -40,13 +40,70 @@ let birthdayError;
 let phoneNumberError;
 let actualPasswordError;
 
+const validateUserExistence = async (email) => {
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?)';
+        const [rows] = await connection.execute(selectSql, [email]);
+
+        connection.end();
+
+        if (rows.length === 1) {
+            return rows[0].USER_ID
+        }
+        else {
+            return null
+        }
+    } catch (error) {
+        console.log('Ocurrió un error al verificar si el usuario existe:', error);
+        return false;
+    }
+}
+
+const validateUserRiskiness = async (email) => {
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?) AND EXPIRATION_RISK IS NOT NULL AND EXPIRATION_RISK >= NOW()';
+        const [rows] = await connection.execute(selectSql, [email]);
+
+        connection.end();
+
+        return rows.length >= 1;
+    } catch (error) {
+        console.log('Ocurrió un error al verificar la riesgosidad del usuario:', error);
+        return false;
+    }
+}
+
+const validateUserGoldCondition = async (email) => {
+    try {
+        const connection = await prepareConnection();
+
+        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?) AND GOLD_MEMBERSHIP_EXPIRATION IS NOT NULL AND EXPIRATION_RISK >= NOW()';
+        const [rows] = await connection.execute(selectSql, [email]);
+
+        connection.end();
+
+        return rows.length >= 1;
+    } catch (error) {
+        console.log('Ocurrió un error al verificar si el usuario tiene permisos GOLD:', error);
+        return false;
+    }
+}
+
+const validatePassengerEmailBirthdayToSellTrip = (email, birthday) => {
+    return validateEmail(email) & validateDate(birthday) ? null : { emailError, birthdayError };
+};
+
 const validatePassengerEmailToRecoverPassword = (email) => {
-    return validateEmail(email) ? null : {emailError};
+    return validateEmail(email) ? null : { emailError };
 };
 
 const validatePassengerNewRecoveredPassword = (email, passwordRevocered1, passwordRevocered2) => {
     passwordError2 = null;
-    return (validateEmail(email) & validatePassword(passwordRevocered1)) && comparePasswords(passwordRevocered1, passwordRevocered2)? null : {emailError, passwordError1, passwordError2};
+    return (validateEmail(email) & validatePassword(passwordRevocered1)) && comparePasswords(passwordRevocered1, passwordRevocered2) ? null : { emailError, passwordError1, passwordError2 };
 };
 
 const validatePassengersToCreate = async (email, names, surname, password1, password2, birthday) => {
@@ -54,19 +111,19 @@ const validatePassengersToCreate = async (email, names, surname, password1, pass
     return (validatePassenger(email, names, surname, password1, password2, birthday) && await verifyUniqueEmailToCreate(email)) ? null : preparePassengerResponse();
 };
 
-const validatePassengersToModifyWithoutNewPassword = async (email, names, surname, actualPassword, birthday , id) => {
+const validatePassengersToModifyWithoutNewPassword = async (email, names, surname, actualPassword, birthday, id) => {
     passwordError1 = null;
     passwordError2 = null;
     return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id)) ? null : preparePassengerResponse();
 }
 
-const validatePassengersToModifyWithNewPassword = async (email, names, surname, newPassword1, newPassword2, actualPassword ,birthday, id) => {
+const validatePassengersToModifyWithNewPassword = async (email, names, surname, newPassword1, newPassword2, actualPassword, birthday, id) => {
     passwordError1 = null;
     passwordError2 = null;
-    return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id) && validatePassword(newPassword1) && comparePasswords(newPassword1,newPassword2) && compareActualPasswordWithNewPassword(actualPassword, newPassword1)) ? null : preparePassengerResponse();
+    return (validatePassengerToModify(email, names, surname, birthday) && await validateActualPassword(actualPassword, id) && await verifyUniqueEmailToModify(email, id) && validatePassword(newPassword1) && comparePasswords(newPassword1, newPassword2) && compareActualPasswordWithNewPassword(actualPassword, newPassword1)) ? null : preparePassengerResponse();
 }
 
-const validatePassengerToModify = (email, names, surname,birthday) => {
+const validatePassengerToModify = (email, names, surname, birthday) => {
     return (validateEmail(email) & validateName(names) & validateSurname(surname) & validateDate(birthday))
 }
 
@@ -291,7 +348,7 @@ const validatePhoneNumber = (phoneNumber) => {
     return true;
 }
 
-const validateActualPassword = async(actualPassword, id) => {
+const validateActualPassword = async (actualPassword, id) => {
     try {
         const connection = await prepareConnection();
 
@@ -329,5 +386,9 @@ module.exports = {
     validateDriversToCreate,
     validateDriversToModify,
     validatePassengerEmailToRecoverPassword,
-    validatePassengerNewRecoveredPassword
+    validatePassengerNewRecoveredPassword,
+    validatePassengerEmailBirthdayToSellTrip,
+    validateUserExistence,
+    validateUserRiskiness,
+    validateUserGoldCondition
 }
