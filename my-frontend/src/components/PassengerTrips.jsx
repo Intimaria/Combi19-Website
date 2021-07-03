@@ -187,7 +187,7 @@ function PassengerTrips() {
         /* JSX COMPONENTS & FORMATTING */
 
     return (
-        <div className="App" style={{maxWidth: "80%", margin: 'auto', float: "center"}}>
+        <div className="App" style={{maxWidth: "100%", margin: 'auto', float: "center"}}>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
