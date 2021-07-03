@@ -58,7 +58,7 @@ const columns = [
     {
         title: 'Miembro Gold hasta',
         field: 'report.goldMemberExpires',
-        render: (data) => (data.goldMemberExpires) ? `${moment(data.goldMemberExpires).format('DD/MM/YYYY')}` : '',
+        render: (data) => (data.goldMemberExpires) ? `${moment(data.goldMemberExpires).format('DD/MM/YYYY')}` : `No es Gold`,
         customFilterAndSearch: (term, data) => (`${moment(data.goldMemberExpires).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
     {title: 'Débito automático', field: 'hasDebit'}
@@ -197,15 +197,16 @@ function Covid19Report() {
                 Usuario Gold:
             </Typography>
             <Typography variant="body2" gutterBottom>
-                {moment(selectedPassenger.goldMemberExpires).isBefore(new Date()) ? "No es gold" : "Es Gold hasta: " + selectedPassenger.goldMemberExpires}
+            {(
+                moment(selectedPassenger.goldMemberExpires).isAfter(new Date())) ? 
+                "Es Gold hasta: " + moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY') :
+                "No es Gold"}            
             </Typography>
             <Typography variant="overline" label="Email" name="email" gutterBottom>
                 Contacto:
             </Typography>
             <Typography variant="body2" gutterBottom>
                 {selectedPassenger && selectedPassenger.email}
-                <br/>
-                {selectedPassenger && selectedPassenger.phone}
             </Typography>
             <Typography variant="overline" label="Activo" name="active" gutterBottom>
                 Riesgo hasta: {selectedPassenger && selectedPassenger.riskExpires}
