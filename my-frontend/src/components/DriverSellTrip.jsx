@@ -3,9 +3,11 @@ import {CustomDatePicker} from '../components/CustomDatePicker';
 import moment from "moment";
 import {TextField, Button} from '@material-ui/core';
 import {useStyles} from '../const/componentStyles';
-import {Message} from './Message';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import HelpIcon from '@material-ui/icons/Help';
+import Grid from "@material-ui/core/Grid";
+import Tooltip from "@material-ui/core/Tooltip";
+import {Message} from './Message';
 
 import {
     ERROR_MSG_EMPTY_EMAIL,
@@ -22,7 +24,7 @@ import {
 } from "../const/regex.js";
 import {validateAccountToSellTrip} from '../api/Drivers';
 import {postPassengerTrip} from '../api/Drivers';
-import Grid from "@material-ui/core/Grid";
+
 
 const DriverSellTrip = (props) => {
     //Configures any success or error messages for API functionality
@@ -288,26 +290,64 @@ const DriverSellTrip = (props) => {
                 <h2 align={'center'}> Ingrese cantidad de pasaje a comprar </h2>
                 <br/>
                 <Grid container>
-                    <Grid item xs={6}>
-                        <TextField className={styles.inputMaterial}
-                                   label="Asientos disponibles *"
-                                   name="availableSeating"
-                                   id="availableSeating"
-                                   disabled
-                                   style={{paddingRight: "10px"}}
-                                   value={props.trip.availableSeatings}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField className={styles.inputMaterial} label="Cantidad de pasajes *" name="ticketsQuantity"
-                                   id="ticketsQuantity"
-                                   inputProps={{maxLength: 2}}
-                                   autoComplete='off'
-                                   error={(ticketsQuantityError) ? true : false}
-                                   helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
-                                   value={ticketsQuantity}
-                                   onChange={newValue => handleTicketsQuantity(newValue)}
-                        />
+                    <Grid item xs={12} style={{paddingRight: "50px"}}>
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial}
+                                           label="Asientos disponibles *"
+                                           name="availableSeating"
+                                           id="availableSeating"
+                                           disabled
+                                           style={{paddingRight: "10px"}}
+                                           value={props.trip.availableSeatings}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial}
+                                           label="Precio unitario del pasaje *"
+                                           name="ticketPrice"
+                                           id="ticketPrice"
+                                           disabled
+                                           style={{paddingRight: "10px", marginLeft: "10px"}}
+                                           value={`$ ${props.trip.numberPrice.replace('.', ',')}`}
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial} label="Cantidad de pasajes *"
+                                           name="ticketsQuantity"
+                                           id="ticketsQuantity"
+                                           inputProps={{maxLength: 2}}
+                                           autoComplete='off'
+                                           error={(ticketsQuantityError) ? true : false}
+                                           helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
+                                           value={ticketsQuantity}
+                                           onChange={newValue => handleTicketsQuantity(newValue)}
+                                />
+                            </Grid>
+                            <Grid container alignItems="flex-start" item xs={6}>
+                                <Grid container alignItems={"flex-end"}
+                                      item xs={12}>
+                                    <Grid item xs={9}>
+                                        <TextField className={styles.inputMaterial} label="Total pasajes *"
+                                                   name="totalTickets"
+                                                   id="totalTickets"
+                                                   disabled
+                                                   style={{marginLeft: '10px'}}
+                                                   value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3} align={'right'}>
+                                        <Tooltip
+                                            title="Total = Cantidad pasajes * Precio del pasaje">
+                                            <HelpIcon color='primary' fontSize="small"/>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
 
