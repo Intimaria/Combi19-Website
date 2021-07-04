@@ -186,21 +186,21 @@ function DriverFinishedTrips() {
     // The following functions format the CRUD functionality for the user
     const bodyViewDetails = (
         <div className={modal.paper}>
-          <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-             Viaje con id {selectedTrip.tripId}
+          <Typography variant="h5" label="N° de viaje" name="tripId" gutterBottom>
+             Viaje n°{selectedTrip.tripId}
           </Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            origen: {selectedTrip.route.departure}</Typography>
+            Origen: {selectedTrip.route.departure}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            destino: {selectedTrip.route.destination}</Typography>
+            Destino: {selectedTrip.route.destination}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            precio: {selectedTrip.price}</Typography>
+            Precio: {selectedTrip.price}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            duracion: {selectedTrip.duration}hs</Typography>
+            Duración: {selectedTrip.duration}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            fecha de partida: {moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}</Typography>
+            Fecha de partida: {moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
-            fecha de llegada: {moment(selectedTrip.arrivalDay).format('DD/MM/YYYY HH:mm')}</Typography>
+            Fecha de llegada: {moment(selectedTrip.arrivalDay).format('DD/MM/YYYY HH:mm')}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
             Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
             <br/>     

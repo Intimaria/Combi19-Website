@@ -28,7 +28,8 @@ const getDriverPendingTrips = async (req, res) => {
         const sqlSelect = `
                         SELECT DISTINCT
                         TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.PRICE NUMBERPRICE, TR.DEPARTURE_DAY,
-                        DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
+                        DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, 
+                        concat(cast(substring(DURATION, 1, 2) AS UNSIGNED), IF(substring(DURATION, 1, 2) = "01", ' hora y ', ' horas y ') , substring(DURATION, 4, 2) , ' minutos') as DURATION,
                         DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                         CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
                         CV.CITY_ID DESTINATION_ID, CONCAT(CV.CITY_NAME, ', ', PV.PROVINCE_NAME) DESTINATION,
@@ -77,7 +78,8 @@ const getDriverFinishedTrips = async (req, res) => {
         const sqlSelect = `
                         SELECT DISTINCT
                         TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.PRICE NUMBERPRICE, TR.DEPARTURE_DAY,
-                        DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
+                        DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, 
+                        concat(cast(substring(DURATION, 1, 2) AS UNSIGNED), IF(substring(DURATION, 1, 2) = "01", ' hora y ', ' horas y ') , substring(DURATION, 4, 2) , ' minutos') as DURATION,
                         DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                         CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
                         CV.CITY_ID DESTINATION_ID, CONCAT(CV.CITY_NAME, ', ', PV.PROVINCE_NAME) DESTINATION,

@@ -23,9 +23,6 @@ const {
 const getRoutes = async (req, res) => {
     try {
         const connection = await prepareConnection();
-        /*
-        concat(cast(substring(DURATION, 1, 2) AS UNSIGNED), IF(substring(DURATION, 1, 2) = "01", ' hora y ', ' horas y ') , substring(DURATION, 4, 2) , ' minutos') as DURATION
-         */
 
         const sqlSelect =
                 `
