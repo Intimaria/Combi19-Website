@@ -1,15 +1,15 @@
-import { Button, Modal, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { materialTableConfiguration } from '../const/materialTableConfiguration';
-import { useStyles } from '../const/componentStyles';
+import {Button, Modal, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {materialTableConfiguration} from '../const/materialTableConfiguration';
+import {useStyles} from '../const/componentStyles';
 import MaterialTable from '@material-table/core';
-import { Message } from './Message';
+import {Message} from './Message';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import PeopleIcon from '@material-ui/icons/People';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import moment from "moment";
 /* USER IMPORTS */
 // All error messages for API requests, verifications, etc
@@ -18,18 +18,18 @@ import {
     ERROR_MSG_API_FINISH_TRIP,
 } from '../const/messages';
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 /* Import all API request async functions,
  this brings all user comments from database &
  adds CRUD functionality (will call backend API functions) */
 import {
-    getDriverTrips,
+    getDriverPendingTrips,
     finishTrip,
     cancelTrip,
     getPassangerStatus,
     getDriverUnsoldTrips
 } from '../api/DriverTrips';
-import { TripPassengers } from './TripPassengers';
+import {TripPassengers} from './TripPassengers';
 import DriverSellTrip from './DriverSellTrip';
 
 
@@ -64,19 +64,17 @@ const modalStyles = makeStyles((theme) => ({
 }));
 
 
-
-
 function DriverListTrips() {
     //Configures any success or error messages for API functionality
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     // Columns for trips list - overflow formatting to keep list simple & neat
     const columns = [
-        { title: 'N° de viaje', field: 'tripId' },
-        { title: 'Origen', field: 'route.departure' },
-        { title: 'Destino', field: 'route.destination' },
+        {title: 'N° de viaje', field: 'tripId'},
+        {title: 'Origen', field: 'route.departure'},
+        {title: 'Destino', field: 'route.destination'},
         {
             title: 'Precio', field: 'price'
         },
@@ -132,7 +130,7 @@ function DriverListTrips() {
     // Saves state of error messages for user information
     const [tripError, setTripError] = React.useState(null);
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     // Modal settings
     const [finishModal, setFinishModal] = useState(false);
@@ -149,9 +147,8 @@ function DriverListTrips() {
     // Saves user information from local storage (from login)
     const newUser = JSON.parse(localStorage.getItem('userData'));
     // Sets state based on the current url 
-    const history = useHistory()
+    const history = useHistory();
     const [url, setUrl] = useState(history.location.pathname.substring(1))
-
 
 
     // Sets state of new user whenever component mounts to keep data consistent [TODO]
@@ -185,19 +182,24 @@ function DriverListTrips() {
     const openCloseModalFinish = async (trip) => {
         if (!finishModal) {
             let dependenceResponse = await getPassangerStatus(trip.tripId, url);
+
             if (dependenceResponse.data.noPassengers) {
                 setSuccessMessage("Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo.");
+
                 setOptions({
                     ...options, open: true, type: 'error',
                     message: "Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo."
                 });
+
                 setSelectedTrip(formatSelectedTrip);
             } else if (dependenceResponse.data.passengersNotConfirmed) {
                 setSuccessMessage("No se puede finalizar, hay pasajeros no chequeados.");
+
                 setOptions({
                     ...options, open: true, type: 'error',
                     message: "No se puede finalizar, hay pasajeros no chequeados."
-                })
+                });
+
                 setSelectedTrip(formatSelectedTrip);
             } else {
                 setFinishModal(!finishModal);
@@ -206,42 +208,41 @@ function DriverListTrips() {
             setFinishModal(!finishModal);
             setSelectedTrip(formatSelectedTrip);
         }
-    }
-
+    };
 
 
     const openCloseModalList = () => {
         setListModal(!listModal);
         if (listModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
     const openCloseModalProblem = () => {
         setProblemModal(!problemModal);
         if (problemModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
     const openCloseModalSell = () => {
         setSellModal(!sellModal);
         if (sellModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
     const openCloseModalNotification = () => {
         setNotificationModal(!notificationModal);
         if (notificationModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };
@@ -251,13 +252,18 @@ function DriverListTrips() {
     const finishThisTrip = async () => {
         try {
             let getTripsResponse = await finishTrip(selectedTrip.tripId);
+
             if (getTripsResponse?.status === 200) {
                 setSuccessMessage(`Se ha terminado el viaje correctamente`);
                 setOptions({
                     ...options, open: true, type: 'success',
                     message: `Se ha terminado el viaje correctamente`
                 });
-                setNewData(true)
+
+                setNewData(true);
+
+                setFinishModal(!finishModal);
+
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_FINISH_TRIP} ${getTripsResponse}`);
                 setOptions({
@@ -274,8 +280,8 @@ function DriverListTrips() {
         try {
             let getTripsResponse = await cancelTrip(selectedTrip.tripId);
             if (getTripsResponse?.status === 200) {
-                openCloseModalProblem()
-                openCloseModalNotification()
+                openCloseModalProblem();
+                openCloseModalNotification();
                 setSuccessMessage(`Se ha cancelado el viaje correctamente`);
                 setOptions({
                     ...options, open: true, type: 'success',
@@ -296,12 +302,13 @@ function DriverListTrips() {
     //API: gets driver trips according to url and refreshes on ("newData")
     const fetchData = async () => {
         try {
-            let status = '1 OR ID_STATUS_TICKET = 2';
-            let getTripsResponse = await getDriverTrips(userData.userId, url, status);
-            let getUnsoldTripsResponse = await getDriverUnsoldTrips(userData.userId, url);
-            if (getTripsResponse?.status === 200 && getUnsoldTripsResponse?.status === 200) {
-                let data = getTripsResponse.data.concat(getUnsoldTripsResponse.data);
-                const result = data.filter((item, idx) => data.indexOf(item) === idx)
+            let getTripsResponse = await getDriverPendingTrips(userData.userId, url);
+
+            if (getTripsResponse?.status === 200) {
+                let data = getTripsResponse.data;
+
+                const result = data.filter((item, idx) => data.indexOf(item) === idx);
+
                 setData(result);
             } else {
                 setSuccessMessage(`${ERROR_MSG_API_GET_TRIPS} ${getTripsResponse}`);
@@ -334,8 +341,9 @@ function DriverListTrips() {
             <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
                 ¿Estás seguro de dar por terminado el viaje n°{selectedTrip.tripId}?
             </Typography>
-            <Typography variant="body1" component="p" gutterBottom>{selectedTrip.route.departure} y {selectedTrip.route.destination}</Typography>
-            <br />
+            <Typography variant="body1" component="p"
+                        gutterBottom>{selectedTrip.route.departure} y {selectedTrip.route.destination}</Typography>
+            <br/>
             <div align="right">
                 <Button color="secondary" onClick={() => finishThisTrip()}>SÍ, TERMINAR</Button>
                 <Button onClick={() => openCloseModalFinish()}>NO, CANCELAR</Button>
@@ -345,8 +353,8 @@ function DriverListTrips() {
 
     const bodyConfirmPassangers = (
         <div className={modal.paper}>
-            <TripPassengers trip={selectedTrip} />
-            <br />
+            <TripPassengers trip={selectedTrip}/>
+            <br/>
             <div align="right">
                 <Button onClick={() => openCloseModalList()}>CERRAR</Button>
             </div>
@@ -362,7 +370,8 @@ function DriverListTrips() {
             </Typography>
             <Button onClick={() => openCloseModalNotification()}>CERRAR</Button>
         </div>
-    )
+    );
+
     const bodyProblem = (
         <div className={modal.small}>
             <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
@@ -371,7 +380,7 @@ function DriverListTrips() {
             <Typography variant="body1" component="p" gutterBottom>
                 Esta opción cancelará todos los pasajes y hará la devolución del costo de los mismos.
             </Typography>
-            <br />
+            <br/>
             <div align="right">
                 <Button color="secondary" onClick={() => cancelThisTrip()}>SÍ, NOTIFICAR</Button>
                 <Button onClick={() => openCloseModalProblem()}>CERRAR</Button>
@@ -381,7 +390,7 @@ function DriverListTrips() {
     const bodySellTicket = (
         <div>
             <DriverSellTrip trip={selectedTrip}/>
-            <br />
+            <br/>
             <div align="right">
                 <Button onClick={() => openCloseModalSell()}>CERRAR</Button>
             </div>
@@ -406,7 +415,7 @@ function DriverListTrips() {
                 Fecha de llegada: {selectedTrip.arrivalDay}</Typography>
             <Typography variant="body1" component="p" gutterBottom>
                 Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
-            <br />
+            <br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
@@ -420,10 +429,10 @@ function DriverListTrips() {
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
-            <br />
+            <br/>
             {/* Lists all of the comments and gives user option to view, edit or delete */}
             <MaterialTable
                 columns={columns}
@@ -431,27 +440,27 @@ function DriverListTrips() {
                 title={"Viajes pendientes"}
                 actions={[
                     {
-                        icon: () => <VisibilityIcon />,
+                        icon: () => <VisibilityIcon/>,
                         tooltip: 'Ver viaje',
                         onClick: (event, rowData) => selectTrip(rowData, "Ver")
                     },
                     {
-                        icon: () => <ReportProblemIcon />,
+                        icon: () => <ReportProblemIcon/>,
                         tooltip: 'Notificar imprevisto',
                         onClick: (event, rowData) => selectTrip(rowData, "Imprevisto")
                     },
                     {
-                        icon: () => <MonetizationOnIcon />,
+                        icon: () => <MonetizationOnIcon/>,
                         tooltip: 'Vender pasaje',
                         onClick: (event, rowData) => selectTrip(rowData, "Vender")
                     },
                     {
-                        icon: () => <PeopleIcon />,
+                        icon: () => <PeopleIcon/>,
                         tooltip: 'Confirmar pasajeros',
                         onClick: (event, rowData) => selectTrip(rowData, "Lista")
                     },
                     {
-                        icon: () => <CheckCircleIcon />,
+                        icon: () => <CheckCircleIcon/>,
                         tooltip: 'Terminar viaje',
                         onClick: (event, rowData) => selectTrip(rowData, "Terminar")
                     }

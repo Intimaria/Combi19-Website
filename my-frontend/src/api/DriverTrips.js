@@ -1,7 +1,7 @@
 import {
-  ERROR_MSG_API_GET_TRIPS,
-  ERROR_MSG_API_FINISH_TRIP,
-  ERROR_MSG_INTERNET
+    ERROR_MSG_API_GET_TRIPS,
+    ERROR_MSG_API_FINISH_TRIP,
+    ERROR_MSG_INTERNET
 } from '../const/messages';
 
 import {BACKEND_URL} from "../const/config";
@@ -24,9 +24,9 @@ export const getPassangerStatus = async (id, url) => {
             return error.response;
         } else {
             // In this situation, is NOT an axios handled error
-  
+
             console.log(`Ocurrió un error en obtener el estado de los pasajeros: ${error}`);
-  
+
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
                 return error.message;
@@ -35,42 +35,73 @@ export const getPassangerStatus = async (id, url) => {
             }
         }
     }
-  };
-
-
- export const getDriverTrips = async (id, url, status) => {
-  const token = localStorage.getItem('token');
-  try {
-
-      const instance = axios.create({
-          baseURL: `${BACKEND_URL}/${url}/custom/user/${id}/${status}`,
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      });
-      const response = await instance.get();
-      return response;
-  } catch (error) {
-      if (error.response?.status) {
-          return error.response;
-      } else {
-          // In this situation, is NOT an axios handled error
-
-          console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
-
-          if (error.message === 'Network Error') {
-              error.message = ERROR_MSG_INTERNET;
-              return error.message;
-          } else {
-              return error.message;
-          }
-      }
-  }
 };
+
+
+export const getDriverPendingTrips = async (id, url) => {
+    const token = localStorage.getItem('token');
+    try {
+
+        const instance = axios.create({
+            baseURL: `${BACKEND_URL}/${url}/custom/pendingTrips/${id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const response = await instance.get();
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
+
+export const getDriverFinishedTrips = async (id, url) => {
+    const token = localStorage.getItem('token');
+    try {
+
+        const instance = axios.create({
+            baseURL: `${BACKEND_URL}/${url}/custom/finishedTrips/${id}`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const response = await instance.get();
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
+
 export const getDriverUnsoldTrips = async (id, url) => {
     const token = localStorage.getItem('token');
     try {
-  
+
         const instance = axios.create({
             baseURL: `${BACKEND_URL}/${url}/custom/user/${id}`,
             headers: {
@@ -84,9 +115,9 @@ export const getDriverUnsoldTrips = async (id, url) => {
             return error.response;
         } else {
             // In this situation, is NOT an axios handled error
-  
+
             console.log(`${ERROR_MSG_API_GET_TRIPS} ${error}`);
-  
+
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;
                 return error.message;
@@ -95,13 +126,13 @@ export const getDriverUnsoldTrips = async (id, url) => {
             }
         }
     }
-  };
+};
 
 export const finishTrip = async (id) => {
     const token = localStorage.getItem('token');
     try {
         let response = await axios.put(`${BACKEND_URL}/pendingTrips/custom/trip/${id}`,
-        {},
+            {},
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -130,7 +161,7 @@ export const cancelTrip = async (id) => {
     const token = localStorage.getItem('token');
     try {
         let response = await axios.put(`${BACKEND_URL}/pendingTrips/custom/canceltrip/${id}`,
-        {},
+            {},
             {
                 headers: {
                     Authorization: `Bearer ${token}`

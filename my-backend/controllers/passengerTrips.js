@@ -187,7 +187,7 @@ const getProductsPrice = async (cartId) => {
         const [rows] = await connection.execute(sqlSelect);
 
         connection.end();
-       console.log("rows", rows, "monto", rows[0].montoTotal)
+
         return rows[0].montoTotal;
     } catch (error) {
         console.log(`Ocurrió un error en getProductsPrice: ${error}`);
@@ -288,6 +288,7 @@ const rejectPassengerTrip = async (req, res) => {
                     WHERE ca.ID_USER = ${userId}
                     AND tri.DEPARTURE_DAY >= NOW()
                     AND tri.DEPARTURE_DAY < DATE_ADD(NOW(), INTERVAL 15 DAY)
+                    AND tri.ID_STATUS_TRIP = 1
                     ) tmpTable
                 )
             ;

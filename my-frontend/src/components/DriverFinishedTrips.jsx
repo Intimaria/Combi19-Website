@@ -18,7 +18,8 @@ import React, {useEffect, useState} from 'react';
  this brings all user comments from database &
  adds CRUD functionality (will call backend API functions) */
 import {
-    getDriverTrips,
+    getDriverFinishedTrips,
+    getDriverPendingTrips,
 } from '../api/DriverTrips';
 
 
@@ -61,7 +62,11 @@ function DriverFinishedTrips() {
             render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
             customFilterAndSearch: (term, data) => (`${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
         },
-        {title: 'Fecha de llegada', field: 'arrivalDay'},
+        {
+            title: 'Fecha de llegada',
+            render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
+            customFilterAndSearch: (term, data) => (`${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`).indexOf(term.toLowerCase()) !== -1
+        },
         {
             title: 'Combi',
             render: (data) => `${data.transport.internalIdentification} -  ${data.transport.registrationNumber}`,
@@ -155,9 +160,7 @@ function DriverFinishedTrips() {
     //API: gets driver trips according to url and refreshes on ("newData")
         const fetchData = async () => {
             try {
-                let getTripsResponse;
-                let status = '5';
-                getTripsResponse = await getDriverTrips(userData.userId, url, status);
+                let getTripsResponse = await getDriverFinishedTrips(userData.userId, url);
                 if (getTripsResponse?.status === 200) {
                     let data = getTripsResponse.data;
                     setData(data);

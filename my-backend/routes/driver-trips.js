@@ -1,11 +1,11 @@
 const {Router} = require('express');
 
 const {
-    getDriverTrips,
+    getDriverPendingTrips,
+    getDriverFinishedTrips,
     finishTrip,
     cancelTrip,
     getPassangerStatus,
-    getUnsoldDriverTrips,
     createUserToSellTrip
 } = require('../controllers/driverTrips');
 
@@ -14,10 +14,11 @@ const {authenticateDriverRol} = require("../middlewares/authorization.js");
  
 const router = Router();
 
-// Get trips
-router.get('/custom/user/:id/:status', authenticateDriverRol, getDriverTrips);
-// Get unsold trips
-router.get('/custom/user/:id', authenticateDriverRol, getUnsoldDriverTrips);
+// Get pending trips
+router.get('/custom/pendingTrips/:id', authenticateDriverRol, getDriverPendingTrips);
+
+// Get finished trips
+router.get('/custom/finishedTrips/:id', authenticateDriverRol, getDriverFinishedTrips);
 
 // Get passenger status 
 router.get('/custom/passenger/:id', authenticateDriverRol, getPassangerStatus);
