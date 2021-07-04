@@ -1,8 +1,11 @@
-import React, {useState} from 'react'
-import {CustomDatePicker} from '../components/CustomDatePicker';
+import React, { useState } from 'react'
+import { CustomDatePicker } from '../components/CustomDatePicker';
 import moment from "moment";
-import {TextField, Button} from '@material-ui/core';
-import {useStyles} from '../const/componentStyles';
+import { TextField, Button } from '@material-ui/core';
+import { useStyles } from '../const/componentStyles';
+import { Message } from './Message';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import HelpIcon from '@material-ui/icons/Help';
 
 import {
     ERROR_MSG_EMPTY_EMAIL,
@@ -15,28 +18,76 @@ import {
 import {
     REGEX_EMAIL,
     REGEX_DATE_YYYY_MM_DD,
-
+    REGEX_ONLY_NUMBER
 } from "../const/regex.js";
+import { validateAccountToSellTrip } from '../api/Drivers';
+import { postPassengerTrip } from '../api/Drivers';
 
 const DriverSellTrip = (props) => {
+    //Configures any success or error messages for API functionality
+    const handleCloseMessage = () => {
+        setOptions({ ...options, open: false });
+    };
+
     const styles = useStyles();
 
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
-    const [birthday, setBirthday] = React.useState(moment()
+    const [birthday, setBirthday] = useState(moment()
         .subtract(18, "years")
-        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
+        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         .format('YYYY-MM-DD')
     );
-    const [birthdayError, setBirthdayError] = React.useState(null);
+    const [birthdayError, setBirthdayError] = useState(null);
+    const [ticketsQuantity, setTicketsQuantity] = useState('');
+    const [ticketsQuantityError, setTicketsQuantityError] = useState(null);
+
+    const [userInformation, setUserInformation] = useState(null);
+    const [priceToPay, setPriceToPay] = useState(null);
+
+    const [successMessage, setSuccessMessage] = React.useState(null);
+    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
 
     const mySubmitEmailBirthdayHandler = async (event) => {
         event.preventDefault();
 
-        if (validateEmail(email) & validateBirthday(birthday)) console.log("Todo OK");
+        if (validateEmail(email) & validateBirthday(birthday)) await validateAccount();
 
         return true;
     };
+
+    const validateAccount = async () => {
+        let postRequest = await validateAccountToSellTrip(email, birthday);
+        if (postRequest?.status === 201 || postRequest?.status === 200) {
+            setUserInformation(postRequest.data);
+            let messageToShow;
+            if (postRequest?.status === 201) {
+                messageToShow = "El usuario se ha creado con exito";
+            }
+            else if (postRequest.data.isGold) {
+                messageToShow = "El usuario ya existe en el sistema y posee beneficios GOLD";
+            }
+            else {
+                messageToShow = "El usuario ya existe en el sistema";
+            }
+
+            setSuccessMessage(messageToShow);
+            setOptions({
+                ...options, open: true, type: 'success',
+                message: messageToShow
+            });
+        }
+        else if (postRequest?.status === 400) {
+            setEmailError(postRequest.data.emailError);
+            setBirthdayError(postRequest.data.birthdayError);
+        } else if (postRequest?.status === 401 || postRequest?.status === 500) {
+            setSuccessMessage(postRequest.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: postRequest.data
+            });
+        }
+    }
 
     const handleEmail = (newValue) => {
         setEmail(newValue.target.value);
@@ -124,7 +175,7 @@ const DriverSellTrip = (props) => {
     };
 
     const validateEmailAndBirthdayToSellTrips = (
-        <div className={styles.modal}>
+        <div  className="">
             <form onSubmit={mySubmitEmailBirthdayHandler}>
                 <h2 align={'center'}> Ingrese datos de la cuenta </h2>
                 <br />
@@ -139,6 +190,12 @@ const DriverSellTrip = (props) => {
                     value={email}
                     onChange={newValue => handleEmail(newValue)}
                 />
+
+                <FormHelperText>
+                    <HelpIcon color='primary' fontSize="small" />
+                    Se enviara la contraseña al email en caso de no tener una cuenta
+                </FormHelperText>
+
                 <br />
                 <h5 align={'center'}> Ingrese fecha de nacimiento </h5>
                 <CustomDatePicker
@@ -162,9 +219,112 @@ const DriverSellTrip = (props) => {
             </form>
         </div>
     );
+
+    const mySubmitSellTripHandler = async (event) => {
+        event.preventDefault();
+
+        if (validateTicketsQuantity(ticketsQuantity)) await sellTrip();
+
+        return true;
+    };
+
+    const sellTrip = async () => {
+        const cart = {
+            products: [],
+            tripId: props.trip.tripId,
+            ticket: {
+                quantity: ticketsQuantity,
+                price: props.trip.numberPrice
+            }
+        }
+        const postRequest = await postPassengerTrip(cart, null, userInformation.id, userInformation.isGold);
+        if (postRequest.status === 200) {
+            // setDefaultValues();
+            setPriceToPay(userInformation.isGold ? (props.trip.numberPrice * ticketsQuantity) * 0.9 : props.trip.numberPrice * ticketsQuantity);
+
+            return true
+        } else if (postRequest.status === 500) {
+            setSuccessMessage(postRequest.data);
+            setOptions({
+                ...options, open: true, type: 'error',
+                message: postRequest.data
+            });
+        }
+    }
+
+    const setDefaultValues = () => {
+        setEmail('');
+        setBirthday('');
+        setTicketsQuantity('');
+    }
+
+    const validateTicketsQuantity = (ticketsQuantity) => {
+        if (!ticketsQuantity) {
+            setTicketsQuantityError('* Debe comprar al menos un pasaje');
+            return false;
+        } else if (!REGEX_ONLY_NUMBER.test(ticketsQuantity)) {
+            setTicketsQuantityError('* Sólo se permite valores numéricos');
+            return false;
+        } else if (parseInt(ticketsQuantity) === 0) {
+            setTicketsQuantityError('* Debe comprar al menos un pasaje');
+            return false;
+        } else if (parseInt(props.trip.availableSeatings) < parseInt(ticketsQuantity)) {
+            setTicketsQuantityError('* Debe ser menor o igual a la cantidad de asientos disponibles');
+            return false;
+        } else {
+            setTicketsQuantityError(null);
+            return true;
+        }
+    }
+
+    const handleTicketsQuantity = (newValue) => {
+        setTicketsQuantity(newValue.target.value);
+        setTicketsQuantityError(null);
+    };
+
+    const selectQuantityToBuy = (
+        <div  className="">
+            <form onSubmit={mySubmitSellTripHandler}>
+                <h2 align={'center'}> Ingrese cantidad de pasaje a comprar </h2>
+                <br />
+                <TextField className={styles.inputMaterial} label="Cantidad de pasajes *" name="ticketsQuantity"
+                    id="ticketsQuantity"
+                    inputProps={{ maxLength: 2 }}
+                    autoComplete='off'
+                    error={(ticketsQuantityError) ? true : false}
+                    helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
+                    value={ticketsQuantity}
+                    onChange={newValue => handleTicketsQuantity(newValue)}
+                />
+                <br /><br />
+                <Button style={{ width: '100%' }}
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                    id="btnRegister"
+                    type="submit"
+                    onClick={() => ""}
+                >Confirmar</Button>
+            </form>
+        </div>
+    );
+    const tripSuccessfullySoldModal = (
+        <div className="">
+            <h3 align={'center'}> Se ha vendido el pasaje satisfactoriamente </h3>
+            <h4 align={'center'}> El monto a pagar es: ${priceToPay} </h4>
+        </div>
+    )
     return (
         <div>
-            {validateEmailAndBirthdayToSellTrips}
+            {
+                successMessage ?
+                    <Message open={options.open} type={options.type} message={options.message}
+                        handleClose={options.handleClose} />
+                    : null
+            }
+            {!userInformation ? validateEmailAndBirthdayToSellTrips : null}
+            {userInformation && !priceToPay ? selectQuantityToBuy : null}
+            {priceToPay ? tripSuccessfullySoldModal : null}
         </div>
     )
 }

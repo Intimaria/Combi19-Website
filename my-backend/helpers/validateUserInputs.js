@@ -1,3 +1,4 @@
+const { PASSENGER_ROLE } = require('../const/config.js');
 const {
     ERROR_MSG_EMPTY_EMAIL,
     ERROR_MSG_EMPTY_NAME,
@@ -44,8 +45,8 @@ const validateUserExistence = async (email) => {
     try {
         const connection = await prepareConnection();
 
-        const selectSql = 'SELECT USER_ID FROM USER WHERE EMAIL = (?)';
-        const [rows] = await connection.execute(selectSql, [email]);
+        const selectSql = 'SELECT USER_ID FROM USER U INNER JOIN ROLE_USER RU ON (RU.ID_USER = U.USER_ID) WHERE U.EMAIL = (?) AND RU.ID_ROLE = (?)';
+        const [rows] = await connection.execute(selectSql, [email,PASSENGER_ROLE]);
 
         connection.end();
 

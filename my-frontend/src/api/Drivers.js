@@ -7,7 +7,8 @@ import {
     ERROR_MSG_API_DELETE_DRIVER,
     ERROR_MSG_API_GET_DRIVERS_CUSTOM_AVAILABLE,
     ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE,
-    ERROR_MSG_INTERNET
+    ERROR_MSG_INTERNET,
+    ERROR_MSG_API_PUT_PASSENGER_TRIP
 } from "../const/messages";
 
 export const getDrivers = async () => {
@@ -42,7 +43,7 @@ export const postDrivers = async (driverData) => {
     const token = localStorage.getItem('token');
     try {
         let response = await axios.post(`${BACKEND_URL}/drivers`,
-        driverData,
+            driverData,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -71,7 +72,7 @@ export const putDrivers = async (driverData, id) => {
     const token = localStorage.getItem('token');
     try {
         let response = await axios.put(`${BACKEND_URL}/drivers/${id}`,
-        driverData,
+            driverData,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -167,6 +168,78 @@ export const getDriverDependenceById = async (id) => {
             // In this situation, is NOT an axios handled error
 
             console.log(`${ERROR_MSG_API_DELETE_DRIVER_TRANSPORT_DEPENDENCE} ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
+
+export const validateAccountToSellTrip = async (email, birthday) => {
+    const token = localStorage.getItem('token');
+    const body = {
+        email,
+        birthday
+    }
+    
+    try {
+        let response = await axios.post(`${BACKEND_URL}/pendingTrips/custom/validateaccounttoselltrip/`,
+            body,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`Ocurrido un error ${error}`);
+
+            if (error.message === 'Network Error') {
+                error.message = ERROR_MSG_INTERNET;
+                return error.message;
+            } else {
+                return error.message;
+            }
+        }
+    }
+};
+
+export const postPassengerTrip = async (cart, cardId, userId, isUserGold) => {
+    const token = localStorage.getItem('token');
+
+    let formattedPassengerCart = {
+        cart,
+        cardId,
+        userId,
+        isUserGold
+    };
+
+    try {
+        let response = await axios.post(`${BACKEND_URL}/pendingTrips/custom/selltrip/`,
+            formattedPassengerCart,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        return response;
+    } catch (error) {
+        if (error.response?.status) {
+            return error.response;
+        } else {
+            // In this situation, is NOT an axios handled error
+
+            console.log(`${ERROR_MSG_API_PUT_PASSENGER_TRIP} ${error}`);
 
             if (error.message === 'Network Error') {
                 error.message = ERROR_MSG_INTERNET;

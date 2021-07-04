@@ -58,10 +58,9 @@ const getPassengerTrips = async (req, res) => {
 const postPassengerTrip = async (req, res) => {
 
     const {cart, cardId, userId, isUserGold} = req.body;
-
+    console.log(cart);
     try {
         const connection = await prepareConnection();
-
         let sqlInsert;
 
         sqlInsert =
@@ -77,7 +76,6 @@ const postPassengerTrip = async (req, res) => {
             `;
 
         const [rows] = await connection.execute(sqlInsert);
-
         const cartId = rows.insertId;
 
         for (let i = 0; i < cart.ticket.quantity; i++) {
@@ -96,7 +94,6 @@ const postPassengerTrip = async (req, res) => {
             ${1},
             ${(isUserGold) ? (cart.ticket.price * 0.9) : cart.ticket.price});
             `;
-
             await connection.execute(sqlInsert);
         }
 

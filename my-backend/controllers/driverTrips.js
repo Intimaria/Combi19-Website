@@ -27,12 +27,25 @@ const getDriverPendingTrips = async (req, res) => {
         const connection = await prepareConnection();
         const sqlSelect = `
                         SELECT DISTINCT
-                        TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.DEPARTURE_DAY,
+                        TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.PRICE NUMBERPRICE, TR.DEPARTURE_DAY,
                         DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
                         DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                         CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
                         CV.CITY_ID DESTINATION_ID, CONCAT(CV.CITY_NAME, ', ', PV.PROVINCE_NAME) DESTINATION,
-                        T.TRANSPORT_ID, T.INTERNAL_IDENTIFICATION, T.REGISTRATION_NUMBER
+                        T.TRANSPORT_ID, T.INTERNAL_IDENTIFICATION, T.REGISTRATION_NUMBER,
+                        (CASE WHEN 
+                          (T.SEATING - ( SELECT SUM(TI2.QUANTITY)
+                              FROM TICKET TI2
+                              INNER JOIN TRIP TR2 ON TI2.ID_TRIP = TR2.TRIP_ID
+                              WHERE TI2.ID_STATUS_TICKET = 1 AND TR.TRIP_ID = TR2.TRIP_ID))
+                          IS NULL
+                          THEN T.SEATING
+                          ELSE 
+                          (T.SEATING - ( SELECT SUM(TI2.QUANTITY)
+                              FROM TICKET TI2
+                              INNER JOIN TRIP TR2 ON TI2.ID_TRIP = TR2.TRIP_ID
+                              WHERE TI2.ID_STATUS_TICKET = 1 AND TR.TRIP_ID = TR2.TRIP_ID))
+                          END) AS AVAILABLESEATINGS
                         FROM USER U 
                         INNER JOIN ROLE_USER RU ON U.USER_ID = RU.ROLE_USER_ID
                         INNER JOIN TRANSPORT T ON U.USER_ID = T.ID_DRIVER
@@ -63,7 +76,7 @@ const getDriverFinishedTrips = async (req, res) => {
         const connection = await prepareConnection();
         const sqlSelect = `
                         SELECT DISTINCT
-                        TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.DEPARTURE_DAY,
+                        TRIP_ID, CONCAT('$', REPLACE(TR.PRICE, '.', ',')) PRICE, TR.PRICE NUMBERPRICE, TR.DEPARTURE_DAY,
                         DATE_FORMAT(TR.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, R.DURATION,
                         DATE_FORMAT(ADDTIME(TR.DEPARTURE_DAY, R.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                         CI.CITY_ID DEPARTURE_ID, CONCAT(CI.CITY_NAME, ', ', PI.PROVINCE_NAME) DEPARTURE, 
@@ -205,61 +218,62 @@ const emptyList = async (id) => {
 };
 
 // Validate inputs format and account (if exists, if is risky, if is gold)
-const createUserToSellTrip = async (req, res) => {
+const validateAccountToSellTrip = async (req, res) => {
     const {email, birthday} = req.body;
 
     let userInformation = {
         id: "",
         isGold: ""
-    };
+    }
 
     const inputsErrors = validatePassengerEmailBirthdayToSellTrip(email, birthday);
-
     // The inputs are wrong
     if (inputsErrors) {
         res.status(400).json(inputsErrors);
     } else {
-        const userId = await validateUserExistence(email);
-        //The user not exists
-        if (!userId) {
-            const connection = await prepareConnection();
+        try {
+            const userId = await validateUserExistence(email);
+            //The user not exists
+            if (!userId) {
+                const connection = await prepareConnection();
+                sqlInsert =
+                    ` INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) 
+            VALUES ('Anonimo', 'Anonimo', '${birthday}', '${email}', '123456', NULL, NULL);
+          `
+                const [rows] = await connection.execute(sqlInsert);
 
-            let sqlInsert =
-                `
-                INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) 
-                VALUES ('Anónimo', 'Anónimo', '${birthday}', '${email}', '123456', NULL, NULL);
-                `;
+                const id = rows.insertId;
 
-            const [rows] = await connection.execute(sqlInsert);
+                sqlInsert = `INSERT INTO ROLE_USER (ID_ROLE, ID_USER, ACTIVE) VALUES (${PASSENGER_ROLE}, ${id}, ${ACTIVE});`
+                connection.execute(sqlInsert);
 
-            const id = rows.insertId;
+                userInformation.id = id;
+                userInformation.isGold = false;
 
-            sqlInsert = `INSERT INTO ROLE_USER (ID_ROLE, ID_USER, ACTIVE) VALUES (${PASSENGER_ROLE}, ${id}, ${ACTIVE});`;
-            connection.execute(sqlInsert);
+                res.status(201).json(userInformation)
+            } else {
+                const isRiskyUser = await validateUserRiskiness(email);
+                // The user exists and is risky
+                if (isRiskyUser) {
+                    res.status(401).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY);
+                }
+                //The user exists and is not risky
+                else {
+                    const isGold = await validateUserGoldCondition(email);
 
-            userInformation.id = id;
-            userInformation.isGold = false;
+                    userInformation.id = userId;
+                    userInformation.isGold = isGold;
 
-            res.status(201).json(userInformation)
-        } else {
-            const isRiskyUser = await validateUserRiskiness(email);
-            // The user exists and is risky
-            if (isRiskyUser) {
-                res.status(401).send(OK_MSG_API_PUT_TRIP_PASSENGER_TICKET_RISKY);
+                    res.status(200).json(userInformation)
+                }
             }
-            //The user exists and is not risky
-            else {
-                const isGold = await validateUserGoldCondition(email);
-
-                userInformation.id = userId;
-                userInformation.isGold = isGold;
-
-                res.status(200).json(userInformation)
-            }
+        } catch (error) {
+            console.log(`Ocurrió un error al verificar el usuario para vender pasaje: ${error}`);
+            res.status(500).send(`Ocurrió un error al verificar el usuario para vender pasaje`);
         }
     }
     res.end();
-};
+}
 
 
 const getPassangerStatus = async (req, res) => {
@@ -282,5 +296,5 @@ module.exports = {
     getDriverFinishedTrips,
     finishTrip,
     cancelTrip,
-    createUserToSellTrip
+    validateAccountToSellTrip
 };

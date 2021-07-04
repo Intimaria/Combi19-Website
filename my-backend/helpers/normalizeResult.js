@@ -172,6 +172,7 @@ const normalizeTrips = (rows) => {
             tripId: rows[index].TRIP_ID,
             ticketId: rows[index].TICKET_ID,
             price: rows[index].PRICE,
+            numberPrice: rows[index].NUMBERPRICE,
             departureDay: rows[index].DEPARTURE_DAY,
             arrivalDay: rows[index].ARRIVAL_DAY,
             duration: rows[index].DURATION,
@@ -180,6 +181,7 @@ const normalizeTrips = (rows) => {
             quantity: rows[index].QUANTITY,
             percentage: rows[index].PERCENTAGE,
             driver: rows[index].DRIVER,
+            availableSeatings: rows[index].AVAILABLESEATINGS,
             route: {
                 routeId: rows[index].ROUTE_ID,
                 departureId: rows[index].DEPARTURE_ID,
