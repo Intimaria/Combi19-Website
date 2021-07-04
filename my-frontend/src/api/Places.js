@@ -205,7 +205,6 @@ export const putPlace = async (selectedPlaces, provinceSelected) => {
 };
 
 export const deletePlace = async (id) => {
-    console.log("id sent from front", id);
     const token = localStorage.getItem('token');
     /*
     const deletePlace = {

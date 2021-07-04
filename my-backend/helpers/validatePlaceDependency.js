@@ -21,7 +21,6 @@ const validatePlaceDependency = async (id) => {
 
 
 const validatePlaceExistsForDelete = async (id, idProvince) => {
-    console.log(id, idProvince);
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
@@ -42,7 +41,6 @@ const validatePlaceExistsForDelete = async (id, idProvince) => {
 };
 
 const validatePlaceExists = async (cityName, province_id) => {
-    console.log(cityName, province_id);
     try {
         const connection = await prepareConnection();
         const sqlSelect = `
@@ -63,7 +61,6 @@ const validatePlaceExists = async (cityName, province_id) => {
 };
 
 const validatePlaceToUpdate = async (cityName, province_id, id) => {
-    console.log(cityName, province_id, id);
     try {
         const connection = await prepareConnection();
         const sqlSelect = `

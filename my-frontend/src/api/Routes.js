@@ -108,10 +108,9 @@ export const putRoutes = async (routesData, idPlaceDeparture, idPlaceDestination
             }
         }
     }
-}
+};
 // Falta implementar en el backend
 export const deleteRoutes = async (id) => {
-    console.log(id);
     const token = localStorage.getItem('token');
     try {
         let response = await axios.delete(`${BACKEND_URL}/routes/${id}`,

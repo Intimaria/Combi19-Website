@@ -48,9 +48,8 @@ const validateUserIsCustomer = async (id) => {
 
 
 const validateCommentDate = (date) => {
-  console.log(date)
   let aDate = new Date(date);
-  console.log(aDate);
+
   if (!REGEX_DATE_YYYY_MM_DD.test(date)) {
       dateError = (ERROR_MSG_INVALID_DATE);
       return false;

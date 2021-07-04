@@ -113,7 +113,7 @@ export const CancelTrip = (props) => {
     // API: Changes ticket status, sets refund percentage. Returns any product value if last ticket.
     const apiCancel = async ({diferencia}) => {
         let num = diferencia * 100;
-        console.log("diff:", diferencia)
+
         const cancellation = await cancelPassengerTrip(selectedTrip.ticketId, num);
         return cancellation.data;
     };

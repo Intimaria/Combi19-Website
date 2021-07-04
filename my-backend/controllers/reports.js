@@ -26,8 +26,8 @@ const getRiskyPassengers = async (req, res) => {
         const normalizeResults =  normalizePassengers(rows);
         return res.status(200).send(normalizeResults);
     } catch (error) {
-        console.log(`${""}: ${error}`);
-        res.status(500).send(`${""}: ${error}`);
+        console.log(`Ocurrió un error al obtener los pasajeros con riesgo: ${error}`);
+        res.status(500).send(`Ocurrió un error al obtener los pasajeros con riesgo: ${error}`);
     }
     res.end();
 };

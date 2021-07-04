@@ -115,10 +115,9 @@ const validatePrice = (price) => {
     }
     priceError = null;
     return true;
-}
+};
 
 const validateTypeProduct = async (typeProduct) => {
-    console.log(REGEX_ONLY_NUMBER.test(typeProduct));
     if (!typeProduct) {
         errorTypeProduct = ERROR_MSG_EMPTY_TYPE_PRODUCT;
         return false;

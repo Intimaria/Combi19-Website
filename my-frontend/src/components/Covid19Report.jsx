@@ -142,7 +142,6 @@ function Covid19Report() {
     const fetchData = async () => {
         try {
             let getPassengerResponse = await getRiskyPassengers();
-            console.log(getPassengerResponse);
             if (getPassengerResponse.status === 200) {
                 let data = getPassengerResponse.data;
                 setData(data);

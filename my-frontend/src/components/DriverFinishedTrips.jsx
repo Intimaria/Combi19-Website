@@ -123,14 +123,13 @@ function DriverFinishedTrips() {
     // Saves user information from local storage (from login)
     const newUser = JSON.parse(localStorage.getItem('userData'));
     // Sets state based on the current url 
-    const history = useHistory()
-    const [url, setUrl] = useState(history.location.pathname.substring(1))
+    const history = useHistory();
+    const [url, setUrl] = useState(history.location.pathname.substring(1));
    
     // Sets state of new user whenever component mounts to keep data consistent [TODO]
     useEffect(() => {
         setUserData(newUser)
     }, []);
-    console.log("user", newUser)
 
     /* FUNCTIONALITY - VALIDATION & MODALS*/ 
 
@@ -150,7 +149,7 @@ function DriverFinishedTrips() {
     const openCloseModalViewDetails = () => {
         setViewModal(!viewModal);
         if (viewModal) {
-            setSelectedTrip(formatSelectedTrip);;
+            setSelectedTrip(formatSelectedTrip);
             setDefaultErrorMessages();
         }
     };

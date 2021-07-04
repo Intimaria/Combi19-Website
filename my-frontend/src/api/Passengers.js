@@ -24,7 +24,6 @@ export const updateUserDataValues = async () => {
             localStorage.setItem('userData', JSON.stringify(newUserData));
             return true;
         } else if (response?.status === 400 || response?.status === 500) {
-            console.log(response.data);
             return false;
         } else if (response?.status === 401 || response?.status === 403) {
             console.log('Usted no posee permiso para realizar tal operación');

@@ -58,7 +58,7 @@ const getPassengerTrips = async (req, res) => {
 const postPassengerTrip = async (req, res) => {
 
     const {cart, cardId, userId, isUserGold} = req.body;
-    console.log(cart);
+
     try {
         const connection = await prepareConnection();
         let sqlInsert;
@@ -198,12 +198,11 @@ const cancelPassengerTrip = async (req, res) => {
     const { percentage} = req.body;
 
     let cartId = await getCart(id);
-    console.log("cart id", cartId)
+
     const isLastTicket = await validateLastTicket(id, cartId[0].ID_CART);
-    console.log("is last ticket?", isLastTicket)
+
     if (isLastTicket) {
         productPrice = await getProductsPrice(cartId[0].ID_CART);
-        console.log(productPrice)
     }
     try {
         const connection = await prepareConnection();
@@ -213,7 +212,8 @@ const cancelPassengerTrip = async (req, res) => {
                         ID_REFUND_PERCENTAGE = ${percentage} 
                         WHERE TICKET.TICKET_ID = ${id};
                         `;
-        const [rows] = await connection.execute(sqlUpdate);
+
+        await connection.execute(sqlUpdate);
         connection.end();
         res.status(200).send(productPrice.toString());
     } catch (error) {

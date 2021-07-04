@@ -192,8 +192,6 @@ function Products() {
             setTypeProductError(ERROR_MSG_EMPTY_TYPE_PRODUCT);
             return false;
         } else if (!REGEX_ONLY_NUMBER.test(selectedProduct.typeProductId) && !REGEX_ONLY_NUMBER.test(typeProductSelected)) {
-            console.log(selectedProduct.typeProductId);
-            console.log(typeProductSelected);
             setTypeProductError(ERROR_MSG_INVALID_TYPE_PRODUCT);
             return false;
         }

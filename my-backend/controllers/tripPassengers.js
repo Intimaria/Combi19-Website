@@ -18,10 +18,10 @@ const getPassengersByTrip = async (req, res) => {
             u.SURNAME passengerSurname, u.EMAIL passengerEmail, 
             tic.TICKET_ID ticketId, st.STATUS ticketStatus
             FROM TRIP tri
-            LEFT JOIN TICKET tic ON tri.TRIP_ID = tic.ID_TRIP
-            LEFT JOIN STATUS_TICKET st ON tic.ID_STATUS_TICKET = st.STATUS_TICKET_ID
-            LEFT JOIN CART c ON tic.ID_CART = c.CART_ID
-            LEFT JOIN USER u ON c.ID_USER = u.USER_ID
+            INNER JOIN TICKET tic ON tri.TRIP_ID = tic.ID_TRIP
+            INNER JOIN STATUS_TICKET st ON tic.ID_STATUS_TICKET = st.STATUS_TICKET_ID
+            INNER JOIN CART c ON tic.ID_CART = c.CART_ID
+            INNER JOIN USER u ON c.ID_USER = u.USER_ID
             WHERE tri.TRIP_ID = ${id}
             ORDER BY tri.TRIP_ID, u.NAME ASC, u.SURNAME ASC;
             `;
