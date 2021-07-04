@@ -240,7 +240,7 @@ const validateAccountToSellTrip = async (req, res) => {
                 const connection = await prepareConnection();
                 sqlInsert =
                     ` INSERT INTO USER (NAME, SURNAME, BIRTHDAY, EMAIL, PASSWORD, DATE_TERMS_CONDITIONS, GOLD_MEMBERSHIP_EXPIRATION) 
-            VALUES ('Anonimo', 'Anonimo', '${birthday}', '${email}', '123456', NULL, NULL);
+            VALUES ('Anónimo', 'Anónimo', '${birthday}', '${email}', '123456', NULL, NULL);
           `
                 const [rows] = await connection.execute(sqlInsert);
 
