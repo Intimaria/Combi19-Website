@@ -190,7 +190,8 @@ const validatePassengers = async (id) => {
   try {
     const connection = await prepareConnection();
     sqlSelect = `
-        SELECT * FROM TRIP INNER JOIN TICKET WHERE TRIP_ID=${id} AND TICKET.ID_STATUS_TICKET = 1 
+        SELECT * FROM TRIP INNER JOIN TICKET ON TRIP.TRIP_ID=TICKET.ID_TRIP WHERE TRIP_ID=${id}
+        AND TICKET.ID_STATUS_TICKET = 1 
         `;
     let [rows] = await connection.execute(sqlSelect);
     connection.end();
