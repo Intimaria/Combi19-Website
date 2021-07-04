@@ -48,16 +48,7 @@ const getTrips = async (req, res) => {
                 ADDTIME(tri.DEPARTURE_DAY, r.DURATION) ARRIVAL_DAY_ORIGINAL,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER, 
                 CONCAT(u.SURNAME, ', ', u.NAME) DRIVER,
-                ti.ID_STATUS_TICKET,
-                (CASE WHEN MIN(ti.ID_STATUS_TICKET) = 1 THEN "Pendiente"
-                       WHEN MIN(ti.ID_STATUS_TICKET) = 2 THEN "En viaje"
-                      WHEN MAX(ti.ID_STATUS_TICKET) = 5 THEN "Finalizado"
-                      WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and tri.DEPARTURE_DAY > NOW() THEN 'Pendiente'
-                      WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and (tri.DEPARTURE_DAY <= NOW() and ADDTIME(tri.DEPARTURE_DAY, r.DURATION) > NOW()) THEN 'Activo'
-                      WHEN (ti.ID_STATUS_TICKET = 3 or ti.ID_STATUS_TICKET = 4) and ADDTIME(tri.DEPARTURE_DAY, r.DURATION) < NOW() THEN 'Finalizado'
-                      WHEN (ti.ID_STATUS_TICKET IS NULL) and (ADDTIME(tri.DEPARTURE_DAY, r.DURATION) < NOW()) THEN 'Finalizado'
-                      ELSE "-"        
-                END) AS STATUS
+                ti.ID_STATUS_TICKET, tri.ID_STATUS_TRIP STATUS
                 FROM TRIP tri
                 INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
                 INNER JOIN CITY c1 ON r.ID_DEPARTURE = c1.CITY_ID

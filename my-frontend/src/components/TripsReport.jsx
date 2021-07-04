@@ -73,8 +73,8 @@ function TripsReport() {
 
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
-                const pastTrips = data.filter(d => d.status === 'Finalizado');
-                setData(pastTrips);
+                const finishedTrips = data.filter(d => d.status === 3);
+                setData(finishedTrips);
 
             } else if (getTripsResponse.status === 500) {
                 setSuccessMessage(getTripsResponse.data);
