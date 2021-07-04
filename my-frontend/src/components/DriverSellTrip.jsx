@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { CustomDatePicker } from '../components/CustomDatePicker';
+import React, {useState} from 'react'
+import {CustomDatePicker} from '../components/CustomDatePicker';
 import moment from "moment";
-import { TextField, Button } from '@material-ui/core';
-import { useStyles } from '../const/componentStyles';
-import { Message } from './Message';
+import {TextField, Button} from '@material-ui/core';
+import {useStyles} from '../const/componentStyles';
+import {Message} from './Message';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import HelpIcon from '@material-ui/icons/Help';
 
@@ -20,13 +20,14 @@ import {
     REGEX_DATE_YYYY_MM_DD,
     REGEX_ONLY_NUMBER
 } from "../const/regex.js";
-import { validateAccountToSellTrip } from '../api/Drivers';
-import { postPassengerTrip } from '../api/Drivers';
+import {validateAccountToSellTrip} from '../api/Drivers';
+import {postPassengerTrip} from '../api/Drivers';
+import Grid from "@material-ui/core/Grid";
 
 const DriverSellTrip = (props) => {
     //Configures any success or error messages for API functionality
     const handleCloseMessage = () => {
-        setOptions({ ...options, open: false });
+        setOptions({...options, open: false});
     };
 
     const styles = useStyles();
@@ -35,7 +36,7 @@ const DriverSellTrip = (props) => {
     const [emailError, setEmailError] = useState('');
     const [birthday, setBirthday] = useState(moment()
         .subtract(18, "years")
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
         .format('YYYY-MM-DD')
     );
     const [birthdayError, setBirthdayError] = useState(null);
@@ -46,7 +47,7 @@ const DriverSellTrip = (props) => {
     const [priceToPay, setPriceToPay] = useState(null);
 
     const [successMessage, setSuccessMessage] = React.useState(null);
-    const [options, setOptions] = React.useState({ open: false, handleClose: handleCloseMessage });
+    const [options, setOptions] = React.useState({open: false, handleClose: handleCloseMessage});
 
     const mySubmitEmailBirthdayHandler = async (event) => {
         event.preventDefault();
@@ -63,11 +64,9 @@ const DriverSellTrip = (props) => {
             let messageToShow;
             if (postRequest?.status === 201) {
                 messageToShow = "El usuario se ha creado con exito";
-            }
-            else if (postRequest.data.isGold) {
+            } else if (postRequest.data.isGold) {
                 messageToShow = "El usuario ya existe en el sistema y posee beneficios GOLD";
-            }
-            else {
+            } else {
                 messageToShow = "El usuario ya existe en el sistema";
             }
 
@@ -76,8 +75,7 @@ const DriverSellTrip = (props) => {
                 ...options, open: true, type: 'success',
                 message: messageToShow
             });
-        }
-        else if (postRequest?.status === 400) {
+        } else if (postRequest?.status === 400) {
             setEmailError(postRequest.data.emailError);
             setBirthdayError(postRequest.data.birthdayError);
         } else if (postRequest?.status === 401 || postRequest?.status === 500) {
@@ -87,7 +85,7 @@ const DriverSellTrip = (props) => {
                 message: postRequest.data
             });
         }
-    }
+    };
 
     const handleEmail = (newValue) => {
         setEmail(newValue.target.value);
@@ -175,28 +173,28 @@ const DriverSellTrip = (props) => {
     };
 
     const validateEmailAndBirthdayToSellTrips = (
-        <div  className="">
+        <div className="">
             <form onSubmit={mySubmitEmailBirthdayHandler}>
                 <h2 align={'center'}> Ingrese datos de la cuenta </h2>
-                <br />
+                <br/>
                 <h5 align={'center'}> Ingrese correo electrónico </h5>
                 <TextField className={styles.inputMaterial} label="Correo electrónico *" name="email"
-                    id="email"
-                    type={"email"}
-                    inputProps={{ maxLength: 70 }}
-                    autoComplete='off'
-                    error={(emailError) ? true : false}
-                    helperText={(emailError) ? emailError : false}
-                    value={email}
-                    onChange={newValue => handleEmail(newValue)}
+                           id="email"
+                           type={"email"}
+                           inputProps={{maxLength: 70}}
+                           autoComplete='off'
+                           error={(emailError) ? true : false}
+                           helperText={(emailError) ? emailError : false}
+                           value={email}
+                           onChange={newValue => handleEmail(newValue)}
                 />
 
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small" />
+                    <HelpIcon color='primary' fontSize="small"/>
                     Se enviara la contraseña al email en caso de no tener una cuenta
                 </FormHelperText>
 
-                <br />
+                <br/>
                 <h5 align={'center'}> Ingrese fecha de nacimiento </h5>
                 <CustomDatePicker
                     underlineDisabled={false}
@@ -207,14 +205,14 @@ const DriverSellTrip = (props) => {
                     futureDisabled={true}
                     pastDisabled={false}
                 />
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Buscar</Button>
             </form>
         </div>
@@ -236,8 +234,10 @@ const DriverSellTrip = (props) => {
                 quantity: ticketsQuantity,
                 price: props.trip.numberPrice
             }
-        }
+        };
+
         const postRequest = await postPassengerTrip(cart, null, userInformation.id, userInformation.isGold);
+
         if (postRequest.status === 200) {
             // setDefaultValues();
             setPriceToPay(userInformation.isGold ? (props.trip.numberPrice * ticketsQuantity) * 0.9 : props.trip.numberPrice * ticketsQuantity);
@@ -275,7 +275,7 @@ const DriverSellTrip = (props) => {
             setTicketsQuantityError(null);
             return true;
         }
-    }
+    };
 
     const handleTicketsQuantity = (newValue) => {
         setTicketsQuantity(newValue.target.value);
@@ -283,43 +283,60 @@ const DriverSellTrip = (props) => {
     };
 
     const selectQuantityToBuy = (
-        <div  className="">
+        <div className="">
             <form onSubmit={mySubmitSellTripHandler}>
                 <h2 align={'center'}> Ingrese cantidad de pasaje a comprar </h2>
-                <br />
-                <TextField className={styles.inputMaterial} label="Cantidad de pasajes *" name="ticketsQuantity"
-                    id="ticketsQuantity"
-                    inputProps={{ maxLength: 2 }}
-                    autoComplete='off'
-                    error={(ticketsQuantityError) ? true : false}
-                    helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
-                    value={ticketsQuantity}
-                    onChange={newValue => handleTicketsQuantity(newValue)}
-                />
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/>
+                <Grid container>
+                    <Grid item xs={6}>
+                        <TextField className={styles.inputMaterial}
+                                   label="Asientos disponibles *"
+                                   name="availableSeating"
+                                   id="availableSeating"
+                                   disabled
+                                   style={{paddingRight: "10px"}}
+                                   value={props.trip.availableSeatings}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField className={styles.inputMaterial} label="Cantidad de pasajes *" name="ticketsQuantity"
+                                   id="ticketsQuantity"
+                                   inputProps={{maxLength: 2}}
+                                   autoComplete='off'
+                                   error={(ticketsQuantityError) ? true : false}
+                                   helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
+                                   value={ticketsQuantity}
+                                   onChange={newValue => handleTicketsQuantity(newValue)}
+                        />
+                    </Grid>
+                </Grid>
+
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Confirmar</Button>
             </form>
         </div>
     );
+
     const tripSuccessfullySoldModal = (
         <div className="">
             <h3 align={'center'}> Se ha vendido el pasaje satisfactoriamente </h3>
             <h4 align={'center'}> El monto a pagar es: ${priceToPay} </h4>
         </div>
-    )
+    );
+
     return (
         <div>
             {
                 successMessage ?
                     <Message open={options.open} type={options.type} message={options.message}
-                        handleClose={options.handleClose} />
+                             handleClose={options.handleClose}/>
                     : null
             }
             {!userInformation ? validateEmailAndBirthdayToSellTrips : null}
@@ -327,6 +344,6 @@ const DriverSellTrip = (props) => {
             {priceToPay ? tripSuccessfullySoldModal : null}
         </div>
     )
-}
+};
 
 export default DriverSellTrip
