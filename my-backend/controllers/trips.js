@@ -38,7 +38,7 @@ const getTrips = async (req, res) => {
 
         let sqlSelect =
                 `
-                SELECT 
+                SELECT
                 tri.TRIP_ID, REPLACE(tri.PRICE, '.', ',') PRICE, tri.ACTIVE, r.ROUTE_ID,
                 DATE_FORMAT(tri.DEPARTURE_DAY, '%Y-%m-%d %H:%i') DEPARTURE_DAY, 
                 tri.DEPARTURE_DAY DEPARTURE_DAY_ORIGINAL,
@@ -47,8 +47,7 @@ const getTrips = async (req, res) => {
                 DATE_FORMAT(ADDTIME(tri.DEPARTURE_DAY, r.DURATION), '%Y-%m-%d %H:%i') ARRIVAL_DAY,
                 ADDTIME(tri.DEPARTURE_DAY, r.DURATION) ARRIVAL_DAY_ORIGINAL,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER, 
-                CONCAT(u.SURNAME, ', ', u.NAME) DRIVER,
-                ti.ID_STATUS_TICKET, tri.ID_STATUS_TRIP STATUS
+                CONCAT(u.SURNAME, ', ', u.NAME) DRIVER, tri.ID_STATUS_TRIP STATUS
                 FROM TRIP tri
                 INNER JOIN ROUTE r ON tri.ID_ROUTE = r.ROUTE_ID
                 INNER JOIN CITY c1 ON r.ID_DEPARTURE = c1.CITY_ID
@@ -56,13 +55,8 @@ const getTrips = async (req, res) => {
                 INNER JOIN CITY c2 ON r.ID_DESTINATION = c2.CITY_ID
                 INNER JOIN PROVINCE p2 ON c2.ID_PROVINCE = p2.PROVINCE_ID
                 INNER JOIN TRANSPORT tra ON r.ID_TRANSPORT = tra.TRANSPORT_ID
-                LEFT JOIN TICKET ti ON ti.ID_TRIP = tri.TRIP_ID
-                INNER JOIN USER u ON u.USER_ID=tra.ID_DRIVER
-                GROUP BY tri.TRIP_ID, tri.PRICE, tri.ACTIVE, tri.DEPARTURE_DAY, r.ROUTE_ID,
-                tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER,
-                ti.ID_STATUS_TICKET, c1.CITY_ID, c2.CITY_ID, c2.CITY_NAME, c1.CITY_NAME, 
-                p2.PROVINCE_NAME, p1.PROVINCE_NAME, r.DURATION, u.SURNAME, u.NAME, tri.ID_STATUS_TRIP
-                ORDER BY tri.DEPARTURE_DAY ASC
+                INNER JOIN USER u ON u.USER_ID = tra.ID_DRIVER
+                ORDER BY tri.DEPARTURE_DAY ASC;
             `;
 
         const [rows] = await connection.execute(sqlSelect);
