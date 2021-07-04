@@ -61,7 +61,7 @@ const getTrips = async (req, res) => {
                 GROUP BY tri.TRIP_ID, tri.PRICE, tri.ACTIVE, tri.DEPARTURE_DAY, r.ROUTE_ID,
                 tra.TRANSPORT_ID, tra.INTERNAL_IDENTIFICATION, tra.REGISTRATION_NUMBER,
                 ti.ID_STATUS_TICKET, c1.CITY_ID, c2.CITY_ID, c2.CITY_NAME, c1.CITY_NAME, 
-                p2.PROVINCE_NAME, p1.PROVINCE_NAME, r.DURATION, u.SURNAME, u.NAME
+                p2.PROVINCE_NAME, p1.PROVINCE_NAME, r.DURATION, u.SURNAME, u.NAME, tri.ID_STATUS_TRIP
                 ORDER BY tri.DEPARTURE_DAY ASC
             `;
 
