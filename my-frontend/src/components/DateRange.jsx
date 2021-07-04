@@ -32,27 +32,27 @@ export default function DateRange(props) {
   return (
     <DatePicker
     weekDays={[
-      "Dom", 
-      "Lun", 
-      "Mar", 
-      "Mie", 
-      "Jue", 
-      "Vie", 
-      "Sab"
+      "lun.",
+      "mar.",
+      "mié.",
+      "jue.",
+      "vie.",
+      "sáb.",
+      "dom"
     ]}
     months={[
-      "Ene", 
-      "Feb", 
-      "Mar", 
-      "Abr", 
-      "May", 
-      "Jun", 
-      "Jul", 
-      "Ago", 
-      "Sep", 
-      "Oct", 
-      "Nov", 
-      "Dec"
+      "Enero", 
+      "Febrero", 
+      "Marzo", 
+      "Abril", 
+      "Mayo", 
+      "Junio", 
+      "Julio", 
+      "Agosto", 
+      "Septiembre", 
+      "Octubre", 
+      "Noviembre", 
+      "Diciembre"
     ]}
       position="left-start"
       label="Seleccionar rango"
