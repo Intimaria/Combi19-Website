@@ -71,7 +71,7 @@ function DriverListTrips() {
     const handleCloseMessage = () => {
         setOptions({ ...options, open: false });
     };
-
+    const styles = useStyles();
     // Columns for trips list - overflow formatting to keep list simple & neat
     const columns = [
         { title: 'N° de viaje', field: 'tripId' },
@@ -106,6 +106,8 @@ function DriverListTrips() {
         duration: "",
         active: "",
         status: "",
+        availableSeatings: "",
+        numberPrice: "",
         route: {
             routeId: "",
             departureId: "",
@@ -379,7 +381,7 @@ function DriverListTrips() {
         </div>
     );
     const bodySellTicket = (
-        <div>
+        <div className={modal.small}>
             <DriverSellTrip trip={selectedTrip}/>
             <br />
             <div align="right">
