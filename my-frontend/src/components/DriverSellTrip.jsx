@@ -65,7 +65,7 @@ const DriverSellTrip = (props) => {
             setUserInformation(postRequest.data);
             let messageToShow;
             if (postRequest?.status === 201) {
-                messageToShow = "El usuario se ha creado con exito";
+                messageToShow = "El usuario se creó con éxito";
             } else if (postRequest.data.isGold) {
                 messageToShow = "El usuario ya existe en el sistema y posee beneficios GOLD";
             } else {
@@ -193,7 +193,7 @@ const DriverSellTrip = (props) => {
 
                 <FormHelperText>
                     <HelpIcon color='primary' fontSize="small"/>
-                    Se enviara la contraseña al email en caso de no tener una cuenta
+                    Se enviará la contraseña al correo electrónico en caso de no tener una cuenta
                 </FormHelperText>
 
                 <br/>
@@ -400,7 +400,7 @@ const DriverSellTrip = (props) => {
     const tripSuccessfullySoldModal = (
         <div className="">
             <h3 align={'center'}> Se ha vendido el pasaje satisfactoriamente </h3>
-            <h4 align={'center'}> El monto a pagar es: ${priceToPay} </h4>
+            <h4 align={'center'}> El monto a pagar es: ${priceToPay?.toFixed(2).replace('.', ',')} </h4>
         </div>
     );
 
