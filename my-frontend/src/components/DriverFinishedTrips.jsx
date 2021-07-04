@@ -194,13 +194,13 @@ function DriverFinishedTrips() {
           <Typography variant="body1" component="p" gutterBottom>
             destino: {selectedTrip.route.destination}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            precio: ${selectedTrip.price}</Typography>
+            precio: {selectedTrip.price}</Typography>
           <Typography variant="body1" component="p" gutterBottom>
             duracion: {selectedTrip.duration}hs</Typography>
           <Typography variant="body1" component="p" gutterBottom>
-            fecha de partida: {selectedTrip.departureDay}</Typography>
+            fecha de partida: {moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
-            fecha de llegada: {selectedTrip.arrivalDay}</Typography>
+            fecha de llegada: {moment(selectedTrip.arrivalDay).format('DD/MM/YYYY HH:mm')}</Typography>
         <Typography variant="body1" component="p" gutterBottom>
             Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
             <br/>     

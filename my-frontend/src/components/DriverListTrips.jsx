@@ -185,16 +185,7 @@ function DriverListTrips() {
         if (!finishModal) {
             let dependenceResponse = await getPassangerStatus(trip.tripId, url);
 
-            if (dependenceResponse.data.noPassengers) {
-                setSuccessMessage("Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo.");
-
-                setOptions({
-                    ...options, open: true, type: 'error',
-                    message: "Este viaje no tiene pasajeros. Por favor cancele el viaje en vez de terminarlo."
-                });
-
-                setSelectedTrip(formatSelectedTrip);
-            } else if (dependenceResponse.data.passengersNotConfirmed) {
+            if (dependenceResponse.data.passengersNotConfirmed) {
                 setSuccessMessage("No se puede finalizar, hay pasajeros no chequeados.");
 
                 setOptions({
@@ -256,10 +247,10 @@ function DriverListTrips() {
             let getTripsResponse = await finishTrip(selectedTrip.tripId);
 
             if (getTripsResponse?.status === 200) {
-                setSuccessMessage(`Se ha terminado el viaje correctamente`);
+                setSuccessMessage(`Se ha finalizado el viaje correctamente`);
                 setOptions({
                     ...options, open: true, type: 'success',
-                    message: `Se ha terminado el viaje correctamente`
+                    message: `Se ha finalizado el viaje correctamente`
                 });
 
                 setNewData(true);
@@ -400,29 +391,29 @@ function DriverListTrips() {
     );
     const bodyViewDetails = (
         <div className={modal.small}>
-            <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
-                Viaje n°{selectedTrip.tripId}
-            </Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Origen: {selectedTrip.route.departure}</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Destino: {selectedTrip.route.destination}</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Precio: ${selectedTrip.price}</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Duración: {selectedTrip.duration}hs</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Fecha de partida: {selectedTrip.departureDay}</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Fecha de llegada: {selectedTrip.arrivalDay}</Typography>
-            <Typography variant="body1" component="p" gutterBottom>
-                Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
-            <br/>
+          <Typography variant="h5" label="ID de viaje" name="tripId" gutterBottom>
+             Viaje con id {selectedTrip.tripId}
+          </Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+            origen: {selectedTrip.route.departure}</Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+            destino: {selectedTrip.route.destination}</Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+            precio: {selectedTrip.price}</Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+            duracion: {selectedTrip.duration}hs</Typography>
+          <Typography variant="body1" component="p" gutterBottom>
+            fecha de partida: {moment(selectedTrip.departureDay).format('DD/MM/YYYY HH:mm')}</Typography>
+        <Typography variant="body1" component="p" gutterBottom>
+            fecha de llegada: {moment(selectedTrip.arrivalDay).format('DD/MM/YYYY HH:mm')}</Typography>
+        <Typography variant="body1" component="p" gutterBottom>
+            Combi: {selectedTrip.transport.internalIdentification} - {selectedTrip.transport.registrationNumber}</Typography>
+            <br/>     
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
             </div>
         </div>
-    );
+      );
 
 
     return (

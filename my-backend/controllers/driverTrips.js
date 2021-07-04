@@ -280,7 +280,6 @@ const getPassangerStatus = async (req, res) => {
     const {id} = req.params;
     try {
         res.json({
-            noPassengers: await emptyList(id),
             passengersNotConfirmed: await validatePassengers(id)
         });
     } catch (error) {
