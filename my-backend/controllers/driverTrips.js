@@ -38,14 +38,14 @@ const getDriverPendingTrips = async (req, res) => {
                           (T.SEATING - ( SELECT SUM(TI2.QUANTITY)
                               FROM TICKET TI2
                               INNER JOIN TRIP TR2 ON TI2.ID_TRIP = TR2.TRIP_ID
-                              WHERE TI2.ID_STATUS_TICKET = 1 AND TR.TRIP_ID = TR2.TRIP_ID))
+                              WHERE TI2.ID_STATUS_TICKET IN (1, 2) AND TR.TRIP_ID = TR2.TRIP_ID))
                           IS NULL
                           THEN T.SEATING
                           ELSE 
                           (T.SEATING - ( SELECT SUM(TI2.QUANTITY)
                               FROM TICKET TI2
                               INNER JOIN TRIP TR2 ON TI2.ID_TRIP = TR2.TRIP_ID
-                              WHERE TI2.ID_STATUS_TICKET = 1 AND TR.TRIP_ID = TR2.TRIP_ID))
+                              WHERE TI2.ID_STATUS_TICKET IN (1, 2) AND TR.TRIP_ID = TR2.TRIP_ID))
                           END) AS AVAILABLESEATINGS
                         FROM USER U 
                         INNER JOIN ROLE_USER RU ON U.USER_ID = RU.ROLE_USER_ID

@@ -246,14 +246,14 @@ const searchTrip = async (req, res) => {
                 (tra.SEATING - ( SELECT SUM(t.QUANTITY)
                     FROM TICKET t
                     INNER JOIN TRIP tri2 ON t.ID_TRIP = tri2.TRIP_ID
-                    WHERE t.ID_STATUS_TICKET = 1 AND tri1.TRIP_ID = tri2.TRIP_ID))
+                    WHERE t.ID_STATUS_TICKET IN (1, 2) AND tri1.TRIP_ID = tri2.TRIP_ID))
                 IS NULL
                 THEN tra.SEATING
                 ELSE 
                 (tra.SEATING - ( SELECT SUM(t.QUANTITY)
                     FROM TICKET t
                     INNER JOIN TRIP tri2 ON t.ID_TRIP = tri2.TRIP_ID
-                    WHERE t.ID_STATUS_TICKET = 1 AND tri1.TRIP_ID = tri2.TRIP_ID))
+                    WHERE t.ID_STATUS_TICKET IN (1, 2) AND tri1.TRIP_ID = tri2.TRIP_ID))
                 END) AS availableSeatings,
             tra.REGISTRATION_NUMBER AS registrationNumber,
             CONCAT(depci.CITY_NAME, ', ', depp.PROVINCE_NAME) departure,
