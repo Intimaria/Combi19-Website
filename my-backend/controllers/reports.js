@@ -34,4 +34,4 @@ const getRiskyPassengers = async (req, res) => {
 
 module.exports = {
   getRiskyPassengers
-}
+};

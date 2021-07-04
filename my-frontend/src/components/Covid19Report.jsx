@@ -48,7 +48,7 @@ const columns = [
         render: (data) => `${moment(data.birthday).format('DD/MM/YYYY')}`,
         customFilterAndSearch: (term, data) => (`${moment(data.birthday).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
-    {title: 'E-mail', field: 'email'},
+    {title: 'Correo electrónico', field: 'email'},
     {
         title: 'Riesgo hasta',
         field: 'report.riskExpires',
@@ -180,7 +180,7 @@ function Covid19Report() {
             <Typography variant="h5" label="Detalle de pasajero" name="pasajero" gutterBottom>
                 Detalle de pasajero
             </Typography>
-            <Typography variant="body2" label="Nombre y Apellido" name="name" gutterBottom>
+            <Typography variant="overline" label="Nombre y Apellido" name="name" gutterBottom>
                 Nombre y Apellido:
             </Typography>
             <Typography variant="body2" component="p" gutterBottom>
@@ -196,19 +196,24 @@ function Covid19Report() {
                 Usuario Gold:
             </Typography>
             <Typography variant="body2" gutterBottom>
-            {(
-                moment(selectedPassenger.goldMemberExpires).isAfter(new Date())) ? 
-                "Es Gold hasta: " + moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY') :
-                "No es Gold"}            
+                {
+                    (
+                        moment(selectedPassenger.goldMemberExpires).isAfter(moment())
+                    )
+                        ? `Es Gold hasta: ${moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY')}`
+                        : "No es Gold"}
             </Typography>
             <Typography variant="overline" label="Email" name="email" gutterBottom>
-                Contacto:
+                Correo electrónico:
             </Typography>
             <Typography variant="body2" gutterBottom>
                 {selectedPassenger && selectedPassenger.email}
             </Typography>
             <Typography variant="overline" label="Activo" name="active" gutterBottom>
-                Riesgo hasta: {selectedPassenger && selectedPassenger.riskExpires}
+                Riesgo hasta:
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+                {selectedPassenger && `${moment(selectedPassenger.riskExpires).format('DD/MM/YYYY')}`}
             </Typography>
             <br/>
             <div align="right">

@@ -741,7 +741,7 @@ function Trips() {
             <br/>
             <TextField label="Precio" id={"price"} name="price"
                        className={styles.inputMaterial}
-                       value={selectedTrip && selectedTrip.price}/>
+                       value={selectedTrip && `$${selectedTrip.price}`}/>
             <br/><br/>
             <div align="right">
                 <Button onClick={() => openCloseModalViewDetails()}>CERRAR</Button>
