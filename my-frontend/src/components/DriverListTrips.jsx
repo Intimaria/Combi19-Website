@@ -407,7 +407,7 @@ function DriverListTrips() {
         );
         const bodySellTicket = (
             <div className={modalSell.small}>
-                <DriverSellTrip trip={selectedTrip} makeMessage={makeMessage}/>
+                <DriverSellTrip trip={selectedTrip} makeMessage={makeMessage} fetchData={fetchData}/>
                 <br />
                 <Button style={{ width: '100%' }}
                     variant="contained"
@@ -471,11 +471,12 @@ function DriverListTrips() {
                             tooltip: 'Notificar imprevisto',
                             onClick: (event, rowData) => selectTrip(rowData, "Imprevisto")
                         },
-                        {
+                        rowData => ({
                             icon: () => <MonetizationOnIcon />,
-                            tooltip: 'Vender pasaje',
+                            tooltip: (rowData.availableSeatings != 0) ? 'Vender pasaje' : "No hay asientos disponibles para vender",
+                            disabled: rowData.availableSeatings == 0,
                             onClick: (event, rowData) => selectTrip(rowData, "Vender")
-                        },
+                        }),
                         {
                             icon: () => <PeopleIcon />,
                             tooltip: 'Confirmar pasajeros',

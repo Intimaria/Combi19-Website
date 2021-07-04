@@ -57,7 +57,7 @@ const DriverSellTrip = (props) => {
             setUserInformation(postRequest.data);
             let messageToShow;
             if (postRequest?.status === 201) {
-                messageToShow = "El usuario se ha creado con exito";
+                messageToShow = "El usuario se creó con éxito";
             } else if (postRequest.data.isGold) {
                 messageToShow = "El usuario ya existe en el sistema y posee beneficios GOLD";
             } else {
@@ -176,8 +176,8 @@ const DriverSellTrip = (props) => {
                 />
 
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small" />
-                    Se enviara la contraseña al email en caso de no tener una cuenta
+                    <HelpIcon color='primary' fontSize="small"/>
+                    Se enviará la contraseña al correo electrónico en caso de no tener una cuenta
                 </FormHelperText>
 
                 <br />
@@ -227,17 +227,11 @@ const DriverSellTrip = (props) => {
         if (postRequest.status === 200) {
             // setDefaultValues();
             setPriceToPay(userInformation.isGold ? (props.trip.numberPrice * ticketsQuantity) * 0.9 : props.trip.numberPrice * ticketsQuantity);
-
+            props.fetchData();
             return true
         } else if (postRequest.status === 500) {
             props.makeMessage(postRequest.data, "error");
         }
-    }
-
-    const setDefaultValues = () => {
-        setEmail('');
-        setBirthday('');
-        setTicketsQuantity('');
     }
 
     const validateTicketsQuantity = (ticketsQuantity) => {
@@ -311,18 +305,51 @@ const DriverSellTrip = (props) => {
                                 <Grid container alignItems={"flex-end"}
                                     item xs={12}>
                                     <Grid item xs={9}>
-                                        <TextField className={styles.inputMaterial} label="Total pasajes *"
-                                            name="totalTickets"
-                                            id="totalTickets"
-                                            disabled
-                                            style={{ marginLeft: '10px' }}
-                                            value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                        <TextField className={styles.inputMaterial}
+                                                   label="Total pasajes (sin descuento)*"
+                                                   name="totalTickets"
+                                                   id="totalTickets"
+                                                   disabled
+                                                   style={{marginLeft: '10px'}}
+                                                   value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
                                         <Tooltip
                                             title="Total = Cantidad pasajes * Precio del pasaje">
                                             <HelpIcon color='primary' fontSize="small" />
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <TextField className={styles.inputMaterial} label="Descuento gold *"
+                                           name="discountTickets"
+                                           id="discountTickets"
+                                           disabled
+                                           style={{paddingRight: '10px'}}
+                                           value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.1).toFixed(2).replace('.', ',')}` : '$ 0,00'}
+                                />
+                            </Grid>
+                            <Grid container alignItems="flex-start" item xs={6}>
+                                <Grid container alignItems={"flex-end"}
+                                      item xs={12}>
+                                    <Grid item xs={9}>
+                                        <TextField className={styles.inputMaterial} label="Total de la compra *"
+                                                   name="total"
+                                                   id="total"
+                                                   disabled
+                                                   style={{marginLeft: '10px'}}
+                                                   value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.9).toFixed(2).replace('.', ',')}` : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3} align={'right'}>
+                                        <Tooltip
+                                            title="Total = Total pasajes + Total productos - Descuento gold">
+                                            <HelpIcon color='primary' fontSize="small"/>
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
@@ -347,7 +374,7 @@ const DriverSellTrip = (props) => {
     const tripSuccessfullySoldModal = (
         <div className="">
             <h3 align={'center'}> Se ha vendido el pasaje satisfactoriamente </h3>
-            <h4 align={'center'}> El monto a pagar es: ${priceToPay} </h4>
+            <h4 align={'center'}> El monto a pagar es: ${priceToPay?.toFixed(2).replace('.', ',')} </h4>
         </div>
     );
 
