@@ -282,7 +282,7 @@ const BuyTrip = () => {
                                                        id="totalTickets"
                                                        disabled
                                                        style={{marginLeft: '10px'}}
-                                                       value={`$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`}
+                                                       value={(ticketToBuyError === '* Sólo se permite valores numéricos') ? `$ 0,00` : `$ ${(tripToBuy.price * ticketToBuy).toFixed(2).replace('.', ',')}`}
                                             />
                                         </Grid>
                                         <Grid item xs={3} align={'right'}>

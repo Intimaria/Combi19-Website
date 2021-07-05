@@ -364,9 +364,9 @@ function DriverListTrips() {
         const bodyNotification = (
             <div className={modal.small}>
                 <Typography variant="body1" component="p" gutterBottom>
-                    Se ha notificado a todos los pasajeros con pasajes pendientes
-                    y se ha hecho la devolución al 100%
-                    del costo de los mismos y productos correspondientes.
+                    Se ha cancelado el viaje. De haber pasajeros, se les ha notificado a todos 
+                    los que tenían pasajes pendientes y se ha hecho la devolución al 100% del costo 
+                    de los mismos y sus productos correspondientes.
                 </Typography>
                 <Button onClick={() => openCloseModalNotification()}>CERRAR</Button>
             </div>
@@ -378,7 +378,8 @@ function DriverListTrips() {
                     ¿Estás seguro de notificar imprevisto y cancelar el viaje n°{selectedTrip.tripId}?
                 </Typography>
                 <Typography variant="body1" component="p" gutterBottom>
-                    Esta opción cancelará todos los pasajes y hará la devolución del costo de los mismos.
+                    Esta opción cancelará el viaje. Si hay pasajeros, se cancelaran
+                    todos los pasajes y hará la devolución del costo de los mismos.
                 </Typography>
                 <br />
                 <div align="right">

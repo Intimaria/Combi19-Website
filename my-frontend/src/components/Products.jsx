@@ -446,7 +446,7 @@ function Products() {
                 value={selectedProduct && selectedProduct.name} autoComplete="off" />
             <br />
             <TextField className={styles.inputMaterial} label="Precio" name="price"
-                value={selectedProduct && selectedProduct.price} autoComplete="off" />
+                value={selectedProduct && `$${selectedProduct.price}`} autoComplete="off" />
             <br />
             <TextField className={styles.inputMaterial} label="Tipo" name="typeProduct"
                 value={selectedProduct && selectedProduct.typeProductDescription} autoComplete="off" />

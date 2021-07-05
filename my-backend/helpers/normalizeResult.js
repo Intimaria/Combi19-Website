@@ -237,7 +237,7 @@ const normalizePassengers = (rows) => {
             userId: rows[index].USER_ID,
             userName: rows[index].NAME + ' ' + rows[index].SURNAME,
             country: rows[index].ID_COUNTRY,
-            documentType: rows[index].ID_DOCUMENT_TYPE,
+            documentType: rows[index].ABBREVIATION,
             birthday: rows[index].BIRTHDAY,
             email: rows[index].EMAIL,
             goldMemberExpires: rows[index].GOLD_MEMBERSHIP_EXPIRATION,
@@ -247,8 +247,9 @@ const normalizePassengers = (rows) => {
             hasDebit: (rows[index].AUTOMATIC_DEBIT === 0) ? 'No' : 'Sí',
             report: {
                 birthday: `${moment(rows[index].BIRTHDAY).format('DD/MM/YYYY')}`,
-                goldMemberExpires: (rows[index].GOLD_MEMBERSHIP_EXPIRATION) ? `${moment(rows[index].GOLD_MEMBERSHIP_EXPIRATION).format('DD/MM/YYYY')}` : '',
-                riskExpires: `${moment(rows[index].EXPIRATION_RISK).format('DD/MM/YYYY HH:mm')}hs`
+                goldMemberExpires: (rows[index].GOLD_MEMBERSHIP_EXPIRATION) ? `${moment(rows[index].GOLD_MEMBERSHIP_EXPIRATION).format('DD/MM/YYYY')}` : 'No es Gold',
+                riskExpires: `${moment(rows[index].EXPIRATION_RISK).format('DD/MM/YYYY')}`,
+                symptomDate: `${moment(rows[index].EXPIRATION_RISK).add(-14, 'days').format('DD/MM/YYYY')}`, 
             }
         };
         results.push(user);

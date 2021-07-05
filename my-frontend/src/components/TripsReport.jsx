@@ -15,7 +15,7 @@ import {
 
 } from "../const/messages";
 
-import ClearableDateRange from './ClearableDateRange';
+import DateRange from './DateRange';
 
 
 const columns = [
@@ -29,7 +29,7 @@ const columns = [
         type: 'date',
         field: 'report.departureDay',
         render: (data) => `${moment(data.departureDay).format('DD/MM/YYYY HH:mm')}hs`,
-        filterComponent: (props) => <ClearableDateRange {...props} />,
+        filterComponent: (props) => <DateRange {...props} />,
         customFilterAndSearch: (term, data) => {
             let date = moment(data.departureDay);
             let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day} 00:00`).add(-1, 'minutes');
@@ -42,7 +42,7 @@ const columns = [
         type: 'date',
         field: 'report.arrivalDay',
         render: (data) => `${moment(data.arrivalDay).format('DD/MM/YYYY HH:mm')}hs`,
-        filterComponent: (props) => <ClearableDateRange {...props} />,
+        filterComponent: (props) => <DateRange {...props} />,
         customFilterAndSearch: (term, data) => {
             let date = moment(data.arrivalDay);
             let start = moment(`${term[0]?.year}-${term[0]?.month.number}-${term[0]?.day}  00:00`).add(-1, 'minutes');
@@ -73,8 +73,8 @@ function TripsReport() {
 
             if (getTripsResponse.status === 200) {
                 let data = getTripsResponse.data;
-                const pastTrips = data.filter(d => d.status === 'Finalizado');
-                setData(pastTrips);
+                const finishedTrips = data.filter(d => d.status === 3);
+                setData(finishedTrips);
 
             } else if (getTripsResponse.status === 500) {
                 setSuccessMessage(getTripsResponse.data);

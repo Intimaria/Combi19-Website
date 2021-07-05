@@ -42,17 +42,23 @@ const modalStyles = makeStyles((theme) => ({
 
 const columns = [
     {title: 'Nombre y apellido', field: 'userName'},
+    {title: 'Tipo Doc', field: 'documentType'},
+    {title: 'Número de Documento', field: 'documentNum'},
     {
         title: 'Fecha de nacimiento',
         field: 'report.birthday',
         render: (data) => `${moment(data.birthday).format('DD/MM/YYYY')}`,
         customFilterAndSearch: (term, data) => (`${moment(data.birthday).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
-    {title: 'E-mail', field: 'email'},
+    {title: 'Correo electrónico', field: 'email'},
+    {
+        title: "Fecha chequeado", 
+        field: "report.symptomDate",
+        customFilterAndSearch: (term, data) => (`${moment(data.report.symptomDate).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
+    },
     {
         title: 'Riesgo hasta',
         field: 'report.riskExpires',
-        render: (data) => `${moment(data.riskExpires).format('DD/MM/YYYY')}`,
         customFilterAndSearch: (term, data) => (`${moment(data.riskExpires).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
     {
@@ -74,6 +80,7 @@ function Covid19Report() {
         userName: "",
         country: "",
         documentType: "",
+        symptomDate: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         birthday: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
         email: "",
         goldMemberExpires: moment().add(1, 'minutes').format('YYYY-MM-DD HH:mm'),
@@ -135,7 +142,7 @@ function Covid19Report() {
         }
     };
 
-
+console.log(selectedPassenger)
     /* API CALLS & DATABASE FUNCTIONS*/
 
     // API: gets all the user trips from the database
@@ -171,7 +178,6 @@ function Covid19Report() {
     /* FUNCTIONALITY - CHILD COMPONENT */
     // Called when a trip is cancelled by the user, will fetch new data from the DB
 
-
     /* JSX COMPONENTS & FORMATTING
   */
     // Modal de vizualizacion
@@ -180,7 +186,7 @@ function Covid19Report() {
             <Typography variant="h5" label="Detalle de pasajero" name="pasajero" gutterBottom>
                 Detalle de pasajero
             </Typography>
-            <Typography variant="body2" label="Nombre y Apellido" name="name" gutterBottom>
+            <Typography variant="overline" label="Nombre y Apellido" name="name" gutterBottom>
                 Nombre y Apellido:
             </Typography>
             <Typography variant="body2" component="p" gutterBottom>
@@ -196,19 +202,24 @@ function Covid19Report() {
                 Usuario Gold:
             </Typography>
             <Typography variant="body2" gutterBottom>
-            {(
-                moment(selectedPassenger.goldMemberExpires).isAfter(new Date())) ? 
-                "Es Gold hasta: " + moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY') :
-                "No es Gold"}            
+                {
+                    (
+                        moment(selectedPassenger.goldMemberExpires).isAfter(moment())
+                    )
+                        ? `Es Gold hasta: ${moment(selectedPassenger.goldMemberExpires).format('DD/MM/YYYY')}`
+                        : "No es Gold"}
             </Typography>
             <Typography variant="overline" label="Email" name="email" gutterBottom>
-                Contacto:
+                Correo electrónico:
             </Typography>
             <Typography variant="body2" gutterBottom>
                 {selectedPassenger && selectedPassenger.email}
             </Typography>
             <Typography variant="overline" label="Activo" name="active" gutterBottom>
-                Riesgo hasta: {selectedPassenger && selectedPassenger.riskExpires}
+                Riesgo hasta:
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+                {selectedPassenger && `${moment(selectedPassenger.riskExpires).format('DD/MM/YYYY')}`}
             </Typography>
             <br/>
             <div align="right">
@@ -241,13 +252,6 @@ function Covid19Report() {
                                 columns={columns}
                                 data={data}
                                 title={`Fecha actual: ${moment().format('DD [de] MMMM [de] YYYY')}`}
-                                actions={[
-                                    {
-                                        icon: () => <VisibilityIcon/>,
-                                        tooltip: 'Visualizar pasajero',
-                                        onClick: (event, rowData) => selectPassenger(rowData, "Ver")
-                                    },
-                                ]}
                                 options={{
                                     search: false,
                                     actionsColumnIndex: -1,
@@ -256,7 +260,9 @@ function Covid19Report() {
                                     filtering: true,
                                     exportMenu: [{
                                         label: 'Exportar PDF',
-                                        exportFunc: (cols, datas) => ExportPdf(cols, datas, `Reporte de pasajeros riesgosos en el último mes. Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
+                                        exportFunc: (cols, datas) => 
+                                        ExportPdf(cols, datas, 
+                                            `Reporte de pasajeros riesgosos en el último mes. Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
                                     }]
                                 }}
                                 localization={materialTableConfiguration.localization}
@@ -273,7 +279,7 @@ function Covid19Report() {
                     aria-controls="Historial de Viajes"
                     id="viajes"
                 >
-                    Informe de viajes
+                    Historial de viajes
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container>

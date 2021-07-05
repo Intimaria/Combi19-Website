@@ -31,6 +31,29 @@ export default function DateRange(props) {
 
   return (
     <DatePicker
+    weekDays={[
+      "dom",
+      "lun.",
+      "mar.",
+      "mié.",
+      "jue.",
+      "vie.",
+      "sáb.",
+    ]}
+    months={[
+      "Enero", 
+      "Febrero", 
+      "Marzo", 
+      "Abril", 
+      "Mayo", 
+      "Junio", 
+      "Julio", 
+      "Agosto", 
+      "Septiembre", 
+      "Octubre", 
+      "Noviembre", 
+      "Diciembre"
+    ]}
       position="left-start"
       label="Seleccionar rango"
       inputVariant="outlined"
@@ -54,7 +77,16 @@ export default function DateRange(props) {
           props.onFilterChanged(props.columnDef.tableData.id, event);
       }}
       plugins={[
-        <DatePanel />
+        <DatePanel header="Fechas"
+        removeButton={false}
+        onClickDate={dateObject => {
+        setDates(
+          dates.filter(date => {
+            (date !== dateObject) && props.onFilterChanged(props.columnDef.tableData.id, null)
+            return date !== dateObject})
+        )
+       }}
+        />
       ]}
       InputProps={{
         endAdornment: (
