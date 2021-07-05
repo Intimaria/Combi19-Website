@@ -248,7 +248,8 @@ const normalizePassengers = (rows) => {
             report: {
                 birthday: `${moment(rows[index].BIRTHDAY).format('DD/MM/YYYY')}`,
                 goldMemberExpires: (rows[index].GOLD_MEMBERSHIP_EXPIRATION) ? `${moment(rows[index].GOLD_MEMBERSHIP_EXPIRATION).format('DD/MM/YYYY')}` : 'No es Gold',
-                riskExpires: `${moment(rows[index].EXPIRATION_RISK).format('DD/MM/YYYY HH:mm')}hs`
+                riskExpires: `${moment(rows[index].EXPIRATION_RISK).format('DD/MM/YYYY HH:mm')}hs`,
+                symptomDate:rows[index].FECHA_REVISADO,
             }
         };
         results.push(user);
