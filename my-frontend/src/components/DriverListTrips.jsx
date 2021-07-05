@@ -396,7 +396,8 @@ function DriverListTrips() {
                     ¿Estás seguro de notificar imprevisto y cancelar el viaje n°{selectedTrip.tripId}?
                 </Typography>
                 <Typography variant="body1" component="p" gutterBottom>
-                    Esta opción cancelará todos los pasajes y hará la devolución del costo de los mismos.
+                    Esta opción cancelará el viaje. Si hay pasajeros, se cancelaran
+                    todos los pasajes y hará la devolución del costo de los mismos.
                 </Typography>
                 <br />
                 <div align="right">
