@@ -42,6 +42,8 @@ const modalStyles = makeStyles((theme) => ({
 
 const columns = [
     {title: 'Nombre y apellido', field: 'userName'},
+    {title: 'Tipo Doc', field: 'documentType'},
+    {title: 'Número de Documento', field: 'documentNum'},
     {
         title: 'Fecha de nacimiento',
         field: 'report.birthday',
