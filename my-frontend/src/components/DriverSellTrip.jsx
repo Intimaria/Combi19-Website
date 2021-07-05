@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { CustomDatePicker } from '../components/CustomDatePicker';
+import React, {useState} from 'react'
+import {CustomDatePicker} from '../components/CustomDatePicker';
 import moment from "moment";
-import { TextField, Button } from '@material-ui/core';
-import { useStyles } from '../const/componentStyles';
+import {TextField, Button} from '@material-ui/core';
+import {useStyles} from '../const/componentStyles';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import HelpIcon from '@material-ui/icons/Help';
 import Grid from "@material-ui/core/Grid";
@@ -21,8 +21,8 @@ import {
     REGEX_DATE_YYYY_MM_DD,
     REGEX_ONLY_NUMBER
 } from "../const/regex.js";
-import { validateAccountToSellTrip } from '../api/Drivers';
-import { postPassengerTrip } from '../api/Drivers';
+import {validateAccountToSellTrip} from '../api/Drivers';
+import {postPassengerTrip} from '../api/Drivers';
 
 
 const DriverSellTrip = (props) => {
@@ -33,7 +33,7 @@ const DriverSellTrip = (props) => {
     const [emailError, setEmailError] = useState('');
     const [birthday, setBirthday] = useState(moment()
         .subtract(18, "years")
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .set({hour: 0, minute: 0, second: 0, millisecond: 0})
         .format('YYYY-MM-DD')
     );
     const [birthdayError, setBirthdayError] = useState(null);
@@ -162,17 +162,17 @@ const DriverSellTrip = (props) => {
         <div className="">
             <form onSubmit={mySubmitEmailBirthdayHandler}>
                 <h2 align={'center'}> Ingrese datos de la cuenta </h2>
-                <br />
+                <br/>
                 <h5 align={'center'}> Ingrese correo electrónico </h5>
                 <TextField className={styles.inputMaterial} label="Correo electrónico *" name="email"
-                    id="email"
-                    type={"email"}
-                    inputProps={{ maxLength: 70 }}
-                    autoComplete='off'
-                    error={(emailError) ? true : false}
-                    helperText={(emailError) ? emailError : false}
-                    value={email}
-                    onChange={newValue => handleEmail(newValue)}
+                           id="email"
+                           type={"email"}
+                           inputProps={{maxLength: 70}}
+                           autoComplete='off'
+                           error={(emailError) ? true : false}
+                           helperText={(emailError) ? emailError : false}
+                           value={email}
+                           onChange={newValue => handleEmail(newValue)}
                 />
 
                 <FormHelperText>
@@ -180,7 +180,7 @@ const DriverSellTrip = (props) => {
                     Se enviará la contraseña al correo electrónico en caso de no tener una cuenta
                 </FormHelperText>
 
-                <br />
+                <br/>
                 <h5 align={'center'}> Ingrese fecha de nacimiento </h5>
                 <CustomDatePicker
                     underlineDisabled={false}
@@ -191,14 +191,14 @@ const DriverSellTrip = (props) => {
                     futureDisabled={true}
                     pastDisabled={false}
                 />
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Buscar</Button>
             </form>
         </div>
@@ -232,7 +232,7 @@ const DriverSellTrip = (props) => {
         } else if (postRequest.status === 500) {
             props.makeMessage(postRequest.data, "error");
         }
-    }
+    };
 
     const validateTicketsQuantity = (ticketsQuantity) => {
         if (!ticketsQuantity) {
@@ -256,34 +256,36 @@ const DriverSellTrip = (props) => {
     const handleTicketsQuantity = (newValue) => {
         setTicketsQuantity(newValue.target.value);
         setTicketsQuantityError(null);
+
+        validateTicketsQuantity(newValue.target.value);
     };
 
     const selectQuantityToBuy = (
         <div className="">
             <form onSubmit={mySubmitSellTripHandler}>
                 <h2 align={'center'}> Ingrese cantidad de pasaje a comprar </h2>
-                <br />
+                <br/>
                 <Grid container>
-                    <Grid item xs={12} style={{ paddingRight: "50px" }}>
+                    <Grid item xs={12} style={{paddingRight: "50px"}}>
                         <Grid container>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial}
-                                    label="Asientos disponibles *"
-                                    name="availableSeating"
-                                    id="availableSeating"
-                                    disabled
-                                    style={{ paddingRight: "10px" }}
-                                    value={props.trip.availableSeatings}
+                                           label="Asientos disponibles *"
+                                           name="availableSeating"
+                                           id="availableSeating"
+                                           disabled
+                                           style={{paddingRight: "10px"}}
+                                           value={props.trip.availableSeatings}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial}
-                                    label="Precio unitario del pasaje *"
-                                    name="ticketPrice"
-                                    id="ticketPrice"
-                                    disabled
-                                    style={{ paddingRight: "10px", marginLeft: "10px" }}
-                                    value={`$ ${props.trip.numberPrice.replace('.', ',')}`}
+                                           label="Precio unitario del pasaje *"
+                                           name="ticketPrice"
+                                           id="ticketPrice"
+                                           disabled
+                                           style={{paddingRight: "10px", marginLeft: "10px"}}
+                                           value={`$ ${props.trip.numberPrice.replace('.', ',')}`}
                                 />
                             </Grid>
                         </Grid>
@@ -291,19 +293,19 @@ const DriverSellTrip = (props) => {
                         <Grid container>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial} label="Cantidad de pasajes *"
-                                    name="ticketsQuantity"
-                                    id="ticketsQuantity"
-                                    inputProps={{ maxLength: 2 }}
-                                    autoComplete='off'
-                                    error={(ticketsQuantityError) ? true : false}
-                                    helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
-                                    value={ticketsQuantity}
-                                    onChange={newValue => handleTicketsQuantity(newValue)}
+                                           name="ticketsQuantity"
+                                           id="ticketsQuantity"
+                                           inputProps={{maxLength: 2}}
+                                           autoComplete='off'
+                                           error={(ticketsQuantityError) ? true : false}
+                                           helperText={(ticketsQuantityError) ? ticketsQuantityError : false}
+                                           value={ticketsQuantity}
+                                           onChange={newValue => handleTicketsQuantity(newValue)}
                                 />
                             </Grid>
                             <Grid container alignItems="flex-start" item xs={6}>
                                 <Grid container alignItems={"flex-end"}
-                                    item xs={12}>
+                                      item xs={12}>
                                     <Grid item xs={9}>
                                         <TextField className={styles.inputMaterial}
                                                    label="Total pasajes (sin descuento)*"
@@ -311,13 +313,17 @@ const DriverSellTrip = (props) => {
                                                    id="totalTickets"
                                                    disabled
                                                    style={{marginLeft: '10px'}}
-                                                   value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                                   value={
+                                                       (ticketsQuantityError === '* Sólo se permite valores numéricos')
+                                                           ? '$ 0,00'
+                                                           : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`
+                                                   }
                                         />
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
                                         <Tooltip
                                             title="Total = Cantidad pasajes * Precio del pasaje">
-                                            <HelpIcon color='primary' fontSize="small" />
+                                            <HelpIcon color='primary' fontSize="small"/>
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
@@ -331,7 +337,11 @@ const DriverSellTrip = (props) => {
                                            id="discountTickets"
                                            disabled
                                            style={{paddingRight: '10px'}}
-                                           value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.1).toFixed(2).replace('.', ',')}` : '$ 0,00'}
+                                           value={
+                                               (!userInformation?.isGold || ticketsQuantityError === '* Sólo se permite valores numéricos')
+                                                   ? '$ 0,00'
+                                                   : `$ ${(props.trip.numberPrice * ticketsQuantity * 0.1).toFixed(2).replace('.', ',')}`
+                                           }
                                 />
                             </Grid>
                             <Grid container alignItems="flex-start" item xs={6}>
@@ -343,7 +353,12 @@ const DriverSellTrip = (props) => {
                                                    id="total"
                                                    disabled
                                                    style={{marginLeft: '10px'}}
-                                                   value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.9).toFixed(2).replace('.', ',')}` : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                                   value={
+                                                       (ticketsQuantityError === '* Sólo se permite valores numéricos')
+                                                           ? '$ 0,00'
+                                                           : (userInformation?.isGold)
+                                                           ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.9).toFixed(2).replace('.', ',')}`
+                                                           : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
                                     <Grid item xs={3} align={'right'}>
@@ -358,14 +373,14 @@ const DriverSellTrip = (props) => {
                     </Grid>
                 </Grid>
 
-                <br /><br />
-                <Button style={{ width: '100%' }}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    id="btnRegister"
-                    type="submit"
-                    onClick={() => ""}
+                <br/><br/>
+                <Button style={{width: '100%'}}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        id="btnRegister"
+                        type="submit"
+                        onClick={() => ""}
                 >Confirmar</Button>
             </form>
         </div>
