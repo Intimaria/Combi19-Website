@@ -262,8 +262,7 @@ console.log(selectedPassenger)
                                         label: 'Exportar PDF',
                                         exportFunc: (cols, datas) => 
                                         ExportPdf(cols, datas, 
-                                            `Reporte de pasajeros riesgosos en el último mes. 
-                                            Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
+                                            `Reporte de pasajeros riesgosos en el último mes. Fecha de reporte: ${moment(data.birthday).format('DD/MM/YYYY HH:mm')}`)
                                     }]
                                 }}
                                 localization={materialTableConfiguration.localization}

@@ -12,7 +12,8 @@ const getRiskyPassengers = async (req, res) => {
         const connection = await prepareConnection();
 
         const sqlSelect =
-                `SELECT U.*, DATE_ADD(U.EXPIRATION_RISK, INTERVAL -14 DAY) FECHA_REVISADO 
+                `SELECT U.*,  
+                DATE_FORMAT(DATE_ADD(U.EXPIRATION_RISK, INTERVAL -14 DAY), '%Y-%m-%d %H:%i') FECHA_REVISADO 
                 FROM
                 USER U INNER JOIN ROLE_USER R ON
                 USER_ID=ID_USER
