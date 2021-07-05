@@ -176,7 +176,7 @@ const DriverSellTrip = (props) => {
                 />
 
                 <FormHelperText>
-                    <HelpIcon color='primary' fontSize="small"/>
+                    <HelpIcon color='primary' fontSize="small" />
                     Se enviará la contraseña al correo electrónico en caso de no tener una cuenta
                 </FormHelperText>
 
@@ -264,7 +264,7 @@ const DriverSellTrip = (props) => {
                 <h2 align={'center'}> Ingrese cantidad de pasaje a comprar </h2>
                 <br />
                 <Grid container>
-                    <Grid item xs={12} style={{ paddingRight: "50px" }}>
+                    <Grid item xs={12}>
                         <Grid container>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial}
@@ -304,19 +304,19 @@ const DriverSellTrip = (props) => {
                             <Grid container alignItems="flex-start" item xs={6}>
                                 <Grid container alignItems={"flex-end"}
                                     item xs={12}>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={11}>
                                         <TextField className={styles.inputMaterial}
-                                                   label="Total pasajes (sin descuento)*"
-                                                   name="totalTickets"
-                                                   id="totalTickets"
-                                                   disabled
-                                                   style={{marginLeft: '10px'}}
-                                                   value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                            label="Total pasajes (sin descuento)*"
+                                            name="totalTickets"
+                                            id="totalTickets"
+                                            disabled
+                                            style={{ marginLeft: '10px' }}
+                                            value={`$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
-                                    <Grid item xs={3} align={'right'}>
+                                    <Grid item xs={1} align={'right'}>
                                         <Tooltip
-                                            title="Total = Cantidad pasajes * Precio del pasaje">
+                                            style={{ paddingLeft: "1px" }} title="Total = Cantidad pasajes * Precio del pasaje">
                                             <HelpIcon color='primary' fontSize="small" />
                                         </Tooltip>
                                     </Grid>
@@ -327,29 +327,29 @@ const DriverSellTrip = (props) => {
                         <Grid container>
                             <Grid item xs={6}>
                                 <TextField className={styles.inputMaterial} label="Descuento gold *"
-                                           name="discountTickets"
-                                           id="discountTickets"
-                                           disabled
-                                           style={{paddingRight: '10px'}}
-                                           value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.1).toFixed(2).replace('.', ',')}` : '$ 0,00'}
+                                    name="discountTickets"
+                                    id="discountTickets"
+                                    disabled
+                                    style={{ paddingRight: '10px' }}
+                                    value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.1).toFixed(2).replace('.', ',')}` : '$ 0,00'}
                                 />
                             </Grid>
                             <Grid container alignItems="flex-start" item xs={6}>
                                 <Grid container alignItems={"flex-end"}
-                                      item xs={12}>
-                                    <Grid item xs={9}>
+                                    item xs={12}>
+                                    <Grid item xs={11}>
                                         <TextField className={styles.inputMaterial} label="Total de la compra *"
-                                                   name="total"
-                                                   id="total"
-                                                   disabled
-                                                   style={{marginLeft: '10px'}}
-                                                   value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.9).toFixed(2).replace('.', ',')}` : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
+                                            name="total"
+                                            id="total"
+                                            disabled
+                                            style={{ marginLeft: '10px' }}
+                                            value={(userInformation?.isGold) ? `$ ${(props.trip.numberPrice * ticketsQuantity * 0.9).toFixed(2).replace('.', ',')}` : `$ ${(props.trip.numberPrice * ticketsQuantity).toFixed(2).replace('.', ',')}`}
                                         />
                                     </Grid>
-                                    <Grid item xs={3} align={'right'}>
+                                    <Grid item xs={1} align={'right'}>
                                         <Tooltip
-                                            title="Total = Total pasajes + Total productos - Descuento gold">
-                                            <HelpIcon color='primary' fontSize="small"/>
+                                            style={{ paddingLeft: "1px" }} title="Total = Total pasajes - Descuento gold">
+                                            <HelpIcon color='primary' fontSize="small" />
                                         </Tooltip>
                                     </Grid>
                                 </Grid>

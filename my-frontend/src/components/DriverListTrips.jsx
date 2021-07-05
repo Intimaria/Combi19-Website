@@ -63,21 +63,6 @@ const modalStyles = makeStyles((theme) => ({
     },
 }));
 
-// Styles for comments modal
-const modalSellStyles = makeStyles((theme) => ({
-    small: {
-        position: 'absolute',
-        width: "40%",
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
-    },
-}));
-
 
 function DriverListTrips() {
     //Configures any success or error messages for API functionality
@@ -139,9 +124,6 @@ function DriverListTrips() {
 
     // styles configuration 
     const modal = modalStyles();
-
-    // styles configuration for sells
-    let modalSell = modalSellStyles();
 
     //Saves user data and informs new data has been loaded 
     const [data, setData] = useState([]);
@@ -406,7 +388,7 @@ function DriverListTrips() {
             </div>
         );
         const bodySellTicket = (
-            <div className={modalSell.small}>
+            <div className={modal.small}>
                 <DriverSellTrip trip={selectedTrip} makeMessage={makeMessage} fetchData={fetchData}/>
                 <br />
                 <Button style={{ width: '100%' }}
