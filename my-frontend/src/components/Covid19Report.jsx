@@ -54,13 +54,11 @@ const columns = [
     {
         title: "Fecha chequeado", 
         field: "report.symptomDate",
-        render: (data) => `${moment(data.report.symptomDate).format('DD/MM/YYYY')}`,
         customFilterAndSearch: (term, data) => (`${moment(data.report.symptomDate).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
     {
         title: 'Riesgo hasta',
         field: 'report.riskExpires',
-        render: (data) => `${moment(data.riskExpires).format('DD/MM/YYYY')}`,
         customFilterAndSearch: (term, data) => (`${moment(data.riskExpires).format('DD/MM/YYYY')}`).indexOf(term.toLowerCase()) !== -1
     },
     {
