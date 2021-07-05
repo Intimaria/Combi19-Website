@@ -237,7 +237,7 @@ const normalizePassengers = (rows) => {
             userId: rows[index].USER_ID,
             userName: rows[index].NAME + ' ' + rows[index].SURNAME,
             country: rows[index].ID_COUNTRY,
-            documentType: rows[index].ID_DOCUMENT_TYPE,
+            documentType: rows[index].ABBREVIATION,
             birthday: rows[index].BIRTHDAY,
             email: rows[index].EMAIL,
             goldMemberExpires: rows[index].GOLD_MEMBERSHIP_EXPIRATION,
