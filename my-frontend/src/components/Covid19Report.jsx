@@ -142,7 +142,6 @@ function Covid19Report() {
         }
     };
 
-console.log(selectedPassenger)
     /* API CALLS & DATABASE FUNCTIONS*/
 
     // API: gets all the user trips from the database

@@ -56,7 +56,6 @@ const Login = (props) => {
     const postRequest = async () => {
         let postRequest = await login(email, password, props.path);
         if (postRequest?.status === 200) {
-            console.log("The session was successful");
             setLoginError(null);
             localStorage.setItem('token', postRequest.data.token);
             localStorage.setItem('userData', JSON.stringify(postRequest.data.userData));
@@ -64,7 +63,6 @@ const Login = (props) => {
             history.push(props.redirectPage);
         }
         else if (postRequest?.status === 400) {
-            console.log("There was an error in the submitted entries");
             setLoginError(postRequest.data);
         };
     };

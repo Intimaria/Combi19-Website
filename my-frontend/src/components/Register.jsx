@@ -142,7 +142,6 @@ function Register({redirectPage}) {
 
         if (successMessage) setSuccessMessage(null);
         if (!validate()) {
-            console.log("the entries have errors, y them");
             return false;
         }
 
@@ -171,7 +170,6 @@ function Register({redirectPage}) {
         const registerRequest = await register(DataToRegister);
 
         if (registerRequest?.status === 201) {
-            console.log("The inputs were submitted successfully");
             setDefaultValues();
 
             let loginRequest = await login(DataToRegister.email, DataToRegister.password1, 'login');
@@ -184,7 +182,6 @@ function Register({redirectPage}) {
             }
 
         } else if (registerRequest?.status === 400) {
-            console.log("There was an error in the submitted entries");
             setEmailError(registerRequest.data.emailError);
             setNamesError(registerRequest.data.namesError);
             setSurnameError(registerRequest.data.surnameError);

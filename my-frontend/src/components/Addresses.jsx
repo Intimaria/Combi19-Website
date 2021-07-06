@@ -143,9 +143,6 @@ const Addresses = () => {
                         setShowSuccessMessage={setShowSuccessMessage}
                         path={path}/>
                 </Route>
-                <Route path="/tripPassengers" exact>
-                    <TripPassengers />
-                </Route>
                 <Route path="/tripsMade" exact>
                     <DriverFinishedTrips />
                 </Route>

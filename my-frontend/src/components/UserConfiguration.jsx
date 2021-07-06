@@ -90,7 +90,6 @@ function UserConfiguration() {
 
         if (successMessage) setSuccessMessage(null);
         if (!validate()) {
-            console.log("the entries have errors, y them");
             return false;
         }
 
@@ -124,7 +123,6 @@ function UserConfiguration() {
             userData.userId)
         }
         if (putResponse?.status === 200) {
-            console.log("The inputs were submitted successfully");
             if (await updateUserDataValues()) {
                 setDefaultValues();
             }
@@ -135,7 +133,6 @@ function UserConfiguration() {
             });
         }
         else if (putResponse?.status === 400) {
-            console.log("There was an error in the submitted entries");
             setEmailError(putResponse.data.emailError);
             setNamesError(putResponse.data.namesError);
             setSurnameError(putResponse.data.surnameError);

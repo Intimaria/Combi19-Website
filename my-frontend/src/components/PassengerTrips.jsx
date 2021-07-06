@@ -1,19 +1,14 @@
 import {
     Accordion,
-    AccordionActions,
     AccordionDetails,
     AccordionSummary,
     Box,
-    Button,
     Divider,
     Grid,
-    Modal,
     Typography,
     MaterialTable
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
-import {materialTableConfiguration} from '../const/materialTableConfiguration';
-import CardTravelIcon from '@material-ui/icons/CardTravel';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, {useEffect, useState} from 'react';
 import moment from "moment";
@@ -24,11 +19,10 @@ import {Message} from '../components/Message';
 import {PassengerTicket} from './PassengerTicket';
 import {CancelTrip} from './CancelTrip'
 import {
-    ERROR_MSG_API_CANCEL_PASSENGER_TRIP,
     ERROR_MSG_API_GET_TRIPS
 } from "../const/messages";
+
 import {
-    cancelPassengerTrip,
     getPassengerTrips
 } from '../api/PassengerTrips';
 

@@ -31,7 +31,7 @@ import {
 const columns = [
     {title: 'Nombre', field: 'passengerName'},
     {title: 'Apellido', field: 'passengerSurname'},
-    {title: 'E-mail', field: 'passengerEmail'},
+    {title: 'Correo electrónico', field: 'passengerEmail'},
     {title: 'Estado', field: 'ticketStatus'},
 ];
 
@@ -120,6 +120,8 @@ export const TripPassengers = (props) => {
                 message: putResponse.data
             });
 
+            await props.fetchDataDriverListTrips();
+
             await fetchData();
             return true
         } else if (putResponse.status === 500) {
@@ -139,7 +141,7 @@ export const TripPassengers = (props) => {
         }
     };
 
-    const handleCheckSymptomsModal = (passenger, action) => {
+    const handleCheckSymptomsModal = (passenger) => {
         setSelectedPassenger(passenger);
 
         setCheckSymptomsModal(!checkSymptomsModal);
@@ -169,6 +171,8 @@ export const TripPassengers = (props) => {
                     ...options, open: true, type: (isRiskyPassenger) ? 'warning' : 'success',
                     message: putResponse.data
                 });
+
+                await props.fetchDataDriverListTrips();
 
                 await fetchData();
                 return true

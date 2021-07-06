@@ -26,8 +26,7 @@ import {
     getDriverPendingTrips,
     finishTrip,
     cancelTrip,
-    getPassangerStatus,
-    getDriverUnsoldTrips
+    getPassangerStatus
 } from '../api/DriverTrips';
 import { TripPassengers } from './TripPassengers';
 import DriverSellTrip from './DriverSellTrip';
@@ -353,7 +352,7 @@ function DriverListTrips() {
 
         const bodyConfirmPassangers = (
             <div className={modal.paper}>
-                <TripPassengers trip={selectedTrip} />
+                <TripPassengers trip={selectedTrip} fetchDataDriverListTrips={fetchData} />
                 <br />
                 <div align="right">
                     <Button onClick={() => openCloseModalList()}>CERRAR</Button>
